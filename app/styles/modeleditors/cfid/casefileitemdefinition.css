@@ -71,16 +71,16 @@
 
 /*unspecified*/
 
-.cfiDefinitionUnspecPropertyTreeTable {
+.cfidPropertyTable {
     padding: 3px 2px 2px 4px;
     background-color: #f5f5f5;
 }
 
-.cfiDefinitionUnspecPropertyTreeTable table {
+.cfidPropertyTable table {
     margin-top: 3px;
 }
 
-.cfiDefinitionUnspecPropertyTreeTable tbody button {
+.cfidPropertyTable tbody button {
     margin: 1px;
     width: 16px;
     height: 16px;
@@ -91,16 +91,16 @@
     border: 1px solid rgb(221, 221, 221);
 }
 
-.cfiDefinitionUnspecPropertyTreeTable th {
+.cfidPropertyTable th {
     font-weight: normal;
 }
 
-.cfiDefinitionUnspecPropertyTreeTable input {
+.cfidPropertyTable input {
     margin: 1px 2px 1px 0px;
     width: 95%;
 }
 
-.cfiDefinitionUnspecPropertyTreeTable select {
+.cfidPropertyTable select {
     height: 18px;
     margin-right: 2px;
 }

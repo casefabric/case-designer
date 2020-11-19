@@ -17,7 +17,7 @@ class CaseFileItemsEditor {
         this.splitter = new BottomSplitter(htmlParent, '70%', 175);        
         
         //get the tree table which will contain the data from the html
-        this.tree = this.html.find('table');
+        this.tree = this.html.find('.treeEditorTable');
         //render the treetable. Add the data from the treeEditor object to the tree
         this.tree.fancytree(this.getRenderStructure());
 
@@ -565,17 +565,17 @@ class CaseFileItemsEditor {
         //create the main element add to document
         this.html = $(
 `<div class="schemadatabox">
-    <div id="divCaseFileItems">
+    <div class="divCaseFileItems">
         <div class="treeeditorform basicbox basicform">
             <div class="casefile-header formheader">
                 <label>Case File Items</label>
             </div>
-            <div id="treeeditorcontainerid">
+            <div class="divTreeEditorContainer">
                 <button class="btnAddChild" type="addchild">Add Child</button>
                 <button class="btnAddSibling" type="addsibling">Add Sibling</button>
                 <button class="btnRemoveItem" type="remove">Remove</button>
                 <div class="containerbox">
-                    <table>
+                    <table class="treeEditorTable">
                         <colgroup>
                             <col width="420px"></col>
                             <col width="80px"></col>

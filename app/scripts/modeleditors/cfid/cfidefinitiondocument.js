@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-class CFIDefinitionUnspecified {
+class CFIDefinitionDocument {
     /**
      * 
      * @param {CaseFileItemDefinitionEditor} editor 
@@ -9,11 +9,13 @@ class CFIDefinitionUnspecified {
     constructor(editor, container) {
         this.editor = editor;
         this.container = container;
-        this.biTooltip = `Cases and Tasks can be queried on business identifiers.\nThe identifiers are tracked in a separate index, but adding identifiers does have a performance impact`
+        this.biTooltip = 'Cases and Tasks can be queried on business identifiers.\nThe identifiers are tracked in a separate index, but adding identifiers does have a performance impact';
         this.html = $(`<div class="cfidPropertyTable">
                 <label>Properties</label>
                 <div class="divTable">
                 </div>
+                <div>&nbsp;</div>
+                <div>Note: Every document the following additional metadata properties: 'identifier', 'url' and 'mimetype'</div>
             </div>`);
         this.tableDiv =  this.html.find('.divTable');
         this.container.append(this.html);
@@ -108,7 +110,7 @@ class CFIDefinitionUnspecified {
         html.find('.selectPropertyType').on('change', e => this.changeProperty(html, property, property.name, e.currentTarget.value, property.isBusinessIdentifier));
         html.find('.selectPropertyType').val(property.type);
         html.find('.inputBusinessIdentifier').on('change', e => this.changeProperty(html, property, property.name, property.type, e.target.checked));
-        this.html.find('tbody').append(html);
+        this.tableDiv.find('tbody').append(html);
     }
 
     changeProperty(html, parameter, name, type, isBusinessIdentifier) {

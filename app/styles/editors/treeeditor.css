@@ -40,7 +40,7 @@
     cursor: move;
 }
 
-.treeeditorform #treeeditorcontainerid {
+.treeeditorform .divTreeEditorContainer {
     position: absolute;
     top: 20px;
     left: 0px;

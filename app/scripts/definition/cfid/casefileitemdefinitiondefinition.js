@@ -1,6 +1,9 @@
 const UNSPECIFIED = 'Unspecified';
 const UNSPECIFIED_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unspecified';
 
+const DOCUMENT = 'Document';
+const DOCUMENT_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/CMISDocument';
+
 const XMLELEMENT = 'XMLElement';
 const XMLELEMENT_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/XSDElement';
 
@@ -29,7 +32,7 @@ class CaseFileDefinitionDefinition extends ModelDefinition {
             }
         }
     }
-    
+
     get editor() {
         return;
     }
@@ -52,6 +55,8 @@ class CaseFileDefinitionDefinition extends ModelDefinition {
         } else if (this.definitionType == UNKNOWN_URI) {
             this.exportProperties('id', 'name', 'definitionType');
         } else if (this.definitionType == UNSPECIFIED_URI) {
+            this.exportProperties('id', 'name', 'definitionType', 'properties');
+        } else if (this.definitionType == DOCUMENT_URI) {
             this.exportProperties('id', 'name', 'definitionType', 'properties');
         }
         return xmlDocument;

@@ -9,6 +9,7 @@
         //define default definitionTypes
         this.definitionTypes = [
             { name: UNSPECIFIED, uri: UNSPECIFIED_URI, editor: CFIDefinitionUnspecified },
+            { name: DOCUMENT, uri: DOCUMENT_URI, editor: CFIDefinitionDocument },
             { name: XMLELEMENT, uri: XMLELEMENT_URI, editor: CFIDefinitionXMLElement },
             { name: UNKNOWN, uri: UNKNOWN_URI, editor: CFIDefinitionUnknown }
         ]
@@ -38,6 +39,7 @@
                     <label>Definition Type</label>
                     <select>
                         <option value="${UNSPECIFIED_URI}">${UNSPECIFIED}</option>
+                        <option value="${DOCUMENT_URI}">${DOCUMENT}</option>
                         <option value="${XMLELEMENT_URI}">${XMLELEMENT}</option>
                         <option value="${UNKNOWN_URI}">${UNKNOWN}</option>
                     </select>
