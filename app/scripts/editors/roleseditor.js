@@ -14,7 +14,7 @@
 
     /** @returns {Array<CaseRoleDefinition>} */
     get data() {
-        return this.case.caseDefinition.caseRoles;
+        return this.case.caseDefinition.caseTeam.roles;
     }
 
     /**

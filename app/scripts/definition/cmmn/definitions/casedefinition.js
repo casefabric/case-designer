@@ -15,12 +15,30 @@ class CaseDefinition extends ModelDefinition {
     parse() {
         this.caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
         this.casePlan = this.parseElement('casePlanModel', CasePlanDefinition);
-        this.caseRoles = this.parseElements('caseRoles', CaseRoleDefinition);
+        this.caseTeam = this.parseCaseTeam();
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
         this.startCaseSchema = this.parseStartCaseSchema();
 
         this.elements.forEach(element => element.resolveReferences());
+    }
+
+    parseCaseTeam() {
+        const rolesElements = XML.getChildrenByTagName(this.importNode, 'caseRoles');
+        if (rolesElements.length == 0 || rolesElements.length > 1) { // CMMN 1.0 format, we must migrate
+            if (rolesElements.length) {
+                console.log(`Converting ${rolesElements.length} CMMN1.0 roles`);
+            }
+            // Create a new element
+            const caseTeamElement = XML.parseXML('<caseRoles />').documentElement;
+            rolesElements.forEach(role => {
+                role.parentElement.removeChild(role);
+                caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
+            });
+            this.importNode.appendChild(caseTeamElement);            
+            this.migrated = true;
+        } 
+        return this.parseElement('caseRoles', CaseTeamDefinition);
     }
 
     /**
@@ -82,7 +100,7 @@ class CaseDefinition extends ModelDefinition {
 
         const xmlDocument = XML.loadXMLString('<case />'); // TODO: add proper namespace and so.
         this.exportNode = xmlDocument.documentElement;
-        this.exportProperties('id', 'name', 'description', 'caseFile', 'casePlan', 'caseRoles', 'input', 'output');
+        this.exportProperties('id', 'name', 'description', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output');
         // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
         // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
         if (this.startCaseSchema && this.startCaseSchema.trim()) {

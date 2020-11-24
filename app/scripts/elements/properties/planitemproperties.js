@@ -104,7 +104,7 @@ class PlanItemProperties extends Properties {
      * @param {String} buttonClass
      */
     getRolesAsHTMLSelect(currentRoleId, buttonClass) {
-        const existingRolesAsOptions = this.case.caseDefinition.caseRoles.map(role => `<option value="${role.id}" ${role.id == currentRoleId?' selected':''}>${role.name}</option>`).join('');
+        const existingRolesAsOptions = this.case.caseDefinition.caseTeam.roles.map(role => `<option value="${role.id}" ${role.id == currentRoleId?' selected':''}>${role.name}</option>`).join('');
         return `<div class="role-selector">
                     <span>
                         <select>
