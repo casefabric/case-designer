@@ -25,7 +25,8 @@
         // For some reason alpaca seems to kill the jquery-ui addClass override in some places in the editor. No clue why.
         //  It seems to be that case only on svg elements???
         //  This code gives a quick hack ( grrr.... ) around it.
-        const existingClasses = html.attr('class').split(' ');
+        const currentClassNames = html.attr('class');
+        const existingClasses = currentClassNames ? currentClassNames.split(' ') : [];
         classNames.forEach(newClass => {
             if (existingClasses.indexOf(newClass) < 0) {
                 existingClasses.push(newClass);
@@ -35,7 +36,8 @@
     }
 
     static removeClassOverride(html, ...classNames) {
-        const existingClasses = html.attr('class') ? html.attr('class').split(' ') : [];
+        const currentClassNames = html.attr('class');
+        const existingClasses = currentClassNames ? currentClassNames.split(' ') : [];
         classNames.forEach(name => Util.removeFromArray(existingClasses, name));
         html.attr('class', existingClasses.join(' '));
     }
