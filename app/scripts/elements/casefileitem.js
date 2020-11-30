@@ -6,7 +6,7 @@
      * @param {Number} y 
      */
     static create(stage, x, y) {
-        const shape = CaseFileItemShape.create(stage.definition, x, y);
+        const shape = CaseFileItemShape.create(stage, x, y);
         return new CaseFileItem(stage, shape);
     }
 
@@ -18,6 +18,7 @@
     constructor(parent, definition) {
         super(parent, definition);
         this.definition = definition;
+        // this.shape = definition;
         this.__resizable = false;
     }
 
@@ -37,7 +38,7 @@
     }
 
     get text() {
-        const cfi = this.shape.caseDefinition.getElement(this.shape.contextRef);
+        const cfi = this.case.caseDefinition.getElement(this.shape.contextRef);
         return cfi ? cfi.name : '';
     }
 

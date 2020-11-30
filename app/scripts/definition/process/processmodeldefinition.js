@@ -1,11 +1,13 @@
 class ProcessModelDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode 
-     * @param {ModelDocument} definitionDocument 
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument) {
-        super(importNode, definitionDocument);
+    constructor(modelDocument) {
+        super(modelDocument);
+    }
+
+    parseDocument() {
         /** @type {Array<ImplementationParameterDefinition>} */
         this.input = this.parseElements('input', ImplementationParameterDefinition);
         /** @type {Array<ImplementationParameterDefinition>} */

@@ -2,18 +2,19 @@ class Action {
     /**
      * 
      * @param {UndoManager} undoManager 
-     * @param {DefinitionDocument} definition 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
      * @param {Action} previousAction
      */
-    constructor(undoManager, definition, previousAction) {
+    constructor(undoManager, caseDefinition, dimensions, previousAction) {
         // console.log("Creating new action with dimensions: ", dimensions)
         this.undoManager = undoManager;
         this.repository = undoManager.editor.ide.repository;
-        this.modelName = definition.name;
-        this.caseString = definition.definitionsXML;
-        this.dimensionsString = definition.dimensionsXML;
-        this.caseFileName = definition.caseFileName;
-        this.dimensionsFileName = definition.dimensionsFileName;
+        this.modelName = caseDefinition.name;
+        this.caseString = XML.prettyPrint(caseDefinition.toXML());
+        this.dimensionsString = XML.prettyPrint(dimensions.toXML());
+        this.caseFileName = caseDefinition.modelDocument.fileName;
+        this.dimensionsFileName = dimensions.modelDocument.fileName;
         this.caseChanged = false;
         this.dimensionsChanged = false;
         this.previousAction = previousAction;
@@ -90,9 +91,10 @@ class Action {
     perform(direction, caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
         // console.log("Performing "+direction+" on action "+this.undoCount )
         this.undoManager.performingBufferAction = true;
-        // Parse the sources again into a definition and load that in the editor.
-        const definition = new DefinitionDocument(this.repository.ide, this.caseString, this.dimensionsString, this.caseFileName, this.dimensionsFileName);
-        this.undoManager.editor.loadDefinition(definition);
+        // Parse the sources again into a definition and load that in the editor.        
+        const caseDefinition = new CaseModelDocument(this.repository.ide, this.caseFileName, this.caseString).createInstance();
+        const dimensions = new DimensionsModelDocument(this.repository.ide, this.dimensionsFileName, this.dimensionsString).createInstance();
+        this.undoManager.editor.loadDefinition(caseDefinition, dimensions);
         // Reset the "saved" flag.
         this.saved = false;
         this.save(caseChanged, dimensionsChanged);

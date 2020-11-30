@@ -1,25 +1,22 @@
 class CaseDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode 
-     * @param {DefinitionDocument} definitionDocument 
-     * @param {Dimensions} dimensions 
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument, dimensions) {
-        super(importNode, definitionDocument);
-        this.definitionDocument = definitionDocument;
-        this.dimensions = dimensions;
-        this.migrated = false;
+    constructor(modelDocument) {
+        super(modelDocument);
     }
 
-    parse() {
+    parseDocument() {
         this.caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
         this.casePlan = this.parseElement('casePlanModel', CasePlanDefinition);
         this.caseTeam = this.parseCaseTeam();
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
         this.startCaseSchema = this.parseStartCaseSchema();
+    }
 
+    validateDocument() {
         this.elements.forEach(element => element.resolveReferences());
     }
 
@@ -110,5 +107,18 @@ class CaseDefinition extends ModelDefinition {
         // Also export the guid that is used to generate new elements in the case. This must be removed upon deployment.
         this.exportNode.setAttribute('guid', this.typeCounters.guid);
         return xmlDocument;
+    }
+
+    static createNewModel(caseName, caseDescription) {
+        const caseID = caseName + '.case';
+        const guid = Util.createID();
+
+        const casePlanId = `cm_${guid}_0`;
+        const caseString = 
+`<case id="${caseID}" name="${caseName}" description="${caseDescription}" guid="${guid}">
+    <caseFileModel/>
+    <casePlanModel id="${casePlanId}" name="${caseName}"/>
+</case>`;
+        return caseString;
     }
 }

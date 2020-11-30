@@ -1,7 +1,7 @@
 class ShapeDefinition extends DiagramElement {
     /**
      * 
-     * @param {CMMNElementDefinition} cmmnElement 
+     * @param {CMMNElement} cmmnElement 
      * @param {Number} x 
      * @param {Number} y 
      * @param {Number} w 
@@ -9,13 +9,13 @@ class ShapeDefinition extends DiagramElement {
      * @returns {ShapeDefinition}
      */
     static createShape(cmmnElement, x, y, w, h) {
-        const shape = new ShapeDefinition(undefined, cmmnElement.caseDefinition.dimensions);
-        shape.cmmnElementRef = cmmnElement.id;
+        const shape = new ShapeDefinition(undefined, cmmnElement.case.dimensions);
+        shape.cmmnElementRef = cmmnElement.definition.id;
         shape.x = x;
         shape.y = y;
         shape.width = w;
         shape.height = h;
-        cmmnElement.caseDefinition.dimensions.addShape(shape);
+        cmmnElement.case.dimensions.addShape(shape);
         return shape;
     }
 
@@ -35,18 +35,6 @@ class ShapeDefinition extends DiagramElement {
         if (!this.bounds) {
             this.dimensions.addParseError('The Shape node for ' + this.cmmnElementRef + ' does not have a Bounds node; it cannot be used to draw element ' + this.cmmnElementRef);
         }
-    }
-
-    get cmmnElement() {
-        return this.caseDefinition.getElement(this.cmmnElementRef);
-    }
-
-    get description() {
-        return this.cmmnElement ? this.cmmnElement.description : '';
-    }
-
-    get name() {
-        return this.cmmnElement ? this.cmmnElement.name : '';
     }
 
     /**
@@ -161,19 +149,32 @@ class CustomShape extends ShapeDefinition {
         super.createExportNode(diagramNode, tagName, 'parentId', propertyNames);
     }
 
-    static generateIdentifier(caseDefinition) {
+    /**
+     * 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    static generateIdentifier(caseDefinition, dimensions) {
         const caseUID = caseDefinition.typeCounters.guid + '_shape_';
-        const nextElement = caseDefinition.dimensions.shapes.length;
+        const nextElement = dimensions.shapes.length;
         return caseUID + nextElement;
     }
 
-    generateDefaultContent(cmmnParent, x, y, w, h) {
-        this.cmmnElementRef = CustomShape.generateIdentifier(cmmnParent.caseDefinition);
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     * @param {*} w 
+     * @param {*} h 
+     */
+    generateDefaultContent(stage, x, y, w, h) {
+        this.cmmnElementRef = CustomShape.generateIdentifier(stage.case.caseDefinition, stage.case.dimensions);
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
-        this.parentId = cmmnParent.id;
+        this.parentId = stage.id;
         this.dimensions.addShape(this); // Make sure to register it as a custom shape
         return this;
     }
@@ -194,12 +195,12 @@ class CaseFileItemShape extends CustomShape {
 
     /**
      * 
-     * @param {CMMNElementDefinition} cmmnParent 
+     * @param {Stage} stage 
      * @param {Number} x 
      * @param {Number} y 
      */
-    static create(cmmnParent, x, y) {
-        return new CaseFileItemShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 25, 40);
+    static create(stage, x, y) {
+        return new CaseFileItemShape(undefined, stage.case.dimensions).generateDefaultContent(stage, x, y, 25, 40);
     }
 
     createExportNode(diagramNode) {
@@ -210,12 +211,12 @@ class CaseFileItemShape extends CustomShape {
 class TextBoxShape extends CustomShape {
     /**
      * 
-     * @param {CMMNElementDefinition} cmmnParent 
+     * @param {Stage} stage 
      * @param {Number} x 
      * @param {Number} y 
      */
-    static create(cmmnParent, x, y) {
-        return new TextBoxShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 100, 60);
+    static create(stage, x, y) {
+        return new TextBoxShape(undefined, stage.case.dimensions).generateDefaultContent(stage, x, y, 100, 60);
     }
 
     constructor(importNode, dimensions) {

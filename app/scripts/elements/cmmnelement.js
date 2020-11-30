@@ -38,7 +38,24 @@ class CMMNElement {
     }
 
     get shape() {
-        return this.definition.shape;
+        if (!this._shape) {
+            if (this.definition instanceof ShapeDefinition) {
+                this._shape = this.definition;
+            } else {
+                this._shape = this.case.dimensions.getShape(this.definition);
+                if (!this._shape) {
+                    if (!this.definition.__startPosition) {
+                        console.error(`${this.definition.constructor.name} does not have a start position set, but it is expected to have one. Check whether it is created through method createShapedDefinition`);
+                        this.definition.__startPosition = { x: 0, y: 0 };
+                    }
+                    const size = this.definition.defaultShapeSize();
+                    const position = this.definition.__startPosition;
+                    this._shape = ShapeDefinition.createShape(this, position.x, position.y, size.w, size.h);
+                }
+
+            }
+        }
+        return this._shape;
     }
 
     /**
@@ -99,7 +116,7 @@ class CMMNElement {
      * @param {CMMNElement} potentialAncestor 
      */
     hasAncestor(potentialAncestor) {
-        if (! potentialAncestor) return false;
+        if (!potentialAncestor) return false;
         if (this.parent === potentialAncestor) return true;
         if (this.parent === this.case) return false;
         return this.parent.hasAncestor(potentialAncestor);
@@ -220,7 +237,7 @@ class CMMNElement {
      */
     refreshText() {
         const rawText = this.text;
-        const formattedText = this.wrapText ? joint.util.breakText(rawText, {width: this.shape.width, height: this.shape.height}) : rawText;
+        const formattedText = this.wrapText ? joint.util.breakText(rawText, { width: this.shape.width, height: this.shape.height }) : rawText;
         this.xyz_joint.attr('text/text', formattedText);
     }
 
@@ -457,13 +474,13 @@ class CMMNElement {
      * This method is invoked on the element if it created a connection to the target CMMNElement
      * @param {CMMNElement} target 
      */
-    __connectedTo(target) {}
+    __connectedTo(target) { }
 
     /**
      * This method is invoked on the element if a connection to it was made from the source CMMNElement
      * @param {CMMNElement} source 
      */
-    __connectedFrom(source) {}
+    __connectedFrom(source) { }
 
     /**
      * Removes a connector from the registration in this element.
@@ -510,7 +527,7 @@ class CMMNElement {
     /**
      * validate: all steps to check this element
      */
-    __validate() {}
+    __validate() { }
 
     /**
      * Raises a validation error/warning with the Case
@@ -588,7 +605,7 @@ class CMMNElement {
      * @param {Number} x 
      * @param {Number} y 
      */
-    __moveConstraint(x, y) {}
+    __moveConstraint(x, y) { }
 
     /**
      * Registers a class that extends CMMNElement by it's name.

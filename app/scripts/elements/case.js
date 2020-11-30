@@ -3,15 +3,15 @@
      * Creates a new Case object based on the definition and dimensions
      * @param {CaseModelEditor} editor
      * @param {JQuery<HTMLElement>} htmlParent
-     * @param {DefinitionDocument} definitionDocument 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
      */
-    constructor(editor, htmlParent, definitionDocument) {
+    constructor(editor, htmlParent, caseDefinition, dimensions) {
         const now = new Date();
         this.editor = editor;
         this.editor.case = this; // Quick hack to have inline editors have access to the case in their constructor
-        this.definitionDocument = definitionDocument;
-        this.caseDefinition = definitionDocument.caseDefinition;
-        this.dimensions = definitionDocument.dimensions;
+        this.dimensions = dimensions;
+        this.caseDefinition = caseDefinition;
         this.id = this.caseDefinition.id;
         this.name = this.caseDefinition.name;
         this.case = this;
@@ -45,7 +45,7 @@
         this.paperContainer = this.html.find('.paper-container');
 
         this.deployForm = new Deploy(editor);
-        this.sourceEditor = new CaseSourceEditor(editor, this.html, definitionDocument);
+        this.sourceEditor = new CaseSourceEditor(editor, this.html);
         this.cfiEditor = new CaseFileItemsEditor(this, this.divCFIEditor);
         this.undoBox = new UndoRedoBox(this, this.divUndoRedo);
         this.shapeBox = new ShapeBox(this, this.divShapeBox);

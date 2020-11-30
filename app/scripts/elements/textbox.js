@@ -6,7 +6,7 @@
      * @param {Number} y 
      */
     static create(stage, x, y) {
-        const shape = TextBoxShape.create(stage.definition, x, y);
+        const shape = TextBoxShape.create(stage, x, y);
         return new TextBox(stage, shape);
     }
 

@@ -4,16 +4,22 @@
 class ModelDefinition extends ReferableElementDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode 
-     * @param {DefinitionParser} definitionDocument 
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument) {
-        super(importNode, undefined, undefined);
-        this.definitionDocument = definitionDocument;
+    constructor(modelDocument) {
+        super(modelDocument.root, undefined, undefined);
+        this.modelDocument = modelDocument;
+        this.migrated = false;
         this.typeCounters = new TypeCounter(this);
         /** @type {Array<XMLElementDefinition>} */
         this.elements = [];
         this.elements.push(this);
+    }
+
+    parseDocument() {
+    }
+
+    validateDocument() {        
     }
 
     /**

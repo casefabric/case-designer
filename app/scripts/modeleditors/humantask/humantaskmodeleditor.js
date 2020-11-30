@@ -211,24 +211,25 @@ class HumantaskModelEditor extends ModelEditor {
     }
 
     loadModel() {
-        this.ide.repository.readModel(this.fileName, model => {
-            this._model = model;
-            this.render();
-            this.visible = true;
-        });
+        this.ide.repository.readModel(this.fileName, model => this.renderModel(model));
     }
 
-    openModel(content) {
-        this.parser = new ModelDocument(this.ide, this.fileName, content);
-        this._model = this.parser.parseModel(HumanTaskModelDefinition);
+    /**
+     * 
+     * @param {HumanTaskModelDefinition} model 
+     */
+    renderModel(model) {
+        this._model = model;
         this.render();
+        this.visible = true;
     }
 
     /**
      * handle the change of the source (in 2nd tab)
      */
     loadSource(source) {
-        this.openModel(source);
+        const document = new HumanTaskModelDocument(this.ide, this.fileName, source);
+        this.renderModel(document.createInstance());
         this.saveModel();
     }
 

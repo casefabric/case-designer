@@ -12,7 +12,7 @@ class DiagramElement extends XMLElementDefinition {
     }
 
     get caseDefinition() {
-        return this.dimensions.definitionDocument.caseDefinition;
+        return this.dimensions.modelDocument.caseDefinition;
     }
     
     writeAttribute(name, optionalValue) {

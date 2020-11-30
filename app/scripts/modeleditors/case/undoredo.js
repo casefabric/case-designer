@@ -14,14 +14,15 @@ class UndoManager {
     /**
      * Clears the action buffer, and prepares it for the new content.
      * This typically only happens when we open a new case model
-     * @param {DefinitionDocument} definition
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
      */
-    resetActionBuffer(definition) {
+    resetActionBuffer(caseDefinition, dimensions) {
         this.performingBufferAction = false;
         this.currentAction = null;
-        
+
         // First action is to add what we have to the undo/redo buffer.
-        this.addCaseAction(definition);
+        this.addCaseAction(caseDefinition, dimensions);
     }
 
     get currentAction() {
@@ -37,12 +38,12 @@ class UndoManager {
 
     /**
      * Save model and upload to server; but only if there are new changes.
-     * @param {DefinitionDocument} definition
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
      * @param {Boolean} forceSave Saving case model is only done on the changes with respect to the previous save action. For creating a new model we have to forcefully save.
      */
-    saveCaseModel(definition, forceSave = false) {
-        const modelName = definition.caseDefinition.name;
-        const newAction = this.addCaseAction(definition);
+    saveCaseModel(caseDefinition, dimensions, forceSave = false) {
+        const newAction = this.addCaseAction(caseDefinition, dimensions);
         if (newAction) {
             if (forceSave) {
                 newAction.forceSave();
@@ -55,7 +56,12 @@ class UndoManager {
         }
     }
 
-    addCaseAction(definition) {
+    /**
+     * 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    addCaseAction(caseDefinition, dimensions) {
         if (this.performingBufferAction) {
             // This is not supposed to happen. But order of events and invocations is not so easy, so keeping it for safety reasons if you start changing this code
             console.warn('Adding case action while performing buffer action');
@@ -64,7 +70,7 @@ class UndoManager {
 
         // Creating a new action makes it also the current action.
         //  Note that the actual action may not resolve in changes, and in such a case, the currentAction will return itself and remain the same.
-        this.currentAction = new Action(this, definition, this.currentAction);
+        this.currentAction = new Action(this, caseDefinition, dimensions, this.currentAction);
         this.updateUndoRedoButtons();
         return this.currentAction;
     }
@@ -79,7 +85,7 @@ class UndoManager {
 
     undo() {
         if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
-        
+
         if (this.currentAction) {
             this.currentAction = this.currentAction.undo();
         } else {
@@ -93,12 +99,12 @@ class UndoManager {
             return this.currentAction.redoCount;
         } else {
             return 0;
-        }        
+        }
     }
 
     redo() {
         if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
-        
+
         if (this.currentAction && this.currentAction.nextAction) {
             this.currentAction = this.currentAction.nextAction.redo();
         } else {
@@ -106,7 +112,7 @@ class UndoManager {
         }
         this.updateUndoRedoButtons();
     }
-    
+
 }
 
 class UndoRedoBox {
@@ -119,7 +125,7 @@ class UndoRedoBox {
         this.case = cs;
         this.html = html;
         this.html.append(
-$(`<div class="formheader">
+            $(`<div class="formheader">
     <div>
         <div class="undo" type="button" title="Undo">
             <span></span>
@@ -148,5 +154,5 @@ $(`<div class="formheader">
     updateButtons(undoCount, redoCount) {
         this.spanUndoCounter.html(undoCount);
         this.spanRedoCounter.html(redoCount);
-    }    
+    }
 }

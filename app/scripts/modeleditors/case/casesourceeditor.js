@@ -3,11 +3,9 @@ class CaseSourceEditor {
      * 
      * @param {CaseModelEditor} editor 
      * @param {JQuery<HTMLElement>} parentHTML 
-     * @param {DefinitionDocument} definition 
      */
-    constructor(editor, parentHTML, definition) {
+    constructor(editor, parentHTML) {
         this.editor = editor;
-        this.definition = definition;
         this.parentHTML = parentHTML;
         this.html = $(`<div class="case-source-editor">
     <div class="sourcecontainer">
@@ -39,15 +37,30 @@ class CaseSourceEditor {
         const newSource = this.codeMirrorCaseXML.getValue();
         const newDimensions = this.codeMirrorDimensionsXML.getValue();
 
-        // First validate whether the new source contains a (sort of) valid DefinitionDocument
-        const newDefinition = new DefinitionDocument(ide, newSource, newDimensions, this.definition.caseFileName, this.definition.dimensionsFileName);
-        if (newDefinition.invalid) {
-            // Cannot import an invalid definition.
-            //  Errors will be shown on the screen through the call to .invalid.
+        const caseModelDocument = new CaseModelDocument(this.editor.ide, this.editor.fileName, newSource);
+        const dimensionModelDocument = new DimensionsModelDocument(this.editor.ide, this.editor.dimensionsFileName, newDimensions);
+
+        if (! caseModelDocument.xml) {
+            this.editor.ide.danger('Cannot import because definition does not contain proper XML');
             return;
         }
 
-        this.editor.loadDefinition(newDefinition);
+        if (! caseModelDocument.xml || !XML.getChildByTagName(caseModelDocument.xml, 'case')) {
+            this.editor.ide.danger('Cannot import because definition does not contain a root &lt;case&gt; tag');
+            return;
+        };
+
+        if (! dimensionModelDocument.xml || !dimensionModelDocument.xml.getElementsByTagName(CMMNDIAGRAM).length) {
+            this.editor.ide.danger('The node &lt;' + CMMNDIAGRAM + '&gt; could not be found in the dimensions document');
+            return;
+        };
+
+        const caseDefinition = caseModelDocument.createInstance();
+        const dimensions = dimensionModelDocument.createInstance();
+
+        // TODO add more checks for validity?
+
+        this.editor.loadDefinition(caseDefinition, dimensions);
         // Completing the action will save the model and add a corresponding action to the undo/redo buffer
         this.editor.completeUserAction();
         this.close();
@@ -59,8 +72,10 @@ class CaseSourceEditor {
 
     open() {
         this.html.css('display', 'block');
-        this.codeMirrorCaseXML.setValue(this.definition.definitionsXML);
-        this.codeMirrorDimensionsXML.setValue(this.definition.dimensionsXML)
+        const caseXML = XML.prettyPrint(this.editor.case.caseDefinition.toXML());
+        const dimensionsXML = XML.prettyPrint(this.editor.case.dimensions.toXML());
+        this.codeMirrorCaseXML.setValue(caseXML);
+        this.codeMirrorDimensionsXML.setValue(dimensionsXML);
     }
 
     delete() {
