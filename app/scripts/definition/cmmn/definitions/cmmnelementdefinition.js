@@ -17,49 +17,6 @@ class CMMNElementDefinition extends ReferableElementDefinition {
         this.caseDefinition = caseDefinition;
     }
 
-    get name() {
-        return this.__name || this.id;
-    }
-
-    /**
-     * @param {String} name
-     */
-    set name(name) {
-        const removeNewlinesAndTabs = str => {
-            if (typeof (str) != 'string') return str;
-            return str ? str.replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ') : str;
-        };
-        const cleanName = removeNewlinesAndTabs(name);
-
-        if (name == this.id) {
-            this.__name = undefined;
-            return;
-        }
-        this.__name = cleanName;
-        if (name != cleanName) {
-            // Store the name with newlines and so inside the description
-            this.description = name;
-        } else if (name == this.__description) {
-            // Do not store a description if it is the same as the name
-            this.__description = undefined;
-        }
-    }
-
-    get description() {
-        return this.__description || this.name;
-    }
-
-    /**
-     * @param {String} description
-     */
-    set description(description) {
-        if (this.name == description) {
-            this.__description = undefined;
-        } else {
-            this.__description = description;
-        }
-    }
-
     /**
      * Returns the default shape size of the element; Must be implemented in all subclasses
      * @returns {*} An object with w, h coordinates for width and height

@@ -210,10 +210,6 @@ class Properties extends MovableEditor {
         const html = this.addTextField(label, 'name');
         // Adding class such that we can easily select the description
         html.find('textarea').addClass('cmmn-element-name');
-        html.on('change', e => {
-            const descriptionField = this.htmlContainer.find('.cmmn-element-description');
-            descriptionField.val(this.cmmnElement.definition.description);
-        })
     }
 
     addIdField() {

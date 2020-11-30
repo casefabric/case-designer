@@ -64,7 +64,6 @@ class RoleRenderer extends RowEditor {
      */
     createElement() {
         const newRole = this.editor.case.caseDefinition.createDefinition(CaseRoleDefinition);
-        newRole.description = '';
         return newRole;
     }
 }

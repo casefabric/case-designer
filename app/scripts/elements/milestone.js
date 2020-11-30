@@ -13,6 +13,10 @@ class Milestone extends PlanItemView {
         super(parent, definition);
     }
 
+    get wrapText() {
+        return true;
+    }
+
     createProperties() {
         return new MilestoneProperties(this);
     }

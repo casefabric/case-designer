@@ -466,7 +466,7 @@ class CaseFileItemsEditor {
      */
     handleDragStartCFIDataNode(node, data) {
         const cfi = this.getDefinitionElement(node);
-        this.dragData = new DragData(this.ide, this, cfi.description, CaseFileItem.name, CaseFileItem.smallImage, cfi.id);
+        this.dragData = new DragData(this.ide, this, cfi.name, CaseFileItem.name, CaseFileItem.smallImage, cfi.id);
     }
 
     /**

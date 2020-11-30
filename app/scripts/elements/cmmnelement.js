@@ -75,6 +75,26 @@ class CMMNElement {
     }
 
     /**
+     * Returns the text to be rendered inside the shape
+     * @returns {String}
+     */
+    get text() {
+        if (this.name === Util.withoutNewlinesAndTabs(this.definition.description)) {
+            return this.definition.description;
+        } else {
+            return this.definition.name;
+        }
+    }
+
+    /**
+     * Boolean indicating whether the text to be rendered must be wrapped or not.
+     * @returns {Boolean}
+     */
+    get wrapText() {
+        return false;
+    }
+
+    /**
      * Determines whether or not the cmmn element is our parent or another ancestor of us.
      * @param {CMMNElement} potentialAncestor 
      */
@@ -185,7 +205,7 @@ class CMMNElement {
             // NOTE: overrides of this method should actually also check the same flag (not all of them do...)
             return;
         }
-        this.refreshDescription();
+        this.refreshText();
         if (this._halo && this._halo.visible) {
             this._halo.refresh();
         }
@@ -198,8 +218,10 @@ class CMMNElement {
     /**
      * Invoked from the refreshView. Assumes there is a text element inside the joint element holding the description.
      */
-    refreshDescription() {
-        this.xyz_joint.attr('text/text', this.definition.description);
+    refreshText() {
+        const rawText = this.text;
+        const formattedText = this.wrapText ? joint.util.breakText(rawText, {width: this.shape.width, height: this.shape.height}) : rawText;
+        this.xyz_joint.attr('text/text', formattedText);
     }
 
     /**
@@ -313,6 +335,8 @@ class CMMNElement {
         this.shape.height = h;
         // Also have joint resize
         this.xyz_joint.resize(w, h);
+        // Refresh the description to apply new text wrapping
+        this.refreshText();
     }
 
     /**

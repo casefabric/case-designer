@@ -9,6 +9,10 @@ class TaskStage extends PlanItemView {
         this.showPlanningTable();
     }
 
+    get wrapText() {
+        return true;
+    }
+
     /** @returns {TaskStageDefinition} */
     get planItemDefinition() {
         return this.definition.definition;

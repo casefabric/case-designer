@@ -20,6 +20,14 @@
         this.definition = definition;
     }
 
+    get text() {
+        return this.definition.content;
+    }
+
+    get wrapText() {
+        return true;
+    }
+
     createProperties() {
         return new TextBoxProperties(this);
     }

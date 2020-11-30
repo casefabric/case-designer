@@ -32,8 +32,13 @@
     refreshReferencingFields(definitionElement) {
         super.refreshReferencingFields(definitionElement);
         if (this.shape.contextRef == definitionElement.id) {
-            this.refreshDescription();
+            this.refreshText();
         }
+    }
+
+    get text() {
+        const cfi = this.shape.caseDefinition.getElement(this.shape.contextRef);
+        return cfi ? cfi.name : '';
     }
 
     get markup() {

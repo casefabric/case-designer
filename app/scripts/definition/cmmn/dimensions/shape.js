@@ -192,11 +192,6 @@ class CaseFileItemShape extends CustomShape {
         };
     }
 
-    get description() {
-        const cfi = this.caseDefinition.getElement(this.contextRef);
-        return cfi ? cfi.description : '';
-    }
-
     /**
      * 
      * @param {CMMNElementDefinition} cmmnParent 
@@ -220,17 +215,12 @@ class TextBoxShape extends CustomShape {
      * @param {Number} y 
      */
     static create(cmmnParent, x, y) {
-        return new TextBoxShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 100, 60, 'TextBox');
+        return new TextBoxShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 100, 60);
     }
 
     constructor(importNode, dimensions) {
         super(importNode, dimensions);
         this.content = this.parseAttribute('content', '');
-    }
-
-    get description() {
-        // Override to have the contents rendered properly by default CMMNElement class.
-        return this.content;
     }
 
     defaultShapeSize() {
