@@ -8,6 +8,7 @@ class HumanTaskModelDefinition extends ModelDefinition {
     }
 
     parseDocument() {
+        super.parseDocument();
         /** @type {HumanTaskImplementationDefinition} */
         this.implementation = this.parseElement(IMPLEMENTATION_TAG, HumanTaskImplementationDefinition);
     }
@@ -18,14 +19,6 @@ class HumanTaskModelDefinition extends ModelDefinition {
 
     set name(name) {
         if (this.implementation) this.implementation.name = name;
-    }
-
-    get description() {
-        return this.implementation.description;
-    }
-
-    set description(description) {
-        if (this.implementation) this.implementation.description = description;
     }
 
     get inputParameters() {
@@ -41,9 +34,8 @@ class HumanTaskModelDefinition extends ModelDefinition {
     }
 
     toXML() {
-        const xmlDocument = XML.loadXMLString('<humantask />'); // TODO: add proper namespace and so.
-        this.exportNode = xmlDocument.documentElement;
-        this.exportProperties('implementation');
-        return xmlDocument;
+        const document = super.exportModel('humantask', 'implementation');
+        this.exportNode.removeAttribute('name');
+        return document;
     }
 }

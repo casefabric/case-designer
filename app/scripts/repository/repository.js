@@ -123,7 +123,7 @@ class Repository {
     /**
      * Save xml file and upload to server
      * @param {String} fileName 
-     * @param {*} xml 
+     * @param {Document | String} xml 
      * @param {Function} callback 
      */
     saveXMLFile(fileName, xml, callback = undefined) {
@@ -131,7 +131,8 @@ class Repository {
             this.list.push(new ServerFile(this, fileName));
         }
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
-        serverFile.data = xml;
+        const data = xml instanceof String ? xml : XML.prettyPrint(xml);
+        serverFile.data = data;
         serverFile.save(callback);
     }
 
@@ -154,6 +155,10 @@ class Repository {
         serverFile.load(file => {
             // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
             const model = serverFile.parseToModel();
+            if (model.migrated) {
+                console.log(`Definition of ${model.constructor.name} '${fileName}' has migrated; uploading result`);
+                this.saveXMLFile(fileName, model.toXML());
+            }
             callback(model);
         });
     }

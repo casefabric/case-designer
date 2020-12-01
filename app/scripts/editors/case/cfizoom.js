@@ -19,7 +19,7 @@ class CFIZoom {
     constructor(row, column) {
         const td = column.html(
             `<div class="cfiZoom">
-                <label class="cfiDescription" title="Drag/drop a case file item to link it to this parameter">${row.bindingName}</label>
+                <label class="cfiName" title="Drag/drop a case file item to link it to this parameter">${row.bindingName}</label>
                 <button class="removeReferenceButton" title="remove the reference to the case file item" />
             </div>`);
 
@@ -33,7 +33,7 @@ class CFIZoom {
         });
         td.find('.removeReferenceButton').on('click', e => {
             row.change('bindingRef', undefined)
-            td.find('.cfiDescription').html(row.parameter.bindingName);
+            td.find('.cfiName').html(row.parameter.bindingName);
         });
     }
 }

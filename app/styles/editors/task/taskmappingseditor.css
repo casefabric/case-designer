@@ -75,7 +75,7 @@
     margin: 2px 0px 2px 2px;
 }
 
-.cfiZoom .cfiDescription {
+.cfiZoom .cfiName {
     position: absolute;
     cursor: move;
     bottom: 2px;

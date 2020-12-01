@@ -176,7 +176,7 @@ class PlanItem extends CMMNElementDefinition {
         if (entryCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(entryCriteriaRefs, [], SentryDefinition);
             sentries.forEach(sentry => {
-                console.log("Converting sentry into an EntryCriterion... in plan item "+this.name);
+                console.log(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
                 const ec = super.createDefinition(EntryCriterionDefinition);
                 ec.sentryRef = sentry.id;
                 this.entryCriteria.push(ec);
@@ -187,7 +187,7 @@ class PlanItem extends CMMNElementDefinition {
         if (exitCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(exitCriteriaRefs, [], SentryDefinition);
             sentries.forEach(sentry => {
-                console.log("Converting sentry into an ExitCriterion... in plan item "+this.name);
+                console.log(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
                 const ec = super.createDefinition(ExitCriterionDefinition);
                 ec.sentryRef = sentry.id;
                 this.exitCriteria.push(ec);
@@ -205,22 +205,20 @@ class PlanItem extends CMMNElementDefinition {
     }
 
     createExportNode(parentNode) {
-        const tagName = this.isDiscretionary ? 'discretionaryItem' : 'planItem';
-        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs');
-    }
-
-    flattenReferences() {
-        super.flattenReferences();
-
-        this.definition.name = this.name;
-        this.definition.description = this.description;
-
+        // Update some properties before exporting them
         if (this.definition) {
             this.definitionRef = this.definition.id;
+            this.definition.name = this.name;
+            if (this.definition.documentation.text === this.documentation.text) {
+                this.definition.documentation.text = '';
+            }    
         }
         // Flatten discretionary properties; this ensures that if a element has switched from discretionary to planitem, it will NOT accidentally keep the role and rule refs.
         this.authorizedRoleRefs = super.flattenListToString(this.isDiscretionary ? this.authorizedRoles : []);
         this.applicabilityRuleRefs = super.flattenListToString(this.isDiscretionary ? this.filterExistingRules() : []);
+
+        const tagName = this.isDiscretionary ? 'discretionaryItem' : 'planItem';
+        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs');
     }
 
     removeDefinition() {

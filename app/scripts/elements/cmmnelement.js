@@ -96,10 +96,25 @@ class CMMNElement {
      * @returns {String}
      */
     get text() {
-        if (this.name === Util.withoutNewlinesAndTabs(this.definition.description)) {
-            return this.definition.description;
+        const documentation = this.definition.documentation.text;
+        if (this.name === Util.withoutNewlinesAndTabs(documentation)) {
+            return documentation;
         } else {
             return this.definition.name;
+        }
+    }
+
+    /**
+     * Properties show the documentation. For CaseFileItem shape we also have
+     * to render documentation, but there the "definition" refers to the shape instead
+     * of the actual case file item; through this method CaseFileItem shape can override the getter.
+     * @returns {CMMNDocumentationDefinition}
+     */
+    get documentation() {
+        if (this.definition instanceof CMMNElementDefinition) {
+            return this.definition.documentation;
+        } else {
+            throw new Error('This method must be implemented in ' + this.constructor.name);
         }
     }
 
@@ -233,7 +248,7 @@ class CMMNElement {
     }
 
     /**
-     * Invoked from the refreshView. Assumes there is a text element inside the joint element holding the description.
+     * Invoked from the refreshView. Assumes there is a text element inside the joint element holding the text to display on the element.
      */
     refreshText() {
         const rawText = this.text;

@@ -6,19 +6,29 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
         if (this.roles.length == 0 && this.name) {
             // This means we bumped into a CMMN 1.0 role
             console.log('Converting CMMN1.0 role');
+            // Since this is single role, the (optional) description is already converted to documentation, but remove that
+            //  and let the role conversion create it instead
+            if (this.documentation.text) this.documentation.text = '';
             this.importNode.appendChild(CaseTeamDefinition.convertRoleDefinition(importNode));
             this.roles = this.parseElements('role', CaseRoleDefinition);
             this.caseDefinition.migrated = true;
         }
     }
 
+    /**
+     * 
+     * @param {Element} element 
+     */
     static convertRoleDefinition(element) {
-        const id = element.getAttribute('id');
-        const name = element.getAttribute('name');
-        const description = element.getAttribute('description');
-        element.removeAttribute('id');
-        element.removeAttribute('name');
-        element.removeAttribute('description');
+        const clearAttribute = name => {
+            const value = element.getAttribute(name) || ''; // Avoid reading null values from attributes
+            element.removeAttribute(name); // And clear the attribute
+            return value;
+        }
+
+        const id = clearAttribute('id');
+        const name = clearAttribute('name');
+        const description = clearAttribute('description');
         const optionalDescription = name !== description ? `description="${description}"` : ''; 
         return XML.parseXML(`<role id="${id}" name="${name}" ${optionalDescription}/>`).documentElement;
     }

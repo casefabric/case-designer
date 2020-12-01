@@ -8,6 +8,7 @@ class ProcessModelDefinition extends ModelDefinition {
     }
 
     parseDocument() {
+        super.parseDocument();
         /** @type {Array<ImplementationParameterDefinition>} */
         this.input = this.parseElements('input', ImplementationParameterDefinition);
         /** @type {Array<ImplementationParameterDefinition>} */
@@ -24,9 +25,7 @@ class ProcessModelDefinition extends ModelDefinition {
     }
 
     toXML() {
-        const xmlDocument = XML.loadXMLString('<process />'); // TODO: add proper namespace and so.
-        this.exportNode = xmlDocument.documentElement;
-        this.exportProperties('id', 'name', 'description', 'input', 'output', 'implementation');
+        const xmlDocument = super.exportModel('process', 'input', 'output', 'implementation');
         this.exportNode.setAttribute('implementationType', 'http://www.omg.org/spec/CMMN/ProcessType/Unspecified');
         return xmlDocument;
     }

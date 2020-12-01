@@ -69,13 +69,6 @@ class CaseModelEditor extends ModelEditor {
         // activate live validation and undo etc
         this.trackChanges = true;
 
-        // Run once for migration
-        if (caseDefinition.migrated) {
-            console.log('Definition of case model ' + caseDefinition.modelDocument.fileName +' has migrated; uploading result');
-            this.ide.repository.saveXMLFile(caseDefinition.modelDocument.fileName, caseDefinition.toXML());
-            this.ide.repository.saveXMLFile(dimensions.modelDocument.fileName, dimensions.toXML());
-        }
-
         // Do a first time validation.
         window.setTimeout(() => this.case.runValidation(), 100);
     }
@@ -232,8 +225,10 @@ class CaseModelEditor extends ModelEditor {
         const guid = Util.createID();
 
         const casePlanId = `cm_${guid}_0`;
+        const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const caseString = 
-`<case id="${caseFileName}" name="${name}" description="${description}" guid="${guid}">
+`<case id="${caseFileName}" name="${name}" guid="${guid}">
+    ${documentation}
     <caseFileModel/>
     <casePlanModel id="${casePlanId}" name="${name}"/>
 </case>`;

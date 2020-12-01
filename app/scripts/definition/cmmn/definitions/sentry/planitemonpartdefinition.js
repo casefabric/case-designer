@@ -4,7 +4,7 @@ class PlanItemOnPartDefinition extends OnPartDefinition {
         const cmmn10Ref = this.parseAttribute('sentryRef');
         const exitCriterionRef = this.parseAttribute('exitCriterionRef');
         if (cmmn10Ref && !exitCriterionRef) {
-            console.log('Migrating old definition of sentryRef')
+            console.log('Migrating CMMN1.0 sentryRef into exitCriterionRef')
             this.caseDefinition.migrated = true;
         }
         this.exitCriterionRef = this.parseAttribute('exitCriterionRef', cmmn10Ref);

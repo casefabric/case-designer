@@ -141,23 +141,14 @@
         }
 
         if (isNew) {
+            // First create and upload a new definition, then load it
             const name = definitionRef.substring(0, definitionRef.length - 5);
             const data = XML.loadXMLString(`<caseFileItemDefinition name="${name}" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" />`);
-            const serverFile = new ServerFile(this.ide.repository, definitionRef);
-            serverFile.data = data;
-            // this.ide.repository.saveXMLFile(definitionRef, data, () => {
-            serverFile.save(() => {
-                // If it is new, then create a local object and render it.
-                this.renderDefinition(serverFile.parseToModel());
-            })
-
-        } else {
-            // Read it from the repository, and only render upon callback.
-            this.ide.repository.readModel(definitionRef, definition => {
-                this.renderDefinition(definition);
-            });
+            this.ide.repository.saveXMLFile(definitionRef, data);
         }
 
+        // Read it from the repository, and only render upon callback.
+        this.ide.repository.readModel(definitionRef, definition => this.renderDefinition(definition));
     }
 
     /**
@@ -191,11 +182,7 @@
 
     saveModel() {
         if (this.activeDefinition) {
-            const data = XML.prettyPrint(this.activeDefinition.toXML());
-            const serverFile = new ServerFile(this.ide.repository, this.definitionRef);
-            serverFile.data = data;
-            serverFile.save();
-            // this.ide.repository.saveXMLFile(this.definitionRef, data);
+            this.ide.repository.saveXMLFile(this.definitionRef, this.activeDefinition.toXML());
         }
     }
 }

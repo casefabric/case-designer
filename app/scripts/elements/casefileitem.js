@@ -18,7 +18,7 @@
     constructor(parent, definition) {
         super(parent, definition);
         this.definition = definition;
-        // this.shape = definition;
+        this.cfiShape = definition;
         this.__resizable = false;
     }
 
@@ -32,14 +32,24 @@
 
     refreshReferencingFields(definitionElement) {
         super.refreshReferencingFields(definitionElement);
-        if (this.shape.contextRef == definitionElement.id) {
+        if (this.cfiShape.contextRef == definitionElement.id) {
             this.refreshText();
         }
     }
 
+    get cfi() {
+        return this.case.caseDefinition.getElement(this.cfiShape.contextRef);
+    }
+
     get text() {
-        const cfi = this.case.caseDefinition.getElement(this.shape.contextRef);
-        return cfi ? cfi.name : '';
+        return this.cfi ? this.cfi.name : '';
+    }
+
+    /**
+     * @returns {CMMNDocumentationDefinition}
+     */
+    get documentation() {
+        return this.cfi && this.cfi.documentation;
     }
 
     get markup() {
@@ -58,7 +68,7 @@
     }
 
     referencesDefinitionElement(definitionId) {
-        return definitionId == this.shape.contextRef;
+        return definitionId == this.cfiShape.contextRef;
     }
 }
 CMMNElement.registerType(CaseFileItem, 'Case File Item', 'images/svg/casefileitem.svg');

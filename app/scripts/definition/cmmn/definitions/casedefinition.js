@@ -8,6 +8,7 @@ class CaseDefinition extends ModelDefinition {
     }
 
     parseDocument() {
+        super.parseDocument();
         this.caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
         this.casePlan = this.parseElement('casePlanModel', CasePlanDefinition);
         this.caseTeam = this.parseCaseTeam();
@@ -32,9 +33,9 @@ class CaseDefinition extends ModelDefinition {
                 role.parentElement.removeChild(role);
                 caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
             });
-            this.importNode.appendChild(caseTeamElement);            
+            this.importNode.appendChild(caseTeamElement);
             this.migrated = true;
-        } 
+        }
         return this.parseElement('caseRoles', CaseTeamDefinition);
     }
 
@@ -92,12 +93,7 @@ class CaseDefinition extends ModelDefinition {
     }
 
     toXML() {
-        // First have all elements flatten their references. Actually would be better to not keep track of references by pointer in Definitions layer.
-        this.elements.forEach(element => element.flattenReferences());
-
-        const xmlDocument = XML.loadXMLString('<case />'); // TODO: add proper namespace and so.
-        this.exportNode = xmlDocument.documentElement;
-        this.exportProperties('id', 'name', 'description', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output');
+        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output');
         // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
         // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
         if (this.startCaseSchema && this.startCaseSchema.trim()) {
@@ -107,18 +103,5 @@ class CaseDefinition extends ModelDefinition {
         // Also export the guid that is used to generate new elements in the case. This must be removed upon deployment.
         this.exportNode.setAttribute('guid', this.typeCounters.guid);
         return xmlDocument;
-    }
-
-    static createNewModel(caseName, caseDescription) {
-        const caseID = caseName + '.case';
-        const guid = Util.createID();
-
-        const casePlanId = `cm_${guid}_0`;
-        const caseString = 
-`<case id="${caseID}" name="${caseName}" description="${caseDescription}" guid="${guid}">
-    <caseFileModel/>
-    <casePlanModel id="${casePlanId}" name="${caseName}"/>
-</case>`;
-        return caseString;
     }
 }

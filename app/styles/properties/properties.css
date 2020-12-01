@@ -166,11 +166,11 @@
     user-select: text;
 }
 
-.cmmn-element-description {
+.cmmn-element-documentation {
     background-color: #f5f5f5;
 }
 
-.edit-cmmn-description {
+.edit-cmmn-documentation {
     background-color: white;
 }
 

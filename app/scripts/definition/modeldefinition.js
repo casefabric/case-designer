@@ -8,6 +8,7 @@ class ModelDefinition extends ReferableElementDefinition {
      */
     constructor(modelDocument) {
         super(modelDocument.root, undefined, undefined);
+        super.modelDefinition = this;
         this.modelDocument = modelDocument;
         this.migrated = false;
         this.typeCounters = new TypeCounter(this);
@@ -17,6 +18,7 @@ class ModelDefinition extends ReferableElementDefinition {
     }
 
     parseDocument() {
+        this.parseElementProperties();
     }
 
     validateDocument() {        
@@ -112,21 +114,22 @@ class ModelDefinition extends ReferableElementDefinition {
         return collection;
     }
 
+    /**
+     * 
+     * @param {String} tagName 
+     * @param  {...String} propertyNames 
+     */
+    exportModel(tagName, ...propertyNames) {
+        const xmlDocument = XML.loadXMLString(`<${tagName} />`); // TODO: add proper namespace and so.
+        this.exportNode = xmlDocument.documentElement;
+        this.exportProperties('id', 'name', 'documentation', propertyNames);
+        return xmlDocument;
+    }
+
+    /**
+     * @returns {Document}
+     */
     toXML() {
-        // First have all elements flatten their references. Actually would be better to not keep track of references by pointer in Definitions layer.
-        this.elements.forEach(element => element.flattenReferences());
-
-        // const xmlDocument = XML.loadXMLString('<case />'); // TODO: add proper namespace and so.
-        // this.exportNode = xmlDocument.documentElement;
-        // this.exportProperties('id', 'name', 'description', 'caseFile', 'casePlan', 'caseRoles', 'input', 'output');
-        // // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
-        // // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
-        // if (this.startCaseSchema && this.startCaseSchema.trim()) {
-        //     this.exportExtensionElement('cafienne:start-case-model').textContent = this.startCaseSchema;
-        // }
-
-        // // Also export the guid that is used to generate new elements in the case. This must be removed upon deployment.
-        // this.exportNode.setAttribute('guid', this.typeCounters.guid);
-        // return xmlDocument;
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }

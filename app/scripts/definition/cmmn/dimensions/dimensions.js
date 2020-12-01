@@ -20,6 +20,7 @@ class Dimensions extends ModelDefinition {
     }
 
     parseDocument() {
+        super.parseDocument();
         /** @type {Array<ShapeDefinition>} */
         this.shapes = this.parseElements(CMMNSHAPE, ShapeDefinition);
         this.parseElements('textbox', TextBoxShape, this.shapes);

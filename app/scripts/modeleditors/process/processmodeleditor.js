@@ -31,11 +31,11 @@ class ProcessModelEditor extends ModelEditor {
                     <div class="modelgenericfields">
                         <div>
                             <label>Name</label>
-                            <label>Description</label>
+                            <label>Documentation</label>
                         </div>
                         <div>
                             <input class="inputName" type="text" />
-                            <input class="inputDescription" type="text" />
+                            <input class="inputDocumentation" type="text" />
                         </div>
                     </div>
                     <div class="model-parameters">
@@ -55,7 +55,7 @@ class ProcessModelEditor extends ModelEditor {
 
         //add change event to input fields
         this.htmlContainer.find('.inputName').on('change', e => this.change('name', e.currentTarget.value));
-        this.htmlContainer.find('.inputDescription').on('change', e => this.change('description', e.currentTarget.value));
+        this.htmlContainer.find('.inputDocumentation').on('change', e => this.change('text', e.currentTarget.value, this.model.implementation.documentation));
 
 
         // Render input parameters
@@ -101,16 +101,17 @@ class ProcessModelEditor extends ModelEditor {
      * 
      * @param {String} propertyName 
      * @param {String} propertyValue 
+     * @param {XMLElementDefinition} element
      */
-    change(propertyName, propertyValue) {
-        this.model[propertyName] = propertyValue;
+    change(propertyName, propertyValue, element = this.model) {
+        element[propertyName] = propertyValue;
         this.saveModel();
     }
 
     render() {
         // Render name and description
         this.htmlContainer.find('.inputName').val(this.model.name);
-        this.htmlContainer.find('.inputDescription').val(this.model.description);
+        this.htmlContainer.find('.inputDocumentation').val(this.model.documentation.text);
 
         this.inputParametersControl.renderParameters(this.model.inputParameters);
         this.outputParametersControl.renderParameters(this.model.outputParameters);

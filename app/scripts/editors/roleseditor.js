@@ -8,7 +8,7 @@
         return [
             new TableEditorColumn('', '20px', 'Delete the role'),
             new TableEditorColumn('Role', '200px', 'The name of the role'),
-            new TableEditorColumn('Description', '', 'The description of the role')
+            new TableEditorColumn('Documentation', '', 'Documentation for the role')
         ];
     }
 
@@ -31,7 +31,7 @@
      */
     validate() {
         // Throw an error for each role that has no name
-        this.data.filter(role => !role.name).forEach(role => this.raiseEditorIssue(role, 1, ['role', this.case.name, role.description]));
+        this.data.filter(role => !role.name).forEach(role => this.raiseEditorIssue(role, 1, ['role', this.case.name, role.documentation.text]));
     }
 }
 
@@ -43,19 +43,20 @@ class RoleRenderer extends RowEditor {
     constructor(editor, role = undefined) {
         super(editor, role);
         const roleName = role ? role.name : '';
-        const roleDescription = role ? role.description : '';
+        const roleDocumentation = role ? role.documentation.text : '';
         this.html = $(`<tr class="case-team-role">
                             <td><button class="btnDelete"><img src="images/delete_32.png" /></button></td>
-                            <td><input type="text" dataType="name" value="${roleName}" /></td>
-                            <td><input type="text" dataType="description" value="${roleDescription}" /></td>
+                            <td><input class="inputRoleName" type="text" value="${roleName}" /></td>
+                            <td><input class="inputDocumentation" type="text" value="${roleDocumentation}" /></td>
                         </tr>`);
-
-        this.html.find('input').on('change', e => {
-            // Handle changes of name and description
-            const propertyType = e.currentTarget.getAttribute('dataType');
-            const newValue = e.currentTarget.value;
-            this.change(propertyType, newValue);
+                        
+        this.html.find('.inputRoleName').on('change', e => {
+            this.change('name', e.currentTarget.value);
             editor.case.refreshReferencingFields(this.element);
+        });
+        this.html.find('.inputDocumentation').on('change', e => {
+            this.element.documentation.text = e.currentTarget.value;
+            editor.case.editor.completeUserAction();
         });
     }
 

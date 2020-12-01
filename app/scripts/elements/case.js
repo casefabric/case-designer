@@ -336,7 +336,10 @@
         Util.removeHTML(this.html);
     };
 
-    //returns description of the element well formatted
+    /**
+     * Returns description of the element type
+     * @returns {String}
+     */
     get typeDescription() {
         return 'Case';
     };

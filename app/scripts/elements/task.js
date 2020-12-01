@@ -58,7 +58,7 @@
         if (existingModel) {
             this.planItemDefinition.implementationRef = existingModel.fileName;
         } else {
-            const fileName = this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.description);
+            const fileName = this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text);
             this.planItemDefinition.implementationRef = fileName;
             window.location.hash = fileName;
         }
@@ -68,17 +68,17 @@
 
     /**
      * Changes the task implementation if the model's fileName differs from the current implementationRef.
-     * If it is a newly added task, then the description maybe filled with the name of the task implementation.
+     * If it is a newly added task, then the name maybe filled with the name of the task implementation.
      * This can be indicated by passing the "updateTaskDescription" flag to true.
      * @param {DragData | ServerFile} model 
-     * @param {Boolean} updateTaskDescription 
+     * @param {Boolean} updateTaskName 
      */
-    changeTaskImplementation(model, updateTaskDescription = false) {
+    changeTaskImplementation(model, updateTaskName = false) {
         if (this.planItemDefinition.implementationRef == model.fileName) {
             // no need to change. Perhaps re-generate parameters??? Better give a separate button for that ...
             return;
         }
-        this.fetchTaskImplementation(true, model.fileName, updateTaskDescription, true);
+        this.fetchTaskImplementation(true, model.fileName, updateTaskName, true);
     }
 
     /**
@@ -86,10 +86,10 @@
      * the specified callback function
      * @param {Boolean} saveChanges - Indicates whether any newly generated information must be stored immediately or not. 
      * @param {String} fileName The (relative) URL to the file to be loaded
-     * @param {Boolean} updateTaskDescription Indicates whether the Task description should be modified to match the information inside the implementation.
+     * @param {Boolean} updateTaskName Indicates whether the Task name should be modified to match the information inside the implementation.
      * @param {Boolean} showProperties Indicates to open the properties view after the new information is rendered and received.
      */
-    fetchTaskImplementation(saveChanges = false, fileName = this.planItemDefinition.implementationRef, updateTaskDescription = false, showProperties = false) {
+    fetchTaskImplementation(saveChanges = false, fileName = this.planItemDefinition.implementationRef, updateTaskName = false, showProperties = false) {
         // Now, read the file, and update the information in the task parameters.
         this.case.editor.ide.repository.readModel(fileName, model => {
             if (! model) {
@@ -98,8 +98,8 @@
             }
 
             // Only update the name if we drag/drop into a new element; do not change for dropping on existing element
-            if (updateTaskDescription) {
-                console.warn("Updating the description to "+model.name)
+            if (updateTaskName) {
+                console.warn(`Updating the task name to ${model.name}`);
                 const name = model.name;
                 if (name) {
                     this.definition.name = name;
