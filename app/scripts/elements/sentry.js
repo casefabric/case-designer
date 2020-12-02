@@ -308,7 +308,10 @@ class Sentry extends CMMNElement {
     __getOnPart(connector) {
         const planItemOnPart = this.definition.planItemOnParts.find(onPart => connector.hasElementWithId(onPart.sourceRef));
         if (planItemOnPart) return planItemOnPart;
-        return this.definition.caseFileItemOnParts.find(onPart => connector.hasElementWithId(this.case.getCaseFileItemElement(onPart.sourceRef).id));
+        return this.definition.caseFileItemOnParts.find(onPart => {
+            const casefileElement = this.case.getCaseFileItemElement(onPart.sourceRef);
+            if (casefileElement) return connector.hasElementWithId(casefileElement.id);
+        });
     }
 
     __connectSentry(target) {
