@@ -1,4 +1,4 @@
-<case id="testCaseFile.case" name="testCaseFile" description="" guid="_ZDMuS">
+<case id="testCaseFile.case" name="testCaseFile" guid="_ZDMuS">
     <caseFileModel>
         <caseFileItem id="_ZDMuS_4" name="Root" multiplicity="ExactlyOne" definitionRef="root.cfid">
             <children>
@@ -8,7 +8,4 @@
         <caseFileItem id="_ZDMuS_5" name="AnotherRoot" multiplicity="ExactlyOne"/>
     </caseFileModel>
     <casePlanModel id="cm_testCaseFile.case_0" name="testCaseFile" autoComplete="true"/>
-    <extensionElements mustUnderstand="false">
-        <cafienne:start-case-model xmlns:cafienne="org.cafienne"/>
-    </extensionElements>
 </case>

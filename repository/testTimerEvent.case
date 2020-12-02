@@ -1,4 +1,4 @@
-<case id="testTimerEvent.case" name="testTimerEvent" description="" guid="_nrtSA">
+<case id="testTimerEvent.case" name="testTimerEvent" guid="_nrtSA">
     <caseFileModel>
         <caseFileItem id="cfi_testTimerEvent.case_0" name="CFI" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.cfid"/>
     </caseFileModel>

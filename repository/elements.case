@@ -64,9 +64,6 @@
         </humanTask>
         <humanTask id="ht__Z6eH1_3" name="HumanTask_4" isBlocking="true"/>
         <caseTask id="ct__Z6eH1_0" name="CaseTask_1" isBlocking="true">
-            <outputs id="_Z6eH1_27" name="ydyy"/>
-            <outputs id="_Z6eH1_29" name="snv"/>
-            <outputs id="_Z6eH1_32" name="abc"/>
             <outputs id="_Z6eH1_34" name="tab" bindingRef="_Z6eH1_4"/>
             <parameterMapping id="_Z6eH1_31" name="ParameterMapping_5" targetRef="_Z6eH1_34">
                 <transformation id="_Z6eH1_33" name="Expression_4" language="spel">
@@ -77,15 +74,7 @@
             </parameterMapping>
         </caseTask>
         <processTask id="pt__Z6eH1_0" name="ProcessTask_1" isBlocking="true" processRef="checkapprover.process">
-            <inputs id="_Z6eH1_42" name="projectmanager"/>
-            <inputs id="_Z6eH1_44" name="chiefserviceline"/>
-            <inputs id="_Z6eH1_46" name="startdate"/>
-            <inputs id="_Z6eH1_48" name="enddate"/>
             <outputs id="_Z6eH1_50" name="availability"/>
-            <parameterMapping id="_Z6eH1_43" name="ParameterMapping_0" sourceRef="_Z6eH1_42" targetRef="projectmanager"/>
-            <parameterMapping id="_Z6eH1_45" name="ParameterMapping_1" sourceRef="_Z6eH1_44" targetRef="chiefserviceline"/>
-            <parameterMapping id="_Z6eH1_47" name="ParameterMapping_2" sourceRef="_Z6eH1_46" targetRef="startdate"/>
-            <parameterMapping id="_Z6eH1_49" name="ParameterMapping_3" sourceRef="_Z6eH1_48" targetRef="enddate"/>
             <parameterMapping id="_Z6eH1_51" name="ParameterMapping_4" sourceRef="availability" targetRef="_Z6eH1_50"/>
         </processTask>
         <milestone id="ms__Z6eH1_0" name="Milestone_1"/>
@@ -104,7 +93,27 @@
         </stage>
         <stage id="_Z6eH1_37" name="Discretionary Stage" autoComplete="true"/>
     </casePlanModel>
-    <caseRoles id="_Z6eH1_15" name="CaseRole_1"/>
-    <caseRoles id="_Z6eH1_16" name="CaseRole_2"/>
-    <caseRoles id="_Z6eH1_17" name="CaseRole_3"/>
+    <caseRoles>
+        <role id="_Z6eH1_15" name="CaseRole_1">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[null]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="_Z6eH1_16" name="CaseRole_2">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[null]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="_Z6eH1_17" name="CaseRole_3">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[null]]>
+                </text>
+            </documentation>
+        </role>
+    </caseRoles>
 </case>
