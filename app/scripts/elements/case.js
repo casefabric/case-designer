@@ -69,6 +69,19 @@
             this.loading = true;
             this.casePlanModel = new CasePlanModel(this, casePlanDefinition);
 
+            this.dimensions.migrationShapes.forEach(textbox => {
+                const cmmnParent = this.getItem(textbox.parentId);
+                if (cmmnParent && cmmnParent instanceof Stage) {
+                    const textAnnotationDefinition = cmmnParent.planItemDefinition.createTextAnnotation(textbox.cmmnElementRef);
+                    textAnnotationDefinition.text = textbox.content;
+                    console.log("Adding migrated annotation")
+                    textbox.migrate();
+                    const textAnnotationView = new TextAnnotation(cmmnParent, textAnnotationDefinition);
+                    cmmnParent.__addCMMNChild(textAnnotationView);
+                    this.migrated = true;
+                }
+            });
+
             // Now render the custom shapes (textboxes and casefileitems)
             this.dimensions.customShapes.forEach(shape => {
                 const parentId = shape.parentId;
@@ -112,6 +125,9 @@
 
         const end = new Date();
         console.log('Case loaded in ' + ((end - now) / 1000) + ' seconds')
+        if (this.migrated) {
+            this.editor.saveModel();
+        }
     }
 
     createJointStructure() {
@@ -416,7 +432,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElement|CaseFileItem|TextBox} cmmnElement 
+     * @param {CMMNElement|CaseFileItem|TextAnnotation} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.

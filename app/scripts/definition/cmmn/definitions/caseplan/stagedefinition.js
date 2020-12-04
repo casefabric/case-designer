@@ -4,6 +4,7 @@ class StageDefinition extends TaskStageDefinition {
         this.autoComplete = this.parseBooleanAttribute('autoComplete', true);
         this.planItems = this.parseElements('planItem', PlanItem);
         this.sentries = this.parseElements('sentry', SentryDefinition);
+        this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
     }
 
     defaultShapeSize() {
@@ -25,6 +26,16 @@ class StageDefinition extends TaskStageDefinition {
     }
 
     /**
+     * Create a text annotation that can be child to this stage
+     * @param {String} id 
+     */
+    createTextAnnotation(id = undefined) {
+        const annotation = super.createDefinition(TextAnnotationDefinition, id);
+        this.annotations.push(annotation);
+        return annotation;
+    }
+
+    /**
      * @returns {SentryDefinition}
      */
     createSentry() {
@@ -35,6 +46,6 @@ class StageDefinition extends TaskStageDefinition {
 
     createExportNode(parentNode, tagName = 'stage', ...propertyNames) {
         tagName = tagName == 'planItemDefinitions' ? 'stage' : tagName; // Override tagName for casePlan, but not for planItemDefinitions elements.
-        super.createExportNode(parentNode, tagName, 'autoComplete', 'planItems', 'sentries', 'planningTable', propertyNames);
+        super.createExportNode(parentNode, tagName, 'autoComplete', 'planItems', 'sentries', 'planningTable', 'annotations', propertyNames);
     }
 }

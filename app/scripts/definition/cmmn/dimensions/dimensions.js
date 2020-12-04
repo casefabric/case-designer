@@ -30,10 +30,17 @@ class Dimensions extends ModelDefinition {
     }
 
     /**
-     * @returns {Array<CustomShape>}
+     * @returns {Array<TextBoxShape>}
+     */
+    get migrationShapes() {
+        return this.shapes.filter(shape => shape instanceof TextBoxShape);
+    }
+
+    /**
+     * @returns {Array<CaseFileItemShape>}
      */
     get customShapes() {
-        return this.shapes.filter(shape => shape instanceof CustomShape);
+        return this.shapes.filter(shape => shape instanceof CaseFileItemShape);
     }
 
     /**

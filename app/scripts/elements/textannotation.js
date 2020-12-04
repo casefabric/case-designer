@@ -1,4 +1,4 @@
-﻿class TextBox extends CMMNElement {
+﻿class TextAnnotation extends CMMNElement {
     /**
      * 
      * @param {Stage} stage 
@@ -6,14 +6,15 @@
      * @param {Number} y 
      */
     static create(stage, x, y) {
-        const shape = TextBoxShape.create(stage, x, y);
-        return new TextBox(stage, shape);
+        const textAnnotationDefinition = stage.planItemDefinition.createTextAnnotation();
+        textAnnotationDefinition.__startPosition = { x, y };
+        return new TextAnnotation(stage, textAnnotationDefinition);
     }
 
     /**
-     * Creates a new TextBox element
+     * Creates a new TextAnnotation element
      * @param {Stage} parent 
-     * @param {TextBoxShape} definition 
+     * @param {TextAnnotationDefinition} definition 
      */
     constructor(parent, definition) {
         super(parent, definition);
@@ -21,7 +22,7 @@
     }
 
     get text() {
-        return this.definition.content;
+        return this.definition.text;
     }
 
     get wrapText() {
@@ -29,12 +30,12 @@
     }
 
     createProperties() {
-        return new TextBoxProperties(this);
+        return new TextAnnotationProperties(this);
     }
 
     get markup() {
         return `<g class="scalable">
-                    <rect class="cmmn-shape cmmn-border cmmn-textbox-shape" rx="5" ry="5" />
+                    <rect class="cmmn-shape cmmn-border cmmn-textannotation-shape" rx="5" ry="5" />
                 </g>
                 <text class="cmmn-text" />`;
     }
@@ -51,4 +52,4 @@
         };
     }
 }
-CMMNElement.registerType(TextBox, 'Text Box', 'images/svg/textbox.svg');
+CMMNElement.registerType(TextAnnotation, 'Text Annotation', 'images/svg/textannotation.svg');

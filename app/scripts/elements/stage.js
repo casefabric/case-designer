@@ -11,6 +11,7 @@
     constructor(parent, definition) {
         super(parent, definition);
         this.planItemDefinition.planItems.forEach(planItem => this.addPlanItem(planItem));
+        this.planItemDefinition.annotations.forEach(annotation => this.__addCMMNChild(new TextAnnotation(this, annotation)));
     }
 
     /** @returns {StageDefinition} */
@@ -179,8 +180,8 @@
             return this.addPlanItem(this.planItemDefinition.createPlanItem(definitionType, x, y));
         } else if (cmmnType == CaseFileItem) {
             return this.__addCMMNChild(CaseFileItem.create(this, x, y));
-        } else if (cmmnType == TextBox) {
-            return this.__addCMMNChild(TextBox.create(this, x, y));
+        } else if (cmmnType == TextAnnotation) {
+            return this.__addCMMNChild(TextAnnotation.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createCMMNChild(cmmnType, x, y);
         }
@@ -189,8 +190,8 @@
     createShapeChild(shape) {
         if (shape instanceof CaseFileItemShape) {
             return this.__addCMMNChild(new CaseFileItem(this, shape));
-        } else if (shape instanceof TextBoxShape) {
-            return this.__addCMMNChild(new TextBox(this, shape));
+        } else {
+            console.error(`The type ${shape.constructor.name} is no longer supported`);
         }
     }
 
@@ -321,7 +322,7 @@
             elementType == TimerEvent.name ||
             elementType == CaseFileItem.name ||
             elementType == Stage.name ||
-            elementType == TextBox.name) {
+            elementType == TextAnnotation.name) {
             return true;
         }
         return false;

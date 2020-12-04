@@ -54,7 +54,7 @@ class ShapeDefinition extends DiagramElement {
     /**
      * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
      * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
-     * from the CaseDefinition. However, for TextBox and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
+     * from the CaseDefinition. However, for TextAnnotation and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
      * Therefore we "override" this method here and update the internal registration.
      */
     removeShape() {
@@ -128,6 +128,17 @@ class CustomShape extends ShapeDefinition {
         }
     }
 
+    migrate() {
+        const shape = new ShapeDefinition(undefined, this.dimensions);
+        shape.cmmnElementRef = this.cmmnElementRef;
+        shape.x = this.x;
+        shape.y = this.y;
+        shape.width = this.width;
+        shape.height = this.height;
+        this.dimensions.addShape(shape);
+        return shape;
+    }
+
     get shape() {
         return this;
     }
@@ -140,7 +151,7 @@ class CustomShape extends ShapeDefinition {
     /**
      * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
      * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
-     * from the CaseDefinition. However, for TextBox and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
+     * from the CaseDefinition. However, for TextAnnotation and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
      * Therefore we "override" this method here to avoid null pointers.
      */
     removeDefinition() {}
@@ -231,7 +242,7 @@ class TextBoxShape extends CustomShape {
         };
     }
 
-    createExportNode(diagramNode) {
-        return super.createExportNode(diagramNode, 'textbox', 'content');
+    createExportNode() {
+        // nothing to export no more
     }
 }
