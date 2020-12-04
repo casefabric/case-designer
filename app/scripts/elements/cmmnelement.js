@@ -58,7 +58,7 @@ class CMMNElement {
         // Element's ID might contain dots, slashes, etc. Escape them with a backslash
         // Source taken from https://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string
         // Could also use jquery.escapeSelector, but this method is only from jquery 3 onwards, which is not in this jointjs (?)
-        const jquerySelector = '#' + this.id.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
+        const jquerySelector = '#' + this.html_id.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
         return this.case.svg.find(jquerySelector);
     }
 
@@ -122,9 +122,11 @@ class CMMNElement {
     }
 
     createJointElement() {
+        // Copy definition id into a fixed internal html_id property to have a stable this.html search function
+        this.html_id = this.definition.id;
         const jointSVGSetup = {
             // Markup is the SVG that is rendered through the joint element; we surround the markup with an addition <g> element that holds the element id
-            markup: `<g id="${this.id}">${this.markup}</g>`,
+            markup: `<g id="${this.html_id}">${this.markup}</g>`,
             // Type is used to determine whether drag/drop is supported (element border coloring)
             type: this.constructor.name,
             // Take size and position from shape.
