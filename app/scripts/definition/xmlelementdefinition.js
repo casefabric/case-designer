@@ -164,8 +164,8 @@ class XMLElementDefinition {
     createDefinition(constructor, id = undefined, name = undefined) {
         const element = new constructor(undefined, this.modelDefinition, this);
         element.id = id ? id : this.modelDefinition.getNextIdOfType(constructor);
-        if (name || element.isNamedElement()) {
-            element.name = name ? name : this.modelDefinition.getNextNameOfType(constructor);
+        if (name !== undefined || element.isNamedElement()) {
+            element.name = name !== undefined ? name : this.modelDefinition.getNextNameOfType(constructor);
         }
         return element;
     }

@@ -5,7 +5,7 @@ class CMMNElement {
     /**
      * Creates a new CMMNElement within the case having the corresponding definition and x, y coordinates
      * @param {CMMNElement} parent
-     * @param {CMMNElementDefinition|CustomShape} definition
+     * @param {CMMNElementDefinition} definition
      * @param {ShapeDefinition} shape 
      */
     constructor(parent, definition, shape) {
@@ -438,16 +438,21 @@ class CMMNElement {
         // Remove the shape from the definitions
         this.shape.removeShape();
 
-        // Also let the definition side of the house know we're leaving
-        console.groupCollapsed("Removing definition for " + this);
-        this.definition.removeDefinition();
-        console.groupEnd();
+        // Now remove our definition element from the case (overridden in CaseFileItem, since that only needs to remove the shape)
+        this.__removeElementDefinition();
 
         // Delete us from the case
         Util.removeFromArray(this.case.items, this);
 
         // Finally remove the UI element as well. 
         this.xyz_joint.remove();
+    }
+
+    __removeElementDefinition() {
+        // Also let the definition side of the house know we're leaving
+        console.groupCollapsed(`Removing definition for ${this}`);
+        this.definition.removeDefinition();
+        console.groupEnd();
     }
 
     /**

@@ -58,6 +58,8 @@ class CaseModelEditor extends ModelEditor {
         // During import no live validation and storage of changes
         this.trackChanges = false;
 
+        this.migrateDefinitions(caseDefinition, dimensions);
+
         // First, remove current case content; but without tracking changes...
         if (this.case) {
             this.case.delete();
@@ -66,11 +68,44 @@ class CaseModelEditor extends ModelEditor {
         // Create a new case renderer on the definition and dimensions
         this.case = new Case(this, this.htmlContainer, caseDefinition, dimensions);
 
+        if (this.__migrated) {
+            this.saveModel();
+        }
+
         // activate live validation and undo etc
         this.trackChanges = true;
 
         // Do a first time validation.
         window.setTimeout(() => this.case.runValidation(), 100);
+    }
+
+    /**
+     * Imports the source and tries to visualize it
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    migrateDefinitions(caseDefinition, dimensions) {
+        this.__migrated = false;
+
+        dimensions.deprecatedCaseFileItems.forEach(casefileshape => {
+            casefileshape.migrate();
+            this.migrated(`Migrating casefileshape ${casefileshape.cmmnElementRef}`);
+        })
+
+        dimensions.deprecatedTextBoxes.forEach(textbox => {
+            const textAnnotationDefinition = caseDefinition.createTextAnnotation(textbox.migrate().cmmnElementRef);
+            textAnnotationDefinition.text = textbox.content;
+            this.migrated(`Migrating textbox ${textbox.cmmnElementRef}`);
+        });
+    }
+
+    /**
+     * 
+     * @param {String} msg 
+     */
+    migrated(msg) {
+        console.log(msg);
+        this.__migrated = true;
     }
 
     refresh() {
@@ -187,7 +222,7 @@ class CaseModelEditor extends ModelEditor {
      */
     saveModel() {
         // Validate all models currently active in the ide
-        this.case.runValidation();
+        if (this.case) this.case.runValidation();
         // Get the modelName from the url every thing after the hash (#), excluding the hash
         this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions);
     }

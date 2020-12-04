@@ -6,7 +6,7 @@
      * @param {Number} y 
      */
     static create(stage, x, y) {
-        const definition = stage.planItemDefinition.createTextAnnotation();
+        const definition = stage.case.caseDefinition.createTextAnnotation();
         const shape = stage.case.dimensions.createShape(x, y, 100, 60, definition.id);
         return new TextAnnotation(stage, definition, shape);
     }

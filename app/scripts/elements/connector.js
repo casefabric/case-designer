@@ -135,7 +135,7 @@
         this.formerLabel = this.label;
         if (this.label || ! this.sentry) return;
         const onPart = this.sentry.__getOnPart(this);
-        this.__setJointLabel(onPart.standardEvent);
+        if (onPart) this.__setJointLabel(onPart.standardEvent);
     }
 
     mouseLeave() {

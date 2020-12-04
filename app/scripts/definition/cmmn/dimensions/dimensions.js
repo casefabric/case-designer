@@ -34,24 +34,10 @@ class Dimensions extends ModelDefinition {
         super.parseDocument();
         /** @type {Array<ShapeDefinition>} */
         this.shapes = this.parseElements(CMMNSHAPE, ShapeDefinition);
-        this.parseElements('textbox', TextBoxShape, this.shapes);
-        this.parseElements('casefileitem', CaseFileItemShape, this.shapes);
+        this.deprecatedTextBoxes = this.parseElements('textbox', TextBoxShape, []);
+        this.deprecatedCaseFileItems = this.parseElements('casefileitem', CaseFileItemShape, []);
         /** @type {Array<Edge>} */
         this.edges = this.parseElements(CMMNEDGE, Edge);
-    }
-
-    /**
-     * @returns {Array<TextBoxShape>}
-     */
-    get migrationShapes() {
-        return this.shapes.filter(shape => shape instanceof TextBoxShape);
-    }
-
-    /**
-     * @returns {Array<CaseFileItemShape>}
-     */
-    get customShapes() {
-        return this.shapes.filter(shape => shape instanceof CaseFileItemShape);
     }
 
     /**

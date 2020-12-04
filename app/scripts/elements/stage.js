@@ -25,7 +25,6 @@
         super(parent, definition, planItemDefinition, shape);
         this.planItemDefinition = planItemDefinition;
         this.planItemDefinition.planItems.forEach(planItem => this.addPlanItem(planItem));
-        this.planItemDefinition.annotations.forEach(annotation => this.__addCMMNChild(new TextAnnotation(this, annotation, this.case.dimensions.getShape(annotation))));
     }
 
     setDropHandlers() {
@@ -44,18 +43,12 @@
 
     /**
      * Add a 'drag-dropped' case file item
-     * @param {DragData} dragData 
+     * @param {CaseFileItemDragData} dragData 
      * @param {JQuery<Event>} e 
      */
     addCaseFileItem(dragData, e) {
-        const cfiDefinition = this.case.caseDefinition.getElement(dragData.fileName);
         const coor = this.case.getCursorCoordinates(e);
-        cfiDefinition.__startPosition = coor;
-        const cfi = CaseFileItem.create(this, coor.x, coor.y);
-        // Associate the right definition
-        cfi.definition.contextRef = cfiDefinition.id;
-        // And add to the stage
-        this.__addCMMNChild(cfi);
+        this.__addCMMNChild(CaseFileItem.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
@@ -193,14 +186,6 @@
             return this.__addCMMNChild(TextAnnotation.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createCMMNChild(cmmnType, x, y);
-        }
-    }
-
-    createShapeChild(shape) {
-        if (shape instanceof CaseFileItemShape) {
-            return this.__addCMMNChild(new CaseFileItem(this, shape));
-        } else {
-            console.error(`The type ${shape.constructor.name} is no longer supported`);
         }
     }
 

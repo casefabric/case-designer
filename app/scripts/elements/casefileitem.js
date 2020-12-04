@@ -4,21 +4,28 @@
      * @param {Stage} stage 
      * @param {Number} x 
      * @param {Number} y 
+     * @param {CaseFileItemDef} y 
      */
-    static create(stage, x, y) {
-        const shape = CaseFileItemShape.create(stage, x, y);
-        return new CaseFileItem(stage, shape);
+    static create(stage, x, y, definition = undefined) {
+        definition = definition || CaseFileItemDef.createEmptyDefinition(stage.case.caseDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 25, 40, definition.id);
+        return new CaseFileItem(stage, definition, shape);
     }
 
     /**
      * Creates a new CaseFileItem
      * @param {Stage} parent 
-     * @param {CaseFileItemShape} definition 
+     * @param {CaseFileItemDef} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         this.definition = definition;
-        this.cfiShape = definition;
+        if (definition.isEmpty) {
+            // This means it is a temporary definition that will not be saved on the server.
+            //  But we want to keep track of the id in case a definition is added and then removed again.
+            this.temporaryId = definition.id;
+        }
         this.__resizable = false;
     }
 
@@ -30,26 +37,45 @@
         return new CaseFileItemHalo(this);
     }
 
+    __removeElementDefinition() {
+        // Avoid removing the actual CaseFileItemDef, we should only delete the shape.
+    }
+
     refreshReferencingFields(definitionElement) {
         super.refreshReferencingFields(definitionElement);
-        if (this.cfiShape.contextRef == definitionElement.id) {
+        if (this.definition == definitionElement) {
             this.refreshText();
         }
     }
 
-    get cfi() {
-        return this.case.caseDefinition.getElement(this.cfiShape.contextRef);
+    /**
+     * 
+     * @param {CaseFileItemDef} definition 
+     */
+    setDefinition(definition) {
+        this.definition = definition ? definition : CaseFileItemDef.createEmptyDefinition(this.case.caseDefinition);
+        if (this.definition.isEmpty) {
+            if (this.temporaryId) {
+                // Restore the temporary id again
+                this.definition.id = this.temporaryId;
+            } else {
+                this.temporaryId = this.definition.id;
+            }
+        }
+        this.shape.cmmnElementRef = this.definition.id;
+        this.refreshText();
+        this.editor.completeUserAction();
     }
 
     get text() {
-        return this.cfi ? this.cfi.name : '';
+        return this.definition ? this.definition.name : '';
     }
 
     /**
      * @returns {CMMNDocumentationDefinition}
      */
     get documentation() {
-        return this.cfi && this.cfi.documentation;
+        return this.definition && this.definition.documentation;
     }
 
     get markup() {
@@ -68,7 +94,7 @@
     }
 
     referencesDefinitionElement(definitionId) {
-        return definitionId == this.cfiShape.contextRef;
+        return this.definition && this.definition.id === definitionId;
     }
 }
 CMMNElement.registerType(CaseFileItem, 'Case File Item', 'images/svg/casefileitem.svg');

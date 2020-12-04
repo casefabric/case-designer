@@ -6,11 +6,30 @@ class CaseFileItemDef extends CaseFileItemCollection {
         return ['', 'addChild', 'addReference', 'create', 'delete', 'removeChild', 'removeReference', 'replace', 'update'];
     }
 
+    /**
+     * 
+     * @param {CaseDefinition} parent 
+     * @param {String} id
+     */
+    static createEmptyDefinition(parent, id = undefined) {
+        const definition = parent.createDefinition(CaseFileItemDef, id, '');
+        definition.isEmpty = true;        
+        return definition;
+    }
+
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
         this.multiplicity = this.parseAttribute('multiplicity', 'Unspecified');
         this.definitionRef = this.parseAttribute('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);
+        this.isEmpty = true && !this.id;
+    }
+
+    defaultShapeSize() {
+        return {
+            w: 25,
+            h: 40
+        };
     }
 
     get isArray() {
@@ -43,6 +62,8 @@ class CaseFileItemDef extends CaseFileItemCollection {
     }
 
     createExportNode(parentNode) {
+        if (this.isEmpty) return;
+
         super.createExportNode(parentNode, 'caseFileItem', 'multiplicity', 'definitionRef');
         if (this.children.length > 0) {
             const childrenNode = XML.createChildElement(this.exportNode, 'children');

@@ -14,6 +14,7 @@ class CaseDefinition extends ModelDefinition {
         this.caseTeam = this.parseCaseTeam();
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
+        this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
         this.startCaseSchema = this.parseStartCaseSchema();
     }
 
@@ -90,8 +91,18 @@ class CaseDefinition extends ModelDefinition {
         return startCaseNode ? startCaseNode.textContent : '';
     }
 
+    /**
+     * Create a text annotation that can be child to this stage
+     * @param {String} id 
+     */
+    createTextAnnotation(id = undefined) {
+        const annotation = super.createDefinition(TextAnnotationDefinition, id);
+        this.annotations.push(annotation);
+        return annotation;
+    }
+
     toXML() {
-        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output');
+        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output', 'annotations');
         // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
         // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
         if (this.startCaseSchema && this.startCaseSchema.trim()) {

@@ -100,3 +100,10 @@ class DragData {
         this.owner.dragData = undefined;
     }
 }
+
+class CaseFileItemDragData extends DragData {
+    constructor(editor, cfi) {
+        super(editor.ide, editor, cfi.name, CaseFileItem.name, CaseFileItem.smallImage, cfi.id);
+        this.item = cfi;
+    }
+}

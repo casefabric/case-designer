@@ -70,26 +70,29 @@
             const casePlanShape = dimensions.getShape(casePlanDefinition);
             this.casePlanModel = new CasePlanModel(this, casePlanDefinition, casePlanShape);
 
-            this.dimensions.migrationShapes.forEach(textbox => {
-                const cmmnParent = this.getItem(textbox.parentId);
-                if (cmmnParent && cmmnParent instanceof Stage) {
-                    const textAnnotationDefinition = cmmnParent.planItemDefinition.createTextAnnotation(textbox.cmmnElementRef);
-                    textAnnotationDefinition.text = textbox.content;
-                    console.log("Adding migrated annotation")
-                    const textAnnotationView = new TextAnnotation(cmmnParent, textAnnotationDefinition, textbox.migrate());
-                    cmmnParent.__addCMMNChild(textAnnotationView);
-                    this.migrated = true;
-                }
-            });
 
-            // Now render the custom shapes (textboxes and casefileitems)
-            this.dimensions.customShapes.forEach(shape => {
-                const parentId = shape.parentId;
-                const cmmnParent = this.getItem(parentId);
-                if (cmmnParent && cmmnParent instanceof Stage) {
-                    cmmnParent.createShapeChild(shape);
+            const getDefinition = shape => {
+                const element = caseDefinition.getElement(shape.cmmnElementRef);
+                if (! element) {
+                    return CaseFileItemDef.createEmptyDefinition(caseDefinition, shape.cmmnElementRef);
                 } else {
-                    console.error('Do not have the parent with id in order to be able to create the custom shape ', shape);
+                    return element;
+                }
+            }
+            // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
+            /** @type {Array<Stage>} */
+            const stages = this.items.filter(element => element instanceof Stage);
+            this.dimensions.shapes.forEach(shape => {
+                const definitionElement = getDefinition(shape);
+                if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
+                    const parent = this.getSurroundingStage(stages, shape);
+                    if (definitionElement instanceof CaseFileItemDef) {
+                        parent.__addCMMNChild(new CaseFileItem(parent, definitionElement, shape));
+                    } else if (definitionElement instanceof TextAnnotationDefinition) {
+                        parent.__addCMMNChild(new TextAnnotation(parent, definitionElement, shape)); 
+                    } else {
+                        // Quite weird :)
+                    }
                 }
             });
 
@@ -125,9 +128,18 @@
 
         const end = new Date();
         console.log('Case loaded in ' + ((end - now) / 1000) + ' seconds')
-        if (this.migrated) {
-            this.editor.saveModel();
-        }
+    }
+
+    /**
+     * 
+     * @param {Array<Stage>} stages 
+     * @param {ShapeDefinition} shape 
+     * @returns {Stage}
+     */
+    getSurroundingStage(stages, shape) {
+        const surroundingStages = stages.filter(stage => stage.shape.surrounds(shape));
+        const smallestSurrounder = surroundingStages.find(stage => !surroundingStages.find(smaller => stage.shape.surrounds(smaller.shape)))
+        return smallestSurrounder || this.casePlanModel;
     }
 
     createJointStructure() {
@@ -501,7 +513,7 @@
      * @param {String} caseFileItemID 
      */
     getCaseFileItemElement(caseFileItemID) {
-        return this.items.find(item => item instanceof CaseFileItem && item.definition.contextRef == caseFileItemID);
+        return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
     }
 }
 

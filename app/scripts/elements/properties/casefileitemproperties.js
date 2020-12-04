@@ -9,8 +9,8 @@ class CaseFileItemProperties extends Properties {
     }
 
     renderData() {
-        const contextRef = this.cmmnElement.shape.contextRef ? this.cmmnElement.shape.contextRef : '';
-        const cfi = this.cmmnElement.case.caseDefinition.getElement(contextRef);
+        const caseFileItemId = this.cmmnElement.shape.cmmnElementRef ? this.cmmnElement.shape.cmmnElementRef : '';
+        const cfi = this.cmmnElement.case.caseDefinition.getElement(caseFileItemId);
         const contextName = cfi ? cfi.name : '';
 
 
@@ -36,7 +36,7 @@ class CaseFileItemProperties extends Properties {
     changeContextRef(html, cfi = undefined) {
         const cfiName = cfi ? cfi.name : '';
         const cfiId = cfi ? cfi.id : undefined;
-        this.change(this.cmmnElement.shape, 'contextRef', cfiId);
+        this.cmmnElement.setDefinition(cfi);
         html.find('.valuelabel').html(cfiName);
     }
 }

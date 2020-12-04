@@ -119,55 +119,8 @@ class CustomShape extends ShapeDefinition {
         return shape;
     }
 
-    get shape() {
-        return this;
-    }
-
-    get id() {
-        // Hack to be able to lookup element when it has same definition
-        return this.cmmnElementRef;
-    }
-
-    /**
-     * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
-     * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
-     * from the CaseDefinition. However, for TextAnnotation and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
-     * Therefore we "override" this method here to avoid null pointers.
-     */
-    removeDefinition() {}
-
-    createExportNode(diagramNode, tagName, ...propertyNames) {
-        super.createExportNode(diagramNode, tagName, 'parentId', propertyNames);
-    }
-
-    /**
-     * 
-     * @param {CaseDefinition} caseDefinition 
-     * @param {Dimensions} dimensions 
-     */
-    static generateIdentifier(caseDefinition, dimensions) {
-        const caseUID = caseDefinition.typeCounters.guid + '_shape_';
-        const nextElement = dimensions.shapes.length;
-        return caseUID + nextElement;
-    }
-
-    /**
-     * 
-     * @param {Stage} stage 
-     * @param {*} x 
-     * @param {*} y 
-     * @param {*} w 
-     * @param {*} h 
-     */
-    generateDefaultContent(stage, x, y, w, h) {
-        this.cmmnElementRef = CustomShape.generateIdentifier(stage.case.caseDefinition, stage.case.dimensions);
-        this.x = x;
-        this.y = y;
-        this.width = w;
-        this.height = h;
-        this.parentId = stage.id;
-        this.dimensions.addShape(this); // Make sure to register it as a custom shape
-        return this;
+    createExportNode() {
+        // nothing to export no more
     }
 }
 
@@ -176,53 +129,11 @@ class CaseFileItemShape extends CustomShape {
         super(importNode, dimensions);
         this.contextRef = this.parseAttribute('contextRef');
     }
-
-    defaultShapeSize() {
-        return {
-            w: 25,
-            h: 40
-        };
-    }
-
-    /**
-     * 
-     * @param {Stage} stage 
-     * @param {Number} x 
-     * @param {Number} y 
-     */
-    static create(stage, x, y) {
-        return new CaseFileItemShape(undefined, stage.case.dimensions).generateDefaultContent(stage, x, y, 25, 40);
-    }
-
-    createExportNode(diagramNode) {
-        super.createExportNode(diagramNode, 'casefileitem', 'contextRef');
-    }
 }
 
 class TextBoxShape extends CustomShape {
-    /**
-     * 
-     * @param {Stage} stage 
-     * @param {Number} x 
-     * @param {Number} y 
-     */
-    static create(stage, x, y) {
-        return new TextBoxShape(undefined, stage.case.dimensions).generateDefaultContent(stage, x, y, 100, 60);
-    }
-
     constructor(importNode, dimensions) {
         super(importNode, dimensions);
         this.content = this.parseAttribute('content', '');
-    }
-
-    defaultShapeSize() {
-        return {
-            w: 100,
-            h: 60
-        };
-    }
-
-    createExportNode() {
-        // nothing to export no more
     }
 }
