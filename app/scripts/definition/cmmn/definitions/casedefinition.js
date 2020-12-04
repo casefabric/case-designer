@@ -62,13 +62,11 @@ class CaseDefinition extends ModelDefinition {
     /**
      * Returns the case plan of this case definition (and creates one with
      * the specified position if it does not exist)
-     * @param {Number} x
-     * @param {Number} y
      * @returns {CasePlanDefinition}
      */
-    getCasePlan(x = 0, y = 0) {
+    getCasePlan() {
         if (!this.casePlan) {
-            this.casePlan = super.createShapedDefinition(CasePlanDefinition, x, y);
+            this.casePlan = super.createDefinition(CasePlanDefinition);
         }
         return this.casePlan;
     }

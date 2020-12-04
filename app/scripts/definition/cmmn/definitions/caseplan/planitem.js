@@ -28,11 +28,6 @@ class PlanItem extends CMMNElementDefinition {
         return this.itemControl.getRule(ruleName);
     }
 
-    defaultShapeSize() {
-        // Plan items take their default size from the PlanItemDefinitionDefinition (Task, Stage, Milestone and EventListener have different sizes)
-        return this.definition.defaultShapeSize();
-    }
-
     /**
      * @returns {String}
      */
@@ -78,25 +73,24 @@ class PlanItem extends CMMNElementDefinition {
 
     /**
      * 
-     * @param {Number} x 
-     * @param {Number} y 
      * @param {Function} criterionConstructor 
      * @param {Array<CriterionDefinition>} criterionCollection 
+     * @returns {CriterionDefinition}
      */
-    createSentry(x, y, criterionConstructor, criterionCollection) {
+    createSentry(criterionConstructor, criterionCollection) {
         const sentry = this.getStage().createSentry();
-        const criterion = super.createShapedDefinition(criterionConstructor, x, y);
+        const criterion = super.createDefinition(criterionConstructor);
         criterion.sentryRef = sentry.id;
         criterionCollection.push(criterion);
         return criterion;
     }
 
-    createEntryCriterion(x, y) {
-        return this.createSentry(x, y, EntryCriterionDefinition, this.entryCriteria);
+    createEntryCriterion() {
+        return this.createSentry(EntryCriterionDefinition, this.entryCriteria);
     }
 
-    createExitCriterion(x, y) {
-        return this.createSentry(x, y, ExitCriterionDefinition, this.exitCriteria);
+    createExitCriterion() {
+        return this.createSentry(ExitCriterionDefinition, this.exitCriteria);
     }
 
     /**

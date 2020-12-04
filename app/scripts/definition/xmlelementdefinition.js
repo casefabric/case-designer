@@ -153,21 +153,6 @@ class XMLElementDefinition {
     }
 
     /**
-     * Creates a new XMLElementDefinition instance with the specified start position (x, y).
-     * The start position is used to generate a default shape once the element is being rendered.
-     * @param {Function} constructor 
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {String} id 
-     * @param {String} name 
-     */
-    createShapedDefinition(constructor, x, y, id = undefined, name = undefined) {
-        const element = this.createDefinition(constructor, id, name);
-        element.__startPosition = { x, y };
-        return element;
-    }
-
-    /**
      * Creates a new instance of the constructor with an optional id and name
      * attribute. If these are not given, the logic will generate id and name for it based
      * on the type of element and the other content inside the case definition.

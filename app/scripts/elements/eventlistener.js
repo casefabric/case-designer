@@ -3,9 +3,10 @@
      * Creates a new EventListener
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         //define default color
         this.__resizable = false;
     }

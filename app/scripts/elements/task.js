@@ -4,9 +4,12 @@
      * Creates a new Task element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {TaskDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, planItemDefinition, shape);
+        this.planItemDefinition = planItemDefinition;
 
         //Define the mapping form to link task parameters with model parameters (case process humantask) 
         this.mappingsEditor = new TaskMappingsEditor(this);
@@ -26,11 +29,6 @@
      */
     getImplementationList() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    /** @returns {TaskDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
     }
 
     createProperties() {

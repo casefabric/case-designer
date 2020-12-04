@@ -67,7 +67,8 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition);
+            const casePlanShape = dimensions.getShape(casePlanDefinition);
+            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, casePlanShape);
 
             this.dimensions.migrationShapes.forEach(textbox => {
                 const cmmnParent = this.getItem(textbox.parentId);
@@ -75,8 +76,7 @@
                     const textAnnotationDefinition = cmmnParent.planItemDefinition.createTextAnnotation(textbox.cmmnElementRef);
                     textAnnotationDefinition.text = textbox.content;
                     console.log("Adding migrated annotation")
-                    textbox.migrate();
-                    const textAnnotationView = new TextAnnotation(cmmnParent, textAnnotationDefinition);
+                    const textAnnotationView = new TextAnnotation(cmmnParent, textAnnotationDefinition, textbox.migrate());
                     cmmnParent.__addCMMNChild(textAnnotationView);
                     this.migrated = true;
                 }
@@ -401,7 +401,7 @@
         const x = e.clientX;
         const y = e.clientY;
         if (!x || !y) {
-            console.error("Fetching cursor coordinates without a proper event... ", e);
+            console.error('Fetching cursor coordinates without a proper event... ', e);
             return;
         }
 
@@ -420,8 +420,7 @@
     createCasePlan(cmmnType, e) {
         if (cmmnType == CasePlanModel) {
             const coor = this.getCursorCoordinates(e);
-            const casePlanDefinition = this.caseDefinition.getCasePlan(coor.x, coor.y);
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition);
+            this.casePlanModel = CasePlanModel.create(this, coor.x, coor.y);
             this.__addElement(this.casePlanModel);
             this.casePlanModel.propertiesView.show(true);
             return this.casePlanModel;

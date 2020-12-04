@@ -6,14 +6,19 @@ class CMMNElement {
      * Creates a new CMMNElement within the case having the corresponding definition and x, y coordinates
      * @param {CMMNElement} parent
      * @param {CMMNElementDefinition|CustomShape} definition
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
+    constructor(parent, definition, shape) {
         if (!parent || !definition) {
             throw new Error('Cannot create a CMMNElement without a parent and definition.');
+        }
+        if (! shape) {
+            console.warn(`${this.constructor.name}[${definition.id}] does not have a shape`);
         }
 
         this.parent = parent;
         this.definition = definition;
+        this.shape = shape;
         /** @type{Case} */
         this.case = parent instanceof Case ? parent : parent.case;
         this.case.items.push(this);
@@ -35,27 +40,6 @@ class CMMNElement {
 
     get name() {
         return this.definition.name;
-    }
-
-    get shape() {
-        if (!this._shape) {
-            if (this.definition instanceof ShapeDefinition) {
-                this._shape = this.definition;
-            } else {
-                this._shape = this.case.dimensions.getShape(this.definition);
-                if (!this._shape) {
-                    if (!this.definition.__startPosition) {
-                        console.error(`${this.definition.constructor.name} does not have a start position set, but it is expected to have one. Check whether it is created through method createShapedDefinition`);
-                        this.definition.__startPosition = { x: 0, y: 0 };
-                    }
-                    const size = this.definition.defaultShapeSize();
-                    const position = this.definition.__startPosition;
-                    this._shape = ShapeDefinition.createShape(this, position.x, position.y, size.w, size.h);
-                }
-
-            }
-        }
-        return this._shape;
     }
 
     /**

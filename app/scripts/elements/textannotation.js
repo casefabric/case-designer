@@ -6,18 +6,19 @@
      * @param {Number} y 
      */
     static create(stage, x, y) {
-        const textAnnotationDefinition = stage.planItemDefinition.createTextAnnotation();
-        textAnnotationDefinition.__startPosition = { x, y };
-        return new TextAnnotation(stage, textAnnotationDefinition);
+        const definition = stage.planItemDefinition.createTextAnnotation();
+        const shape = stage.case.dimensions.createShape(x, y, 100, 60, definition.id);
+        return new TextAnnotation(stage, definition, shape);
     }
 
     /**
      * Creates a new TextAnnotation element
      * @param {Stage} parent 
      * @param {TextAnnotationDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         this.definition = definition;
     }
 

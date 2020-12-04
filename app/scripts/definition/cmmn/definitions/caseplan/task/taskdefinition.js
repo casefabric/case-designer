@@ -7,10 +7,6 @@ class TaskDefinition extends TaskStageDefinition {
         this.mappings = this.parseElements('parameterMapping', ParameterMappingDefinition);
     }
 
-    defaultShapeSize() {
-        return { w: 140, h: 80 };
-    }
-
     /**
      * @returns {String}
      */

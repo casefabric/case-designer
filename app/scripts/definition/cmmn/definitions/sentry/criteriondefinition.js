@@ -16,10 +16,6 @@ class CriterionDefinition extends CMMNElementDefinition {
         return this.sentry.planItemOnParts;
     }
 
-    defaultShapeSize() {
-        return { w: 12, h: 20 };
-    }
-
     /**
      * @returns {SentryDefinition}
      */

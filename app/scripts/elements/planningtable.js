@@ -4,9 +4,10 @@
      * 
      * @param {TaskStage} parent 
      * @param {PlanningTableDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         // Setters enable better type introspection
         this.definition = definition;
         this.parent = parent;

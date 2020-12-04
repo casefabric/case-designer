@@ -7,12 +7,7 @@ class MilestoneDefinition extends MilestoneEventListenerDefinition {
         return 'ms';
     }
 
-    defaultShapeSize() {
-        return { w: 100, h: 40};
-    }
-
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'milestone');
     }
-
 }

@@ -15,34 +15,38 @@ class Decorator {
 }
 
 class PlanItemView extends CMMNElement {
-
-    /**
-     * Returns the class that defines this plan item. E.g., for a HumanTask this is HumanTaskDefinition,
-     * for a Milestone it is MilestoneDefinition, etc.
-     * @returns {Function}
-     */
-    static get definitionClass() {
-        throw new Error('Plan item view has no definition type');
-    }
-
     /**
      * This is a generic class for plan item rendering; it takes default properties of the definition
      * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, Stage, Milestone).
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         this.definition = definition;
 
         // Add the sentries
-        this.definition.entryCriteria.forEach(entryCriterion => this.__addCMMNChild(new EntryCriterion(this, entryCriterion)));
-        this.definition.exitCriteria.forEach(exitCriterion => this.__addCMMNChild(new ExitCriterion(this, exitCriterion)));
+        this.definition.entryCriteria.forEach(criterion => this.addCriterion(criterion, EntryCriterion));
+        this.definition.exitCriteria.forEach(criterion => this.addCriterion(criterion, ExitCriterion));
+    }
+
+    addCriterion(criterion, constructorFunction) {
+        const shape = this.case.dimensions.getShape(criterion);
+        const view = new constructorFunction(this, criterion, shape);
+        this.__addCMMNChild(view);
+    }
+
+    set planItemDefinition(definition) {
+        this.__pid = definition;
     }
 
     /** @returns {PlanItemDefinitionDefinition} */
     get planItemDefinition() {
-        return this.definition.definition;
+        if (! this.__pid) {
+            this.__pid =  this.definition.definition;
+        }
+        return this.__pid;        
     }
 
     createProperties() {
@@ -138,9 +142,9 @@ class PlanItemView extends CMMNElement {
 
     createCMMNChild(cmmnType, x, y) {
         if (cmmnType == EntryCriterion) {
-            return this.__addCMMNChild(new EntryCriterion(this, this.definition.createEntryCriterion(x, y)));
+            return this.__addCMMNChild(EntryCriterion.create(this, x, y));
         } else if (cmmnType == ExitCriterion) {
-            return this.__addCMMNChild(new ExitCriterion(this, this.definition.createExitCriterion(x, y)));
+            return this.__addCMMNChild(ExitCriterion.create(this, x, y));
         } else {
             return super.createCMMNChild(cmmnType, x, y);
         }

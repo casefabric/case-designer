@@ -1,25 +1,5 @@
 class ShapeDefinition extends DiagramElement {
     /**
-     * 
-     * @param {CMMNElement} cmmnElement 
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {Number} w 
-     * @param {Number} h 
-     * @returns {ShapeDefinition}
-     */
-    static createShape(cmmnElement, x, y, w, h) {
-        const shape = new ShapeDefinition(undefined, cmmnElement.case.dimensions);
-        shape.cmmnElementRef = cmmnElement.definition.id;
-        shape.x = x;
-        shape.y = y;
-        shape.width = w;
-        shape.height = h;
-        cmmnElement.case.dimensions.addShape(shape);
-        return shape;
-    }
-
-    /**
      * Representation of a <CMMNShape> element
      * 
      * @param {Element} importNode 

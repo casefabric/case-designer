@@ -3,19 +3,17 @@ class TaskStage extends PlanItemView {
      * Simple class to share some logic from Task and Stage.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition 
+     * @param {TaskStageDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, shape);
+        this.planItemDefinition = planItemDefinition;
         this.showPlanningTable();
     }
 
     get wrapText() {
         return true;
-    }
-
-    /** @returns {TaskStageDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
     }
 
     /**
@@ -29,7 +27,7 @@ class TaskStage extends PlanItemView {
     /**
      * @param {PlanItem} definition 
      */
-    addDiscretionaryItem(planItem) {
+    addDiscretionaryItem(definition) {
         throw new Error('This method must be implemented in subclasses');
     }
 
@@ -58,10 +56,13 @@ class TaskStage extends PlanItemView {
      * Creates a planning table if it does not yet exist, and shows it.
      */
     showPlanningTable() {
-        if (this.planItemDefinition.planningTable) {
+        const ptDefinition = this.planItemDefinition.planningTable;
+        if (ptDefinition) {
             // If there is a definition, and we do not yet have a child to render it, then add such a child.
             if (! this.planningTableView) {
-                new PlanningTable(this, this.planItemDefinition.planningTable);
+                const position = this.__planningTablePosition;
+                const shape = this.case.dimensions.getShape(ptDefinition) || this.case.dimensions.createShape(position.x, position.y, 24, 16, ptDefinition.id);
+                new PlanningTable(this, this.planItemDefinition.planningTable, shape);
             }
         }
     }

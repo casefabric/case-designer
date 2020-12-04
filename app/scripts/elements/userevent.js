@@ -1,20 +1,29 @@
 class UserEvent extends EventListener {
-    static get definitionClass() {
-        return UserEventDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(UserEventDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 32, 32, definition.id);
+        if (definition.definition instanceof UserEventDefinition) {
+            return new UserEvent(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new UserEventListener
+     * Creates a new UserEvent element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {UserEventDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
-    }
-
-    /** @returns {UserEventDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, shape);
+        this.planItemDefinition = planItemDefinition;
     }
 
     createProperties() {

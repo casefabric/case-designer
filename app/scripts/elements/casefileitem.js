@@ -16,7 +16,7 @@
      * @param {CaseFileItemShape} definition 
      */
     constructor(parent, definition) {
-        super(parent, definition);
+        super(parent, definition, definition);
         this.definition = definition;
         this.cfiShape = definition;
         this.__resizable = false;

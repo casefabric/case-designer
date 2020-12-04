@@ -1,20 +1,29 @@
 class TimerEvent extends EventListener {
-    static get definitionClass() {
-        return TimerEventDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(TimerEventDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 32, 32, definition.id);
+        if (definition.definition instanceof TimerEventDefinition) {
+            return new TimerEvent(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new TimerEventListener
+     * Creates a new UserEvent element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {TimerEventDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
-    }
-
-    /** @returns {TimerEventDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, shape);
+        this.planItemDefinition = planItemDefinition;
     }
 
     createProperties() {

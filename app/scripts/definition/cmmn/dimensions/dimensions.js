@@ -19,6 +19,17 @@ class Dimensions extends ModelDefinition {
         this.errors = [];
     }
 
+    createShape(x, y, width, height, cmmnElementRef = undefined) {
+        const shape = new ShapeDefinition(undefined, this);
+        shape.cmmnElementRef = cmmnElementRef;
+        shape.x = x;
+        shape.y = y;
+        shape.width = width;
+        shape.height = height;
+        this.addShape(shape);
+        return shape;
+    }
+
     parseDocument() {
         super.parseDocument();
         /** @type {Array<ShapeDefinition>} */

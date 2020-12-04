@@ -5,10 +5,11 @@ class Sentry extends CMMNElement {
      * Creates a new Sentry element.
      * Is an abstract sub class for EntryCriterion and ExitCriterion.
      * @param {PlanItemView|CasePlanModel} planItem 
-     * @param {SentryDefinition} definition 
+     * @param {CriterionDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(planItem, definition) {
-        super(planItem, definition);
+    constructor(planItem, definition, shape) {
+        super(planItem, definition, shape);
         this.definition = definition;
 
         //define default color
@@ -322,7 +323,7 @@ class Sentry extends CMMNElement {
         if (this.definition.ifPart && this.definition.ifPart.contextRef == definitionId) {
             return true;
         }
-        if (this.definition.caseFileItemOnParts.find(onPart => onPart.contextRef == definitionId)) {
+        if (this.definition.caseFileItemOnParts.find(onPart => onPart.sourceRef == definitionId)) {
             return true;
         }
         return super.referencesDefinitionElement(definitionId);
@@ -331,6 +332,12 @@ class Sentry extends CMMNElement {
 
 
 class EntryCriterion extends Sentry {
+    static create(planItem, x, y) {
+        const definition = planItem.definition.createEntryCriterion();
+        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        return new EntryCriterion(planItem, definition, shape);
+    }
+
     __connectSentry(target) {
         if (target instanceof ExitCriterion) {
             // Then we need to connect to the exit of the parent of the target;
@@ -349,6 +356,18 @@ class EntryCriterion extends Sentry {
 }
 
 class ExitCriterion extends Sentry {
+    /**
+     * 
+     * @param {PlanItemView} planItem 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(planItem, x, y) {
+        const definition = planItem.definition.createExitCriterion();
+        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        return new ExitCriterion(planItem, definition, shape);
+    }
+
     createHalo() {
         return new ExitCriterionHalo(this);
     }

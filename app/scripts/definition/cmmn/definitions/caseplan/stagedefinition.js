@@ -7,19 +7,15 @@ class StageDefinition extends TaskStageDefinition {
         this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
     }
 
-    defaultShapeSize() {
-        return { w: 420, h: 140 };
-    }
-
     /**
      * Creates a new plan item, along with a plan item definition of the specified type
      * @param {Function} type
      * @returns {PlanItem}
      */
-    createPlanItem(type, x, y) {
+    createPlanItem(type) {
         // For now, plan item definitions are always kept inside the case plan 
         const planItemDefinition = this.caseDefinition.getCasePlan().createPlanItemDefinition(type);
-        const planItem = super.createShapedDefinition(PlanItem, x, y, 'pi_' + planItemDefinition.id, planItemDefinition.name);
+        const planItem = super.createDefinition(PlanItem, 'pi_' + planItemDefinition.id, planItemDefinition.name);
         planItem.definition = planItemDefinition;
         this.planItems.push(planItem);
         return planItem;

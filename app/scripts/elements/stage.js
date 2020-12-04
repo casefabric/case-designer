@@ -1,22 +1,31 @@
 ﻿class Stage extends TaskStage {
-    static get definitionClass() {
-        return StageDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(StageDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 420, 140, definition.id);
+        if (definition.definition instanceof StageDefinition) {
+            return new Stage(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new Stage element
-     * @param {CMMNElement} parent
+     * Creates a new HumanTask element.
+     * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {StageDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, planItemDefinition, shape);
+        this.planItemDefinition = planItemDefinition;
         this.planItemDefinition.planItems.forEach(planItem => this.addPlanItem(planItem));
-        this.planItemDefinition.annotations.forEach(annotation => this.__addCMMNChild(new TextAnnotation(this, annotation)));
-    }
-
-    /** @returns {StageDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
+        this.planItemDefinition.annotations.forEach(annotation => this.__addCMMNChild(new TextAnnotation(this, annotation, this.case.dimensions.getShape(annotation))));
     }
 
     setDropHandlers() {
@@ -119,22 +128,23 @@
      */
     createPlanItemView(definition) {
         const planItemDefinition = definition.definition;
-        switch (planItemDefinition.constructor) {
-        case HumanTaskDefinition:
-            return new HumanTask(this, definition);
-        case CaseTaskDefinition:
-            return new CaseTask(this, definition);
-        case ProcessTaskDefinition:
-            return new ProcessTask(this, definition);
-        case StageDefinition:
-            return new Stage(this, definition);
-        case MilestoneDefinition:
-            return new Milestone(this, definition);
-        case UserEventDefinition:
-            return new UserEvent(this, definition);
-        case TimerEventDefinition:
-            return new TimerEvent(this, definition);
-        default:
+        const shape = this.case.dimensions.getShape(definition);
+
+        if (planItemDefinition instanceof HumanTaskDefinition) {
+            return new HumanTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof CaseTaskDefinition) {
+            return new CaseTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof ProcessTaskDefinition) {
+            return new ProcessTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof StageDefinition) {
+            return new Stage(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof MilestoneDefinition) {
+            return new Milestone(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof UserEventDefinition) {
+            return new UserEvent(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof TimerEventDefinition) {
+            return new TimerEvent(this, definition, planItemDefinition, shape);
+        } else {
             throw new Error('This type of plan item cannot be instantiated into a view' + definition.name);
         }
     }
@@ -176,8 +186,7 @@
 
     createCMMNChild(cmmnType, x, y) {
         if (Util.isSubClassOf(PlanItemView, cmmnType)) {
-            const definitionType = cmmnType.definitionClass;
-            return this.addPlanItem(this.planItemDefinition.createPlanItem(definitionType, x, y));
+            return this.__addCMMNChild(cmmnType.create(this, x, y));
         } else if (cmmnType == CaseFileItem) {
             return this.__addCMMNChild(CaseFileItem.create(this, x, y));
         } else if (cmmnType == TextAnnotation) {

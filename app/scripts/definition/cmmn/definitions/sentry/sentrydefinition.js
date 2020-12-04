@@ -34,10 +34,6 @@ class SentryDefinition extends UnnamedCMMNElementDefinition {
         return 'crit';
     }
 
-    defaultShapeSize() {
-        return { w: 12, h: 20 };
-    }
-
     getIfPart() {
         if (!this.ifPart) {
             /** @type{IfPartDefinition} */

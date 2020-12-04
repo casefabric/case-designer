@@ -46,7 +46,7 @@ class CasePlanDefinition extends StageDefinition {
      */
     createExitCriterion(x, y) {
         const sentry = this.createSentry();
-        const criterion = super.createShapedDefinition(ExitCriterionDefinition, x, y);
+        const criterion = super.createDefinition(ExitCriterionDefinition);
         criterion.sentryRef = sentry.id;
         this.exitCriteria.push(criterion);
         return criterion;
