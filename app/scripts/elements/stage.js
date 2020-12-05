@@ -90,6 +90,11 @@
         return this.shape.surrounds(other.shape);
     }
 
+    moved(x, y, newParent) {
+        super.moved(x, y, newParent);
+        this.resetChildren();
+    }
+
     createProperties() {
         return new StageProperties(this);
     }

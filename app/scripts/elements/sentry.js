@@ -82,6 +82,14 @@ class Sentry extends CMMNElement {
     }
 
     /**
+     * Validate move constraint each time refreshing the view
+     */
+    refreshView() {
+        super.refreshView();
+        // this.__moveConstraint(this.shape.x, this.shape.y);
+    }
+
+    /**
      * validate: all steps to check this element
      */
     __validate() {
@@ -201,6 +209,10 @@ class Sentry extends CMMNElement {
         });
     }
 
+    moved(x, y, newParent) {
+        this.__moveConstraint(x, y);
+    }
+
     /**
      * when moving a sentry, it can only move along the edge of its' parent
      * @param {*} x the coordinates of the event (cursor/mouse pointer location)
@@ -231,7 +243,6 @@ class Sentry extends CMMNElement {
 
         this.xyz_joint.translate(sentryTranslateX, sentryTranslateY);
     }
-
 
 
     /**

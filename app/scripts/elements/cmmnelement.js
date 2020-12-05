@@ -1,7 +1,7 @@
 /**
  * This file contains basic functions that are available on every CMMNElement in the graph.
  */
-class CMMNElement {
+class CMMNElement extends CanvasElement {
     /**
      * Creates a new CMMNElement within the case having the corresponding definition and x, y coordinates
      * @param {CMMNElement} parent
@@ -9,6 +9,7 @@ class CMMNElement {
      * @param {ShapeDefinition} shape 
      */
     constructor(parent, definition, shape) {
+        super(parent.case || parent);
         if (!parent || !definition) {
             throw new Error('Cannot create a CMMNElement without a parent and definition.');
         }
@@ -136,7 +137,6 @@ class CMMNElement {
             attrs: this.textAttributes
         };
         this.xyz_joint = new joint.shapes.basic.Generic(jointSVGSetup);
-        this.xyz_joint.xyz_cmmn = this; // Set the cmmn element pointer on the joint element for compatibilty
         // Directly embed into parent
         if (this.parent && this.parent.xyz_joint) {
             this.parent.xyz_joint.embed(this.xyz_joint);
@@ -170,6 +170,14 @@ class CMMNElement {
         const y = e.clientY;
 
         return x > left && x < right && y > top && y < bottom;
+    }
+
+    mouseEnter() {
+        this.setDropHandlers();
+    }
+
+    mouseLeave() {
+        this.removeDropHandlers();
     }
 
     /**
@@ -355,6 +363,14 @@ class CMMNElement {
         this.xyz_joint.resize(w, h);
         // Refresh the description to apply new text wrapping
         this.refreshText();
+    }
+    
+    moved(x, y, newParent) {
+        // Check if this element can serve as a new parent for the cmmn element
+        if (newParent && newParent.__canHaveAsChild(this.constructor.name) && newParent != this.parent) {
+            // check if new parent is allowed
+            this.changeParent(newParent);
+        }
     }
 
     /**

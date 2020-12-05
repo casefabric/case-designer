@@ -67,8 +67,7 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            const casePlanShape = dimensions.getShape(casePlanDefinition);
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, casePlanShape);
+            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, dimensions.getShape(casePlanDefinition));
 
 
             const getDefinition = shape => {
@@ -163,25 +162,51 @@
         this.svg = $(this.paper.svg);
 
         // Attach paper events
-        this.paper.on('cell:pointerup', (elementView, e, x, y) => handlePointerUpPaper(elementView, e, x, y));
-        this.paper.on('element:pointerdown', (elementView, e, x, y) => handlePointerDownPaper(elementView, e, x, y));
-        this.paper.on('element:pointermove', (elementView, e, x, y) => handlePointerMovePaper(elementView, e, x, y));
-        this.paper.on('element:pointerdblclick', (elementView, e, x, y) => elementView.model.xyz_cmmn.propertiesView.show(true));
-        this.paper.on('blank:pointerclick', e => this.clearSelection()); // For some reason pointerclick not always works, so also listening to pointerdown on blank.
-        this.paper.on('blank:pointerdown', e => this.clearSelection()); // see e.g. https://stackoverflow.com/questions/35443524/jointjs-why-pointerclick-event-doesnt-work-only-pointerdown-gets-fired
+        this.paper.on('cell:pointerup', (elementView, e, x, y) => {
+            this.getCMMNElement(elementView).moved(x, y, this.getItemUnderMouse(e, this.getCMMNElement(elementView)));
+            this.editor.completeUserAction();
+        });
+        this.paper.on('element:pointerdown', (elementView, e, x, y) => {
+            //select the mouse down element, do not set focus on description, makes it hard to delete
+            //the element with [del] keyboard button (you delete the description io element)
+            this.selectedElement = this.getCMMNElement(elementView);
+            // Unclear why, but Grid size input having focus does not blur when we click on the canvas...
+            Grid.blurSetSize();
+        });
+        this.paper.on('element:pointermove', (elementView, e, x, y) => this.getCMMNElement(elementView).__moveConstraint(x, y)); // Enforce move constraints on certain elements
+        this.paper.on('element:pointerdblclick', (elementView, e, x, y) => this.getCMMNElement(elementView).propertiesView.show(true));
+        this.paper.on('blank:pointerclick', () => this.clearSelection()); // For some reason pointerclick not always works, so also listening to pointerdown on blank.
+        this.paper.on('blank:pointerdown', () => this.clearSelection()); // see e.g. https://stackoverflow.com/questions/35443524/jointjs-why-pointerclick-event-doesnt-work-only-pointerdown-gets-fired
         // When we move over an element with the mouse, an event is raised.
         //  This event is captured to enable elements to register themselves with ShapeBox and RepositoryBrowser
-        //  Note: this code relies on elements to always have a xyz_cmmn CMMNElement pointer.
-        this.paper.on('element:mouseenter', (elementView, e, x, y) => elementView.model.xyz_cmmn.setDropHandlers());
-        this.paper.on('element:mouseleave', (elementView, e, x, y) => elementView.model.xyz_cmmn.removeDropHandlers());
-        this.paper.on('link:mouseenter', (elementView, e, x, y) => elementView.model.xyz_cmmn.mouseEnter());
-        this.paper.on('link:mouseleave', (elementView, e, x, y) => elementView.model.xyz_cmmn.mouseLeave());
+        this.paper.on('element:mouseenter', (elementView, e, x, y) => this.getCMMNElement(elementView).mouseEnter());
+        this.paper.on('element:mouseleave', (elementView, e, x, y) => this.getCMMNElement(elementView).mouseLeave());
+        this.paper.on('link:mouseenter', (elementView, e, x, y) => this.getConnector(elementView).mouseEnter());
+        this.paper.on('link:mouseleave', (elementView, e, x, y) => this.getConnector(elementView).mouseLeave());
 
         // Also add special event handlers for case itself. Registers with ShapeBox to support adding case plan element if it does not exist
         this.svg.on('pointerover', e => this.setDropHandlers());
         this.svg.on('pointerout', e => this.removeDropHandlers());
         // Enable/disable the HALO when the mouse is near an item
         this.svg.on('pointermove', e => this.showHaloAndResizer(e));
+    }
+
+    /**
+     * 
+     * @param {*} jointElementView 
+     * @returns {Connector}
+     */
+    getConnector(jointElementView) {
+        return jointElementView.model.xyz_cmmn;
+    }
+
+    /**
+     * 
+     * @param {*} jointElementView 
+     * @returns {CMMNElement}
+     */
+    getCMMNElement(jointElementView) {
+        return jointElementView.model.xyz_cmmn;
     }
 
     /**
@@ -455,8 +480,6 @@
 
         // TODO: this should no longer be necessary if constructors fill proper joint immediately based upon definition
         cmmnElement.refreshView();
-        // TODO: moveConstraint invocation belongs in proper element base of refreshView (i.e. for sentries and planningtables)
-        cmmnElement.__moveConstraint(cmmnElement.shape.x, cmmnElement.shape.y);
         this.editor.completeUserAction();
         return cmmnElement;
     }
@@ -515,68 +538,4 @@
     getCaseFileItemElement(caseFileItemID) {
         return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
     }
-}
-
-/**
- * Handles mouse down on an element in the paper.
- * - elementView   : the object definition of an element
- * - e             : event
- * - x,y           : coordinates of the mouse event relative to the paper (<svg>)
- */
-function handlePointerDownPaper(elementView, e, x, y) {
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    //select the mouse down element, do not set focus on description, makes it hard to delete
-    //the element with [del] keyboard button (you delete the description io element)
-    cmmnElement.case.selectedElement = cmmnElement;
-
-    Grid.blurSetSize();
-}
-
-/**
- * Handles the mouse move over paper after pointer down event.
- * handle the moving of element and resizing.
- * @param {*} elementView   : the object definition of an element
- * @param {Event} e             : event
- * @param {Number} x             : event
- * @param {Number} y             : event
- * - x,y           : coordinates of the mouse event relative to the paper (<svg>)
- */
-function handlePointerMovePaper(elementView, e, x, y) {
-    /** @type {CMMNElement} */
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    if (cmmnElement instanceof Sentry || cmmnElement instanceof PlanningTable) {
-        cmmnElement.__moveConstraint(x, y);
-    }
-}
-
-/**
- * fires when the mouseup event is triggered on the jointjs paper (svg element)
- * - elementView   : the object definition of an element
- * - e             : event
- * - x,y           : coordinates of the mouse  up event relative to the paper (<svg>)
- */
-function handlePointerUpPaper(elementView, e, x, y) {
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    if (!(cmmnElement instanceof Connector)) {
-        if (cmmnElement instanceof Sentry || cmmnElement instanceof PlanningTable) {
-            //the element being moved is a sentry, position on boundry of parent
-            //then return, sentry can not change parents
-            cmmnElement.__moveConstraint(x, y);
-        } else {
-            //get the element directly under the current element
-            const newParent = cmmnElement.case.getItemUnderMouse(e, cmmnElement);
-            // Check if this element can serve as a new parent for the cmmn element
-            if (newParent && newParent.__canHaveAsChild(cmmnElement.constructor.name) && newParent != cmmnElement.parent) {
-                // check if new parent is allowed
-                cmmnElement.changeParent(newParent);
-            }
-            if (cmmnElement instanceof Stage) {
-                cmmnElement.resetChildren();
-            }
-        }
-    }
-    cmmnElement.case.editor.completeUserAction();
 }
