@@ -175,12 +175,6 @@ and Multiple Discretionary Tasks]]>
         <humanTask id="pid_cm_cs6iD_4" name="Human Task with Role and Rules" isBlocking="true" performerRef="role_csgXo_0"/>
         <humanTask id="pid_cm_cs6iD_6" name="Non-Blocking Humantask - No Implementation" isBlocking="false"/>
         <humanTask id="pid_cm_cseQf_31" name="Human Task with Mapping" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Human Task with
-Mapping]]>
-                </text>
-            </documentation>
             <inputs id="_qVRDD" name="ht_input_parameter_01" bindingRef="cfi_csgXo_6"/>
             <outputs id="_ArOOj" name="ht_output_parameter_01">
                 <extensionElements mustUnderstand="false">
@@ -244,85 +238,21 @@ No Applic. Rules]]>
             </planningTable>
         </humanTask>
         <humanTask id="pid_cm_cslbG_62" name="Task A" isBlocking="true"/>
-        <humanTask id="pid_cm_cslbG_64" name="Task B Sentry Links to Task A" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task B
-Sentry Links to Task A]]>
-                </text>
-            </documentation>
-        </humanTask>
+        <humanTask id="pid_cm_cslbG_64" name="Task B Sentry Links to Task A" isBlocking="true"/>
         <humanTask id="pid_cm_cslbG_67" name="Task C" isBlocking="true"/>
-        <humanTask id="pid_cm_cslbG_69" name="Task D Sentry Links, invisible, to Task C" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task D
-Sentry Links, invisible, to Task C]]>
-                </text>
-            </documentation>
-        </humanTask>
-        <humanTask id="pid_cm_cslbG_72" name="Task E Links with Bounds" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task E
-Links with Bounds]]>
-                </text>
-            </documentation>
-        </humanTask>
-        <humanTask id="pid_cm_cslbG_74" name="Task F Sentry Links To Task E" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task F
-Sentry Links To Task E]]>
-                </text>
-            </documentation>
-        </humanTask>
-        <humanTask id="pid_cm_cslbG_76" name="Task G Sentry Links to Task E" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task G
-Sentry Links to Task E]]>
-                </text>
-            </documentation>
-        </humanTask>
+        <humanTask id="pid_cm_cslbG_69" name="Task D Sentry Links, invisible, to Task C" isBlocking="true"/>
+        <humanTask id="pid_cm_cslbG_72" name="Task E Links with Bounds" isBlocking="true"/>
+        <humanTask id="pid_cm_cslbG_74" name="Task F Sentry Links To Task E" isBlocking="true"/>
+        <humanTask id="pid_cm_cslbG_76" name="Task G Sentry Links to Task E" isBlocking="true"/>
         <humanTask id="pid_cm_csQ4n_80" name="Task H" isBlocking="true"/>
         <humanTask id="pid_cm_csQ4n_82" name="Task I" isBlocking="true"/>
-        <humanTask id="pid_cm_csQ4n_94" name="Task L Exit to Entry" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task L
-Exit to Entry]]>
-                </text>
-            </documentation>
-        </humanTask>
-        <humanTask id="pid_cm_csQ4n_97" name="Task M Entry to Exit" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task M
-Entry to Exit]]>
-                </text>
-            </documentation>
-        </humanTask>
-        <humanTask id="pid_cm_csQ4n_100" name="Task N Links to 2 CFI Elements Links Multiple bounds" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Task N
-Links to 2 CFI Elements
-Links Multiple bounds]]>
-                </text>
-            </documentation>
-        </humanTask>
+        <humanTask id="pid_cm_csQ4n_94" name="Task L Exit to Entry" isBlocking="true"/>
+        <humanTask id="pid_cm_csQ4n_97" name="Task M Entry to Exit" isBlocking="true"/>
+        <humanTask id="pid_cm_csQ4n_100" name="Task N Links to 2 CFI Elements Links Multiple bounds" isBlocking="true"/>
         <humanTask id="pid_cm_csQ4n_88" name="Task K" isBlocking="true"/>
         <humanTask id="pid_cm_csQ4n_86" name="Task J" isBlocking="true"/>
         <humanTask id="pid_cm_cseQf_34" name="Discr. to CPM - Authorized Roles - Selected Applic. Rules" isBlocking="true"/>
         <humanTask id="pid_cm_cscw1_51" name="With Planning Table Discr. to Elements Inside and Outside Parent" isBlocking="true">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[With Planning Table
-Discr. to Elements Inside
-and Outside Parent]]>
-                </text>
-            </documentation>
             <planningTable id="pt_cm_52">
                 <discretionaryItem id="cm_csPyw_54" name="Discr. to Task" definitionRef="pid_cm_csPyw_54"/>
                 <discretionaryItem id="cm_cscw1_53" name="Discr. to Task" definitionRef="pid_cm_cscw1_53"/>
@@ -332,13 +262,6 @@ and Outside Parent]]>
         <humanTask id="pid_cm_cscw1_43" name="No Authorized Roles No Applic. Rules" isBlocking="true"/>
         <caseTask id="pid_cm_csPHe_7" name="Case Task  - No Implementation" isBlocking="true"/>
         <caseTask id="pid_cm_cs5MY_28" name="Case Task with Mapping Configuration  Reorder, Expressions, CFI" isBlocking="true" caseRef="test_casemodel_parameters.case">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Case Task with
-Mapping Configuration 
-Reorder, Expressions, CFI]]>
-                </text>
-            </documentation>
             <inputs id="_bQAdT" name="case_input_parameter_01" bindingRef="cfi_csgXo_3"/>
             <inputs id="_QlMx9" name="case_input_parameter_02" bindingRef="cfi_csgXo_6">
                 <bindingRefinement language="spel">
@@ -403,12 +326,6 @@ Multiple Lines
         <caseTask id="pid_cm_cscw1_47" name="Authorized Roles Selected Applic Rules" isBlocking="true"/>
         <processTask id="pid_cm_csPHe_9" name="Process Task - No Implementation" isBlocking="true"/>
         <processTask id="pid_cm_cs5MY_30" name="Process Task with Implementation" isBlocking="true" processRef="test_processmodel_parameters.process">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Process Task with
-Implementation]]>
-                </text>
-            </documentation>
             <outputs id="_4HYcn" name="process_output_parameter_01"/>
             <outputs id="_GlD8J" name="process_output_parameter_02"/>
             <outputs id="_uNUmG" name="process_output_parameter_03"/>
@@ -419,38 +336,11 @@ Implementation]]>
         <processTask id="pid_cm_cscw1_53" name="Discr. to Task" isBlocking="true"/>
         <milestone id="pid_cm_csPHe_16" name="Milestone_1 no Rules"/>
         <milestone id="pid_cm_csPHe_17" name="Milestone_2 with Rules"/>
-        <milestone id="pid_cm_csQ4n_84" name="Milestone A Two Links to Sentry">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Milestone A
-Two Links to Sentry]]>
-                </text>
-            </documentation>
-        </milestone>
-        <userEvent id="pid_cm_cs5MY_24" name="User Event - No Authorized Roles">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[User Event
-- No Authorized Roles]]>
-                </text>
-            </documentation>
-        </userEvent>
-        <userEvent id="pid_cm_cs5MY_25" name="User Event - with Authorized Roles" authorizedRoleRefs="role_csgXo_0 role_csgXo_1">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[User Event
-- with Authorized Roles]]>
-                </text>
-            </documentation>
-        </userEvent>
+        <milestone id="pid_cm_csQ4n_84" name="Milestone A Two Links to Sentry"/>
+        <userEvent id="pid_cm_cs5MY_24" name="User Event - No Authorized Roles"/>
+        <userEvent id="pid_cm_cs5MY_25" name="User Event - with Authorized Roles" authorizedRoleRefs="role_csgXo_0 role_csgXo_1"/>
         <userEvent id="pid_cm_csORX_106" name="EventListener_5"/>
         <timerEvent id="pid_cm_csPHe_18" name="Timer Event - CFI Start Trigger">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Timer Event
-- CFI Start Trigger]]>
-                </text>
-            </documentation>
             <timerExpression language="spel">
                 <body>
                     <![CDATA[
@@ -465,12 +355,6 @@ Two Links to Sentry]]>
             </caseFileItemStartTrigger>
         </timerEvent>
         <timerEvent id="pid_cm_cs5MY_19" name="Timer Event - PlanItem Start Trigger">
-            <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Timer Event
-- PlanItem Start Trigger]]>
-                </text>
-            </documentation>
             <planItemStartTrigger sourceRef="cm_csPHe_16">
                 <standardEvent>create</standardEvent>
             </planItemStartTrigger>
@@ -782,6 +666,17 @@ and Outside Parent]]>
             </documentation>
         </role>
     </caseRoles>
+    <textAnnotation id="cm_csPHe_13">
+        <text>
+            <![CDATA[Tasks :]]>
+        </text>
+    </textAnnotation>
+    <textAnnotation id="cm_cseQf_33">
+        <text>
+            <![CDATA[Discretionary :
+(Discr)]]>
+        </text>
+    </textAnnotation>
     <extensionElements mustUnderstand="false">
         <cafienne:start-case-model xmlns:cafienne="org.cafienne">{
   "schema":{

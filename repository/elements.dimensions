@@ -54,15 +54,15 @@
         <CMMNShape cmmnElementRef="crit__Z6eH1_1">
             <Bounds width="12" height="20"/>
         </CMMNShape>
-        <textbox cmmnElementRef="_Z6eH1_shape_12" parentId="cm__Z6eH1_0" content="This is a &#10;simple case mooi&#10;with all elements">
-            <Bounds x="710" y="70" width="100" height="60"/>
-        </textbox>
-        <casefileitem cmmnElementRef="_Z6eH1_shape_10" parentId="cm__Z6eH1_0">
+        <CMMNShape cmmnElementRef="_Z6eH1_shape_10">
             <Bounds x="750" y="200" width="25" height="40"/>
-        </casefileitem>
-        <casefileitem cmmnElementRef="_Z6eH1_shape_11" parentId="cm__Z6eH1_0" contextRef="_Z6eH1_4">
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_Z6eH1_shape_11">
             <Bounds x="610" y="130" width="25" height="40"/>
-        </casefileitem>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_Z6eH1_shape_12">
+            <Bounds x="710" y="70" width="100" height="60"/>
+        </CMMNShape>
         <CMMNEdge sourceCMMNElementRef="pi_pt__Z6eH1_0" targetCMMNElementRef="_Z6eH1_23"/>
         <CMMNEdge sourceCMMNElementRef="pi_ct__Z6eH1_0" targetCMMNElementRef="_Z6eH1_24"/>
         <CMMNEdge sourceCMMNElementRef="_Z6eH1_shape_11" targetCMMNElementRef="_Z6eH1_23">

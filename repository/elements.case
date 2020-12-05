@@ -116,4 +116,11 @@
             </documentation>
         </role>
     </caseRoles>
+    <textAnnotation id="_Z6eH1_shape_12">
+        <text>
+            <![CDATA[This is a 
+simple case mooi
+with all elements]]>
+        </text>
+    </textAnnotation>
 </case>
