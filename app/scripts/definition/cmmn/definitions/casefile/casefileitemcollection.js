@@ -23,17 +23,6 @@ class CaseFileItemCollection extends CMMNElementDefinition {
     }
 
     /**
-     * Overriding name getter and setter to not give back the id, because that may cause visual issues.
-     */
-    get name() {
-        return this.__name;
-    }
-
-    set name(name) {
-        super.name = name;
-    }
-
-    /**
      * Returns the case file item children of this element.
      * @returns {Array<CaseFileItemDef>}
      */

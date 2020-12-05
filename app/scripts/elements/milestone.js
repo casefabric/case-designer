@@ -1,16 +1,34 @@
 ﻿
 class Milestone extends PlanItemView {
-    static get definitionClass() {
-        return MilestoneDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(MilestoneDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 100, 40, definition.id);
+        if (definition.definition instanceof MilestoneDefinition) {
+            return new Milestone(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new Milestone object
+     * Creates a new HumanTask element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {MilestoneDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, shape);
+        this.planItemDefinition = planItemDefinition;
+    }
+
+    get wrapText() {
+        return true;
     }
 
     createProperties() {

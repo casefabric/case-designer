@@ -210,10 +210,6 @@ class Properties extends MovableEditor {
         const html = this.addTextField(label, 'name');
         // Adding class such that we can easily select the description
         html.find('textarea').addClass('cmmn-element-name');
-        html.on('change', e => {
-            const descriptionField = this.htmlContainer.find('.cmmn-element-description');
-            descriptionField.val(this.cmmnElement.definition.description);
-        })
     }
 
     addIdField() {
@@ -226,23 +222,32 @@ class Properties extends MovableEditor {
         this.htmlContainer.append(html);
     }
 
-    addDescriptionField() {
-        const label = 'Description';
-        const html = this.addTextField(label, 'description');
+    addDocumentationField() {
+        const documentation = this.cmmnElement.documentation;
+        const html = $(`<div class="propertyBlock">
+                            <label>Documentation</label>
+                            <textarea class="multi cmmn-element-documentation" readonly>${documentation && documentation.text || '' }</textarea>
+                        </div>`);
+        this.htmlContainer.append(html);
         const textarea = html.find('textarea');
-        textarea.addClass('cmmn-element-description');
-        textarea.attr('readonly', 'true');
-        textarea.on('change', () =>  {
-            textarea.removeClass('edit-cmmn-description')
-            textarea.attr('readonly', 'true');
-        });
-        textarea.on('blur', () =>  {
-            textarea.removeClass('edit-cmmn-description');
-            textarea.attr('readonly', 'true');
-        });
+        // On pointer down we enable editing the documentation, but only if it exists
         textarea.on('pointerdown', () => {
-            textarea.attr('readonly', false);
-            textarea.addClass('edit-cmmn-description')
+            if (documentation) {
+                textarea.attr('readonly', false);
+                textarea.addClass('edit-cmmn-documentation')    
+            }
+        });
+        // After change we make the textarea readonly again
+        textarea.on('change', e =>  {
+            textarea.removeClass('edit-cmmn-documentation')
+            textarea.attr('readonly', 'true');
+            documentation.text = e.target.value;
+            this.done();
+        });
+        // And on blur as well
+        textarea.on('blur', () =>  {
+            textarea.removeClass('edit-cmmn-documentation');
+            textarea.attr('readonly', 'true');
         });
         return html;
     }
@@ -257,7 +262,7 @@ class Properties extends MovableEditor {
     addTextField(label, propertyType, element = this.cmmnElement.definition) {
         const html = $(`<div class="propertyBlock">
                             <label>${label}</label>
-                            <textarea data-editor="codemirror" class="multi">${element[propertyType]}</textarea>
+                            <textarea class="multi">${element[propertyType]}</textarea>
                         </div>`);
         html.on('change', e => this.change(element, propertyType, e.target.value));
         this.htmlContainer.append(html);

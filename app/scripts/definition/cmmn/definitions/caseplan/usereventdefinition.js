@@ -15,11 +15,7 @@ class UserEventDefinition extends EventListenerDefinition {
     }
 
     createExportNode(parentNode) {
-        super.createExportNode(parentNode, 'userEvent', 'authorizedRoleRefs');
-    }
-
-    flattenReferences() {
-        super.flattenReferences();
         this.authorizedRoleRefs = super.flattenListToString(this.authorizedRoles);
+        super.createExportNode(parentNode, 'userEvent', 'authorizedRoleRefs');
     }
 }

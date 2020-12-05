@@ -157,8 +157,6 @@ class RepositoryBrowser {
         this.refreshAccordionStatus();
 
         // Ask the IDE to open the model.
-        // this.repository.get(fileName).load(f => this.ide.openModel(f.parseToModel()))
-        // this.repository.readModel(fileName, model => this.ide.openModel(model));
         this.ide.open(fileName);
     }
 

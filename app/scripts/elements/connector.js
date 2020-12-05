@@ -1,4 +1,4 @@
-﻿class Connector {
+﻿class Connector extends CanvasElement {
     /**
      * 
      * @param {Case} cs 
@@ -59,7 +59,7 @@
      * @param {Edge} edge 
      */
     constructor(cs, source, target, edge) {
-        this.case = cs;
+        super(cs);
         this.source = source;
         this.target = target;
         this.edge = edge;
@@ -67,7 +67,7 @@
 
         const arrowStyle = this.sentry ? '8 3 3 3 3 3' : '5 5'
 
-        this.xyz_joint = this.link = new joint.dia.Link({
+        this.link = this.xyz_joint = new joint.dia.Link({
             source: { id: this.source.xyz_joint.id },
             target: { id: this.target.xyz_joint.id },
             attrs: {
@@ -77,9 +77,6 @@
 
         this.link.set('vertices', edge.vertices);
         this.__setJointLabel(edge.label);
-
-        // Temporary bridge, to make Connector align as the others. Perhaps we should make Connector extend CMMNElement
-        this.link.xyz_cmmn = this;
 
         // Listen to the native joint event for removing, as removing a connector in the UI is initiated from joint.
         //  This opposed to how it is done in the other CMMNElements, there we have an explicit delete button ourselves.
@@ -129,13 +126,17 @@
         return this.edge.label;
     }
 
+    // Connectors do not do things on move. That is handled by joint
+    moved(x, y, newParent) {
+    }
+
     mouseEnter() {
         // On mouse enter of a 'sentry' linked connector, we will show the standard event if it is not yet visible.
         //  It is hidden again on mouseout
         this.formerLabel = this.label;
         if (this.label || ! this.sentry) return;
         const onPart = this.sentry.__getOnPart(this);
-        this.__setJointLabel(onPart.standardEvent);
+        if (onPart) this.__setJointLabel(onPart.standardEvent);
     }
 
     mouseLeave() {
@@ -168,14 +169,13 @@ class TemporaryConnector {
      */
     constructor(source, coordinates) {
         this.source = source;
-        this.link = new joint.dia.Link({
+        this.link = this.xyz_joint = new joint.dia.Link({
             source: { id: source.xyz_joint.id },
             target: coordinates,
             attrs: {
                 '.connection': { 'stroke': 'blue' }
             }
         });
-        this.link.xyz_cmmn = this;
         source.case.graph.addCells([this.link]);
     }
 

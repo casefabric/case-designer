@@ -25,8 +25,7 @@ class TaskStageDefinition extends PlanItemDefinitionDefinition {
     getPlanningTable() {
         if (!this.planningTable) {
             /** @type{PlanningTableDefinition} */
-            this.planningTable = super.createShapedDefinition(PlanningTableDefinition, 0, 0); 
-            // Note: we position planning table at 0,0. Actual positioning is handled in TaskStage.__planningTablePosition
+            this.planningTable = super.createDefinition(PlanningTableDefinition); 
         }
         return this.planningTable;
     }

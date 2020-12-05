@@ -11,7 +11,7 @@ class CasePlanProperties extends StageProperties {
         // First couple of lines are actually CASE properties; for now we render these in the case plan properties view
         //  We also need lines to render the roles?
         this.addInputField('Case Name', 'name', this.cmmnElement.definition.caseDefinition);
-        this.addTextField('Case Description', 'description', this.cmmnElement.definition.caseDefinition);
+        this.addTextField('Case Documentation', 'text', this.cmmnElement.definition.caseDefinition.documentation);
         this.addSeparator();
         this.addCaseRolesButton();
         this.addSeparator();
@@ -20,7 +20,7 @@ class CasePlanProperties extends StageProperties {
         this.addSeparator();
         this.addNameField();
         this.addSeparator();
-        this.addDescriptionField();
+        this.addDocumentationField();
         this.addSeparator();
         this.addAutoComplete();
         this.addPlanningTableField();

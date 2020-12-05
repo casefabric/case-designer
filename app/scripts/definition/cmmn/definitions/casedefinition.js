@@ -1,26 +1,43 @@
 class CaseDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode 
-     * @param {DefinitionDocument} definitionDocument 
-     * @param {Dimensions} dimensions 
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument, dimensions) {
-        super(importNode, definitionDocument);
-        this.definitionDocument = definitionDocument;
-        this.dimensions = dimensions;
-        this.migrated = false;
+    constructor(modelDocument) {
+        super(modelDocument);
     }
 
-    parse() {
+    parseDocument() {
+        super.parseDocument();
         this.caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
         this.casePlan = this.parseElement('casePlanModel', CasePlanDefinition);
-        this.caseRoles = this.parseElements('caseRoles', CaseRoleDefinition);
+        this.caseTeam = this.parseCaseTeam();
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
+        this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
         this.startCaseSchema = this.parseStartCaseSchema();
+    }
 
+    validateDocument() {
         this.elements.forEach(element => element.resolveReferences());
+    }
+
+    parseCaseTeam() {
+        const rolesElements = XML.getChildrenByTagName(this.importNode, 'caseRoles');
+        if (rolesElements.length == 0 || rolesElements.length > 1) { // CMMN 1.0 format, we must migrate
+            if (rolesElements.length) {
+                console.log(`Converting ${rolesElements.length} CMMN1.0 roles`);
+            }
+            // Create a new element
+            const caseTeamElement = XML.parseXML('<caseRoles />').documentElement;
+            rolesElements.forEach(role => {
+                role.parentElement.removeChild(role);
+                caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
+            });
+            this.importNode.appendChild(caseTeamElement);
+            this.migrated = true;
+        }
+        return this.parseElement('caseRoles', CaseTeamDefinition);
     }
 
     /**
@@ -46,13 +63,11 @@ class CaseDefinition extends ModelDefinition {
     /**
      * Returns the case plan of this case definition (and creates one with
      * the specified position if it does not exist)
-     * @param {Number} x
-     * @param {Number} y
      * @returns {CasePlanDefinition}
      */
-    getCasePlan(x = 0, y = 0) {
+    getCasePlan() {
         if (!this.casePlan) {
-            this.casePlan = super.createShapedDefinition(CasePlanDefinition, x, y);
+            this.casePlan = super.createDefinition(CasePlanDefinition);
         }
         return this.casePlan;
     }
@@ -76,13 +91,18 @@ class CaseDefinition extends ModelDefinition {
         return startCaseNode ? startCaseNode.textContent : '';
     }
 
-    toXML() {
-        // First have all elements flatten their references. Actually would be better to not keep track of references by pointer in Definitions layer.
-        this.elements.forEach(element => element.flattenReferences());
+    /**
+     * Create a text annotation that can be child to this stage
+     * @param {String} id 
+     */
+    createTextAnnotation(id = undefined) {
+        const annotation = super.createDefinition(TextAnnotationDefinition, id);
+        this.annotations.push(annotation);
+        return annotation;
+    }
 
-        const xmlDocument = XML.loadXMLString('<case />'); // TODO: add proper namespace and so.
-        this.exportNode = xmlDocument.documentElement;
-        this.exportProperties('id', 'name', 'description', 'caseFile', 'casePlan', 'caseRoles', 'input', 'output');
+    toXML() {
+        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output', 'annotations');
         // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
         // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
         if (this.startCaseSchema && this.startCaseSchema.trim()) {

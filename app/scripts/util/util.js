@@ -105,6 +105,15 @@
     }
 
     /**
+     * 
+     * @param {String} str 
+     */
+    static withoutNewlinesAndTabs(str) {
+        if (typeof (str) !== 'string') return str;
+        return str ? str.replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ') : str;
+    }
+
+    /**
      * Returns true if sub class extends superclass somewhere in the type chain.
      * @param {Function} superClass 
      * @param {Function} subClass 

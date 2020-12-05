@@ -1,15 +1,29 @@
 class ProcessTask extends Task {
-    static get definitionClass() {
-        return ProcessTaskDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(ProcessTaskDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 140, 80, definition.id);
+        if (definition.definition instanceof ProcessTaskDefinition) {
+            return new ProcessTask(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
      * Creates a new ProcessTask element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {ProcessTaskDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, planItemDefinition, shape);
+        this.planItemDefinition = planItemDefinition;
     }
 
     getImplementationList() {

@@ -1,4 +1,9 @@
-<process id="id_FI2V" name="emailrequestor.process" description="Email requestor" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+<process id="id_FI2V" name="emailrequestor.process" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+    <documentation textFormat="text/plain">
+        <text>
+            <![CDATA[Email requestor]]>
+        </text>
+    </documentation>
     <input id="travelrequest" name="travelrequest"/>
     <input id="approval" name="approval"/>
     <input id="approvalStatus" name="approvalStatus"/>
@@ -214,11 +219,6 @@ Hidden text
         <reply-to>${fromAddress}</reply-to>
         <to>
             <address name="${toName}">${toAddress}</address>
-        </to>undefined
-    
-    undefined
-    
-    undefined
-    
+        </to>
     </cafienne:implementation>
-</extensionElements>undefinedundefined</process>
+</extensionElements></process>

@@ -1,4 +1,9 @@
-<process name="process_all_options" description="Process for testing all options in a case" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+<process name="process_all_options" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+    <documentation textFormat="text/plain">
+        <text>
+            <![CDATA[Process for testing all options in a case]]>
+        </text>
+    </documentation>
     <input id="_26kC_process_input_parameter_01" name="process_input_parameter_01"/>
     <input id="_IKds_process_input_parameter_02" name="process_input_parameter_02"/>
     <output id="_NKyO_process_output_parameter_01" name="process_output_parameter_01"/>

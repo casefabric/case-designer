@@ -1,15 +1,29 @@
 class CaseTask extends Task {
-    static get definitionClass() {
-        return CaseTaskDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(CaseTaskDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 140, 80, definition.id);
+        if (definition.definition instanceof CaseTaskDefinition) {
+            return new CaseTask(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
      * Creates a new CaseTask element.
      * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {CaseTaskDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, planItemDefinition, shape);
+        this.planItemDefinition = planItemDefinition;
     }
 
     getImplementationList() {

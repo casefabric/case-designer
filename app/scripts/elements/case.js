@@ -3,15 +3,15 @@
      * Creates a new Case object based on the definition and dimensions
      * @param {CaseModelEditor} editor
      * @param {JQuery<HTMLElement>} htmlParent
-     * @param {DefinitionDocument} definitionDocument 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
      */
-    constructor(editor, htmlParent, definitionDocument) {
+    constructor(editor, htmlParent, caseDefinition, dimensions) {
         const now = new Date();
         this.editor = editor;
         this.editor.case = this; // Quick hack to have inline editors have access to the case in their constructor
-        this.definitionDocument = definitionDocument;
-        this.caseDefinition = definitionDocument.caseDefinition;
-        this.dimensions = definitionDocument.dimensions;
+        this.dimensions = dimensions;
+        this.caseDefinition = caseDefinition;
         this.id = this.caseDefinition.id;
         this.name = this.caseDefinition.name;
         this.case = this;
@@ -45,7 +45,7 @@
         this.paperContainer = this.html.find('.paper-container');
 
         this.deployForm = new Deploy(editor);
-        this.sourceEditor = new CaseSourceEditor(editor, this.html, definitionDocument);
+        this.sourceEditor = new CaseSourceEditor(editor, this.html);
         this.cfiEditor = new CaseFileItemsEditor(this, this.divCFIEditor);
         this.undoBox = new UndoRedoBox(this, this.divUndoRedo);
         this.shapeBox = new ShapeBox(this, this.divShapeBox);
@@ -67,16 +67,31 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition);
+            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, dimensions.getShape(casePlanDefinition));
 
-            // Now render the custom shapes (textboxes and casefileitems)
-            this.dimensions.customShapes.forEach(shape => {
-                const parentId = shape.parentId;
-                const cmmnParent = this.getItem(parentId);
-                if (cmmnParent && cmmnParent instanceof Stage) {
-                    cmmnParent.createShapeChild(shape);
+
+            const getDefinition = shape => {
+                const element = caseDefinition.getElement(shape.cmmnElementRef);
+                if (! element) {
+                    return CaseFileItemDef.createEmptyDefinition(caseDefinition, shape.cmmnElementRef);
                 } else {
-                    console.error('Do not have the parent with id in order to be able to create the custom shape ', shape);
+                    return element;
+                }
+            }
+            // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
+            /** @type {Array<Stage>} */
+            const stages = this.items.filter(element => element instanceof Stage);
+            this.dimensions.shapes.forEach(shape => {
+                const definitionElement = getDefinition(shape);
+                if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
+                    const parent = this.getSurroundingStage(stages, shape);
+                    if (definitionElement instanceof CaseFileItemDef) {
+                        parent.__addCMMNChild(new CaseFileItem(parent, definitionElement, shape));
+                    } else if (definitionElement instanceof TextAnnotationDefinition) {
+                        parent.__addCMMNChild(new TextAnnotation(parent, definitionElement, shape)); 
+                    } else {
+                        // Quite weird :)
+                    }
                 }
             });
 
@@ -114,6 +129,18 @@
         console.log('Case loaded in ' + ((end - now) / 1000) + ' seconds')
     }
 
+    /**
+     * 
+     * @param {Array<Stage>} stages 
+     * @param {ShapeDefinition} shape 
+     * @returns {Stage}
+     */
+    getSurroundingStage(stages, shape) {
+        const surroundingStages = stages.filter(stage => stage.shape.surrounds(shape));
+        const smallestSurrounder = surroundingStages.find(stage => !surroundingStages.find(smaller => stage.shape.surrounds(smaller.shape)))
+        return smallestSurrounder || this.casePlanModel;
+    }
+
     createJointStructure() {
         this.graph = new joint.dia.Graph();
 
@@ -135,25 +162,51 @@
         this.svg = $(this.paper.svg);
 
         // Attach paper events
-        this.paper.on('cell:pointerup', (elementView, e, x, y) => handlePointerUpPaper(elementView, e, x, y));
-        this.paper.on('element:pointerdown', (elementView, e, x, y) => handlePointerDownPaper(elementView, e, x, y));
-        this.paper.on('element:pointermove', (elementView, e, x, y) => handlePointerMovePaper(elementView, e, x, y));
-        this.paper.on('element:pointerdblclick', (elementView, e, x, y) => elementView.model.xyz_cmmn.propertiesView.show(true));
-        this.paper.on('blank:pointerclick', e => this.clearSelection()); // For some reason pointerclick not always works, so also listening to pointerdown on blank.
-        this.paper.on('blank:pointerdown', e => this.clearSelection()); // see e.g. https://stackoverflow.com/questions/35443524/jointjs-why-pointerclick-event-doesnt-work-only-pointerdown-gets-fired
+        this.paper.on('cell:pointerup', (elementView, e, x, y) => {
+            this.getCMMNElement(elementView).moved(x, y, this.getItemUnderMouse(e, this.getCMMNElement(elementView)));
+            this.editor.completeUserAction();
+        });
+        this.paper.on('element:pointerdown', (elementView, e, x, y) => {
+            //select the mouse down element, do not set focus on description, makes it hard to delete
+            //the element with [del] keyboard button (you delete the description io element)
+            this.selectedElement = this.getCMMNElement(elementView);
+            // Unclear why, but Grid size input having focus does not blur when we click on the canvas...
+            Grid.blurSetSize();
+        });
+        this.paper.on('element:pointermove', (elementView, e, x, y) => this.getCMMNElement(elementView).__moveConstraint(x, y)); // Enforce move constraints on certain elements
+        this.paper.on('element:pointerdblclick', (elementView, e, x, y) => this.getCMMNElement(elementView).propertiesView.show(true));
+        this.paper.on('blank:pointerclick', () => this.clearSelection()); // For some reason pointerclick not always works, so also listening to pointerdown on blank.
+        this.paper.on('blank:pointerdown', () => this.clearSelection()); // see e.g. https://stackoverflow.com/questions/35443524/jointjs-why-pointerclick-event-doesnt-work-only-pointerdown-gets-fired
         // When we move over an element with the mouse, an event is raised.
         //  This event is captured to enable elements to register themselves with ShapeBox and RepositoryBrowser
-        //  Note: this code relies on elements to always have a xyz_cmmn CMMNElement pointer.
-        this.paper.on('element:mouseenter', (elementView, e, x, y) => elementView.model.xyz_cmmn.setDropHandlers());
-        this.paper.on('element:mouseleave', (elementView, e, x, y) => elementView.model.xyz_cmmn.removeDropHandlers());
-        this.paper.on('link:mouseenter', (elementView, e, x, y) => elementView.model.xyz_cmmn.mouseEnter());
-        this.paper.on('link:mouseleave', (elementView, e, x, y) => elementView.model.xyz_cmmn.mouseLeave());
+        this.paper.on('element:mouseenter', (elementView, e, x, y) => this.getCMMNElement(elementView).mouseEnter());
+        this.paper.on('element:mouseleave', (elementView, e, x, y) => this.getCMMNElement(elementView).mouseLeave());
+        this.paper.on('link:mouseenter', (elementView, e, x, y) => this.getConnector(elementView).mouseEnter());
+        this.paper.on('link:mouseleave', (elementView, e, x, y) => this.getConnector(elementView).mouseLeave());
 
         // Also add special event handlers for case itself. Registers with ShapeBox to support adding case plan element if it does not exist
         this.svg.on('pointerover', e => this.setDropHandlers());
         this.svg.on('pointerout', e => this.removeDropHandlers());
         // Enable/disable the HALO when the mouse is near an item
         this.svg.on('pointermove', e => this.showHaloAndResizer(e));
+    }
+
+    /**
+     * 
+     * @param {*} jointElementView 
+     * @returns {Connector}
+     */
+    getConnector(jointElementView) {
+        return jointElementView.model.xyz_cmmn;
+    }
+
+    /**
+     * 
+     * @param {*} jointElementView 
+     * @returns {CMMNElement}
+     */
+    getCMMNElement(jointElementView) {
+        return jointElementView.model.xyz_cmmn;
     }
 
     /**
@@ -336,7 +389,10 @@
         Util.removeHTML(this.html);
     };
 
-    //returns description of the element well formatted
+    /**
+     * Returns description of the element type
+     * @returns {String}
+     */
     get typeDescription() {
         return 'Case';
     };
@@ -382,7 +438,7 @@
         const x = e.clientX;
         const y = e.clientY;
         if (!x || !y) {
-            console.error("Fetching cursor coordinates without a proper event... ", e);
+            console.error('Fetching cursor coordinates without a proper event... ', e);
             return;
         }
 
@@ -401,8 +457,7 @@
     createCasePlan(cmmnType, e) {
         if (cmmnType == CasePlanModel) {
             const coor = this.getCursorCoordinates(e);
-            const casePlanDefinition = this.caseDefinition.getCasePlan(coor.x, coor.y);
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition);
+            this.casePlanModel = CasePlanModel.create(this, coor.x, coor.y);
             this.__addElement(this.casePlanModel);
             this.casePlanModel.propertiesView.show(true);
             return this.casePlanModel;
@@ -413,7 +468,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElement|CaseFileItem|TextBox} cmmnElement 
+     * @param {CMMNElement|CaseFileItem|TextAnnotation} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.
@@ -425,8 +480,6 @@
 
         // TODO: this should no longer be necessary if constructors fill proper joint immediately based upon definition
         cmmnElement.refreshView();
-        // TODO: moveConstraint invocation belongs in proper element base of refreshView (i.e. for sentries and planningtables)
-        cmmnElement.__moveConstraint(cmmnElement.shape.x, cmmnElement.shape.y);
         this.editor.completeUserAction();
         return cmmnElement;
     }
@@ -483,70 +536,6 @@
      * @param {String} caseFileItemID 
      */
     getCaseFileItemElement(caseFileItemID) {
-        return this.items.find(item => item instanceof CaseFileItem && item.definition.contextRef == caseFileItemID);
+        return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
     }
-}
-
-/**
- * Handles mouse down on an element in the paper.
- * - elementView   : the object definition of an element
- * - e             : event
- * - x,y           : coordinates of the mouse event relative to the paper (<svg>)
- */
-function handlePointerDownPaper(elementView, e, x, y) {
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    //select the mouse down element, do not set focus on description, makes it hard to delete
-    //the element with [del] keyboard button (you delete the description io element)
-    cmmnElement.case.selectedElement = cmmnElement;
-
-    Grid.blurSetSize();
-}
-
-/**
- * Handles the mouse move over paper after pointer down event.
- * handle the moving of element and resizing.
- * @param {*} elementView   : the object definition of an element
- * @param {Event} e             : event
- * @param {Number} x             : event
- * @param {Number} y             : event
- * - x,y           : coordinates of the mouse event relative to the paper (<svg>)
- */
-function handlePointerMovePaper(elementView, e, x, y) {
-    /** @type {CMMNElement} */
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    if (cmmnElement instanceof Sentry || cmmnElement instanceof PlanningTable) {
-        cmmnElement.__moveConstraint(x, y);
-    }
-}
-
-/**
- * fires when the mouseup event is triggered on the jointjs paper (svg element)
- * - elementView   : the object definition of an element
- * - e             : event
- * - x,y           : coordinates of the mouse  up event relative to the paper (<svg>)
- */
-function handlePointerUpPaper(elementView, e, x, y) {
-    const cmmnElement = elementView.model.xyz_cmmn;
-
-    if (!(cmmnElement instanceof Connector)) {
-        if (cmmnElement instanceof Sentry || cmmnElement instanceof PlanningTable) {
-            //the element being moved is a sentry, position on boundry of parent
-            //then return, sentry can not change parents
-            cmmnElement.__moveConstraint(x, y);
-        } else {
-            //get the element directly under the current element
-            const newParent = cmmnElement.case.getItemUnderMouse(e, cmmnElement);
-            // Check if this element can serve as a new parent for the cmmn element
-            if (newParent && newParent.__canHaveAsChild(cmmnElement.constructor.name) && newParent != cmmnElement.parent) {
-                // check if new parent is allowed
-                cmmnElement.changeParent(newParent);
-            }
-            if (cmmnElement instanceof Stage) {
-                cmmnElement.resetChildren();
-            }
-        }
-    }
-    cmmnElement.case.editor.completeUserAction();
 }

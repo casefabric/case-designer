@@ -38,7 +38,7 @@ class ShapeBox {
             ExitCriterion,
             CasePlanModel,
             CaseFileItem,
-            TextBox
+            TextAnnotation
         ];
         shapeTypes.forEach(shapeType => {
             const description = shapeType.typeDescription;

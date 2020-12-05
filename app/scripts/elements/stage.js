@@ -1,21 +1,30 @@
 ﻿class Stage extends TaskStage {
-    static get definitionClass() {
-        return StageDefinition;
+    /**
+     * 
+     * @param {Stage} stage 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(stage, x, y) {
+        const definition = stage.planItemDefinition.createPlanItem(StageDefinition);
+        const shape = stage.case.dimensions.createShape(x, y, 420, 140, definition.id);
+        if (definition.definition instanceof StageDefinition) {
+            return new Stage(stage, definition, definition.definition, shape);
+        }
+        console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new Stage element
-     * @param {CMMNElement} parent
+     * Creates a new HumanTask element.
+     * @param {CMMNElement} parent 
      * @param {PlanItem} definition
+     * @param {StageDefinition} planItemDefinition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, planItemDefinition, shape) {
+        super(parent, definition, planItemDefinition, shape);
+        this.planItemDefinition = planItemDefinition;
         this.planItemDefinition.planItems.forEach(planItem => this.addPlanItem(planItem));
-    }
-
-    /** @returns {StageDefinition} */
-    get planItemDefinition() {
-        return this.definition.definition;
     }
 
     setDropHandlers() {
@@ -34,18 +43,12 @@
 
     /**
      * Add a 'drag-dropped' case file item
-     * @param {DragData} dragData 
+     * @param {CaseFileItemDragData} dragData 
      * @param {JQuery<Event>} e 
      */
     addCaseFileItem(dragData, e) {
-        const cfiDefinition = this.case.caseDefinition.getElement(dragData.fileName);
         const coor = this.case.getCursorCoordinates(e);
-        cfiDefinition.__startPosition = coor;
-        const cfi = CaseFileItem.create(this, coor.x, coor.y);
-        // Associate the right definition
-        cfi.definition.contextRef = cfiDefinition.id;
-        // And add to the stage
-        this.__addCMMNChild(cfi);
+        this.__addCMMNChild(CaseFileItem.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
@@ -87,6 +90,11 @@
         return this.shape.surrounds(other.shape);
     }
 
+    moved(x, y, newParent) {
+        super.moved(x, y, newParent);
+        this.resetChildren();
+    }
+
     createProperties() {
         return new StageProperties(this);
     }
@@ -118,22 +126,23 @@
      */
     createPlanItemView(definition) {
         const planItemDefinition = definition.definition;
-        switch (planItemDefinition.constructor) {
-        case HumanTaskDefinition:
-            return new HumanTask(this, definition);
-        case CaseTaskDefinition:
-            return new CaseTask(this, definition);
-        case ProcessTaskDefinition:
-            return new ProcessTask(this, definition);
-        case StageDefinition:
-            return new Stage(this, definition);
-        case MilestoneDefinition:
-            return new Milestone(this, definition);
-        case UserEventDefinition:
-            return new UserEvent(this, definition);
-        case TimerEventDefinition:
-            return new TimerEvent(this, definition);
-        default:
+        const shape = this.case.dimensions.getShape(definition);
+
+        if (planItemDefinition instanceof HumanTaskDefinition) {
+            return new HumanTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof CaseTaskDefinition) {
+            return new CaseTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof ProcessTaskDefinition) {
+            return new ProcessTask(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof StageDefinition) {
+            return new Stage(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof MilestoneDefinition) {
+            return new Milestone(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof UserEventDefinition) {
+            return new UserEvent(this, definition, planItemDefinition, shape);
+        } else if (planItemDefinition instanceof TimerEventDefinition) {
+            return new TimerEvent(this, definition, planItemDefinition, shape);
+        } else {
             throw new Error('This type of plan item cannot be instantiated into a view' + definition.name);
         }
     }
@@ -175,22 +184,13 @@
 
     createCMMNChild(cmmnType, x, y) {
         if (Util.isSubClassOf(PlanItemView, cmmnType)) {
-            const definitionType = cmmnType.definitionClass;
-            return this.addPlanItem(this.planItemDefinition.createPlanItem(definitionType, x, y));
+            return this.__addCMMNChild(cmmnType.create(this, x, y));
         } else if (cmmnType == CaseFileItem) {
             return this.__addCMMNChild(CaseFileItem.create(this, x, y));
-        } else if (cmmnType == TextBox) {
-            return this.__addCMMNChild(TextBox.create(this, x, y));
+        } else if (cmmnType == TextAnnotation) {
+            return this.__addCMMNChild(TextAnnotation.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createCMMNChild(cmmnType, x, y);
-        }
-    }
-
-    createShapeChild(shape) {
-        if (shape instanceof CaseFileItemShape) {
-            return this.__addCMMNChild(new CaseFileItem(this, shape));
-        } else if (shape instanceof TextBoxShape) {
-            return this.__addCMMNChild(new TextBox(this, shape));
         }
     }
 
@@ -321,7 +321,7 @@
             elementType == TimerEvent.name ||
             elementType == CaseFileItem.name ||
             elementType == Stage.name ||
-            elementType == TextBox.name) {
+            elementType == TextAnnotation.name) {
             return true;
         }
         return false;

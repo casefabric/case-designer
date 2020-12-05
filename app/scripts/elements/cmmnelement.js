@@ -1,19 +1,25 @@
 /**
  * This file contains basic functions that are available on every CMMNElement in the graph.
  */
-class CMMNElement {
+class CMMNElement extends CanvasElement {
     /**
      * Creates a new CMMNElement within the case having the corresponding definition and x, y coordinates
      * @param {CMMNElement} parent
-     * @param {CMMNElementDefinition|CustomShape} definition
+     * @param {CMMNElementDefinition} definition
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
+    constructor(parent, definition, shape) {
+        super(parent.case || parent);
         if (!parent || !definition) {
             throw new Error('Cannot create a CMMNElement without a parent and definition.');
+        }
+        if (! shape) {
+            console.warn(`${this.constructor.name}[${definition.id}] does not have a shape`);
         }
 
         this.parent = parent;
         this.definition = definition;
+        this.shape = shape;
         /** @type{Case} */
         this.case = parent instanceof Case ? parent : parent.case;
         this.case.items.push(this);
@@ -37,10 +43,6 @@ class CMMNElement {
         return this.definition.name;
     }
 
-    get shape() {
-        return this.definition.shape;
-    }
-
     /**
      * Override this method to provide type specific Properties object
      * @returns {Properties}
@@ -57,7 +59,7 @@ class CMMNElement {
         // Element's ID might contain dots, slashes, etc. Escape them with a backslash
         // Source taken from https://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string
         // Could also use jquery.escapeSelector, but this method is only from jquery 3 onwards, which is not in this jointjs (?)
-        const jquerySelector = '#' + this.id.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
+        const jquerySelector = '#' + this.html_id.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
         return this.case.svg.find(jquerySelector);
     }
 
@@ -75,20 +77,57 @@ class CMMNElement {
     }
 
     /**
+     * Returns the text to be rendered inside the shape
+     * @returns {String}
+     */
+    get text() {
+        const documentation = this.definition.documentation.text;
+        if (this.name === Util.withoutNewlinesAndTabs(documentation)) {
+            return documentation;
+        } else {
+            return this.definition.name;
+        }
+    }
+
+    /**
+     * Properties show the documentation. For CaseFileItem shape we also have
+     * to render documentation, but there the "definition" refers to the shape instead
+     * of the actual case file item; through this method CaseFileItem shape can override the getter.
+     * @returns {CMMNDocumentationDefinition}
+     */
+    get documentation() {
+        if (this.definition instanceof CMMNElementDefinition) {
+            return this.definition.documentation;
+        } else {
+            throw new Error('This method must be implemented in ' + this.constructor.name);
+        }
+    }
+
+    /**
+     * Boolean indicating whether the text to be rendered must be wrapped or not.
+     * @returns {Boolean}
+     */
+    get wrapText() {
+        return false;
+    }
+
+    /**
      * Determines whether or not the cmmn element is our parent or another ancestor of us.
      * @param {CMMNElement} potentialAncestor 
      */
     hasAncestor(potentialAncestor) {
-        if (! potentialAncestor) return false;
+        if (!potentialAncestor) return false;
         if (this.parent === potentialAncestor) return true;
         if (this.parent === this.case) return false;
         return this.parent.hasAncestor(potentialAncestor);
     }
 
     createJointElement() {
+        // Copy definition id into a fixed internal html_id property to have a stable this.html search function
+        this.html_id = this.definition.id;
         const jointSVGSetup = {
             // Markup is the SVG that is rendered through the joint element; we surround the markup with an addition <g> element that holds the element id
-            markup: `<g id="${this.id}">${this.markup}</g>`,
+            markup: `<g id="${this.html_id}">${this.markup}</g>`,
             // Type is used to determine whether drag/drop is supported (element border coloring)
             type: this.constructor.name,
             // Take size and position from shape.
@@ -98,7 +137,6 @@ class CMMNElement {
             attrs: this.textAttributes
         };
         this.xyz_joint = new joint.shapes.basic.Generic(jointSVGSetup);
-        this.xyz_joint.xyz_cmmn = this; // Set the cmmn element pointer on the joint element for compatibilty
         // Directly embed into parent
         if (this.parent && this.parent.xyz_joint) {
             this.parent.xyz_joint.embed(this.xyz_joint);
@@ -132,6 +170,14 @@ class CMMNElement {
         const y = e.clientY;
 
         return x > left && x < right && y > top && y < bottom;
+    }
+
+    mouseEnter() {
+        this.setDropHandlers();
+    }
+
+    mouseLeave() {
+        this.removeDropHandlers();
     }
 
     /**
@@ -185,7 +231,7 @@ class CMMNElement {
             // NOTE: overrides of this method should actually also check the same flag (not all of them do...)
             return;
         }
-        this.refreshDescription();
+        this.refreshText();
         if (this._halo && this._halo.visible) {
             this._halo.refresh();
         }
@@ -196,10 +242,12 @@ class CMMNElement {
     }
 
     /**
-     * Invoked from the refreshView. Assumes there is a text element inside the joint element holding the description.
+     * Invoked from the refreshView. Assumes there is a text element inside the joint element holding the text to display on the element.
      */
-    refreshDescription() {
-        this.xyz_joint.attr('text/text', this.definition.description);
+    refreshText() {
+        const rawText = this.text;
+        const formattedText = this.wrapText ? joint.util.breakText(rawText, { width: this.shape.width, height: this.shape.height }) : rawText;
+        this.xyz_joint.attr('text/text', formattedText);
     }
 
     /**
@@ -313,6 +361,16 @@ class CMMNElement {
         this.shape.height = h;
         // Also have joint resize
         this.xyz_joint.resize(w, h);
+        // Refresh the description to apply new text wrapping
+        this.refreshText();
+    }
+    
+    moved(x, y, newParent) {
+        // Check if this element can serve as a new parent for the cmmn element
+        if (newParent && newParent.__canHaveAsChild(this.constructor.name) && newParent != this.parent) {
+            // check if new parent is allowed
+            this.changeParent(newParent);
+        }
     }
 
     /**
@@ -398,16 +456,21 @@ class CMMNElement {
         // Remove the shape from the definitions
         this.shape.removeShape();
 
-        // Also let the definition side of the house know we're leaving
-        console.groupCollapsed("Removing definition for " + this);
-        this.definition.removeDefinition();
-        console.groupEnd();
+        // Now remove our definition element from the case (overridden in CaseFileItem, since that only needs to remove the shape)
+        this.__removeElementDefinition();
 
         // Delete us from the case
         Util.removeFromArray(this.case.items, this);
 
         // Finally remove the UI element as well. 
         this.xyz_joint.remove();
+    }
+
+    __removeElementDefinition() {
+        // Also let the definition side of the house know we're leaving
+        console.groupCollapsed(`Removing definition for ${this}`);
+        this.definition.removeDefinition();
+        console.groupEnd();
     }
 
     /**
@@ -433,13 +496,13 @@ class CMMNElement {
      * This method is invoked on the element if it created a connection to the target CMMNElement
      * @param {CMMNElement} target 
      */
-    __connectedTo(target) {}
+    __connectedTo(target) { }
 
     /**
      * This method is invoked on the element if a connection to it was made from the source CMMNElement
      * @param {CMMNElement} source 
      */
-    __connectedFrom(source) {}
+    __connectedFrom(source) { }
 
     /**
      * Removes a connector from the registration in this element.
@@ -486,7 +549,7 @@ class CMMNElement {
     /**
      * validate: all steps to check this element
      */
-    __validate() {}
+    __validate() { }
 
     /**
      * Raises a validation error/warning with the Case
@@ -564,7 +627,7 @@ class CMMNElement {
      * @param {Number} x 
      * @param {Number} y 
      */
-    __moveConstraint(x, y) {}
+    __moveConstraint(x, y) { }
 
     /**
      * Registers a class that extends CMMNElement by it's name.

@@ -5,10 +5,11 @@ class Sentry extends CMMNElement {
      * Creates a new Sentry element.
      * Is an abstract sub class for EntryCriterion and ExitCriterion.
      * @param {PlanItemView|CasePlanModel} planItem 
-     * @param {SentryDefinition} definition 
+     * @param {CriterionDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(planItem, definition) {
-        super(planItem, definition);
+    constructor(planItem, definition, shape) {
+        super(planItem, definition, shape);
         this.definition = definition;
 
         //define default color
@@ -59,7 +60,11 @@ class Sentry extends CMMNElement {
      * @param {CaseFileItem} source 
      */
     setCaseFileItemOnPart(source, defaultEvent) {
-        const sourceRef = source.definition.contextRef; // CaseFileItem stores it's value in the contextRef property
+        if (source.definition.isEmpty) {
+            // Do not create an onpart if the definition is not set.
+            return;
+        }
+        const sourceRef = source.definition.id; // CaseFileItem stores it's value in the contextRef property
         // If we cannot find the onpart in our definition, then we'll create a new one
         if (!this.definition.caseFileItemOnParts.find(onPart => onPart.sourceRef == sourceRef)) {
             const newOnPart = this.definition.createCaseFileItemOnPart();
@@ -74,6 +79,14 @@ class Sentry extends CMMNElement {
 
     __resize() {
         console.error('Cannot resize a sentry')
+    }
+
+    /**
+     * Validate move constraint each time refreshing the view
+     */
+    refreshView() {
+        super.refreshView();
+        // this.__moveConstraint(this.shape.x, this.shape.y);
     }
 
     /**
@@ -196,6 +209,10 @@ class Sentry extends CMMNElement {
         });
     }
 
+    moved(x, y, newParent) {
+        this.__moveConstraint(x, y);
+    }
+
     /**
      * when moving a sentry, it can only move along the edge of its' parent
      * @param {*} x the coordinates of the event (cursor/mouse pointer location)
@@ -226,7 +243,6 @@ class Sentry extends CMMNElement {
 
         this.xyz_joint.translate(sentryTranslateX, sentryTranslateY);
     }
-
 
 
     /**
@@ -308,7 +324,10 @@ class Sentry extends CMMNElement {
     __getOnPart(connector) {
         const planItemOnPart = this.definition.planItemOnParts.find(onPart => connector.hasElementWithId(onPart.sourceRef));
         if (planItemOnPart) return planItemOnPart;
-        return this.definition.caseFileItemOnParts.find(onPart => connector.hasElementWithId(this.case.getCaseFileItemElement(onPart.sourceRef).id));
+        return this.definition.caseFileItemOnParts.find(onPart => {
+            const casefileElement = this.case.getCaseFileItemElement(onPart.sourceRef);
+            if (casefileElement) return connector.hasElementWithId(casefileElement.id);
+        });
     }
 
     __connectSentry(target) {
@@ -319,7 +338,7 @@ class Sentry extends CMMNElement {
         if (this.definition.ifPart && this.definition.ifPart.contextRef == definitionId) {
             return true;
         }
-        if (this.definition.caseFileItemOnParts.find(onPart => onPart.contextRef == definitionId)) {
+        if (this.definition.caseFileItemOnParts.find(onPart => onPart.sourceRef == definitionId)) {
             return true;
         }
         return super.referencesDefinitionElement(definitionId);
@@ -328,6 +347,12 @@ class Sentry extends CMMNElement {
 
 
 class EntryCriterion extends Sentry {
+    static create(planItem, x, y) {
+        const definition = planItem.definition.createEntryCriterion();
+        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        return new EntryCriterion(planItem, definition, shape);
+    }
+
     __connectSentry(target) {
         if (target instanceof ExitCriterion) {
             // Then we need to connect to the exit of the parent of the target;
@@ -346,6 +371,18 @@ class EntryCriterion extends Sentry {
 }
 
 class ExitCriterion extends Sentry {
+    /**
+     * 
+     * @param {PlanItemView} planItem 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(planItem, x, y) {
+        const definition = planItem.definition.createExitCriterion();
+        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        return new ExitCriterion(planItem, definition, shape);
+    }
+
     createHalo() {
         return new ExitCriterionHalo(this);
     }

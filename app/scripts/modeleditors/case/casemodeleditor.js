@@ -31,14 +31,85 @@ class CaseModelEditor extends ModelEditor {
      */
     loadModel() {
         this.dimensionsFileName = this.modelName + '.dimensions';
-        this.ide.repository.readModel(this.fileName, caseDefinition => 
-            this.ide.repository.readModel(this.dimensionsFileName, dimensions => {
-                this.open(this.modelName, caseDefinition.toXML(), dimensions.toXML());
-                super.visible = true;
-            }));
+        this.ide.repository.readModel(this.fileName, caseDefinition => this.ide.repository.readModel(this.dimensionsFileName, dimensions => this.open(caseDefinition, dimensions)));
+    }
+
+    /**
+     * 
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    open(caseDefinition, dimensions) {
+        // Reset the undo manager.
+        this.undoManager.resetActionBuffer(caseDefinition, dimensions);
+
+        // Now that the visualization information is available, we can start the import.
+        this.loadDefinition(caseDefinition, dimensions);
+
+        super.visible = true;
+    }
+
+    /**
+     * Imports the source and tries to visualize it
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    loadDefinition(caseDefinition, dimensions) {
+        // During import no live validation and storage of changes
+        this.trackChanges = false;
+
+        this.migrateDefinitions(caseDefinition, dimensions);
+
+        // First, remove current case content; but without tracking changes...
+        if (this.case) {
+            this.case.delete();
+        }
+
+        // Create a new case renderer on the definition and dimensions
+        this.case = new Case(this, this.htmlContainer, caseDefinition, dimensions);
+
+        if (this.__migrated) {
+            this.saveModel();
+        }
+
+        // activate live validation and undo etc
+        this.trackChanges = true;
+
+        // Do a first time validation.
+        window.setTimeout(() => this.case.runValidation(), 100);
+    }
+
+    /**
+     * Imports the source and tries to visualize it
+     * @param {CaseDefinition} caseDefinition 
+     * @param {Dimensions} dimensions 
+     */
+    migrateDefinitions(caseDefinition, dimensions) {
+        this.__migrated = false;
+
+        dimensions.deprecatedCaseFileItems.forEach(casefileshape => {
+            casefileshape.migrate();
+            this.migrated(`Migrating casefileshape ${casefileshape.cmmnElementRef}`);
+        })
+
+        dimensions.deprecatedTextBoxes.forEach(textbox => {
+            const textAnnotationDefinition = caseDefinition.createTextAnnotation(textbox.migrate().cmmnElementRef);
+            textAnnotationDefinition.text = textbox.content;
+            this.migrated(`Migrating textbox ${textbox.cmmnElementRef}`);
+        });
+    }
+
+    /**
+     * 
+     * @param {String} msg 
+     */
+    migrated(msg) {
+        console.log(msg);
+        this.__migrated = true;
     }
 
     refresh() {
+        // Overwrite to ensure that we also clear the dimensions file from the cache
         this.ide.repository.clear(this.dimensionsFileName);
         super.refresh();
     }
@@ -127,62 +198,6 @@ class CaseModelEditor extends ModelEditor {
     }
 
     /**
-     * 
-     * @param {String} modelName 
-     * @param {Document} caseXML 
-     * @param {Document} dimensionsXML 
-     */
-    open(modelName, caseXML, dimensionsXML) {
-        // We serialize the XML in our own style, because undomanager comparison happens against our XML serialization of the case.
-        //  If the raw source of the model that is opened has a somewhat different format compared to what we would print
-        //  this would lead to an unnecessary first save action when a model is loaded.
-        const caseString = XML.prettyPrint(caseXML);
-        const dimensionsString = XML.prettyPrint(dimensionsXML);
-
-        const definition = new DefinitionDocument(this.ide, caseString, dimensionsString, this.fileName, this.dimensionsFileName);
-        if (definition.invalid) {
-            // call to definition.invalid will show errors on the screen.
-            //  if it is invalid, we will simply stop loading and return to existing state.
-            return;
-        }
-
-        // Reset the undo manager.
-        this.undoManager.resetActionBuffer(definition);
-
-        // Now that the visualization information is available, we can start the import.
-        this.loadDefinition(definition);
-    }
-
-    /**
-     * Imports the source and tries to visualize it
-     * @param {DefinitionDocument} definition 
-     */
-    loadDefinition(definition) {
-        // During import no live validation and storage of changes
-        this.trackChanges = false;
-
-        // First, remove current case content; but without tracking changes...
-        if (this.case) {
-            this.case.delete();
-        }
-
-        // Create a new case renderer on the definition and dimensions
-        this.case = new Case(this, this.htmlContainer, definition);
-
-        // activate live validation and undo etc
-        this.trackChanges = true;
-
-        // Run once for migration
-        if (definition.caseDefinition.migrated) {
-            this.ide.repository.saveXMLFile(definition.caseFileName, definition.definitionsXML);
-            this.ide.repository.saveXMLFile(definition.dimensionsFileName, definition.dimensionsXML);
-        }
-
-        // Do a first time validation.
-        window.setTimeout(() => this.case.runValidation(), 100);
-    }
-
-    /**
      * Completes a user action; triggers live-validation and auto-save of models
      */
     completeUserAction() {
@@ -207,9 +222,9 @@ class CaseModelEditor extends ModelEditor {
      */
     saveModel() {
         // Validate all models currently active in the ide
-        this.case.runValidation();
+        if (this.case) this.case.runValidation();
         // Get the modelName from the url every thing after the hash (#), excluding the hash
-        this.undoManager.saveCaseModel(this.case.definitionDocument);
+        this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions);
     }
 
     onShow() {
@@ -240,13 +255,36 @@ class CaseModelEditor extends ModelEditor {
         const width = 800;//ide.caseModelEditor && ide.caseModelEditor.case ? ide.caseModelEditor.case.canvas.width() - (margin + scrollbar) : 800;
         const height = 500;//ide.caseModelEditor && ide.caseModelEditor.case ? ide.caseModelEditor.case.canvas.height() - (margin + scrollbar) : 500;
 
-        const definitionDocument = DefinitionDocument.createNewDefinitionDocument(name, description, width, height, x, y);
+        const caseFileName = name + '.case';
+        const dimensionsFileName = name + '.dimensions';
+        const guid = Util.createID();
 
-        // Upload model to server, and force it to save by passing true parameter.
-        ide.repository.saveXMLFile(definitionDocument.caseFileName, definitionDocument.caseString)
-        ide.repository.saveXMLFile(definitionDocument.dimensionsFileName, definitionDocument.dimensionsString)
-        // ide.caseModelEditor.undoManager.saveCaseModel(definitionDocument, true);
-        return definitionDocument.caseFileName;
+        const casePlanId = `cm_${guid}_0`;
+        const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
+        const caseString = 
+`<case id="${caseFileName}" name="${name}" guid="${guid}">
+    ${documentation}
+    <caseFileModel/>
+    <casePlanModel id="${casePlanId}" name="${name}"/>
+</case>`;
+
+        const dimensionsString = 
+`<${CMMNDI}>
+    <${CMMNDIAGRAM}>
+        <${CMMNSHAPE} ${CMMNELEMENTREF}="${casePlanId}" name="${name}">
+            <${BOUNDS} x="${x}" y="${y}" width="${width}" height="${height}" />                    
+        </${CMMNSHAPE}>
+    </${CMMNDIAGRAM}>
+    <validation>
+        <hiddennotices />
+        <hiddenproblems />
+    </validation>
+</${CMMNDI}>`;
+
+        // Upload models to server
+        ide.repository.saveXMLFile(caseFileName, caseString)
+        ide.repository.saveXMLFile(dimensionsFileName, dimensionsString)
+        return caseFileName;
     }
 }
 

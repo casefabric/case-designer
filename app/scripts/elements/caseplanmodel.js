@@ -4,27 +4,32 @@ const CPM_HEIGHT = 500;
 const CPM_TAB_HEIGHT = 22;
 
 class CasePlanModel extends Stage {
-    static get definitionClass() {
-        return CasePlanDefinition;
+    /**
+     * 
+     * @param {Case} cs 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    static create(cs, x = 10, y = 10) {
+        const definition = cs.caseDefinition.getCasePlan();
+        const shape = cs.dimensions.createShape(x, y, 800, 500, definition.id);
+        return new CasePlanModel(cs, definition, shape)
     }
 
     /**
      * Creates a new CasePlan model
      * @param {*} parent Must be the Case object itself.
      * @param {CasePlanDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
-    }
-
-    /** @returns {CasePlanDefinition} */
-    get planItemDefinition() {
+    constructor(parent, definition, shape) {
+        super(parent, definition, definition, shape);
         // A case plan is both a plan item and a planitem definition
         //  It is also a stage, and a stage has distinctive plan item and planitem definition.
         //  Inside stage, we set a pointer to this.definition and this.planItemDefinition, pointing to this.definition.definition
         //  However, for case plan, there is no definition.definition, rather the case plan is the definition.definition itself.
         //  But stage is not aware of that, and relies on a planItemDefinition being present; hence we overwrite the property here.
-        return this.definition;
+        this.planItemDefinition = definition;
     }
 
     createProperties() {
@@ -116,7 +121,7 @@ class CasePlanModel extends Stage {
 
     createCMMNChild(cmmnType, x, y) {
         if (cmmnType == ExitCriterion) {
-            return this.__addCMMNChild(new ExitCriterion(this, this.definition.createExitCriterion(x, y)));
+            return this.__addCMMNChild(ExitCriterion.create(this, x, y));
         } else {
             return super.createCMMNChild(cmmnType, x, y);
         }

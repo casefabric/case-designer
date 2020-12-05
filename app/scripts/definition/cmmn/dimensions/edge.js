@@ -6,10 +6,10 @@ class Edge extends DiagramElement {
      * @returns {Edge}
      */
     static create(source, target) {
-        const edge = new Edge(undefined, source.case.caseDefinition.dimensions);
+        const edge = new Edge(undefined, source.case.dimensions);
         edge.sourceId = source.id;
         edge.targetId = target.id;
-        source.case.caseDefinition.dimensions.edges.push(edge);
+        source.case.dimensions.edges.push(edge);
         return edge;
     }
 

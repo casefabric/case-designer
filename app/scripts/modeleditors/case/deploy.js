@@ -52,8 +52,8 @@ class Deploy extends StandardForm {
 
     deploy() {
         // By logging the deploy action in a group, we can see in the console how many times the file has been deployed. UI only shows latest...
-        console.group("Deploying case file "+this.case.definitionDocument.caseFileName);
-        $.get('/repository/deploy/' + this.case.definitionDocument.caseFileName)
+        console.group("Deploying case file "+this.case.editor.fileName);
+        $.get('/repository/deploy/' + this.case.editor.fileName)
             .done(data => {
                 const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
                 const msg = 'Deployed at ' + now;
@@ -71,14 +71,14 @@ class Deploy extends StandardForm {
 
     viewCMMN() {
        this._setDeployTextArea('Fetching CMMN ...');
-        $.get('/repository/viewCMMN/' +this.case.definitionDocument.caseFileName)
+        $.get('/repository/viewCMMN/' + this.case.editor.fileName)
             .done(data => this._setDeployTextArea((new XMLSerializer()).serializeToString(data)))
             .fail(data => this._setDeployTextArea(data.responseText));
     }
 
     runServerValidation() {
         this._setValidationResult('Validating ...');
-        $.get('/repository/validate/' + this.case.definitionDocument.caseFileName)
+        $.get('/repository/validate/' + this.case.editor.fileName)
             .done(data => this._setValidationResult(data.join('\n')))
             .fail(data => this._setValidationResult(data.responseText));
     }

@@ -6,9 +6,6 @@ class PlanningTableDefinition extends UnnamedCMMNElementDefinition {
         /** @type{Array<ApplicabilityRuleDefinition>} */
         this.ruleDefinitions = this.parseElements('applicabilityRule', ApplicabilityRuleDefinition);
         // TODO: PlanningTables can be nested in themselves, according to the spec. But we will not implement that here.
-
-        // Default start position.
-        this.__startPosition = { x: 0, y: 0 };
     }
 
     defaultShapeSize() {

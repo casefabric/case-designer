@@ -142,7 +142,7 @@ class TableRenderer {
     }
 
     /**
-     * when the description of a case file item is changed the zoom fields must be updated
+     * when the name of a case file item is changed the zoom fields must be updated
      * @param {CMMNElementDefinition} definitionElement 
      */
     refreshReferencingFields(definitionElement) {

@@ -8,9 +8,31 @@ class ReferableElementDefinition extends XMLElementDefinition {
      */
     constructor(importNode, modelDefinition, parent) {
         super(importNode, modelDefinition, parent);
+        // ModelDefinitions are also referable elements, but they need the constructor to complete first
+        //  before we can parse the element properties. Hence they invoke below method themselves.
+        if (modelDefinition !== undefined) {
+            this.parseElementProperties();
+        }
+    }
+
+    parseElementProperties() {
         this.id = this.parseAttribute('id');
         this.name = this.parseAttribute('name');
-        this.description = this.parseAttribute('description');
+        this.parseDocumentationElement();
+    }
+
+    parseDocumentationElement() {
+        const documentationElement = XML.getChildByTagName(this.importNode, 'documentation');
+        if (documentationElement) {
+            this.__documentation = new CMMNDocumentationDefinition(documentationElement, this.modelDefinition, this);
+        }
+        // Now check whether or not to convert the deprecated 'description' attribute
+        const description = this.parseAttribute('description');
+        if (description && !this.documentation.text) {
+            console.log(`Migrating CMMN1.0 description attribute to <cmmn:documentation> element in ${this.constructor.name} '${this.name}'`);
+            this.documentation.text = description;
+            this.modelDefinition.migrated = true;
+        }
     }
 
     /** @param {String} newId */
@@ -30,12 +52,14 @@ class ReferableElementDefinition extends XMLElementDefinition {
         this.__name = name;
     }
 
-    get description() {
-        return this.__description;
-    }
-
-    set description(description) {
-        this.__description = description;
+    /**
+     * @returns {CMMNDocumentationDefinition}
+     */
+    get documentation() {
+        if (!this.__documentation) {
+            this.__documentation = new CMMNDocumentationDefinition(undefined, this.modelDefinition, this);
+        }
+        return this.__documentation;
     }
 
     /**
@@ -52,6 +76,6 @@ class ReferableElementDefinition extends XMLElementDefinition {
     }
 
     createExportNode(parentNode, tagName, ...propertyNames) {
-        super.createExportNode(parentNode, tagName, 'id', 'name', 'description', propertyNames);
+        super.createExportNode(parentNode, tagName, 'id', 'name', 'documentation', propertyNames);
     }
 }

@@ -162,7 +162,7 @@ class ParameterRow extends RowRenderer {
             this.parameterName = this.parameter.name = this.parameter.bindingName;
         }
         this.change('bindingRef', cfi.id);
-        this.html.find('.cfiDescription').html(this.parameter.bindingName);
+        this.html.find('.cfiName').html(this.parameter.bindingName);
         this.html.find('.parameter-name').val(this.parameter.name);
     }
 
@@ -176,7 +176,7 @@ class ParameterRow extends RowRenderer {
             const caseFileItem = this.parameter.caseDefinition.getCaseFile().getDescendants().find(child => child.name === newName);
             if (caseFileItem) {
                 this.parameter.bindingRef = caseFileItem.id;
-                this.html.find('.cfiDescription').html(this.parameter.bindingName);
+                this.html.find('.cfiName').html(this.parameter.bindingName);
             }
         }
         super.change('name', newName);
@@ -189,7 +189,7 @@ class ParameterRow extends RowRenderer {
     refreshReferencingFields(cfi) {
         super.refreshReferencingFields(cfi);
         if (! this.isEmpty() && this.parameter.bindingRef == cfi.id) {
-            this.html.find('.cfiDescription').html(cfi.name);
+            this.html.find('.cfiName').html(cfi.name);
         }
     }
 

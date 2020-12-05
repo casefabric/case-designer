@@ -16,27 +16,6 @@ class CriterionDefinition extends CMMNElementDefinition {
         return this.sentry.planItemOnParts;
     }
 
-    defaultShapeSize() {
-        return { w: 12, h: 20 };
-    }
-
-    get shape() {
-        if (! this._shape) {
-            this._shape = this.caseDefinition.dimensions.getShape(this);
-            if (! this._shape) {
-                const sentryShape = this.caseDefinition.dimensions.getShape(this.sentry);
-                if (sentryShape) {
-                    console.log("Converting sentry shape to cmmn 1.1")
-                    this._shape = sentryShape;
-                    this._shape.cmmnElementRef = this.id;
-                    delete this.sentry._shape;
-                    return this._shape;
-                }
-            }
-        }
-        return super.shape;
-    }
-
     /**
      * @returns {SentryDefinition}
      */

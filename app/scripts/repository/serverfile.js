@@ -151,7 +151,7 @@ class ServerFile {
                 }
             },
             error: (xhr, error, eThrown) => {
-                this.ide.danger('We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running', eThrown);
+                this.ide.danger('We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running');
             }
         });
     }

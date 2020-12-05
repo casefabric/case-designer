@@ -10,11 +10,14 @@ const UNKNOWN_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unknown';
 class CaseFileDefinitionDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode 
-     * @param {ModelDocument} definitionDocument 
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument) {
-        super(importNode, definitionDocument);
+    constructor(modelDocument) {
+        super(modelDocument);
+    }
+
+    parseDocument() {
+        super.parseDocument();
         this.definitionType = this.parseAttribute('definitionType', UNSPECIFIED_URI);
         this.importRef = this.parseAttribute('import', '');
         this.structureRef = this.parseAttribute('structure', '');
@@ -45,15 +48,6 @@ class CaseFileDefinitionDefinition extends ModelDefinition {
     }
 
     toXML() {
-        const xmlDocument = XML.loadXMLString('<caseFileItemDefinition />'); // TODO: add proper namespace and so.
-        this.exportNode = xmlDocument.documentElement;
-        if (this.definitionType == XMLELEMENT_URI) {
-            this.exportProperties('id', 'name', 'definitionType', 'structureRef', 'importRef');
-        } else if (this.definitionType == UNKNOWN_URI) {
-            this.exportProperties('id', 'name', 'definitionType');
-        } else if (this.definitionType == UNSPECIFIED_URI) {
-            this.exportProperties('id', 'name', 'definitionType', 'properties');
-        }
-        return xmlDocument;
+        return super.exportModel('caseFileItemDefinition', 'id', 'name', 'definitionType', 'structureRef', 'importRef', 'properties');
     }
 }

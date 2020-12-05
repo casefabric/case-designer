@@ -14,9 +14,8 @@ class HumanTaskImplementationDefinition extends HumanTaskModelElementDefinition 
         this.exportNode.setAttribute(IMPLEMENTATION_PREFIX, IMPLEMENTATION_NAMESPACE);
         this.exportNode.setAttribute('class', 'org.cafienne.cmmn.definition.task.WorkflowTaskDefinition');
 
-        // Hmmmm ... perhaps it is better to put name and description a level higher ...
+        // Hmmmm ... perhaps it is better to put name and documentation a level higher ...
         //  We'd have to investigate compatibility for existing models.
         this.exportNode.setAttribute('name', this.modelDefinition.name);
-        this.exportNode.setAttribute('description', this.modelDefinition.description);
     }
 }

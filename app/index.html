@@ -139,6 +139,7 @@
     <!-- build:js scripts/elements.js -->
     <!-- bower:js -->
     <script src="scripts/elements/elements.js"></script>
+    <script src="scripts/elements/canvaselement.js"></script>
     <script src="scripts/elements/properties/properties.js"></script>
     <script src="scripts/elements/properties/casefileitemproperties.js"></script>
     <script src="scripts/elements/properties/planitemproperties.js"></script>
@@ -152,7 +153,7 @@
     <script src="scripts/elements/properties/humantaskproperties.js"></script>
     <script src="scripts/elements/properties/workflowproperties.js"></script>
     <script src="scripts/editors/task/previewtaskform.js"></script>
-    <script src="scripts/elements/properties/textboxproperties.js"></script>
+    <script src="scripts/elements/properties/textannotationproperties.js"></script>
     <script src="scripts/elements/properties/timereventproperties.js"></script>
     <script src="scripts/elements/properties/usereventproperties.js"></script>
     <script src="scripts/elements/halo/halo.js"></script>
@@ -181,7 +182,7 @@
     <script src="scripts/elements/milestone.js"></script>
     <script src="scripts/elements/stage.js"></script>
     <script src="scripts/elements/caseplanmodel.js"></script>
-    <script src="scripts/elements/textbox.js"></script>
+    <script src="scripts/elements/textannotation.js"></script>
     <script src="scripts/elements/planningtable.js"></script>
     <script src="scripts/elements/case.js"></script>
     <script src="scripts/elements/connector.js"></script>
@@ -189,13 +190,14 @@
     <!-- endbuild -->
     <!-- build:js scripts/cmmn-lib.js -->
     <!-- bower:js -->
-    <script src="scripts/definition/definitionparser.js"></script>
     <script src="scripts/definition/modeldocument.js"></script>
-    <script src="scripts/definition/definitiondocument.js"></script>
     <script src="scripts/definition/xmlelementdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/cmmndocumentationdefinition.js"></script>
     <script src="scripts/definition/referableelementdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/cmmnelementdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/unnamedcmmnelementdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/artifact/artifactdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/artifact/textannotation.js"></script>
     <script src="scripts/definition/modeldefinition.js"></script>
     <script src="scripts/definition/typecounter.js"></script>
     <script src="scripts/definition/cmmn/dimensions/dimensions.js"></script>
@@ -205,16 +207,14 @@
     <script src="scripts/definition/cmmn/dimensions/shape.js"></script>
     <script src="scripts/definition/cmmn/dimensions/vertex.js"></script>
     <script src="scripts/definition/cmmn/definitions/cafienneextension.js"></script>
-    <script src="scripts/definition/cmmn/definitions/caseplan/planitem.js"></script>
-    <script src="scripts/definition/cmmn/definitions/itemcontroldefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/casedefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/casefile/casefileitemcollection.js"></script>
     <script src="scripts/definition/cmmn/definitions/casefile/casefiledefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/casefile/casefileitemdefinition.js"></script>
-    <script src="scripts/definition/cmmn/definitions/constraintdefinition.js"></script>
-    <script src="scripts/definition/cmmn/definitions/parameterdefinition.js"></script>
-    <script src="scripts/definition/cmmn/definitions/parametermappingdefinition.js"></script>
-    <script src="scripts/definition/cmmn/definitions/planningtabledefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/contract/parameterdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/contract/parametermappingdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/caseplan/planitem.js"></script>
+    <script src="scripts/definition/cmmn/definitions/caseplan/constraintdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/sentry/sentrydefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/sentry/criteriondefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/sentry/entrycriteriondefinition.js"></script>
@@ -223,7 +223,9 @@
     <script src="scripts/definition/cmmn/definitions/sentry/onpartdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/sentry/planitemonpartdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/sentry/casefileitemonpartdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/caseplan/itemcontroldefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/planitemdefinitiondefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/caseplan/planningtabledefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/stagedefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/task/taskdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/task/casetaskdefinition.js"></script>
@@ -236,6 +238,7 @@
     <script src="scripts/definition/cmmn/definitions/caseplan/eventlistenerdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/timereventdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/usereventdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/caseteam/caseteamdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseteam/caseroledefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseteam/caserolereference.js"></script>
     <script src="scripts/repository/serverfile.js"></script>

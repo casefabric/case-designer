@@ -1,4 +1,9 @@
-<process id="id_WzNh" name="emailtravelofffice.process" description="Email travel office" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+<process id="id_WzNh" name="emailtravelofffice.process" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+    <documentation textFormat="text/plain">
+        <text>
+            <![CDATA[Email travel office]]>
+        </text>
+    </documentation>
     <input id="travelrequest" name="travelrequest"/>
     <input id="destinationCountry" name="destinationCountry"/>
     <input id="destinationCity" name="destinationCity"/>
@@ -107,6 +112,9 @@ Hidden text
                                 Could you please make arrangements for my travel to ${destinationCity} in ${destinationCountry}
                                                                         
                                                                                 
+                                                                                
+                                                                        
+                                                                                
                                                                                 <br/>
                                                                             </p>
                                                                             <ul>
@@ -117,6 +125,9 @@ Hidden text
                                 
                                                                             
                                                                                     
+                                                                                    
+                                                                            
+                                                                                    
                                                                                     <li>Required transport: ${transportMode}</li>
                                                                                 </ul>
                                                                                 <br/>
@@ -124,9 +135,15 @@ Hidden text
                             Kind regards,
                                                                         
                                                                                 
+                                                                                
+                                                                        
+                                                                                
                                                                                 <br/>
                             ${fromName}
                         
+                                                                    
+                                                                            
+                                                                            
                                                                     
                                                                             
                                                                             </td>

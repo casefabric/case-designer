@@ -13,7 +13,7 @@ class HumanTaskProperties extends TaskProperties {
     renderData() {
         this.addNameField();
         this.addSeparator();
-        this.addDescriptionField();
+        this.addDocumentationField();
         this.addSeparator();
         this.addModelImplementation();
         this.addParameterMappings();

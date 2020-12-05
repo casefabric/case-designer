@@ -4,9 +4,10 @@
      * 
      * @param {TaskStage} parent 
      * @param {PlanningTableDefinition} definition 
+     * @param {ShapeDefinition} shape 
      */
-    constructor(parent, definition) {
-        super(parent, definition);
+    constructor(parent, definition, shape) {
+        super(parent, definition, shape);
         // Setters enable better type introspection
         this.definition = definition;
         this.parent = parent;
@@ -98,6 +99,18 @@
         if (this.definition.ruleDefinitions.find(rule => !rule.name)) {
             this.raiseValidationIssue(29, [this.parent.name, this.case.name]);
         }
+    }
+
+    /**
+     * shows the element properties as icons in the element
+     */
+    refreshView() {
+        super.refreshView();
+        this.__moveConstraint(this.shape.x, this.shape.y);
+    }
+
+    moved(x, y, newParent) {
+        this.__moveConstraint(x, y);
     }
 
     /**

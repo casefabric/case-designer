@@ -121,7 +121,6 @@ class IDE {
                     const serverFile = new ServerFile(this.repository, file.fileName);
                     serverFile.data = file.xmlElement;
                     serverFile.save();
-                    // ide.repository.saveXMLFile(file.fileName, file.xmlElement)
                 });
             }
         }

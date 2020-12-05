@@ -2,7 +2,12 @@
     <caseFileModel>
         <caseFileItem id="cfi_testPlanningTable.case_0" name="test" multiplicity="ExactlyOne" definitionRef="greeting.cfid"/>
     </caseFileModel>
-    <casePlanModel id="cm_testPlanningTable.case_0" name="testPlanningTable" description="testPlanningTable" autoComplete="true">
+    <casePlanModel id="cm_testPlanningTable.case_0" name="testPlanningTable" autoComplete="true">
+        <documentation textFormat="text/plain">
+            <text>
+                <![CDATA[testPlanningTable]]>
+            </text>
+        </documentation>
         <planItem id="cm_testPlanningTable.case_2" name="Task_1" definitionRef="pid_cm_testPlanningTable.case_2"/>
         <planningTable id="pt_cm_testPlanningTable.case_1">
             <discretionaryItem id="cm_testPlanningTable.case_4" name="Task_2" definitionRef="pid_cm_testPlanningTable.case_4"/>
@@ -64,9 +69,29 @@
             <planItem id="cm_testPlanningTable.case_10" name="Task_3" definitionRef="pid_cm_testPlanningTable.case_10"/>
         </stage>
     </casePlanModel>
-    <caseRoles id="_j75iY_31" name="CaseRole_1" description="r1"/>
-    <caseRoles id="_j75iY_45" name="CaseRole_2"/>
-    <caseRoles id="_j75iY_50" name="CaseRole_3"/>
+    <caseRoles>
+        <role id="_j75iY_31" name="CaseRole_1">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[r1]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="_j75iY_45" name="CaseRole_2">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[null]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="_j75iY_50" name="CaseRole_3">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[null]]>
+                </text>
+            </documentation>
+        </role>
+    </caseRoles>
     <extensionElements mustUnderstand="false">
         <cafienne:start-case-model xmlns:cafienne="org.cafienne">{
   "schema":{

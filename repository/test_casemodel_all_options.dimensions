@@ -195,21 +195,21 @@
         <CMMNShape cmmnElementRef="pt_cm_46">
             <Bounds x="98" y="883" width="24" height="16"/>
         </CMMNShape>
-        <textbox cmmnElementRef="cm_csPHe_13" parentId="cm_cs7Ha_2" content="Tasks :">
-            <Bounds x="18" y="59" width="100" height="60"/>
-        </textbox>
-        <textbox cmmnElementRef="cm_cseQf_33" parentId="cm_cs7Ha_2" content="Discretionary :&#10;(Discr)">
-            <Bounds x="84" y="664" width="100" height="60"/>
-        </textbox>
-        <casefileitem cmmnElementRef="cm_csQ4n_104" parentId="cm_csOQA_58" contextRef="cfi_csgXo_1">
+        <CMMNShape cmmnElementRef="cm_csQ4n_104">
             <Bounds x="378" y="1750" width="25" height="40"/>
-        </casefileitem>
-        <casefileitem cmmnElementRef="cm_csQ4n_103" parentId="cm_csOQA_58" contextRef="cfi_csgXo_2">
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="cm_csQ4n_103">
             <Bounds x="563" y="1643" width="25" height="40"/>
-        </casefileitem>
-        <casefileitem cmmnElementRef="cm_cs5MY_22" parentId="cm_csPHe_14" contextRef="cfi_csgXo_7">
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="cm_cs5MY_22">
             <Bounds x="399" y="280" width="25" height="40"/>
-        </casefileitem>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="cm_csPHe_13">
+            <Bounds x="18" y="59" width="100" height="60"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="cm_cseQf_33">
+            <Bounds x="84" y="664" width="100" height="60"/>
+        </CMMNShape>
         <CMMNEdge sourceCMMNElementRef="cm_csPyw_54" targetCMMNElementRef="cm_cscw1_51"/>
         <CMMNEdge sourceCMMNElementRef="cm_cscw1_53" targetCMMNElementRef="cm_cscw1_51"/>
         <CMMNEdge sourceCMMNElementRef="cm_cscw1_45" targetCMMNElementRef="cm_cscw1_47"/>

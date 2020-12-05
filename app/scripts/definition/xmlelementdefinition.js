@@ -8,9 +8,7 @@ class XMLElementDefinition {
     constructor(importNode, modelDefinition, parent = undefined) {
         this.importNode = importNode;
         this.modelDefinition = modelDefinition;
-        if (!modelDefinition && this instanceof ModelDefinition) {
-            this.modelDefinition = this;
-        } else {
+        if (modelDefinition) {
             this.modelDefinition.elements.push(this);
         }
         this.parent = parent;
@@ -155,21 +153,6 @@ class XMLElementDefinition {
     }
 
     /**
-     * Creates a new XMLElementDefinition instance with the specified start position (x, y).
-     * The start position is used to generate a default shape once the element is being rendered.
-     * @param {Function} constructor 
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {String} id 
-     * @param {String} name 
-     */
-    createShapedDefinition(constructor, x, y, id = undefined, name = undefined) {
-        const element = this.createDefinition(constructor, id, name);
-        element.__startPosition = { x, y };
-        return element;
-    }
-
-    /**
      * Creates a new instance of the constructor with an optional id and name
      * attribute. If these are not given, the logic will generate id and name for it based
      * on the type of element and the other content inside the case definition.
@@ -181,8 +164,8 @@ class XMLElementDefinition {
     createDefinition(constructor, id = undefined, name = undefined) {
         const element = new constructor(undefined, this.modelDefinition, this);
         element.id = id ? id : this.modelDefinition.getNextIdOfType(constructor);
-        if (name || element.isNamedElement()) {
-            element.name = name ? name : this.modelDefinition.getNextNameOfType(constructor);
+        if (name !== undefined || element.isNamedElement()) {
+            element.name = name !== undefined ? name : this.modelDefinition.getNextNameOfType(constructor);
         }
         return element;
     }
@@ -288,14 +271,6 @@ class XMLElementDefinition {
             if (typeof (propertyValue) == 'object') {
                 console.warn('Writing property ' + propertyName + ' has a value of type object', propertyValue);
             }
-            if (propertyName == 'description' && this instanceof CMMNElementDefinition && !this.__description) {
-                // Do not write description if it is not specifically set.
-                return;
-            }
-            if (propertyName == 'name' && this instanceof CMMNElementDefinition && !this.__name) {
-                // Do not write name either if it is not specifically set.
-                return;
-            }
 
             // Convert all values to string
             const stringifiedValue = propertyValue.toString()
@@ -308,8 +283,7 @@ class XMLElementDefinition {
 
     /**
      * Exports this element with its properties to an XML element and appends it to the parentNode.
-     * If first creates the .exportNode XML element, then exports id, name and description attributes to it
-     * and finally introspects each of the given property names and invokes the appropriate export logic on it.
+     * If first creates the .exportNode XML element, then introspects each of the given property names and invokes the appropriate export logic on it.
      * @param {Node} parentNode 
      * @param {String} tagName 
      * @param {Array} propertyNames
@@ -339,13 +313,6 @@ class XMLElementDefinition {
      * @deprecated - belongs in elements/view layer, rather than in definitions layer
      */
     resolveReferences() { }
-
-    /**
-     * Just prior to exporting a definition to XML, flattenReferences() is invoked on each definition element,
-     * in order to create the proper string contents for attributes like 'entryCriteriaRefs', 'definitionRef', etc.
-     * @deprecated flattenReferences() and resolveReferences() are wrong-patterned. They do not belong in definition layer
-     */
-    flattenReferences() { }
 
     /**
      * Exports the IDs of all elements in the list (that have an id) into a space-separated string

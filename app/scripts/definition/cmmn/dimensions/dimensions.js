@@ -12,26 +12,32 @@ const TARGETCMMNELEMENTREF = 'targetCMMNElementRef';
 class Dimensions extends ModelDefinition {
     /**
      * Parses the content of the XML document into dimension structures that can be accessed via this class.
-     * @param {Element} importNode 
-     * @param {DefinitionDocument} definitionDocument
+     * @param {ModelDocument} modelDocument 
      */
-    constructor(importNode, definitionDocument) {
-        super(importNode, definitionDocument);
-        this.definitionDocument = definitionDocument;
+    constructor(modelDocument) {
+        super(modelDocument);
         this.errors = [];
-        /** @type {Array<ShapeDefinition>} */
-        this.shapes = this.parseElements(CMMNSHAPE, ShapeDefinition);
-        this.parseElements('textbox', TextBoxShape, this.shapes);
-        this.parseElements('casefileitem', CaseFileItemShape, this.shapes);
-        /** @type {Array<Edge>} */
-        this.edges = this.parseElements(CMMNEDGE, Edge);
     }
 
-    /**
-     * @returns {Array<CustomShape>}
-     */
-    get customShapes() {
-        return this.shapes.filter(shape => shape instanceof CustomShape);
+    createShape(x, y, width, height, cmmnElementRef = undefined) {
+        const shape = new ShapeDefinition(undefined, this);
+        shape.cmmnElementRef = cmmnElementRef;
+        shape.x = x;
+        shape.y = y;
+        shape.width = width;
+        shape.height = height;
+        this.addShape(shape);
+        return shape;
+    }
+
+    parseDocument() {
+        super.parseDocument();
+        /** @type {Array<ShapeDefinition>} */
+        this.shapes = this.parseElements(CMMNSHAPE, ShapeDefinition);
+        this.deprecatedTextBoxes = this.parseElements('textbox', TextBoxShape, []);
+        this.deprecatedCaseFileItems = this.parseElements('casefileitem', CaseFileItemShape, []);
+        /** @type {Array<Edge>} */
+        this.edges = this.parseElements(CMMNEDGE, Edge);
     }
 
     /**

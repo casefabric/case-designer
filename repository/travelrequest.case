@@ -1,4 +1,9 @@
-<case id="travelrequest.case" name="travelrequest" description="Travel Request" guid="_4wCNa">
+<case id="travelrequest.case" name="travelrequest" guid="_4wCNa">
+    <documentation textFormat="text/plain">
+        <text>
+            <![CDATA[Travel Request]]>
+        </text>
+    </documentation>
     <caseFileModel>
         <caseFileItem id="cfi_csKsD_0" name="TravelRequest" multiplicity="ExactlyOne" definitionRef="travelrequest.cfid">
             <children>
@@ -491,9 +496,7 @@
                 </transformation>
             </parameterMapping>
         </processTask>
-        <processTask id="pid_cm_csSAF_392" name="Check travel requirements" isBlocking="true" processRef="checktravelrequirements.process">
-            <inputs id="inTP_cm_cs6RF_34_2" name="travellers" bindingRef="cfi_cs6RF_11"/>
-        </processTask>
+        <processTask id="pid_cm_csSAF_392" name="Check travel requirements" isBlocking="true" processRef="checktravelrequirements.process"/>
         <milestone id="pid_cm_csgxw_213" name="Request Submitted"/>
         <milestone id="pid_cm_csgxw_219" name="Approved"/>
         <milestone id="pid_cm_csgxw_220" name="Disapproved"/>
@@ -581,9 +584,29 @@ TravelRequest.TravelDetails.Destination[0].Country == "US"]]>
             </sentry>
         </stage>
     </casePlanModel>
-    <caseRoles id="role_csKsD_0" name="Approver" description="Approver of the Travel Request"/>
-    <caseRoles id="role_csKsD_2" name="PersonalAssistant" description="Personal Assistant"/>
-    <caseRoles id="role_csKsD_1" name="Requestor" description="Requestor of the Travel Request"/>
+    <caseRoles>
+        <role id="role_csKsD_0" name="Approver">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[Approver of the Travel Request]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="role_csKsD_2" name="PersonalAssistant">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[Personal Assistant]]>
+                </text>
+            </documentation>
+        </role>
+        <role id="role_csKsD_1" name="Requestor">
+            <documentation textFormat="text/plain">
+                <text>
+                    <![CDATA[Requestor of the Travel Request]]>
+                </text>
+            </documentation>
+        </role>
+    </caseRoles>
     <input id="cs9Q0_inCPs_0" name="TravelRequest" bindingRef="cfi_csKsD_0"/>
     <extensionElements mustUnderstand="false">
         <cafienne:start-case-model xmlns:cafienne="org.cafienne">{

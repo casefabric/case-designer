@@ -30,9 +30,8 @@ class Usage {
             if (xml) {
                 const id = xml.getAttribute('id') || artifact.fileName;
                 const name = xml.getAttribute('name') || '';
-                const description = xml.getAttribute('description') || '';
                 const referencedArtifacts = this._extractReferencedArtifacts(xml)
-                const metadata = { id, name, description, referencedArtifacts };
+                const metadata = { id, name, referencedArtifacts };
                 this._addWhereUsedDataForFile(artifact.fileName, metadata);
             }
         });
@@ -55,9 +54,8 @@ class Usage {
         return this.whereUsedData.find({ referencedArtifactId: { '$eq': artifactId } }).map(result => {
             const artifact = this.artifacts.get(result.artifactId);
             const id = result.artifactId;
-            const description = artifact ? artifact.description : '';
             const name = artifact ? artifact.name : '';
-            return { id, name, description };
+            return { id, name };
         });
     }
 
@@ -65,7 +63,6 @@ class Usage {
         this.artifacts.set(artifact.id, {
             id: artifact.id,
             name: artifact.name,
-            description: artifact.description,
             extension: ''
         });
         if (artifact.referencedArtifacts !== undefined) {

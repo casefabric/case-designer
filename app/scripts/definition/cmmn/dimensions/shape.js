@@ -1,25 +1,5 @@
 class ShapeDefinition extends DiagramElement {
     /**
-     * 
-     * @param {CMMNElementDefinition} cmmnElement 
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {Number} w 
-     * @param {Number} h 
-     * @returns {ShapeDefinition}
-     */
-    static createShape(cmmnElement, x, y, w, h) {
-        const shape = new ShapeDefinition(undefined, cmmnElement.caseDefinition.dimensions);
-        shape.cmmnElementRef = cmmnElement.id;
-        shape.x = x;
-        shape.y = y;
-        shape.width = w;
-        shape.height = h;
-        cmmnElement.caseDefinition.dimensions.addShape(shape);
-        return shape;
-    }
-
-    /**
      * Representation of a <CMMNShape> element
      * 
      * @param {Element} importNode 
@@ -35,18 +15,6 @@ class ShapeDefinition extends DiagramElement {
         if (!this.bounds) {
             this.dimensions.addParseError('The Shape node for ' + this.cmmnElementRef + ' does not have a Bounds node; it cannot be used to draw element ' + this.cmmnElementRef);
         }
-    }
-
-    get cmmnElement() {
-        return this.caseDefinition.getElement(this.cmmnElementRef);
-    }
-
-    get description() {
-        return this.cmmnElement ? this.cmmnElement.description : '';
-    }
-
-    get name() {
-        return this.cmmnElement ? this.cmmnElement.name : '';
     }
 
     /**
@@ -66,7 +34,7 @@ class ShapeDefinition extends DiagramElement {
     /**
      * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
      * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
-     * from the CaseDefinition. However, for TextBox and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
+     * from the CaseDefinition. However, for TextAnnotation and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
      * Therefore we "override" this method here and update the internal registration.
      */
     removeShape() {
@@ -140,42 +108,19 @@ class CustomShape extends ShapeDefinition {
         }
     }
 
-    get shape() {
-        return this;
+    migrate() {
+        const shape = new ShapeDefinition(undefined, this.dimensions);
+        shape.cmmnElementRef = this.cmmnElementRef;
+        shape.x = this.x;
+        shape.y = this.y;
+        shape.width = this.width;
+        shape.height = this.height;
+        this.dimensions.addShape(shape);
+        return shape;
     }
 
-    get id() {
-        // Hack to be able to lookup element when it has same definition
-        return this.cmmnElementRef;
-    }
-
-    /**
-     * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
-     * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
-     * from the CaseDefinition. However, for TextBox and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
-     * Therefore we "override" this method here to avoid null pointers.
-     */
-    removeDefinition() {}
-
-    createExportNode(diagramNode, tagName, ...propertyNames) {
-        super.createExportNode(diagramNode, tagName, 'parentId', propertyNames);
-    }
-
-    static generateIdentifier(caseDefinition) {
-        const caseUID = caseDefinition.typeCounters.guid + '_shape_';
-        const nextElement = caseDefinition.dimensions.shapes.length;
-        return caseUID + nextElement;
-    }
-
-    generateDefaultContent(cmmnParent, x, y, w, h) {
-        this.cmmnElementRef = CustomShape.generateIdentifier(cmmnParent.caseDefinition);
-        this.x = x;
-        this.y = y;
-        this.width = w;
-        this.height = h;
-        this.parentId = cmmnParent.id;
-        this.dimensions.addShape(this); // Make sure to register it as a custom shape
-        return this;
+    createExportNode() {
+        // nothing to export no more
     }
 }
 
@@ -184,63 +129,11 @@ class CaseFileItemShape extends CustomShape {
         super(importNode, dimensions);
         this.contextRef = this.parseAttribute('contextRef');
     }
-
-    defaultShapeSize() {
-        return {
-            w: 25,
-            h: 40
-        };
-    }
-
-    get description() {
-        const cfi = this.caseDefinition.getElement(this.contextRef);
-        return cfi ? cfi.description : '';
-    }
-
-    /**
-     * 
-     * @param {CMMNElementDefinition} cmmnParent 
-     * @param {Number} x 
-     * @param {Number} y 
-     */
-    static create(cmmnParent, x, y) {
-        return new CaseFileItemShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 25, 40);
-    }
-
-    createExportNode(diagramNode) {
-        super.createExportNode(diagramNode, 'casefileitem', 'contextRef');
-    }
 }
 
 class TextBoxShape extends CustomShape {
-    /**
-     * 
-     * @param {CMMNElementDefinition} cmmnParent 
-     * @param {Number} x 
-     * @param {Number} y 
-     */
-    static create(cmmnParent, x, y) {
-        return new TextBoxShape(undefined, cmmnParent.caseDefinition.dimensions).generateDefaultContent(cmmnParent, x, y, 100, 60, 'TextBox');
-    }
-
     constructor(importNode, dimensions) {
         super(importNode, dimensions);
         this.content = this.parseAttribute('content', '');
-    }
-
-    get description() {
-        // Override to have the contents rendered properly by default CMMNElement class.
-        return this.content;
-    }
-
-    defaultShapeSize() {
-        return {
-            w: 100,
-            h: 60
-        };
-    }
-
-    createExportNode(diagramNode) {
-        return super.createExportNode(diagramNode, 'textbox', 'content');
     }
 }

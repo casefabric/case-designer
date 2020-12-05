@@ -109,7 +109,7 @@ class TaskProperties extends TaskStageProperties {
     renderData() {
         this.addNameField();
         this.addSeparator();
-        this.addDescriptionField();
+        this.addDocumentationField();
         this.addSeparator();
         this.addModelImplementation();
         this.addParameterMappings();
