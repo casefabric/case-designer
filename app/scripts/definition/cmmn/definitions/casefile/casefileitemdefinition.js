@@ -22,7 +22,7 @@ class CaseFileItemDef extends CaseFileItemCollection {
         this.multiplicity = this.parseAttribute('multiplicity', 'Unspecified');
         this.definitionRef = this.parseAttribute('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);
-        this.isEmpty = true && !this.id;
+        this.isEmpty = false;
     }
 
     defaultShapeSize() {
