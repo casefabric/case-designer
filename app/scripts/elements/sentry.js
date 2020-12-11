@@ -86,7 +86,7 @@ class Sentry extends CMMNElement {
      */
     refreshView() {
         super.refreshView();
-        // this.__moveConstraint(this.shape.x, this.shape.y);
+        this.__moveConstraint(this.shape.x, this.shape.y);
     }
 
     /**
