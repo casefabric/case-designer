@@ -161,13 +161,14 @@
     }
 }
 
-class TemporaryConnector {
+class TemporaryConnector extends CanvasElement {
     /**
      * Creates a temporary connector (=link in jointJS) from the source to a set of target coordinates
      * @param {CMMNElement} source 
      * @param {*} coordinates 
      */
     constructor(source, coordinates) {
+        super(source.case);
         this.source = source;
         this.link = this.xyz_joint = new joint.dia.Link({
             source: { id: source.xyz_joint.id },
