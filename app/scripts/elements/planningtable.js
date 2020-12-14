@@ -101,14 +101,6 @@
         }
     }
 
-    /**
-     * shows the element properties as icons in the element
-     */
-    refreshView() {
-        super.refreshView();
-        this.__moveConstraint(this.shape.x, this.shape.y);
-    }
-
     moved(x, y, newParent) {
         this.__moveConstraint(x, y);
     }

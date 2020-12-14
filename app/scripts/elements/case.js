@@ -480,6 +480,9 @@
 
         // TODO: this should no longer be necessary if constructors fill proper joint immediately based upon definition
         cmmnElement.refreshView();
+        // TODO: figure out when to properly apply the move constraint logic
+        cmmnElement.__moveConstraint(cmmnElement.shape.x, cmmnElement.shape.y);
+
         this.editor.completeUserAction();
         return cmmnElement;
     }
