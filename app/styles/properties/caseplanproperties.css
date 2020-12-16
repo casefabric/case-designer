@@ -1,7 +1,11 @@
-.properties-container .propertyButton .btnCaseRolesEditor {
-    width: 80px;
+.properties-container .btnCaseRolesEditor {
+    width: 100px;
 }
 
 .properties-container .btnCaseSchemaEditor {
-    width: 80px !important;
+    width: 100px;
+}
+
+.properties-container .btnCaseParameters {
+    width: 100px;
 }

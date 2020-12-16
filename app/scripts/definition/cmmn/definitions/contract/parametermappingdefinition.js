@@ -47,9 +47,15 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                     // Again strange situation
                     return;
                 }
-                this.taskParameter = this.parent.getOutputParameterWithName(newBinding.name);
+                this.taskParameter = this.parent.createOutputParameterWithName(newBinding.name);
             } else {
-                this.taskParameter.name = this.parent.generateUniqueOutputParameterName(newBinding.name);
+                // We have an existing parameter, now check if there is a new binding
+                if (newBinding) {
+                    // If we have an existing name in our parameter that starts with the newBinding's name, let's keep it, otherwise generate a new name
+                    if (! this.taskParameter.name || this.taskParameter.name.indexOf(newBinding.name) != 0) {
+                        this.taskParameter.name = this.parent.generateUniqueOutputParameterName(newBinding.name);
+                    }
+                }
             }
         }
         // On the (potentially new) task parameter we can now set the new bindingRef
@@ -209,15 +215,33 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
 
     set body(expression) {
         if (expression) {
-            if (!this.transformation) {
-                this.transformation = this.createDefinition(ExpressionDefinition);
-            }
-            this.transformation.body = expression;
+            this.getTransformation().body = expression;
         } else {
             if (this.transformation) {
                 this.transformation.removeDefinition();
             }
         }
+    }
+
+    getTransformation() {
+        if (!this.transformation) {
+            this.transformation = this.createDefinition(ExpressionDefinition);
+        }
+        return this.transformation;
+    }
+
+    set language(newLanguage) {
+        if (newLanguage) {
+            this.getTransformation().language = newLanguage;
+        }
+    }
+
+    get language() {
+        if (this.transformation) return this.transformation.language;
+    }
+
+    get hasCustomLanguage() {
+        return this.transformation && this.transformation.hasCustomLanguage;
     }
 
     createExportNode(parentNode) {

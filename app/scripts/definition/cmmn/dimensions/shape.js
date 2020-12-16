@@ -129,6 +129,24 @@ class CaseFileItemShape extends CustomShape {
         super(importNode, dimensions);
         this.contextRef = this.parseAttribute('contextRef');
     }
+
+    migrate() {
+        const shape = new ShapeDefinition(undefined, this.dimensions);
+        shape.cmmnElementRef = this.contextRef;
+        this.dimensions.edges.forEach(edge => {
+            if (edge.sourceId === this.cmmnElementRef) {
+                edge.sourceId = this.contextRef;
+            } else if (edge.targetId === this.cmmnElementRef) {
+                edge.targetId = this.contextRef;
+            }
+        })
+        shape.x = this.x;
+        shape.y = this.y;
+        shape.width = this.width;
+        shape.height = this.height;
+        this.dimensions.addShape(shape);
+        return shape;
+    }
 }
 
 class TextBoxShape extends CustomShape {

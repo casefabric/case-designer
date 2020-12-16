@@ -35,29 +35,15 @@ class ConstraintDefinition extends UnnamedCMMNElementDefinition {
         if (this.expression) return this.expression.language;
     }
 
+    get hasCustomLanguage() {
+        return this.expression && this.expression.hasCustomLanguage;
+    }
+
     set body(newBody) {
         this.getExpression().body = newBody;
     }
 
     get body() {
         return this.expression ? this.expression.body : '';
-    }
-}
-
-class ExpressionDefinition extends UnnamedCMMNElementDefinition {
-    constructor(importNode, caseDefinition, parent) {
-        super(importNode, caseDefinition, parent);
-        this.language = this.parseAttribute('language', 'spel');
-        const bodyElement = XML.getChildByTagName(this.importNode, 'body');
-        this.body = bodyElement ? XML.getCDATANodeOrSelf(bodyElement).textContent : '';
-    }
-
-    createExportNode(parentNode, tagName) {
-        super.createExportNode(parentNode, tagName, 'language');
-
-        const bodyElement = XML.createChildElement(this.exportNode, 'body');
-        const bodyCDataNode = this.exportNode.ownerDocument.createCDATASection(this.body);
-        bodyElement.appendChild(bodyCDataNode);
-        
     }
 }
