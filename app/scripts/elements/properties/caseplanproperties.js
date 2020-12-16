@@ -25,12 +25,14 @@ class CasePlanProperties extends StageProperties {
         this.addAutoComplete();
         this.addPlanningTableField();
         this.addSeparator();
+        this.addDefaultExpressionLanguage();
+        this.addSeparator();
         this.addPlanItemTable();
         this.addIdField();
     }
 
     addCaseRolesButton() {
-        const html = $(`<div title="Edit the case roles" class="propertyButton">
+        const html = $(`<div title="Edit the case roles" class="propertyBlock">
                             <label>Case Team</label>
                             <div>
                                 <img src="images/roles_128.png" />
@@ -38,7 +40,7 @@ class CasePlanProperties extends StageProperties {
                             </div>
                         </div>
                         <span class="separator" />
-                        <div title="Edit the 'start case schema'" class="propertyButton">
+                        <div title="Edit the 'start case schema'" class="propertyBlock">
                             <label>Start Case Schema</label>
                             <div>
                                 <img src="images/startcaseschema_128.png" />
@@ -52,18 +54,30 @@ class CasePlanProperties extends StageProperties {
     }
 
     addCaseParameters() {
-        const html = $(`<div title="Edit the case input and output parameters" class="propertyButton">
+        const html = $(`<div title="Edit the case input and output parameters" class="propertyBlock">
                             <label>Case Parameters</label>
                             <div>
                                 <img src="images/input_128.png" />
-                                <button class="btnCaseInputParameters">Input</button>
-                                <button class="btnCaseOutputParameters">Output</button>
+                                <button class="btnCaseParameters">Edit Parameters</button>
                                 <img src="images/output_128.png" />
                             </div>
                         </div>`);
-        html.find('.btnCaseInputParameters').on('click', e => this.cmmnElement.case.caseParametersEditor.show());
-        html.find('.btnCaseOutputParameters').on('click', e => this.cmmnElement.case.caseParametersEditor.show());
+        html.find('.btnCaseParameters').on('click', e => this.cmmnElement.case.caseParametersEditor.show());
         this.htmlContainer.append(html);
         return html;
+    }
+
+    addDefaultExpressionLanguage() {
+        const html = $(`<div title="Set the default language used in expressions across this case" class="propertyBlock ifPartLanguage">
+                            <label>Default Expression Language</label>
+                            <input class="default-language single" value="${this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage}" type="text"></input>
+                        </div>`);
+        html.find('.default-language').on('change', e => {
+            this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage = e.target.value;
+            this.done();
+        });
+        this.htmlContainer.append(html);
+        return html;
+
     }
 }

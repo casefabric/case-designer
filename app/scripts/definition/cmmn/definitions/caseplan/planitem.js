@@ -19,16 +19,6 @@ class PlanItem extends CMMNElementDefinition {
     }
 
     /**
-     * Gets or creates one of 'repetitionRule', 'requiredRule' or 'manualActivationRule' from 
-     * the planItemControl of this element. Also creates the plan item control if it does not yet exist.
-     * @param {String} ruleName 
-     * @returns {ConstraintDefinition}
-     */
-    getRule(ruleName) {
-        return this.itemControl.getRule(ruleName);
-    }
-
-    /**
      * @returns {String}
      */
     get defaultTransition() {
@@ -43,15 +33,6 @@ class PlanItem extends CMMNElementDefinition {
             this.planItemControl = super.createDefinition(ItemControlDefinition);
         }
         return this.planItemControl;
-    }
-
-    /**
-     * Removes one of 'repetitionRule', 'requiredRule' or 'manualActivationRule' from the planItemControl of this element.
-     * Checks if any of these rules are still defined on the ItemControl, and if not, deletes the item control as well.
-     * @param {String} ruleName 
-     */
-    removeRule(ruleName) {
-        this.itemControl.removeRule(ruleName);
     }
 
     /**

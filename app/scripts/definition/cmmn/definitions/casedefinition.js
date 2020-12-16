@@ -16,6 +16,7 @@ class CaseDefinition extends ModelDefinition {
         this.output = this.parseElements('output', ParameterDefinition);
         this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
         this.startCaseSchema = this.parseStartCaseSchema();
+        this.defaultExpressionLanguage = this.parseAttribute('expressionLanguage', 'spel');
     }
 
     validateDocument() {
@@ -108,6 +109,8 @@ class CaseDefinition extends ModelDefinition {
         if (this.startCaseSchema && this.startCaseSchema.trim()) {
             this.exportExtensionElement('cafienne:start-case-model').textContent = this.startCaseSchema;
         }
+
+        if (this.defaultExpressionLanguage) this.exportNode.setAttribute('expressionLanguage', this.defaultExpressionLanguage);
 
         // Also export the guid that is used to generate new elements in the case. This must be removed upon deployment.
         this.exportNode.setAttribute('guid', this.typeCounters.guid);

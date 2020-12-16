@@ -17,7 +17,7 @@ class TaskProperties extends TaskStageProperties {
         const implementation = taskDefinition.implementationRef ? taskDefinition.implementationRef : '';
 
         const options = this.task.getImplementationList().map(model => `<option value="${model.fileName}" ${model.fileName == implementation?" selected":""}>${model.name}</option>`).join('');
-        const html = $(`<div class="propertymodelzoomfield">
+        const html = $(`<div class="propertyBlock">
                             <label>Implementation</label>
                             <div class="properties_filefield">
                                 <div>
@@ -57,7 +57,7 @@ class TaskProperties extends TaskStageProperties {
         const implementation = taskDefinition.validatorRef ? taskDefinition.validatorRef : '';
 
         const options = this.case.editor.ide.repository.getProcesses().map(model => `<option value="${model.fileName}" ${model.fileName == implementation?" selected":""}>${model.name}</option>`).join('');
-        const html = $(`<div class="propertymodelzoomfield" title="Select a web service to be invoked to validate task output">
+        const html = $(`<div class="propertyBlock" title="Select a web service to be invoked to validate task output">
                             <label>Task Output Validator</label>
                             <div class="properties_filefield">
                                 <div>
@@ -89,15 +89,10 @@ class TaskProperties extends TaskStageProperties {
     }
 
     addParameterMappings() {
-        const html = $(`<div class="propertyButton">
-                            <label>Parameter Mapping</label>
-                            <div>
-                                <button id="btnInputMapping">Input</button>
-                                <button id="btnOutputMapping">Output</button>
-                            </div>
-                        </div>`);
-        html.find('#btnInputMapping').on('click', e => this.task.mappingsEditor.show());
-        html.find('#btnOutputMapping').on('click', e => this.task.mappingsEditor.show());
+        const html = $(`<div class="propertyBlock">
+            <button class="btnParameterMapping">Edit Parameter Mappings</button>
+        </div>`);
+        html.find('.btnParameterMapping').on('click', e => this.task.mappingsEditor.show());
         this.htmlContainer.append(html);
         return html;
     }

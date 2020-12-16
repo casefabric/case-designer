@@ -30,68 +30,78 @@
 
 .properties-container {
     width: 100%;
+    width: -moz-available;
+    /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;
+    /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
 }
 
-/* .properties-container div {
-    width: 100%;
-    /*position:relative;*/
-} */
+/* all children have relative positioning */
+.properties-container * {
+    position: relative;
+}
 
-.properties-container .disabled {
-    opacity: 0.4;
+.properties-container .propertyBlock {
+    padding: 5px 2px 2px 4px;
+    background-color: #f5f5f5;
 }
 
 .properties-container .propertyRow {
-    height: 22px;
     display: block;
 }
 
-.properties-container .propertyRow input,
-.properties-container .propertyBlock input {
-    margin: 3px;
-    cursor: pointer;
+/* textarea, input and separator bar take full width with a 3px margin left and right */
+.properties-container textarea,
+.properties-container input,
+.properties-container select,
+.properties-container .separator {
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 100%;
+    width: -moz-available; /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
 }
 
-.properties-container .propertyRow img {
-    height: 16px;
-    margin: 2px;
-    position: relative;
-    top: -4px;
+.properties-container select {
+    color: green;
+    /* tmp */
 }
 
-.properties-container .propertyRow label {
-    margin: 2px;
-    position: relative;
-    top: -4px;
+.properties-container textarea {
+    height: 30px;
+    border: 1px solid #DDDDDD;
+    resize: vertical;
 }
 
 /*span for the separator*/
 .properties-container .separator {
-    width: 100%;
+    display: block;
+    margin: 3px;
     height: 1px;
     border-bottom: 1px solid #DDDDDD;
-    display: block;
-    margin: 3px 0px 3px 0px;
+}
+
+.properties-container .propertyRow img {
+    height: 16px;
+    margin-top: -6px;
+}
+
+.btnParameterMapping {
+    margin: 5px;
+    left: 4px;
+}
+
+.properties-container label {
+    margin: 2px;
+    top: -4px;
 }
 
 /* For Item Control rules */
 .properties-container .propertyRule {
     padding-left: 2px;
     background-color: #f5f5f5;
-}
-
-.properties-container .propertyRule textarea {
-    display: block;
-    width: 98%;
-    height: 30px;
-    border: 1px solid #DDDDDD;
-    resize: vertical;
-}
-
-.properties-container .propertyRule select {
-    display: block !important;
-    width: 98%;
-    height: 20px;
 }
 
 .properties-container .propertyRule .single {
@@ -102,59 +112,7 @@
     height: 30px;
 }
 
-.properties-container .propertyBlock {
-    padding: 3px 2px 2px 4px;
-    background-color: #f5f5f5;
-}
-
-.properties-container .propertyBlock input {
-    display: block;
-    width: 98%;
-    margin: 0px;
-    border: 1px solid #DDDDDD;
-}
-
-.properties-container .propertyBlock textarea {
-    display: block;
-    width: 98%;
-    height: 30px;
-    border: 1px solid #DDDDDD;
-    resize: vertical;
-}
-
-.properties-container .propertyBlock select {
-    display: block !important;
-    width: 98%;
-    background-color: #f5f5f5;
-    height: 20px;
-}
-
-.properties-container .propertyBlock .single {
-    height: 18px;
-}
-
-.properties-container .propertyBlock .multi {
-    height: 30px;
-}
-
-.properties-container .propertyButton {
-    height: 42px;
-    background-color: #f5f5f5;
-}
-
-.properties-container .propertyButton label {
-    margin-left: 5px;
-}
-
-.properties-container .propertyButton div {
-    margin-left: 5px;
-}
-
-.properties-container .propertyButton button {
-    width: 50px;
-}
-
-.properties-container .propertyButton img {
+.properties-container .propertyBlock img {
     width: 20px;
     height: 20px;
 }
@@ -172,4 +130,29 @@
 
 .edit-cmmn-documentation {
     background-color: white;
+}
+
+.property-expression-language {
+    position: absolute;
+    right: 6px;
+    top: -2px;
+    height: 22px;
+    width: fit-content;
+    padding-bottom: 2px;
+}
+
+.show-language-input {
+    width: 80px;
+}
+
+.custom-language {
+    border-bottom: 2px solid rgb(66, 68, 70);
+}
+
+.property-expression-language input {
+    display: none;
+    top: -18px;
+    left: 27px;
+    width: 50px;
+    text-align: right;
 }

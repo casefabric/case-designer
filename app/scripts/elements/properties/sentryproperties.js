@@ -8,7 +8,7 @@ class SentryProperties extends Properties {
     }
 
     renderData() {
-        $(this.html).css('width', '300px');
+        $(this.html).css('width', '315px');
         this.addIfPart();
         this.addSeparator();
         this.addPlanItemOnParts();
@@ -24,28 +24,32 @@ class SentryProperties extends Properties {
 
     addIfPart() {
         const sentry = this.cmmnElement.definition;
-        const propertyType = 'ifPart';
         const rule = sentry.ifPart;
         const ruleAvailable = rule ? true : false;
         const contextRef = rule ? rule.contextRef : '';
         const contextName = contextRef ? this.cmmnElement.definition.caseDefinition.getElement(contextRef).name : '';
         const ruleBody = rule ? rule.body : '';
-        const ruleLanguage = rule ? rule.language : 'spel';
+        const ruleLanguage = rule && rule.hasCustomLanguage ? rule.language : '';
+        const nonDefaultLanguage = rule && rule.hasCustomLanguage ? ' custom-language' : '';
+        const ruleLanguageTip = `Default language for expressions is '${this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage}'. Click the button to change the language`;
+        const ruleDeviatesTip = `Language used in this expression is '${ruleLanguage}'. Default language in the rest of the case model is '${this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage}'`;
+        const tip = rule && rule.hasCustomLanguage ? ruleDeviatesTip : ruleLanguageTip;
         const inputIfPartPresence = Util.createID();
         // const checked = ;
         const html = $(`<div class="propertyRule if-part">
                             <div class="propertyRow">
-                                <input id="${inputIfPartPresence}" type="checkbox" ${ruleAvailable?'checked':''}/>
+                                <input id="${inputIfPartPresence}" class="rulePresence" type="checkbox" ${ruleAvailable?'checked':''}/>
                                 <img src="images/ifpart_32.png" />
                                 <label for="${inputIfPartPresence}">If Part</label>
                             </div>
                             <div style="display:${ruleAvailable?'block':'none'}" class="ruleProperty">
-                                <div class="propertyBlock ifPartLanguage">
-                                    <label>If Part Language</label>
-                                    <textarea class="single">${ruleLanguage}</textarea>
-                                </div>
                                 <div class="propertyBlock ifPartBody">
                                     <label>If Part Expression</label>
+                                    <span class="property-expression-language ${nonDefaultLanguage}" title="${tip}">
+                                        <button>L</button>
+                                        <input class="input-expression-language" value="${ruleLanguage}" />
+                                    </span>
+                                    
                                     <textarea class="multi">${ruleBody}</textarea>
                                 </div>
                                 <div class="zoomRow zoomDoubleRow">
@@ -57,7 +61,7 @@ class SentryProperties extends Properties {
                                 <span class="separator" />
                             </div>
                         </div>`);
-        html.find('input').on('click', e => {
+        html.find('.rulePresence').on('click', e => {
             const newPresence = e.target.checked;
             html.find('.ruleProperty').css('display', newPresence ? 'block' : 'none');
             if (!newPresence && this.cmmnElement.definition.ifPart) {
@@ -66,7 +70,31 @@ class SentryProperties extends Properties {
                 this.done();
             }
         });
-        html.find('.ifPartLanguage textarea').on('change', e => this.change(this.cmmnElement.definition.getIfPart(), 'language', e.target.value));
+        const htmlExpressionLanguage = html.find('.property-expression-language');
+        const editHTMLExpressionLanguage = htmlExpressionLanguage.find('input');
+        const showHTMLExpressionLanguage = htmlExpressionLanguage.find('button');
+        editHTMLExpressionLanguage.on('change', e => {
+            const rule = this.cmmnElement.definition.getIfPart();
+            const newLanguage = e.target.value || this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage;
+            this.change(rule, 'language', newLanguage);
+            if (rule.hasCustomLanguage) {
+                Util.addClassOverride(htmlExpressionLanguage, 'custom-language');
+            } else {
+                Util.removeClassOverride(htmlExpressionLanguage, 'custom-language');
+            }
+            this.done();
+        });
+        showHTMLExpressionLanguage.on('click', () => {
+            if (editHTMLExpressionLanguage.css('display') === 'none') {
+                editHTMLExpressionLanguage.css('display', 'block');
+                Util.addClassOverride(htmlExpressionLanguage, 'show-language-input');
+            } else {
+                editHTMLExpressionLanguage.css('display', 'none');
+                Util.removeClassOverride(htmlExpressionLanguage, 'show-language-input');
+            }
+        });
+
+        // html.find('.ifPartLanguage').on('change', e => this.change(this.cmmnElement.definition.getIfPart(), 'language', e.target.value));
         html.find('.ifPartBody textarea').on('change', e => this.change(this.cmmnElement.definition.getIfPart(), 'body', e.target.value));
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {

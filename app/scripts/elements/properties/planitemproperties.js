@@ -18,25 +18,34 @@ class PlanItemProperties extends Properties {
      */
     addRuleBlock(ruleName, title, imageURL, label1, label2 = label1, defaultValue = 'true') {
         const element = this.cmmnElement.definition;
-        const propertyType = ruleName;
         const ruleAcronym = label1.split(' ').map(part => part.substring(0, 3)).join('. ');
+        /** @type {ConstraintDefinition} */
         const rule = element.planItemControl ? element.planItemControl[ruleName] : undefined;
         const ruleAvailable = rule ? true : false;
         const contextRef = rule ? rule.contextRef : '';
         const contextName = contextRef ? this.cmmnElement.definition.caseDefinition.getElement(contextRef).name : '';
         const ruleBody = rule ? rule.body : defaultValue;
+        const ruleLanguage = rule && rule.hasCustomLanguage ? rule.language : '';
+        const nonDefaultLanguage = rule && rule.hasCustomLanguage ? ' custom-language' : '';
+        const ruleLanguageTip = `Default language for expressions is '${this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage}'. Click the button to change the language`;
+        const ruleDeviatesTip = `Language used in this expression is '${ruleLanguage}'. Default language in the rest of the case model is '${this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage}'`;
+        const tip = rule && rule.hasCustomLanguage ? ruleDeviatesTip : ruleLanguageTip;
         const rulePresenceIdentifier = Util.createID();
         // const checked = ;
         const html = $(`<div class="propertyRule" title="${title}">
                             <div class="propertyRow">
-                                <input id="${rulePresenceIdentifier}" type="checkbox" ${ruleAvailable?'checked':''}/>
+                                <input id="${rulePresenceIdentifier}" class="rulePresence" type="checkbox" ${ruleAvailable?'checked':''}/>
                                 <img src="${imageURL}" />
                                 <label for="${rulePresenceIdentifier}">${label1}</label>
                             </div>
                             <div style="display:${ruleAvailable?'block':'none'}" class="ruleProperty">
                                 <div class="propertyBlock">
                                     <label>${label2} Rule</label>
-                                    <textarea class="multi">${ruleBody}</textarea>
+                                    <span class="property-expression-language ${nonDefaultLanguage}" title="${tip}">
+                                        <button>L</button>
+                                        <input class="input-expression-language" value="${ruleLanguage}" />
+                                    </span>
+                                    <textarea class="multi">${ruleBody}</textarea>                                    
                                 </div>
                                 <div class="zoomRow zoomDoubleRow">
                                     <label class="zoomlabel">${ruleAcronym}. Rule Context</label>
@@ -47,7 +56,7 @@ class PlanItemProperties extends Properties {
                                 <span class="separator" />
                             </div>
                         </div>`);
-        html.find(`#${rulePresenceIdentifier}`).on('click', e => {
+        html.find('.rulePresence').on('click', e => {
             const newPresence = e.target.checked;
             html.find('.ruleProperty').css('display', newPresence ? 'block' : 'none');
             if (!newPresence) {
@@ -58,22 +67,45 @@ class PlanItemProperties extends Properties {
             }
             this.done();
         });
-        html.find('textarea').on('change', e => this.change(this.cmmnElement.definition.getRule(ruleName), 'body', e.target.value));
+        const htmlExpressionLanguage = html.find('.property-expression-language');
+        const editHTMLExpressionLanguage = htmlExpressionLanguage.find('input');
+        const showHTMLExpressionLanguage = htmlExpressionLanguage.find('button');
+        editHTMLExpressionLanguage.on('change', e => {
+            const rule = this.cmmnElement.definition.itemControl.getRule(ruleName);
+            const newLanguage = e.target.value || this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage;
+            this.change(rule, 'language', newLanguage);
+            if (rule.hasCustomLanguage) {
+                Util.addClassOverride(htmlExpressionLanguage, 'custom-language');
+            } else {
+                Util.removeClassOverride(htmlExpressionLanguage, 'custom-language');
+            }
+            this.done();
+        });
+        showHTMLExpressionLanguage.on('click', () => {
+            if (editHTMLExpressionLanguage.css('display') === 'none') {
+                editHTMLExpressionLanguage.css('display', 'block');
+                Util.addClassOverride(htmlExpressionLanguage, 'show-language-input');
+            } else {
+                editHTMLExpressionLanguage.css('display', 'none');
+                Util.removeClassOverride(htmlExpressionLanguage, 'show-language-input');
+            }
+        });
+        html.find('textarea').on('change', e => this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'body', e.target.value));
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
-                this.change(this.cmmnElement.definition.getRule(ruleName), 'contextRef', cfi.id);
+                this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', cfi.id);
                 html.find('.valuelabel').html(cfi.name);
             });
         });
         html.find('.removeReferenceButton').on('click', e => {
-            this.change(this.cmmnElement.definition.getRule(ruleName), 'contextRef', undefined);
+            this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', undefined);
             html.find('.valuelabel').html('');
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.dropHandler = cfi => {
                 const newContextRef = cfi.id;
-                this.change(this.cmmnElement.definition.getRule(ruleName), 'contextRef', newContextRef);
+                this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', newContextRef);
                 const name = newContextRef ? this.cmmnElement.definition.caseDefinition.getElement(newContextRef).name : '';
                 html.find('.valuelabel').html(name);
             }
