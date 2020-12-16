@@ -209,15 +209,33 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
 
     set body(expression) {
         if (expression) {
-            if (!this.transformation) {
-                this.transformation = this.createDefinition(ExpressionDefinition);
-            }
-            this.transformation.body = expression;
+            this.getTransformation().body = expression;
         } else {
             if (this.transformation) {
                 this.transformation.removeDefinition();
             }
         }
+    }
+
+    getTransformation() {
+        if (!this.transformation) {
+            this.transformation = this.createDefinition(ExpressionDefinition);
+        }
+        return this.transformation;
+    }
+
+    set language(newLanguage) {
+        if (newLanguage) {
+            this.getTransformation().language = newLanguage;
+        }
+    }
+
+    get language() {
+        if (this.transformation) return this.transformation.language;
+    }
+
+    get hasCustomLanguage() {
+        return this.transformation && this.transformation.hasCustomLanguage;
     }
 
     createExportNode(parentNode) {
