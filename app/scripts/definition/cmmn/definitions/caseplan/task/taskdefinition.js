@@ -58,7 +58,7 @@ class TaskDefinition extends TaskStageDefinition {
      * creates a new one with the specified name plus a separator plus a number.
      * @param {String} name 
      */
-    getOutputParameterWithName(name) {
+    createOutputParameterWithName(name) {
         const newParameter = this.createDefinition(ParameterDefinition, undefined, this.generateUniqueOutputParameterName(name));
         this.outputs.push(newParameter);
         return newParameter;
