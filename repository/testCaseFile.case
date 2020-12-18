@@ -1,4 +1,4 @@
-<case id="testCaseFile.case" name="testCaseFile" guid="_ZDMuS">
+<case id="testCaseFile.case" name="testCaseFile" expressionLanguage="spel" guid="_ZDMuS">
     <caseFileModel>
         <caseFileItem id="_ZDMuS_4" name="Root" multiplicity="ExactlyOne" definitionRef="root.cfid">
             <children>
