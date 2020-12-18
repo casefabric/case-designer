@@ -1,4 +1,4 @@
-<case id="test_casemodel_parameters.case" name="test_casemodel_parameters" guid="_3EwTg">
+<case id="test_casemodel_parameters.case" name="test_casemodel_parameters" expressionLanguage="spel" guid="_3EwTg">
     <documentation textFormat="text/plain">
         <text>
             <![CDATA[Case model for testing all options in a case]]>
@@ -9,7 +9,7 @@
     </caseFileModel>
     <casePlanModel id="cm_test_casemodel_parameters.case_test_casemodel_parameters_0" name="test_casemodel_parameters" autoComplete="true"/>
     <input id="csARK_inCPs_0" name="case_input_parameter_01" bindingRef="cfi_csARK_0">
-        <bindingRefinement language="spel">
+        <bindingRefinement>
             <body>
                 <![CDATA[
                 
@@ -21,7 +21,7 @@ multiple lines
         </bindingRefinement>
     </input>
     <input id="csARK_inCPs_1" name="case_input_parameter_02">
-        <bindingRefinement language="spel">
+        <bindingRefinement>
             <body>
                 <![CDATA[
                 
@@ -34,7 +34,7 @@ multiple lines
     <input id="csARK_inCPs_2" name="ht_input_parameter_03"/>
     <output id="csARK_outCPs_0" name="case_output_parameter_01"/>
     <output id="csARK_outCPs_1" name="case_output_parameter_02" bindingRef="cfi_csARK_0">
-        <bindingRefinement language="spel">
+        <bindingRefinement>
             <body>
                 <![CDATA[
                 

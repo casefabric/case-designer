@@ -1,7 +1,7 @@
 class TaskModelDefinition extends HumanTaskModelElementDefinition {
     constructor(importNode, modelDefinition, parent) {
         super(importNode, modelDefinition, parent);
-        this.taskModel = this.importNode.textContent;
+        this.taskModel = this.importNode ? this.importNode.textContent : '';
     }
 
     /**
@@ -16,7 +16,9 @@ class TaskModelDefinition extends HumanTaskModelElementDefinition {
     }
 
     createExportNode(parentNode) {
-        super.createExportNode(parentNode, 'task-model');
-        this.exportNode.textContent = this.taskModel || '';
+        if (this.value) {
+            super.createExportNode(parentNode, 'task-model');
+            this.exportNode.textContent = this.taskModel || '';
+        }
     }
 }

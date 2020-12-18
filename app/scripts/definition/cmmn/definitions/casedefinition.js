@@ -25,7 +25,10 @@ class CaseDefinition extends ModelDefinition {
 
     parseCaseTeam() {
         const rolesElements = XML.getChildrenByTagName(this.importNode, 'caseRoles');
-        if (rolesElements.length == 0 || rolesElements.length > 1) { // CMMN 1.0 format, we must migrate
+        if (rolesElements.length == 0 || rolesElements.length > 1) { 
+            // CMMN 1.0 format, we must migrate. Also, if roles.length == 0, then we should create an element to avoid nullpointers.
+            //  Note: if there is only 1 caseRoles tag it can be both CMMN1.0 or CMMN1.1;
+            //  CaseTeamDefinition class will do the check if additional migration is required.
             if (rolesElements.length) {
                 console.log(`Converting ${rolesElements.length} CMMN1.0 roles`);
             }

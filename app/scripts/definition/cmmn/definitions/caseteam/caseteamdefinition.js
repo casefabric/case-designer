@@ -11,6 +11,9 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
             if (this.documentation.text) this.documentation.text = '';
             this.importNode.appendChild(CaseTeamDefinition.convertRoleDefinition(importNode));
             this.roles = this.parseElements('role', CaseRoleDefinition);
+            // Clear our name and id element, so that caseteam definition is not accidentally found as a case role element
+            this.name = undefined;
+            this.id = undefined;
             this.caseDefinition.migrated = true;
         }
     }
