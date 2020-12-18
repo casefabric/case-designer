@@ -5,8 +5,19 @@ class HumanTaskImplementationDefinition extends HumanTaskModelElementDefinition 
         this.input = this.parseElements('input', ImplementationParameterDefinition);
         /** @type {Array<ImplementationParameterDefinition>} */
         this.output = this.parseElements('output', ImplementationParameterDefinition);
-        /** @type {TaskModelDefinition} */
         this.taskModel = this.parseElement('task-model', TaskModelDefinition);
+    }
+
+    /** @returns {TaskModelDefinition} */
+    get taskModel() {
+        if (! this._taskModel) {
+            this._taskModel = super.createDefinition(TaskModelDefinition);
+        }
+        return this._taskModel;
+    }
+
+    set taskModel(taskModel) {
+        this._taskModel = taskModel;
     }
 
     createExportNode(parentNode) {
