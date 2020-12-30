@@ -1,10 +1,10 @@
-<case id="testRoles.case" name="testRoles" guid="_3GznZ">
+<case id="testRoles.case" name="testRoles" expressionLanguage="spel" guid="_3GznZ">
     <caseFileModel/>
     <casePlanModel id="cm__3GznZ_0" name="testRoles" autoComplete="true">
         <planItem id="pi_ht__3GznZ_0" name="HumanTask_0" definitionRef="ht__3GznZ_0">
             <itemControl id="_3GznZ_1">
                 <repetitionRule id="_3GznZ_12">
-                    <condition id="_3GznZ_13" language="spel">
+                    <condition id="_3GznZ_13">
                         <body>
                             <![CDATA[true]]>
                         </body>
@@ -15,7 +15,7 @@
         <planItem id="pi_ht__3GznZ_1" name="HumanTask_1" definitionRef="ht__3GznZ_1">
             <itemControl id="_3GznZ_2">
                 <repetitionRule id="_3GznZ_10">
-                    <condition id="_3GznZ_11" language="spel">
+                    <condition id="_3GznZ_11">
                         <body>
                             <![CDATA[true]]>
                         </body>
@@ -35,7 +35,7 @@
             <discretionaryItem id="pi_ht__3GznZ_2" name="HumanTask_2" definitionRef="ht__3GznZ_2" authorizedRoleRefs="_3GznZ_6 _3GznZ_7">
                 <itemControl id="_3GznZ_0">
                     <repetitionRule id="_3GznZ_8">
-                        <condition id="_3GznZ_9" language="spel">
+                        <condition id="_3GznZ_9">
                             <body>
                                 <![CDATA[true]]>
                             </body>

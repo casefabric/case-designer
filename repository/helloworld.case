@@ -1,4 +1,4 @@
-<case id="helloworld.case" name="HelloWorld" guid="_nTPPc">
+<case id="helloworld.case" name="HelloWorld" expressionLanguage="spel" guid="_nTPPc">
     <documentation textFormat="text/plain">
         <text>
             <![CDATA[Hello World]]>
@@ -33,14 +33,14 @@ and Send response]]>
                     <parameterMapping id="inPM_cm_cshJq_4_0" sourceRef="inTP_cm_cs2F1_174_1" targetRef="Greeting"/>
                     <parameterMapping id="outPM_cm_csuYs_174_0" sourceRef="Response" targetRef="outTP_cm_cs2F1_174_1"/>
                     <assignment id="_nTPPc_3" contextRef="cfi_csVQy_0">
-                        <condition id="_nTPPc_4" language="spel">
+                        <condition id="_nTPPc_4">
                             <body>
                                 <![CDATA[Greeting.To]]>
                             </body>
                         </condition>
                     </assignment>
                     <duedate id="_nTPPc_9">
-                        <condition id="_nTPPc_10" language="spel">
+                        <condition id="_nTPPc_10">
                             <body>
                                 <![CDATA[T(java.time.Instant).now()]]>
                             </body>
@@ -55,14 +55,14 @@ and Send response]]>
                 <cafienne:implementation xmlns:cafienne="org.cafienne" humanTaskRef="readresponse.humantask">
                     <parameterMapping id="inPM_cm_cs3hg_196_0" sourceRef="inTP_cm_cs3hg_196_0" targetRef="Response"/>
                     <assignment id="_nTPPc_12" contextRef="cfi_csVQy_0">
-                        <condition id="_nTPPc_13" language="spel">
+                        <condition id="_nTPPc_13">
                             <body>
                                 <![CDATA[Greeting.From]]>
                             </body>
                         </condition>
                     </assignment>
                     <duedate id="_nTPPc_14">
-                        <condition id="_nTPPc_15" language="spel">
+                        <condition id="_nTPPc_15">
                             <body>
                                 <![CDATA[T(java.time.Instant).now()]]>
                             </body>
