@@ -31,7 +31,7 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                     // The name of the new parameter is either from the new binding or we take it from the implementation parameter.
                     const newParameterName = newBinding ? newBinding.name : this.implementationParameter.name;
                     this.taskParameter = this.parent.getInputParameterWithName(newParameterName);
-                } else if (this.taskParameter.binding != newBinding) {
+                } else if (newBinding && this.taskParameter.binding != newBinding) {
                     this.taskParameter = this.parent.getInputParameterWithName(newBinding.name);
                 }
             } else if (newBinding) { // We have no task parameter, let's try to find one with the CaseFileItem's name
