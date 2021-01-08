@@ -7,7 +7,7 @@ class MappingRow extends RowRenderer {
         super(control, mapping);
         this.control = control;
         this.editor = control;
-        mapping = this.element = mapping ? mapping : this.createElement();
+        this.element = mapping ? mapping : this.createElement();
     }
 
     get taskParameterName() {
@@ -30,7 +30,7 @@ class MappingRow extends RowRenderer {
      * @returns {ParameterMappingDefinition}
      */
     createElement() {
-        return this.taskDefinition.createMapping();
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
@@ -89,5 +89,22 @@ class MappingRow extends RowRenderer {
     done() {
         this.case.editor.completeUserAction();
         this.control.refresh();
+    }
+}
+
+class InputMappingRow extends MappingRow {
+    /**
+     * @returns {InputMappingDefinition}
+     */
+    createElement() {
+        return this.taskDefinition.createMapping(InputMappingDefinition);
+    }
+}
+class OutputMappingRow extends MappingRow {
+    /**
+     * @returns {OutputMappingDefinition}
+     */
+    createElement() {
+        return this.taskDefinition.createMapping(OutputMappingDefinition);
     }
 }

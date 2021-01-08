@@ -30,7 +30,7 @@ class InputMappingControl extends MappingControl {
      */
     addRenderer(mapping = undefined) {
         if (mapping) {
-            return new MappingRow(this, mapping);
+            return new InputMappingRow(this, mapping);
         }
     }
 }
