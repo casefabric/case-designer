@@ -155,7 +155,7 @@ class Repository {
         serverFile.load(file => {
             // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
             const model = serverFile.parseToModel();
-            if (model.migrated) {
+            if (model.hasMigrated()) {
                 console.log(`Definition of ${model.constructor.name} '${fileName}' has migrated; uploading result`);
                 this.saveXMLFile(fileName, model.toXML());
             }

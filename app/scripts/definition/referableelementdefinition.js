@@ -29,9 +29,8 @@ class ReferableElementDefinition extends XMLElementDefinition {
         // Now check whether or not to convert the deprecated 'description' attribute
         const description = this.parseAttribute('description');
         if (description && !this.documentation.text) {
-            console.log(`Migrating CMMN1.0 description attribute to <cmmn:documentation> element in ${this.constructor.name} '${this.name}'`);
+            this.modelDefinition.migrated(`Migrating CMMN1.0 description attribute to <cmmn:documentation> element in ${this.constructor.name} '${this.name}'`);
             this.documentation.text = description;
-            this.modelDefinition.migrated = true;
         }
     }
 

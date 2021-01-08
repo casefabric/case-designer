@@ -5,7 +5,7 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
         this.roles = this.parseElements('role', CaseRoleDefinition);
         if (this.roles.length == 0 && this.name) {
             // This means we bumped into a CMMN 1.0 role
-            console.log('Converting CMMN1.0 role');
+            
             // Since this is single role, the (optional) description is already converted to documentation, but remove that
             //  and let the role conversion create it instead
             if (this.documentation.text) this.documentation.text = '';
@@ -14,8 +14,7 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
             // Clear our name and id element, so that caseteam definition is not accidentally found as a case role element
             this.name = undefined;
             this.id = undefined;
-            this.caseDefinition.migrated = true;
-        }
+            this.caseDefinition.migrated('Converting CMMN1.0 role');        }
     }
 
     /**

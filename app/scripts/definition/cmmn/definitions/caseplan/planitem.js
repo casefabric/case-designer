@@ -151,22 +151,20 @@ class PlanItem extends CMMNElementDefinition {
         if (entryCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(entryCriteriaRefs, [], SentryDefinition);
             sentries.forEach(sentry => {
-                console.log(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
                 const ec = super.createDefinition(EntryCriterionDefinition);
                 ec.sentryRef = sentry.id;
                 this.entryCriteria.push(ec);
-                this.caseDefinition.migrated = true;
+                this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
             });
         }
         const exitCriteriaRefs = this.parseAttribute('exitCriteriaRefs');
         if (exitCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(exitCriteriaRefs, [], SentryDefinition);
             sentries.forEach(sentry => {
-                console.log(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
                 const ec = super.createDefinition(ExitCriterionDefinition);
                 ec.sentryRef = sentry.id;
                 this.exitCriteria.push(ec);
-                this.caseDefinition.migrated = true;
+                this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
             });
         }
 
