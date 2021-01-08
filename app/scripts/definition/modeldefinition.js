@@ -10,7 +10,6 @@ class ModelDefinition extends ReferableElementDefinition {
         super(modelDocument.root, undefined, undefined);
         super.modelDefinition = this;
         this.modelDocument = modelDocument;
-        this.migrated = false;
         this.typeCounters = new TypeCounter(this);
         /** @type {Array<XMLElementDefinition>} */
         this.elements = [];
@@ -131,5 +130,21 @@ class ModelDefinition extends ReferableElementDefinition {
      */
     toXML() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * @returns {Boolean}
+     */
+    hasMigrated() {
+        return this.__migrated === true;
+    }
+
+    /**
+     * @param {String} msg
+     */
+    migrated(msg) {
+        console.log(msg);
+        // console.warn(`Setting migrated to ${migrated} for ${this.modelDocument.fileName}`);
+        this.__migrated = true;
     }
 }

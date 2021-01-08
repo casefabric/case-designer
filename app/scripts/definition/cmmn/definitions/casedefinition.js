@@ -30,7 +30,7 @@ class CaseDefinition extends ModelDefinition {
             //  Note: if there is only 1 caseRoles tag it can be both CMMN1.0 or CMMN1.1;
             //  CaseTeamDefinition class will do the check if additional migration is required.
             if (rolesElements.length) {
-                console.log(`Converting ${rolesElements.length} CMMN1.0 roles`);
+                this.migrated(`Converting ${rolesElements.length} CMMN1.0 roles`);
             }
             // Create a new element
             const caseTeamElement = XML.parseXML('<caseRoles />').documentElement;
@@ -39,7 +39,6 @@ class CaseDefinition extends ModelDefinition {
                 caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
             });
             this.importNode.appendChild(caseTeamElement);
-            this.migrated = true;
         }
         return this.parseElement('caseRoles', CaseTeamDefinition);
     }

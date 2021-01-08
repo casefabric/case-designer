@@ -58,11 +58,10 @@ class CasePlanDefinition extends StageDefinition {
         if (exitCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(exitCriteriaRefs, [], SentryDefinition);
             sentries.forEach(sentry => {
-                console.log('Converting sentry into an ExitCriterion in case plan');
+                this.caseDefinition.migrated('Converting sentry into an ExitCriterion in case plan');
                 const ec = super.createDefinition(ExitCriterionDefinition);
                 ec.sentryRef = sentry.id;
                 this.exitCriteria.push(ec);
-                this.caseDefinition.migrated = true;
             });
         }
     }
