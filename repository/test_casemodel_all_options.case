@@ -1,4 +1,4 @@
-<case id="test_casemodel_all_options.case" name="test_casemodel_all_options" guid="_tEZDU">
+<case id="test_casemodel_all_options.case" name="test_casemodel_all_options" expressionLanguage="spel" guid="_tEZDU">
     <documentation textFormat="text/plain">
         <text>
             <![CDATA[This case has all possible elements, parameters,options and more.]]>
@@ -33,7 +33,7 @@ Role and Rules]]>
             </documentation>
             <itemControl>
                 <repetitionRule id="cm_cs6iD_4_repetitionRule" contextRef="cfi_csgXo_3">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[
                             
@@ -45,7 +45,7 @@ Multiple lines
                     </condition>
                 </repetitionRule>
                 <requiredRule id="cm_cs6iD_4_requiredRule">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[
                             
@@ -56,7 +56,7 @@ Multiple lines
                     </condition>
                 </requiredRule>
                 <manualActivationRule id="cm_cs6iD_4_manualActivationRule" contextRef="cfi_csgXo_4">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[]]>
                         </body>
@@ -133,7 +133,7 @@ and Multiple Discretionary Tasks]]>
             <discretionaryItem id="cm_cscw1_35" name="Discretionary to CPM - Ref to Auth. Roles and Applic. Rules" definitionRef="pid_cm_cscw1_35" applicabilityRuleRefs="rule_cseQf_1 rule_cseQf_2" authorizedRoleRefs="role_csgXo_0">
                 <itemControl>
                     <repetitionRule id="cm_cscw1_35_repetitionRule" contextRef="cfi_csgXo_1">
-                        <condition language="spel">
+                        <condition>
                             <body>
                                 <![CDATA[
                                 
@@ -146,7 +146,7 @@ and Multiple Discretionary Tasks]]>
                 </itemControl>
             </discretionaryItem>
             <applicabilityRule id="rule_cseQf_0" name="applic_rule_01" contextRef="cfi_csgXo_4">
-                <condition language="spel">
+                <condition>
                     <body>
                         <![CDATA[
                         
@@ -157,14 +157,14 @@ and Multiple Discretionary Tasks]]>
                 </condition>
             </applicabilityRule>
             <applicabilityRule id="rule_cseQf_1" name="applic_rule_02">
-                <condition language="spel">
+                <condition>
                     <body>
                         <![CDATA[]]>
                     </body>
                 </condition>
             </applicabilityRule>
             <applicabilityRule id="rule_cseQf_2" name="applic_rule_03" contextRef="cfi_csgXo_2">
-                <condition language="spel">
+                <condition>
                     <body>
                         <![CDATA[]]>
                     </body>
@@ -215,21 +215,21 @@ No Applic. Rules]]>
                     </documentation>
                 </discretionaryItem>
                 <applicabilityRule id="rule_cscw1_3" name="applic_rule_04">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[just some text]]>
                         </body>
                     </condition>
                 </applicabilityRule>
                 <applicabilityRule id="rule_cscw1_4" name="applic_rule_05">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[]]>
                         </body>
                     </condition>
                 </applicabilityRule>
                 <applicabilityRule id="rule_cscw1_5" name="applic_rule_06">
-                    <condition language="spel">
+                    <condition>
                         <body>
                             <![CDATA[]]>
                         </body>
@@ -264,7 +264,7 @@ No Applic. Rules]]>
         <caseTask id="pid_cm_cs5MY_28" name="Case Task with Mapping Configuration  Reorder, Expressions, CFI" isBlocking="true" caseRef="test_casemodel_parameters.case">
             <inputs id="_bQAdT" name="case_input_parameter_01" bindingRef="cfi_csgXo_3"/>
             <inputs id="_QlMx9" name="case_input_parameter_02" bindingRef="cfi_csgXo_6">
-                <bindingRefinement language="spel">
+                <bindingRefinement>
                     <body>
                         <![CDATA[
                         
@@ -276,7 +276,7 @@ No Applic. Rules]]>
             </inputs>
             <outputs id="_kiZnA" name="case_output_parameter_01" bindingRef="cfi_csgXo_4"/>
             <outputs id="_dDwRG" name="case_output_parameter_02">
-                <bindingRefinement language="spel">
+                <bindingRefinement>
                     <body>
                         <![CDATA[
                         
@@ -296,7 +296,7 @@ No Applic. Rules]]>
                 </extensionElements>
             </outputs>
             <parameterMapping id="_Le6ho" sourceRef="_bQAdT" targetRef="csARK_inCPs_0">
-                <transformation language="spel">
+                <transformation>
                     <body>
                         <![CDATA[
                         
@@ -309,7 +309,7 @@ No Applic. Rules]]>
             <parameterMapping id="_dZyCS" sourceRef="_QlMx9" targetRef="csARK_inCPs_1"/>
             <parameterMapping id="_vbrGf" sourceRef="csARK_outCPs_0" targetRef="_kiZnA"/>
             <parameterMapping id="_Fx3J6" sourceRef="csARK_outCPs_1" targetRef="_dDwRG">
-                <transformation language="spel">
+                <transformation>
                     <body>
                         <![CDATA[
                         
@@ -341,7 +341,7 @@ Multiple Lines
         <userEvent id="pid_cm_cs5MY_25" name="User Event - with Authorized Roles" authorizedRoleRefs="role_csgXo_0 role_csgXo_1"/>
         <userEvent id="pid_cm_csORX_106" name="EventListener_5"/>
         <timerEvent id="pid_cm_csPHe_18" name="Timer Event - CFI Start Trigger">
-            <timerExpression language="spel">
+            <timerExpression>
                 <body>
                     <![CDATA[
                     
@@ -364,7 +364,7 @@ Multiple Lines
             <planItem id="cm_csPHe_17" name="Milestone_2 with Rules" definitionRef="pid_cm_csPHe_17">
                 <itemControl>
                     <repetitionRule id="cm_csPHe_17_repetitionRule" contextRef="cfi_csgXo_1">
-                        <condition language="spel">
+                        <condition>
                             <body>
                                 <![CDATA[
                                 
@@ -375,7 +375,7 @@ Multiple Lines
                         </condition>
                     </repetitionRule>
                     <requiredRule id="cm_csPHe_17_requiredRule" contextRef="cfi_csgXo_6">
-                        <condition language="spel">
+                        <condition>
                             <body>
                                 <![CDATA[
                                 
