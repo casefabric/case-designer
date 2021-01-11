@@ -42,8 +42,8 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                 return;
             }
         } else {
-            if (! this.taskParameter) {
-                if (! newBinding) {
+            if (!this.taskParameter) {
+                if (!newBinding) {
                     // Again strange situation
                     return;
                 }
@@ -52,7 +52,7 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                 // We have an existing parameter, now check if there is a new binding
                 if (newBinding) {
                     // If we have an existing name in our parameter that starts with the newBinding's name, let's keep it, otherwise generate a new name
-                    if (! this.taskParameter.name || this.taskParameter.name.indexOf(newBinding.name) != 0) {
+                    if (!this.taskParameter.name || this.taskParameter.name.indexOf(newBinding.name) != 0) {
                         this.taskParameter.name = this.parent.generateUniqueOutputParameterName(newBinding.name);
                     }
                 }
@@ -146,13 +146,13 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
         if (this.targetRef) { // Perhaps an empty input mapping
             // Check whether it is a generated mapping, by determining whether a binding is set
             if (this.sourceRef && this.source && this.source == this.taskParameter && !this.taskParameter.bindingRef) {
-                if (! this.body) {
+                if (!this.body) {
                     return true;
                 }
             }
-            return ! this.sourceRef && ! this.body;
-        } else if (this.sourceRef) { // Perhaps and empty output mapping 
-            return ! this.targetRef && ! this.body;
+            return !this.sourceRef && !this.body;
+        } else if (this.sourceRef) { // Perhaps an empty output mapping 
+            return !this.targetRef && !this.body;
         } else if (this.body) { // Probably empty generated output mapping
             return false;
         } else {
@@ -161,52 +161,11 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
         }
     }
 
+    /**
+     * @returns {Boolean}
+     */
     get isInputMapping() {
-        const sourceRef = this.sourceRef;
-        const targetRef = this.targetRef;
-        const sourceElement = this.caseDefinition.getElement(this.sourceRef);
-        const targetElement = this.caseDefinition.getElement(this.targetRef);
-
-        // First simple cases: if either attribute is filled, and the corresponding element is found in the case,
-        //  it is immediately clear.
-        if (sourceRef && sourceElement) {
-            return true;
-        }
-        if (targetRef && targetElement) {
-            return false;
-        }
-
-        if (!sourceRef && !targetRef) {
-            // If neither attribute is set, then this is an entirely new mapping; but that is mostly only possible for output mappings,
-            //  because there is a fixed set of input mappings.
-            return false;
-        }
-
-        /** @type {TaskDefinition} */
-        const taskDefinition = this.parent;
-        if (taskDefinition.implementationModel) {
-            // If we have an implementation contract available, we can look up the source and/or target ref in the contract.
-            if (sourceRef && taskDefinition.implementationModel.findOutputParameter(sourceRef)) {
-                return false;
-            } else if (targetRef && taskDefinition.implementationModel.findInputParameter(targetRef)) {
-                return true;
-            } else {
-                // this is really an error; source and/or target are filled, but without proper refererences
-                console.error(`The mapping '${this.id}' in task '${taskDefinition.name}' has invalid source and target references (sourceRef = "${this.sourceRef}", targetRef = "${this.targetRef}")`, this)
-                return false;
-            }
-        } else {
-            // No implementation available yet. Let's assume that a bit here.
-            if (sourceRef && targetRef) {
-                // Both are set?! Must be some error here, since either should have been found in the task definition itself.
-                console.error(`The mapping '${this.id}' in task '${taskDefinition.name}' has invalid source and target references (sourceRef = "${this.sourceRef}", targetRef = "${this.targetRef}")`, this)
-                return false;
-            } else if (sourceRef) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+        throw new Error('This property must be implemented in ' + this.constructor.name);
     }
 
     get body() {
@@ -246,9 +205,28 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
 
     createExportNode(parentNode) {
         if (this.isEmpty()) {
-            // console.log("Not persisting empty mapping in task "+this.parent.name);
             return;
         }
         super.createExportNode(parentNode, 'parameterMapping', 'sourceRef', 'targetRef', 'transformation');
+    }
+}
+
+class InputMappingDefinition extends ParameterMappingDefinition {
+    get isInputMapping() {
+        return true;
+    }
+}
+
+class OutputMappingDefinition extends ParameterMappingDefinition {
+    get isInputMapping() {
+        return false;
+    }
+
+    createExportNode(parentNode) {
+        super.createExportNode(parentNode);
+        // It is allowed to have empty sourceRef attributes for output mappings; note that there must be an export node (i.e., tranformation is available)
+        if (this.exportNode !== undefined && !this.sourceRef) {
+            this.exportNode.setAttribute('sourceRef', '');
+        }
     }
 }

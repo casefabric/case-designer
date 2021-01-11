@@ -12,7 +12,7 @@ class HumanTaskDefinition extends TaskDefinition {
         if (this.extensionImplementation) {
             this.humanTaskRef = this.extensionImplementation.getAttribute('humanTaskRef');
             this.validatorRef = this.extensionImplementation.getAttribute('validatorRef');
-            XML.getChildrenByTagName(this.extensionImplementation, 'parameterMapping').forEach(childNode => this.instantiateChild(childNode, ParameterMappingDefinition, this.mappings));
+            super.parseMappings(this.extensionImplementation);
             this.assignment = this.parseExtensionElement(AssignmentDefinition);
             this.dueDate = this.parseExtensionElement(DueDateDefinition);
         }

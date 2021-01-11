@@ -43,6 +43,6 @@ class OutputMappingControl extends MappingControl {
             }
         }
 
-        return new MappingRow(this, mapping);
+        return new OutputMappingRow(this, mapping);
     }
 }
