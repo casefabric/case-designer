@@ -28,6 +28,10 @@ class CaseDefinition {
         this.identifier = this.caseElement.getAttribute('id');
         this.definitionsDocument.addCase(this);
 
+        // Add case file definition references
+        const caseFileDefinitionRefs = this.findReferences('caseFileItem', 'definitionRef');
+        definitionsDocument.resolveCaseFileDefinitionReferences(caseFileDefinitionRefs);
+
         // Find out the process that this case refers to and add them to the definitions document
         const processRefs = this.findReferences('processTask', 'processRef');
         definitionsDocument.resolveProcessReferences(processRefs);
@@ -35,10 +39,6 @@ class CaseDefinition {
         // Add task references
         const humanTaskRefs = this.findReferences('cafienne:implementation', 'humanTaskRef');
         definitionsDocument.resolveHumanTaskReferences(humanTaskRefs);
-
-        // Add case file definition references
-        const caseFileDefinitionRefs = this.findReferences('caseFileItem', 'definitionRef');
-        definitionsDocument.resolveCaseFileDefinitionReferences(caseFileDefinitionRefs);
 
         // Now load and parse the accompanying dimensions file with the CMMN DI format
         const dimensionsContent = store.load(caseName + Consts.CASE_DIMENSION_EXT);

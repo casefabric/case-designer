@@ -133,9 +133,9 @@ class Definitions {
         if (this.hasErrors()) {
             throw this.errors;
         }
+        this._appendCaseFileDefinitions();
         this._appendCaseDefinitions();
         this._appendProcesses();
-        this._appendCaseFileDefinitions();
         this._appendCMMNDI();
         return XML.printNiceXML(this.definitionsElement);
     }
