@@ -18,6 +18,7 @@ class InputMappingControl extends MappingControl {
         return [
             new ColumnRenderer(InputMappingDeleter),
             new ColumnRenderer(MappingCFI, 'Case File Item that binds to the input parameter of the task'),
+            new ColumnRenderer(InputOperationSelector),
             new ColumnRenderer(InputMappingExpression),
             new ColumnRenderer(InputParameterSelector),
             new ColumnRenderer(MappingOrderChanger)

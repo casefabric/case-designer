@@ -25,7 +25,7 @@ class MappingCFI {
         const zoomRow = column.html(
             `<div class="cfiZoom">
                 <label class="cfiName">${parameter ? parameter.bindingName : ''}</label>
-                <button class="openBindingReferenceButton ${extraStyle}" ${!bindingRefPresent ? 'disabled="true"' : ''} title="${breTooltip}" />
+                <button class="openBindingReferenceButton ${extraStyle}" ${!bindingRefPresent ? 'disabled="true"' : ''} title="${breTooltip}">L</button>
                 <button class="removeReferenceButton" title="Remove the reference to the case file item." />
             </div>`);
 
