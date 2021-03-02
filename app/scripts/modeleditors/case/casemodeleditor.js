@@ -229,6 +229,7 @@ class CaseModelEditor extends ModelEditor {
 
     onShow() {
         this.ideCaseFooter.css('display', 'block');
+        $(document.body).off('keydown', this.keyStrokeListener);
         $(document.body).on('keydown', this.keyStrokeListener);
     }
 
