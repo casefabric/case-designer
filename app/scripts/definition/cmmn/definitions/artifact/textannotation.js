@@ -6,13 +6,6 @@ class TextAnnotationDefinition extends ArtifactDefinition {
         this.text = textElement ? XML.getCDATANodeOrSelf(textElement).textContent : '';
     }
 
-    defaultShapeSize() {
-        return {
-            w: 100,
-            h: 60
-        };
-    }
-
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'textAnnotation', 'textFormat');
 

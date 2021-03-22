@@ -32,7 +32,8 @@ class PlanItemView extends CMMNElement {
     }
 
     addCriterion(criterion, constructorFunction) {
-        const shape = this.case.dimensions.getShape(criterion);
+        // If existing shape for criterion is not found, create a new shape.
+        const shape = this.case.dimensions.getShape(criterion) || this.case.dimensions.createShape(this.shape.x - 6, this.shape.y + 10, 12, 20, criterion.id);
         const view = new constructorFunction(this, criterion, shape);
         this.__addCMMNChild(view);
     }

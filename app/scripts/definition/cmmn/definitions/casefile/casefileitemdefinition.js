@@ -25,13 +25,6 @@ class CaseFileItemDef extends CaseFileItemCollection {
         this.isEmpty = false;
     }
 
-    defaultShapeSize() {
-        return {
-            w: 25,
-            h: 40
-        };
-    }
-
     get isArray() {
         return this.multiplicity.endsWith('OrMore');
     }
