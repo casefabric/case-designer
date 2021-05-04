@@ -22,15 +22,23 @@ class Backend {
         return rp(options);
     }
 
-    getEvents(caseId, token) {
-        const uri = this.url + '/debug/' + caseId;
-        const method = "GET";
+    getEvents(caseId, from, to, token) {
+        const parameters = [];
+        if (from && from !== '') {
+            parameters.push(`from=${from}`)
+        }
+        if (to) {
+            parameters.push(`to=${to}`)
+        }
+        const uri = `${this.url}/debug/${caseId}?${parameters.join('&')}`;
+        const method = 'GET';
         const headers = {
             'Accept': 'application/json',
-            'CAFIENNE-JWT-TOKEN': token,
             'Content-Type': 'text/plain'
         }
-
+        if (token) {
+            headers.Authorization = token
+        }
         return rp({ method, uri, headers, resolveWithFullResponse: true})
     }
 }

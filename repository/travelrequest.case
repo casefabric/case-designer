@@ -120,7 +120,7 @@
                     <assignment id="_4wCNa_43" contextRef="cfi_csKsD_0">
                         <condition id="_4wCNa_44">
                             <body>
-                                <![CDATA[TravelRequest.TravellerDetails.Requestor.toLowerCase()]]>
+                                <![CDATA[TravelRequest.TravellerDetails.Requestor]]>
                             </body>
                         </condition>
                     </assignment>
@@ -144,7 +144,7 @@
                     <assignment id="_4wCNa_48" contextRef="cfi_csKsD_0">
                         <condition id="_4wCNa_49">
                             <body>
-                                <![CDATA[caseInstance.getCaseTeam().getMemberWithRole("Approver")]]>
+                                <![CDATA[case.team.role.Approver.member?.id]]>
                             </body>
                         </condition>
                     </assignment>
@@ -183,8 +183,7 @@
                     <assignment id="_4wCNa_47" contextRef="cfi_csKsD_0">
                         <condition id="_4wCNa_52">
                             <body>
-                                <![CDATA[TravelRequest.TravellerDetails.Requestor.toLowerCase()
-                                ]]>
+                                <![CDATA[TravelRequest.TravellerDetails.Requestor]]>
                             </body>
                         </condition>
                     </assignment>
@@ -261,28 +260,28 @@
             <parameterMapping id="inPM_cm_csjTZ_604_7" sourceRef="inTP_cm_csjTZ_604_0" targetRef="toName">
                 <transformation>
                     <body>
-                        <![CDATA[caseInstance.getCaseTeam().getMemberWithRole("Approver")]]>
+                        <![CDATA[case.team.role.Approver.member?.id]]>
                     </body>
                 </transformation>
             </parameterMapping>
             <parameterMapping id="inPM_cm_csjTZ_604_8" sourceRef="inTP_cm_csjTZ_604_0" targetRef="toAddress">
                 <transformation>
                     <body>
-                        <![CDATA[caseInstance.getCaseTeam().getMemberWithRole("Approver") + "@email.com"]]>
+                        <![CDATA[case.team.role.Approver.member?.id + "@email.com"]]>
                     </body>
                 </transformation>
             </parameterMapping>
             <parameterMapping id="inPM_cm_csVHC_16_7" sourceRef="inTP_cm_csjTZ_604_0" targetRef="taskId">
                 <transformation>
                     <body>
-                        <![CDATA[caseInstance.getPlanItemByName("Approve Travel request").getId()]]>
+                        <![CDATA[case.plan["Approve and Generate Travel Order"]["Approve Travel request"].id]]>
                     </body>
                 </transformation>
             </parameterMapping>
             <parameterMapping id="inPM_cm_csVHC_16_8" sourceRef="inTP_cm_csjTZ_604_0" targetRef="caseId">
                 <transformation>
                     <body>
-                        <![CDATA[caseInstance.getId()]]>
+                        <![CDATA[case.id]]>
                     </body>
                 </transformation>
             </parameterMapping>
@@ -362,7 +361,7 @@
                 <transformation>
                     <body>
                         <![CDATA[
-                            "{""Approval"":"+caseInstance.getCaseFile().getItem("Approval").getValue().toString()+", ""travelrequest"": "+caseInstance.getCaseFile().getItem("TravelRequest").getValue().toString()+"}"
+                            "{""Approval"":"+case.file.Approval.toString()+", ""travelrequest"": "+case.file.TravelRequest.toString()+"}"
                         ]]>
                     </body>
                 </transformation>
@@ -405,7 +404,7 @@
             <parameterMapping id="inPM_cm_csRSq_791_5" sourceRef="inTP_cm_csRSq_791_2" targetRef="fromName">
                 <transformation>
                     <body>
-                        <![CDATA[caseInstance.getCaseTeam().getMemberWithRole("PersonalAssistant")]]>
+                        <![CDATA[case.team.role.PersonalAssistant.member?.id]]>
                     </body>
                 </transformation>
             </parameterMapping>

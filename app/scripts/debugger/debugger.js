@@ -18,17 +18,45 @@ class Debugger extends StandardForm {
 
     renderData() {
         this.htmlContainer.html(
-            `<div>
+`<div>
     <div>
-        <label>Case instance</label>
-        <input class="caseInstanceId" type="text"></input>
-        <button class="btnShowEvents">Show Events</button>
-        <input style="margin-left:20px;margin-top:10px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
-        <label for="ht">Show all timestamps</label>
-        <input style="margin-left:20px;margin-top:10px" id="hd" class="inputHideDetails" type="checkbox" checked></input>
-        <label for="hd">Hide/show event user details</label>
+        <span style="top:-15px;position:relative;">
+            <label>Case instance</label>
+            <input class="caseInstanceId" type="text"></input>
+            <button class="btnShowEvents">Show Events</button>
+        </span>
+        <span style="left:335px;top:-35px;font-size:smaller;position:relative;">
+            <table>
+                <tr>
+                    <td>
+                        <label style="margin-right:10px;">Event Range (from/to)</label>
+                    </td>
+                    <td>
+                        <label style="margin-left:15px">Show/hide options</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="from" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
+                    </td>
+                    <td>
+                        <input style="margin-left:15px;position:relative;top:1px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
+                        <label style="position:relative;top:-2px" for="ht">All timestamps</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="to" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
+                    </td>
+                    <td>        
+                        <input style="margin-left:15px" id="hd" class="inputHideDetails" type="checkbox"></input>
+                        <label style="position:relative;top:-3px" for="hd">Hide generic event data</label>
+                    </td>
+                </tr>
+            </table>
+        </span>
     </div>
-    <span class="debug_timestamp"></span>
+    <div class="debug_timestamp"></div>
     <div sid="${this.case.name}-debugger-splitter" class="debug-container">
         <div class="event-list">
             <label>Events</label>
@@ -50,6 +78,8 @@ class Debugger extends StandardForm {
 </div>`);
 
         this.html.find('.caseInstanceId').val(localStorage.getItem('debug-case-id'))
+        this.html.find('.from').val(localStorage.getItem('from'))
+        this.html.find('.to').val(localStorage.getItem('to'))
         this.login = JSON.parse(localStorage.getItem('login') || '{}')
         this.html.find('.inputHideDetails').prop('checked', this.hideDetails);
         this.html.find('.inputHideDetails').on('change', e => this.hideDetails = e.currentTarget.checked);
@@ -230,6 +260,9 @@ class Debugger extends StandardForm {
      */
     set events(events) {
         this._events = events;
+        for (let i = 0; i< events.length; i++) {
+            events[i].localNr = i;
+        }
         this.currentDefinition = ''; // Clear current case definition
         this.events.filter(event => event.type === 'CaseDefinitionApplied').forEach(event => this.currentDefinition = event.content.definition.source);
         this.pics = events.filter(event => event.type === 'PlanItemCreated');
@@ -336,7 +369,7 @@ class Debugger extends StandardForm {
                 timestampString = this.showAllTimestamps ? format(timestamp) : '';
             }
             const bgc = getBackgroundColor(event);
-            return `<tr event-nr="${event.nr - 1}">
+            return `<tr event-nr="${event.localNr}">
                 <td>${event.nr}</td>
                 <td style="${bgc}">${event.type}</td>
                 <td style="white-space:nowrap"><span>${this.getEventName(event)}</span></td>
@@ -413,8 +446,20 @@ class Debugger extends StandardForm {
 
     loadEvents() {
         const caseInstanceId = this.html.find('.caseInstanceId').val();
+        const from = this.html.find('.from').val();
+        const to = this.html.find('.to').val();
+        const parameters = [];
+        if (from && from !== '') {
+            parameters.push(`from=${from}`)
+        }
+        if (to) {
+            parameters.push(`to=${to}`)
+        }
+
         localStorage.setItem('debug-case-id', caseInstanceId.toString());
-        $.get('/repository/api/events/' + caseInstanceId)
+        localStorage.setItem('from', ''+from);
+        localStorage.setItem('to', ''+to);
+        $.get(`/repository/api/events/${caseInstanceId}?${parameters.join('&')}`)
             .done(data => this.events = data)
             .fail(data => ide.danger(data.responseText));
     }

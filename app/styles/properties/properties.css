@@ -51,7 +51,7 @@
     display: block;
 }
 
-/* textarea, input (but not checkboxes) and separator bar take full width with a 3px margin left and right */
+/* textarea, input (but not checkboxes and radio) and separator bar take full width with a 3px margin left and right */
 .properties-container textarea,
 .properties-container input,
 .properties-container select,
@@ -64,8 +64,9 @@
     width: fill-available;
 }
 
-/* checkboxes should not take 100% */
-.properties-container input[type="checkbox"] {
+/* checkboxes and radio should not take 100% */
+.properties-container input[type="checkbox"],
+.properties-container input[type="radio"] {
     width: auto;
 }
 

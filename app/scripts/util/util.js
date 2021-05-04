@@ -4,7 +4,7 @@
      * @param {string} text 
      */
     static copyText(text) {
-        if (! text) {
+        if (!text) {
             console.warn('No text to copy to clipboard');
             return;
         }
@@ -48,8 +48,18 @@
      */
     static detachEventHandlers(html) {
         // First clear all javascript listeners to avoid memory leakings because of cross-references between js and rendering engine
-        $(html).find('*').toArray().forEach(c => $(c).off());
         $(html).off();
+        // Note: for large set of debug events (like 60000) there is 350,000 children to "off" the event listeners, and good old jquery.find('*') runs into maximum stack trace stuff
+        // For speed we're iterating native html elements
+        const childTraverser = html => {
+            $(html).off(); // Take off any event listeners through the JQuery wrapper
+            let child = html.firstChild;
+            while (child) {
+                childTraverser(child);
+                child = child.nextSibling;
+            }                
+        }
+        html.get().forEach(childTraverser);
     }
 
     /**
@@ -76,7 +86,7 @@
     static getRandomSet(n) {
         const s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const str = Array(n).join().split(',').map(
-            function() {
+            function () {
                 return s.charAt(Math.floor(Math.random() * s.length));
             }).join('');
 
