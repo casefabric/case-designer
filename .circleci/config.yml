@@ -89,8 +89,10 @@ workflows:
   version: 2
   ci:
     jobs:
-      - build
+      - build:
+          context: automation-context
       - build for release:
+          context: automation-context
           filters:
             tags:
               only: /.*/
