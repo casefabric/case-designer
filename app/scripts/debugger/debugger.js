@@ -235,13 +235,13 @@ class Debugger extends StandardForm {
         this.html.css('top', '0px');
         this.html.css('left', '0px');
 
-        $(document.body).off('keydown', this.keyDownHandler);
-        $(document.body).on('keydown', this.keyDownHandler);
+        $(document).off('keydown', this.keyDownHandler);
+        $(document).on('keydown', this.keyDownHandler);
         this.html.find('.btnShowEvents').focus();
     }
 
     onHide() {
-        $(document.body).off('keydown', this.keyDownHandler);
+        $(document).off('keydown', this.keyDownHandler);
         this.selectedEventId = undefined;
     }
 

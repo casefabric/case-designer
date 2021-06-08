@@ -19,8 +19,11 @@ class DragData {
                                 <img class="drag-image" src="${this.imgURL}"/>
                                 <label class="drag-label">${this.model}</label>
                             </div>`);
-        $('body').append(this.dragBox);
+        $(document.body).append(this.dragBox);
 
+        // Create event listeners
+        this.mouseMoveHandler = e => this.handleMousemoveModel(e);
+        this.mouseUpHandler = e => this.handleMouseupModel(e);
         this.escapeKeyListener = e => {
             if (e.keyCode == 27) {
                 // Hide dragbox, and remove drop handler
@@ -29,10 +32,15 @@ class DragData {
             }
         }
 
+        // Off the handlers to avoid repeated addition
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
+        $(document).off('keydown', this.escapeKeyListener);
+
         // Add temporary event handlers for moving the mouse around; they will be removed when the drag data is dropped.
-        $('body').on('keydown', this.escapeKeyListener);
-        $('body').on('pointermove', e => this.handleMousemoveModel(e));
-        $('body').on('pointerup', e => this.handleMouseupModel(e));
+        $(document).on('pointermove', this.mouseMoveHandler);
+        $(document).on('pointerup', this.mouseUpHandler);
+        $(document).on('keydown', this.escapeKeyListener);
     }
 
     handleMousemoveModel(e) {
@@ -94,10 +102,12 @@ class DragData {
 
     cleanUp() {
         this.ide.dragging = false;
-        $('body').off('keydown', this.escapeKeyListener);
-        $('body').off('pointermove').off('pointerup');
         this.dragBox.remove();
         this.owner.dragData = undefined;
+
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
+        $(document).off('keydown', this.escapeKeyListener);
     }
 }
 
