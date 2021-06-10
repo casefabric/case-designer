@@ -95,7 +95,7 @@ class ShapeDefinition extends DiagramElement {
     }
 
     toString() {
-        return this.constructor.name + `[x=${this.x}, y=${this.y}, width=${this.width}, height=${this.height}`;
+        return this.constructor.name + `[cmmnElementRef='${this.cmmnElementRef}', x=${this.x}, y=${this.y}, width=${this.width}, height=${this.height}]`;
     }
 }
 

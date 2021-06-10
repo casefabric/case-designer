@@ -16,7 +16,7 @@ class ParameterDefinition extends CMMNElementDefinition {
     }
 
     get bindingName() {
-        return this.bindingRef ? this.binding.name : '';
+        return this.bindingRef ? this.binding && this.binding.name : '';
     }
 
     get defaultOperation() {

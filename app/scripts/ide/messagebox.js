@@ -50,7 +50,7 @@
     }
 
     resize() {
-        const boxHeight = $('body').outerHeight() - this.html.offset().top - 20;
+        const boxHeight = $(document).outerHeight() - this.html.offset().top - 20;
         this.html.css('max-height', boxHeight);
     }
 

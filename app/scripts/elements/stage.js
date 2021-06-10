@@ -127,6 +127,10 @@
     createPlanItemView(definition) {
         const planItemDefinition = definition.definition;
         const shape = this.case.dimensions.getShape(definition);
+        if (! shape) {
+            console.warn(`Error: missing shape definition for ${definition.definition.constructor.name} named "${definition.name}" with id "${definition.id}"`)
+            return;
+        }
 
         if (planItemDefinition instanceof HumanTaskDefinition) {
             return new HumanTask(this, definition, planItemDefinition, shape);

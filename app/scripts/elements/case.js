@@ -72,10 +72,16 @@
 
             const getDefinition = shape => {
                 const element = caseDefinition.getElement(shape.cmmnElementRef);
-                if (! element) {
-                    return CaseFileItemDef.createEmptyDefinition(caseDefinition, shape.cmmnElementRef);
-                } else {
+                if (element) {
                     return element;
+                } else {
+                    // It may well be an empty, unreferenced CaseFileItem, as that is not resizable; let CaseFileItem figure that out
+                    const emptyCaseFileItem = CaseFileItem.createElementForShape(caseDefinition, shape);
+                    if (! emptyCaseFileItem) {
+                        // But if it is not, then we should print a warning
+                        console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
+                    }
+                    return emptyCaseFileItem;
                 }
             }
             // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
@@ -83,6 +89,7 @@
             const stages = this.items.filter(element => element instanceof Stage);
             this.dimensions.shapes.forEach(shape => {
                 const definitionElement = getDefinition(shape);
+                // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
                 if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
                     const parent = this.getSurroundingStage(stages, shape);
                     if (definitionElement instanceof CaseFileItemDef) {

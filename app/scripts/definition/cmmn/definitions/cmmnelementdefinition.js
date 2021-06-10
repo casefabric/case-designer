@@ -17,14 +17,6 @@ class CMMNElementDefinition extends ReferableElementDefinition {
         this.caseDefinition = caseDefinition;
     }
 
-    /**
-     * Returns the default shape size of the element; Must be implemented in all subclasses
-     * @returns {*} An object with w, h coordinates for width and height
-     */
-    defaultShapeSize() {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
     toString() {
         const name = this.name ? ` '${this.name}'` : '';
         return `${this.constructor.name}${name}`;

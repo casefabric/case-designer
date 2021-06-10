@@ -137,6 +137,7 @@ class OutputParametersControl extends ParametersControl {
 class ParameterRow extends RowRenderer {
     /**
      * @param {ParametersControl} control
+     * @param {ParameterDefinition} parameter
      */
     constructor(control, parameter = undefined) {
         super(control, parameter);

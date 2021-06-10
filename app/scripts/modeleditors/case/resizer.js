@@ -97,8 +97,16 @@ class Resizer {
         this.downX = e.clientX;
         this.downY = e.clientY;
 
-        $(document).on('pointermove', e => this.handleMouseMove(e, resizeDirection));
-        $(document).on('pointerup', e => this.handleMouseUp(e));
+        // Start listening to mouse move and mouseup
+        this.mouseMoveHandler = e => this.handleMouseMove(e, resizeDirection);
+        this.mouseUpHandler = e => this.handleMouseUp(e);
+
+        // Off the handlers to avoid repeated addition
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
+
+        $(document).on('pointermove', this.mouseMoveHandler);
+        $(document).on('pointerup', this.mouseUpHandler);
     }
 
     /**
@@ -223,8 +231,8 @@ class Resizer {
      * handles the mouseup after resizing
      */
     handleMouseUp(e) {
-        $(document).off('pointermove');
-        $(document).off('pointerup');
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
 
         // Bit ugly to do it here, but stage.__resize() during move should not immediately reset children,
         //  this logic should only happen at the end of the resize action. This avoids that resizing

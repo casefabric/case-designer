@@ -13,6 +13,18 @@
     }
 
     /**
+     * Check if the shape has the right size to be an "empty" case file item.
+     * @param {CaseDefinition} caseDefinition 
+     * @param {ShapeDefinition} shape 
+     * @returns 
+     */
+    static createElementForShape(caseDefinition, shape) {
+        if (shape.width == 25 && shape.height == 40) {
+            return CaseFileItemDef.createEmptyDefinition(caseDefinition);
+        }
+    }
+
+    /**
      * Creates a new CaseFileItem
      * @param {Stage} parent 
      * @param {CaseFileItemDef} definition 

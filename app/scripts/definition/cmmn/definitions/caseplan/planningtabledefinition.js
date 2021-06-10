@@ -8,10 +8,6 @@ class PlanningTableDefinition extends UnnamedCMMNElementDefinition {
         // TODO: PlanningTables can be nested in themselves, according to the spec. But we will not implement that here.
     }
 
-    defaultShapeSize() {
-        return { w: 24, h: 16 };
-    }
-
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'planningTable', 'tableItems', 'ruleDefinitions');
     }

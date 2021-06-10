@@ -22,9 +22,17 @@ class HaloDragItem extends HaloItem {
         const haloImg = $(e.currentTarget)[0];
 
         // Start listening to mouse move and mouseup
-        $(document).on('pointermove', e => this.handleMouseMove(e));
-        $(document).on('pointerup', e => this.handleMouseUp(e));
+        this.mouseMoveHandler = e => this.handleMouseMove(e);
+        this.mouseUpHandler = e => this.handleMouseUp(e);
         this.keyDownHandler = e => this.handleKeyDown(e);
+
+        // Off the handlers to avoid repeated addition
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
+        $(document).off('keydown', this.keyDownHandler);
+
+        $(document).on('pointermove', this.mouseMoveHandler);
+        $(document).on('pointerup', this.mouseUpHandler);
         $(document).on('keydown', this.keyDownHandler);
 
         // Hide current properties view
@@ -43,8 +51,9 @@ class HaloDragItem extends HaloItem {
     }
 
     clear() {
-        $(document).off('pointermove');
-        $(document).off('pointerup');
+        $(document).off('pointermove', this.mouseMoveHandler);
+        $(document).off('pointerup', this.mouseUpHandler);
+        $(document).off('keydown', this.keyDownHandler);
         // Remove the temp connector
         this.tempConnector.remove();
     }

@@ -131,7 +131,7 @@ class Properties extends MovableEditor {
 
             const menuWidth = this.html.width();
             const menuHeight = this.html.height();
-            const bdyHeight = $('body').height();
+            const bdyHeight = $(document).height();
             const canvasOffset = this.cmmnElement.case.svg.offset();
 
             //compensate for paper offset and scroll
