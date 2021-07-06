@@ -38,10 +38,8 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
 
     createExportNode(parentNode) {
         // Only export if there are actual roles defined in this case
-        console.log("Exporting team; roles length: " + this.roles.length)
         if (this.roles.length) {
             super.createExportNode(parentNode, 'caseRoles', 'roles');
         }
-        console.log("This.exportNode: " + XML.prettyPrint(this.exportNode))
     }
 }
