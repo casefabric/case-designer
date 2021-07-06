@@ -12,6 +12,8 @@ class HumanTaskImplementationDefinition extends HumanTaskModelElementDefinition 
     get taskModel() {
         if (! this._taskModel) {
             this._taskModel = super.createDefinition(TaskModelDefinition);
+            this._taskModel.id = undefined;
+            this._taskModel.name = undefined;
         }
         return this._taskModel;
     }
