@@ -23,9 +23,9 @@ class Debugger extends StandardForm {
         <span style="top:-15px;position:relative;">
             <label>Case instance</label>
             <input class="caseInstanceId" type="text"></input>
-            <button class="btnShowEvents">Show Events</button>
+            <button class="buttonShowEvents">Show Events</button>
         </span>
-        <span style="left:335px;top:-35px;font-size:smaller;position:relative;">
+        <span style="left:450px;top:-35px;font-size:smaller;position:relative;">
             <table>
                 <tr>
                     <td>
@@ -56,11 +56,18 @@ class Debugger extends StandardForm {
             </table>
         </span>
     </div>
-    <div class="debug_timestamp"></div>
-    <div sid="${this.case.name}-debugger-splitter" class="debug-container">
-        <div class="event-list">
-            <label>Events</label>
-            <div class="tableDiv">
+    <div class="event-container">
+        <div>
+            <span class="spanEventListButtons">
+                <label>Events</label>
+                <button class="buttonCopyEvents">Copy events</button>
+                <button class="buttonCopyDefinition">Copy case definition</button>            
+                <button class="buttonShowParentEvents">Show Parent Events</button>
+                <button class="buttonCopyFilteredEvents">Copy filtered events</button>
+            </span>
+        </div>
+        <div class="debug-container">
+            <div class="event-list">
                 <table>
                     <tr>
                         <td><strong>Nr</strong></td>
@@ -69,10 +76,9 @@ class Debugger extends StandardForm {
                     </tr>
                 </table>
             </div>
-        </div>
-        <div class="event-content">
-            <label class="debugFormLabel"></label>
-            <div class="codeMirrorSource debugFormContent" />
+            <div class="event-content">
+                <div class="codeMirrorSource debugFormContent" />
+            </div>
         </div>
     </div>
 </div>`);
@@ -88,15 +94,19 @@ class Debugger extends StandardForm {
             this.showAllTimestamps = e.currentTarget.checked;
             this.renderEvents();
         });
-        this.html.find('.btnShowEvents').on('click', () => this.showEvents());
+        this.html.find('.buttonShowEvents').on('click', () => this.showEvents());
+        this.html.find('.buttonShowParentEvents').on('click', () => this.showParentEvents());
+        this.html.find('.buttonCopyEvents').on('click', () => Util.copyText(JSON.stringify(this.events, undefined, 2)));
+        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this.eventSelection, undefined, 2)));
+        this.html.find('.buttonCopyDefinition').on('click', () => Util.copyText(this.currentDefinition));
 
         this.splitter = new RightSplitter(this.html.find('.debug-container'), '150px');
-        this.eventTable = this.html.find('.tableDiv');
+        this.eventTable = this.html.find('.event-list');
 
         // Add code mirror for decent printing
         this.codeMirrorEventViewer = CodeMirrorConfig.createJSONEditor(this.htmlContainer.find('.debugFormContent'));
 
-        this.keyDownHandler = e => this.handleKeyDown(e);
+        this.keyHandler = e => this.handleKeyDown(e);
 
         // Scan for pasted text. It can upload and re-engineer a deployed model into a set of files
         this.html.find('.event-content').on('paste', e => this.handlePasteText(e));
@@ -235,18 +245,17 @@ class Debugger extends StandardForm {
         this.html.css('top', '0px');
         this.html.css('left', '0px');
 
-        $(document).off('keydown', this.keyDownHandler);
-        $(document).on('keydown', this.keyDownHandler);
-        this.html.find('.btnShowEvents').focus();
+        $(document).off('keyup', this.keyHandler);
+        $(document).on('keyup', this.keyHandler);
+        this.html.find('.buttonShowEvents').focus();
     }
 
     onHide() {
-        $(document).off('keydown', this.keyDownHandler);
+        $(document).off('keyup', this.keyHandler);
         this.selectedEventId = undefined;
     }
 
     setEventContent(label, content) {
-        this.html.find('.debugFormLabel').text(label);
         this.codeMirrorEventViewer.setValue(content);
         this.codeMirrorEventViewer.refresh();
     }
@@ -265,6 +274,8 @@ class Debugger extends StandardForm {
         }
         this.currentDefinition = ''; // Clear current case definition
         this.events.filter(event => event.type === 'CaseDefinitionApplied').forEach(event => this.currentDefinition = event.content.definition.source);
+        this.parentActorId = '';
+        this.events.filter(event => event.content.parentActorId).map(event => this.parentActorId = event.content.parentActorId);
         this.pics = events.filter(event => event.type === 'PlanItemCreated');
         console.log(`Found ${events.length} events`)
         this.renderEvents();
@@ -277,18 +288,6 @@ class Debugger extends StandardForm {
         }
     }
 
-    getStage(event) {
-        const stageId = event.content.stageId;
-        if (! stageId) {
-            return "TOP";
-        }
-        const stagePIC = this.pics.find(pic => pic.content.planItemId === stageId);
-        if (!stagePIC) {
-            return "missing stage "+ stageId
-        }
-        return stagePIC.content.name + "." + stagePIC.content.planitem.index;
-    }
-
     getEventName(event) {
         const planItemId = event.content.planItemId || event.content.taskId;
         if (!planItemId) return '';
@@ -297,6 +296,14 @@ class Debugger extends StandardForm {
         const eventIndex = this.getIndex(eventWithName);
         // console.log("Event with name: "+(eventWithName ? (eventWithName.content.name) : 'none'));
         return eventWithName;
+    }
+
+    getEventButton(event) {
+        if (event.type==='TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask')) {
+            return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>'
+        } else {
+            return '';
+        }
     }
 
     getPlanItemName(planItemId) {
@@ -351,8 +358,8 @@ class Debugger extends StandardForm {
         let currentTimestamp = '';
         let numTransactions = 0;
 
-        const eventSelection = this.events.filter(applyFilter);
-        const newRows = eventSelection.map(event => {
+        this.eventSelection = this.events.filter(applyFilter);
+        const newRows = this.eventSelection.map(event => {
             const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >=0 ? event.content.lastModified : '';
             const format = timestamp => timestamp.substring(0, timestamp.indexOf('.') + 4);
             let timestampString = timestamp;
@@ -371,37 +378,45 @@ class Debugger extends StandardForm {
             const bgc = getBackgroundColor(event);
             return `<tr event-nr="${event.localNr}">
                 <td>${event.nr}</td>
-                <td style="${bgc}">${event.type}</td>
+                <td style="${bgc}">${event.type}${this.getEventButton(event)}</td>
                 <td style="white-space:nowrap"><span>${this.getEventName(event)}</span></td>
                 <td style="white-space:nowrap">${timestampString}</td>
             </tr>\n`
         }).reverse().join('');
         this.eventTable.html(`
-        <span class="spanCopyButtons">
-            <button class="buttonCopyEvents" style="height:18px;font-size:xx-small">Copy events</button>
-            <button class="buttonCopyEvents" style="height:18px;font-size:xx-small;${this.events.length != eventSelection.length ? '' : 'display:none'}">Copy filtered events</button>
-            <button class="buttonCopyDefinition" style="height:18px;font-size:smaller;${this.currentDefinition ? '' : 'display:none'}">Copy case definition</button>            
-        </span>
         <table>
-            <tr>
-                <td><strong>Nr</strong><br/><div>count: ${eventSelection.length}</div></td>
-                <td><strong>Type</strong><br/><input type="text"  filter="eventTypeFilter" value="${this.eventTypeFilter}" /></td>
-                <td style="white-space:nowrap"><strong>Name</strong><br/><input type="text" filter="eventNameFilter" value="${this.eventNameFilter}" /></td>
-                <td style="white-space:nowrap"><strong>Time</strong><div>batches: ${numTransactions}</div></td>
-            </tr>
-            ${newRows}
+            <thead>
+                <tr>
+                    <td><strong>Nr</strong><br/><div>count: ${this.eventSelection.length}</div></td>
+                    <td><strong>Type</strong><br/><input type="text"  filter="eventTypeFilter" value="${this.eventTypeFilter}" /></td>
+                    <td style="white-space:nowrap"><strong>Name</strong><br/><input type="text" filter="eventNameFilter" value="${this.eventNameFilter}" /></td>
+                    <td style="white-space:nowrap"><strong>Time</strong><div>batches: ${numTransactions}</div></td>
+                </tr>
+            </thead>
+            <tbody>
+                ${newRows}
+            </tbody>
         </table>`);
-        this.eventTable.find('.buttonCopyDefinition').on('click', e => Util.copyText(this.currentDefinition));
-        this.eventTable.find('.buttonCopyEvents').on('click', e => Util.copyText(JSON.stringify(this.events, undefined, 2)));
         this.eventTable.find('tr').on('click', e => this.selectEvent(e.currentTarget));
         this.eventTable.find('input[filter]').on('change', e => this.searchWith(e));
-        this.eventTable.find('.nameF').css('width', 'fit-content');
-        this.eventTable.find('.nameF').css('text-wrap', 'false');
+        this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
 
         if (this.eventTable.width() < this.eventTable.find('table').width()) {
             this.splitter.repositionSplitter(this.eventTable.find('table').width() + 20);
         }
         if (!renderedBefore) this.splitter.repositionSplitter(this.eventTable.find('table').width() + 70);
+        this.renderEventButtons();
+    }
+
+    renderEventButtons() {
+        if (this.events && this.events.length > 0) {
+            this.html.find('.spanEventListButtons').css('display', 'block');
+            this.html.find('.buttonCopyDefinition').css('display', this.currentDefinition ? '' : 'none');
+            this.html.find('.buttonCopyFilteredEvents').css('display', this.events.length == this.eventSelection.length ? 'none' : '');
+            this.html.find('.buttonShowParentEvents').css('display', this.parentActorId ? '' : 'none');
+        } else {
+            this.html.find('.spanEventListButtons').css('display', 'none');
+        }
     }
 
     get selectedEventId() {
@@ -412,14 +427,38 @@ class Debugger extends StandardForm {
         this._evtId = id;
     }
 
+
+    /**
+     * @param {Element} htmlElement
+     */
+    findEvent(htmlElement) {
+        const eventId = $(htmlElement).closest('tr').attr('event-nr');
+        if (eventId) {
+            const event = this.events[eventId];
+            return event;
+        }
+    }
+
+    showSubEvents(btn) {
+        const event = this.findEvent(btn);
+        this.html.find('.caseInstanceId').val(event.content.taskId);
+        this.showEvents();
+    }
+
+    showParentEvents() {
+        if (this.parentActorId) {
+            this.html.find('.caseInstanceId').val(this.parentActorId);
+            this.showEvents();
+        }
+    }
+
     /**
      * @param {Element} tr
      */
     selectEvent(tr) {
-        const eventId = $(tr).attr('event-nr');
-        if (eventId) {
-            this.selectedEventId = eventId;
-            const event = this.events[eventId];
+        const event = this.findEvent(tr);
+        if (event) {
+            this.selectedEventId = event.localNr;
             if (event.type === 'CaseDefinitionApplied') {
                 console.group('CaseDefinition');
                 console.log(event.content.definition.source);
@@ -437,14 +476,6 @@ class Debugger extends StandardForm {
     }
 
     showEvents() {
-        // if (!this.token) {
-            // this.getJWTToken(() => this.loadEvents())
-        // } else {
-            this.loadEvents();
-        // }
-    }
-
-    loadEvents() {
         const caseInstanceId = this.html.find('.caseInstanceId').val();
         const from = this.html.find('.from').val();
         const to = this.html.find('.to').val();
@@ -456,11 +487,13 @@ class Debugger extends StandardForm {
             parameters.push(`to=${to}`)
         }
 
-        localStorage.setItem('debug-case-id', caseInstanceId.toString());
-        localStorage.setItem('from', ''+from);
-        localStorage.setItem('to', ''+to);
         $.get(`/repository/api/events/${caseInstanceId}?${parameters.join('&')}`)
-            .done(data => this.events = data)
+            .done(data => {
+                this.events = data;
+                localStorage.setItem('debug-case-id', caseInstanceId.toString());
+                localStorage.setItem('from', ''+from);
+                localStorage.setItem('to', ''+to);
+            })
             .fail(data => ide.danger(data.responseText));
     }
 }
