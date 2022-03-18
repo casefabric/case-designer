@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Push docker image
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ];
+            if [ "${CIRCLE_BRANCH}" == "main" ];
             then
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
               docker push cafienne/ide:latest
