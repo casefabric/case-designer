@@ -3,27 +3,18 @@ jobs:
   build:
     working_directory: ~/cafienne-ide
     docker:
-      - image: circleci/node:10.9.0
+      - image: cimg/node:8.17.0
     steps:
       - checkout
       - run:
           name: Giving permissions
           command: sudo chmod -R 777 ./
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
           name: Installing dependencies
           command: |
             npm install
             sudo npm install bower -g
             bower install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
       - setup_remote_docker:
           version: 19.03.13
           docker_layer_caching: true
@@ -45,7 +36,7 @@ jobs:
   build for release:
     working_directory: ~/cafienne-ide
     docker:
-      - image: circleci/node:10.9.0
+      - image: cimg/node:8.17.0
     steps:
       - checkout
       - run:
@@ -58,21 +49,12 @@ jobs:
             cat ./version.txt
             TAG=$(cat ./version.txt)
             printenv
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
           name: Installing dependencies
           command: |
             npm install
             sudo npm install bower -g
             bower install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
