@@ -21,16 +21,25 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            docker build -t cafienne/ide:latest .
-      - run:
-          name: Push docker image
-          command: |
             if [ "${CIRCLE_BRANCH}" == "main" ];
             then
               echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+              docker build -t cafienne/ide:latest .
+            else
+              echo "Building docker image cafienne/ide:snapshot"
+              docker build -t cafienne/ide:snapshot .
+            fi
+      - run:
+          name: Push docker image
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            if [ "${CIRCLE_BRANCH}" == "main" ];
+            then
+              echo "Publishing image 'cafienne/ide:latest' to docker hub"
               docker push cafienne/ide:latest
             else
-              echo "Not pushing image to docker hub"
+              echo "Publishing image 'cafienne/ide:snapshot' to docker hub"
+              docker push cafienne/ide:snapshot
             fi
 
   build for release:
