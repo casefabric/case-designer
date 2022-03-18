@@ -60,7 +60,7 @@ class HumantaskModelEditor extends ModelEditor {
         this.htmlContainer.find('.inputName').on('change', e => this.change('name', e.currentTarget.value));
         this.htmlContainer.find('.inputDocumentation').on('change', e => this.change('text', e.currentTarget.value, this.model.implementation.documentation));
 
-        new RightSplitter(this.htmlContainer.find('#modelEditor'), '500px');
+        new RightSplitter(this.htmlContainer.find('#modelEditor'), '675px');
 
         // Render input parameters
         this.inputParametersControl = new ModelParameters(this, this.html.find('.model-input-parameters'), 'Input Parameters');
