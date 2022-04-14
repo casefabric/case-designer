@@ -12,14 +12,7 @@ class TaskDefinition extends TaskStageDefinition {
      * @param {Element} node 
      */
     parseMappings(node = this.importNode) {
-        const mappingClassResolver = (/** @type {String} */ sourceRef) => {
-            if (this.inputs.find(parameter => parameter.id === sourceRef)) {
-                return InputMappingDefinition;
-            } else { // If the source ref is not one of our input parameters, then this must be an output mapping, since 
-                return OutputMappingDefinition;
-            }    
-        }
-        this.mappings = XML.getChildrenByTagName(node, 'parameterMapping').map(mappingNode => this.instantiateChild(mappingNode, mappingClassResolver(mappingNode.getAttribute('sourceRef'))));
+        this.mappings = XML.getChildrenByTagName(node, 'parameterMapping').map(mappingNode => this.instantiateChild(mappingNode, ParameterMappingDefinition));
     }
 
     /**
@@ -60,12 +53,31 @@ class TaskDefinition extends TaskStageDefinition {
     }
 
     /**
+     * Returns the type of task, e.g. CaseTask or ProcessTask or HumanTask (can be used for e.g. console logging)
+     * @returns {String}
+     */
+    get type() {
+        return this.constructor.name.substring(0, this.constructor.name.length - 'Definition'.length);
+    }
+
+    /**
      * Checks whether an input parameter with the given name exists, and, if not,
      * creates a new one with the specified name.
      * @param {String} name 
      */
     getInputParameterWithName(name) {
         return this.getParameterWithName(name, this.inputs);
+    }
+
+    /**
+     * Checks whether an input parameter with the given name exists, and, if so,
+     * creates a new one with the specified name plus a separator plus a number.
+     * @param {String} name 
+     */
+    createInputParameterWithName(name) {
+        const newParameter = this.createDefinition(ParameterDefinition, undefined, this.generateUniqueParameterName(name, this.inputs));
+        this.inputs.push(newParameter);
+        return newParameter;
     }
 
     /**
@@ -89,10 +101,24 @@ class TaskDefinition extends TaskStageDefinition {
      * @returns {string}
      */
     generateUniqueOutputParameterName(name) {
+        return this.generateUniqueParameterName(name, this.outputs);
+    }
+
+    /**
+     * Generate a name for a task parameter that is unique according to the pattern
+     * - 'Response' ---> (there is no other parameter with the name response)
+     * - 'Response.1' ---> the second one generated
+     * - 'Response.2' ---> the third one
+     * If in the meantime 'Response.1' is deleted or has a new name, then the fourth one will get that "free spot"
+     * @param {string} name 
+     * @param {Array<ParameterDefinition>} siblings 
+     * @returns {string}
+     */
+    generateUniqueParameterName(name, siblings) {
         const separator = '.';
-        if (!this.outputs.find(p => p.name == name)) return name;
+        if (!siblings.find(p => p.name == name)) return name;
         let counter = 1;
-        while (this.outputs.find(p => p.name == name + separator + counter) !== undefined) counter++;
+        while (siblings.find(p => p.name == name + separator + counter) !== undefined) counter++;
         return name + separator + counter;
     }
 
@@ -202,7 +228,7 @@ class TaskDefinition extends TaskStageDefinition {
             // Now iterate all implementation's input parameters and check for unused ones. For those we will generate new, default mappings.
             this.implementationModel.inputParameters.forEach(parameter => {
                 const existingMapping = this.inputMappings.find(mapping => parameter.hasIdentifier(mapping.targetRef));
-                if (! existingMapping) {
+                if (!existingMapping) {
                     // console.log('Generating default input mapping for implementation parameter ' + parameter.name + ' in task "' + this.name + '"');
                     this.createInputMapping(parameter);
                 }
@@ -218,7 +244,7 @@ class TaskDefinition extends TaskStageDefinition {
             // It also has no sense to have unused output parameters.
             this.implementationModel.outputParameters.forEach(parameter => {
                 const existingMapping = this.outputMappings.find(mapping => parameter && parameter.hasIdentifier(mapping.sourceRef));
-                if (! existingMapping) {
+                if (!existingMapping) {
                     // console.log('Generating default output mapping for implementation parameter ' + parameter.name + ' in task "' + this.name + '"');
                     const newMapping = this.createOutputMapping(parameter);
                 }

@@ -165,7 +165,37 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
      * @returns {Boolean}
      */
     get isInputMapping() {
-        throw new Error('This property must be implemented in ' + this.constructor.name);
+        const task = this.parent;
+        if (task.inputs.find(input => input.id === this.sourceRef)) {
+            return true;
+        } else if (task.outputs.find(output => output.id === this.targetRef)) {
+            return false;
+        } else if (task.implementationModel) {
+            const implementation = task.implementationModel;
+            if (implementation.findInputParameter(this.targetRef)) {
+                return true;
+            } else if (implementation.findOutputParameter(this.sourceRef)) {
+                return false;
+            } else {
+                if (this.sourceRef && this.targetRef) {
+                    console.log(`Cannot find sourceRef ${this.sourceRef} and targetRef ${this.targetRef} of ${task.type} '${task.name}' in the input and output parameters of the task implementation '${task.implementationRef}'.`)
+                } else if (this.sourceRef) {
+                    console.log(`Cannot find targetRef ${this.sourceRef} in the input parameters of ${task.type} '${task.name}' and also not in the output parameters of task implementation '${task.implementationRef}'.`)
+                } else if (this.targetRef) {
+                    console.log(`Cannot find targetRef ${this.targetRef} in the output parameters of ${task.type} '${task.name}' and also not in the input parameters of task implementation '${task.implementationRef}'.`)
+                }
+                return false;
+            }
+        } else if (! task.implementationRef) {
+            if (this.sourceRef && this.targetRef) {
+                console.log(`Cannot find sourceRef ${this.sourceRef} and targetRef ${this.targetRef} in the input and output parameters of ${task.type} '${task.name}'.`)
+            } else if (this.sourceRef) {
+                console.log(`Cannot find sourceRef ${this.sourceRef} in the input parameters of ${task.type} '${task.name}'.`)
+            } else if (this.targetRef) {
+                console.log(`Cannot find targetRef ${this.targetRef} in the output parameters of ${task.type} '${task.name}'.`)
+            }
+            return false;
+        }
     }
 
     get body() {
@@ -175,6 +205,14 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
     set body(expression) {
         if (expression) {
             this.getTransformation().body = expression;
+            if (this.isInputMapping) { 
+                // If it is an input mapping, we need to make sure there is an actual corresponding task input parameter as well.
+                if (! this.sourceRef) {
+                    if (this.targetRef) { // Actually, a target ref always exists, otherwise there would not be a mapping option
+                        this.sourceRef = this.parent.createInputParameterWithName(this.implementationParameterName||this.implementationParameterId).id;
+                    }
+                }
+            }
         } else {
             if (this.transformation) {
                 this.transformation.removeDefinition();
