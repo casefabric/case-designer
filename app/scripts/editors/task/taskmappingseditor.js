@@ -24,12 +24,13 @@ class TaskMappingsEditor extends StandardForm {
         const numInputMappings = this.task.planItemDefinition.inputMappings.length;
         const numOutputMappings = this.task.planItemDefinition.outputMappings.length;
         const rowHeight = 32;
-        const h4height = 100;
+        const h4height = 42;
+        const headerHeight = 25;
         // Input and output height are determined by the number of parameters of the task
-        const inputHeight = rowHeight * numInputMappings + h4height;
-        const outputHeight = rowHeight * numOutputMappings + h4height;
+        const inputHeight = rowHeight * numInputMappings + headerHeight + h4height;
+        const outputHeight = rowHeight * numOutputMappings + headerHeight + h4height + 20;
         // Control height is determined by the mappings (+ 1 extra) plus the header menu bar of the form.
-        const controlHeight = inputHeight + outputHeight + 2 * rowHeight + 20;
+        const controlHeight = inputHeight + outputHeight + 2 * rowHeight + 50;
         // console.log("I: "+inputHeight+", O: "+outputHeight + ", C: "+controlHeight)
         this.inputMappings = new InputMappingControl(this, inputMappingsContainer);
         const outputMappingsContainer = this.htmlContainer.find('.output-mappings .containerbox');
@@ -38,7 +39,7 @@ class TaskMappingsEditor extends StandardForm {
         outputMappingsContainer.css('height', outputHeight + 'px');
         this.htmlContainer.css('height', controlHeight + 'px');
         this.htmlContainer.parent().css('height', (controlHeight + 20) +'px');
-        this.splitter = new BottomSplitter(this.htmlContainer.find('.task-mappings'), inputHeight+'px', 100);
+        this.splitter = new BottomSplitter(this.htmlContainer.find('.task-mappings'), (40+inputHeight)+'px', 100);
         this.splitter.bar.addClass('separator task-mappings-separator');
     }
 

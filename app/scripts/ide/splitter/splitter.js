@@ -212,7 +212,7 @@ class Splitter {
     }
 
     validateNewPosition(proposedPosition) {
-        if (typeof(proposedPosition)==="string") {
+        if (typeof(proposedPosition)==='string') {
             return proposedPosition;
         }
 

@@ -12,13 +12,13 @@
 }
 
 .input-mappings {
-    height: 200px;
     margin: 4px;
+    overflow-y: auto;
 }
 
 .output-mappings {
-    height: 200px;
     margin: 4px;
+    overflow-x: auto;
 }
 
 .task-mappings .containerbox {
