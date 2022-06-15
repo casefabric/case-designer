@@ -1,25 +1,24 @@
 'use strict';
 
-const request = require('request');
-const rp = require('request-promise');
+const axios = require('axios').default;
 
 class Backend {
     constructor(url) {
-        this.url = url;
+        this.baseURL = url;
+    }
+
+    request(url, method, headers, data) {
+        const options = {url: `${this.baseURL}/${url}`, method, headers, data}
+        return axios(options);
     }
 
     validate(cmmn) {
-        const options = {
-            method: 'POST',
-            uri: this.url + '/repository/validate',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/xml'
-            },
-            resolveWithFullResponse: true,
-            body: cmmn
-        };
-        return rp(options);
+        const headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/xml'
+        }
+
+        return this.request('repository/validate', 'POST', headers, cmmn);
     }
 
     getEvents(caseId, from, to, token) {
@@ -30,8 +29,7 @@ class Backend {
         if (to) {
             parameters.push(`to=${to}`)
         }
-        const uri = `${this.url}/debug/${caseId}?${parameters.join('&')}`;
-        const method = 'GET';
+        const url = `debug/${caseId}?${parameters.join('&')}`;
         const headers = {
             'Accept': 'application/json',
             'Content-Type': 'text/plain'
@@ -39,30 +37,8 @@ class Backend {
         if (token) {
             headers.Authorization = token
         }
-        return rp({ method, uri, headers, resolveWithFullResponse: true})
-    }
-}
-
-class IDP {
-    constructor(url) {
-        this.url = url;
-    }
-
-    login(details) {
-        details = JSON.stringify(details)
-        const options = {
-            method: 'POST',
-            uri: this.url + '/identity/login',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            resolveWithFullResponse: true,
-            body: details
-        };
-        return rp(options);
+        return this.request(url, 'GET', headers).then(response => response.data);
     }
 }
 
 exports.Backend = Backend;
-exports.IDP = IDP;

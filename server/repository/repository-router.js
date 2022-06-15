@@ -144,10 +144,10 @@ router.get('/api/events/*', (req, res, next) => {
     caseService.getEvents(caseInstanceId, from, to, token).then(data => {
         res.status(200);
         res.setHeader('Content-Type', 'application/json');
-        res.send(data.body);
+        res.send(data);
     }).catch(err => {
         res.status(err.statusCode);
-        res.send(err.response.body);
+        res.send(err.response.data);
     })
 })
 
