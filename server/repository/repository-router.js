@@ -16,15 +16,15 @@ const xmlParser = bodyParser.text({ type: 'application/xml' });
 /**
  * Returns the repository contents by name, last modified timestamp and usage information
  */
-router.get('/list', function(req, res, next) {
+router.get('/list', function (req, res, next) {
     const list = repository.list();
-    res.json( list );
+    res.json(list);
 });
 
 /**
  *  Get a file from the repository.
  */
-router.get('/load/*', function(req, res, next) {
+router.get('/load/*', function (req, res, next) {
     const fileName = req.params[0];
     try {
         const content = repository.load(fileName);
@@ -45,7 +45,7 @@ router.get('/load/*', function(req, res, next) {
 /**
  * Save a file to the repository
  */
-router.post('/save/*', xmlParser, function(req, res, next) {
+router.post('/save/*', xmlParser, function (req, res, next) {
     try {
         const fileName = req.params[0];
         repository.save(fileName, req.body);
@@ -61,7 +61,7 @@ router.post('/save/*', xmlParser, function(req, res, next) {
 /**
  * Deploy a file and it's dependencies from the repository to the deployment folder
  */
-router.get('/deploy/*', xmlParser, function(req, res, next) {
+router.get('/deploy/*', xmlParser, function (req, res, next) {
     const artifactToDeploy = req.params[0];
     try {
         const deployedFile = repository.deploy(artifactToDeploy);
@@ -115,23 +115,20 @@ router.get('/validate/*', (req, res, next) => {
     // Current protocol with backend is that it returns 200 if the content is valid, and 400 otherwise;
     //  We convert this to our own protocol with our client.
     caseService.validate(cmmnSource)
-        .then((data) => {
+        .then(() => {
             res.status(200);
             res.setHeader('Content-Type', 'application/json');
             res.send('["The model is valid"]');
         })
         .catch(err => {
-            if (err.statusCode == 400) {
+            if (err.response && err.response.status == 400) {
                 res.status(200);
                 res.setHeader('Content-Type', 'application/json');
-                res.send(err.response.body);
-            } else if (err.statusCode == 404) {
-                // Validate API is not yet implemented/available in the backend
-                res.status(503); // 503 Service Unavailable
-                res.send('The backend engine does not yet support the validation API');
+                res.send(err.response.data);
             } else {
-                res.status(503); // 503 Service Unavailable
-                res.send(err.message)
+                res.status(200);
+                res.setHeader('Content-Type', 'application/json');
+                res.send(`Cannot validate model due to failure\n\n  ${err.message}`);
             }
         });
 });
@@ -141,13 +138,19 @@ router.get('/api/events/*', (req, res, next) => {
     const from = req.query['from'];
     const to = req.query['to'];
     const token = req.header('Authorization');
-    caseService.getEvents(caseInstanceId, from, to, token).then(data => {
+    caseService.getEvents(caseInstanceId, from, to, token).then(response => {
         res.status(200);
         res.setHeader('Content-Type', 'application/json');
-        res.send(data);
+        res.send(response.data);
     }).catch(err => {
-        res.status(err.statusCode);
-        res.send(err.response.data);
+        if (err.response) {
+            res.status(err.response.status);
+            res.send(`Failure while retrieving events<br/>${err.response.status}: ${err.response.data}`);
+        } else {
+            res.status(503);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(`Failure while retrieving events<br/>${err.message}`);
+        }
     })
 })
 

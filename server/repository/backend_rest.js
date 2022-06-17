@@ -37,7 +37,7 @@ class Backend {
         if (token) {
             headers.Authorization = token
         }
-        return this.request(url, 'GET', headers).then(response => response.data);
+        return this.request(url, 'GET', headers);
     }
 }
 
