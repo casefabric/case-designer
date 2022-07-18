@@ -193,7 +193,8 @@
 
         // Also add special event handlers for case itself. Registers with ShapeBox to support adding case plan element if it does not exist
         this.svg.on('pointerover', e => this.setDropHandlers());
-        this.svg.on('pointerout', e => this.removeDropHandlers());
+        // Only remove drop handlers if we're actually leaving the canvase. If we're leaving an element inside the canvas, keep things as is.
+        this.svg.on('pointerout', e => e.target === e.currentTarget && this.removeDropHandlers());
         // Enable/disable the HALO when the mouse is near an item
         this.svg.on('pointermove', e => this.showHaloAndResizer(e));
     }
