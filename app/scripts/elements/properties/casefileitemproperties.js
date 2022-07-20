@@ -26,9 +26,9 @@ class CaseFileItemProperties extends Properties {
         html.find('.removeReferenceButton').on('click', e => this.changeContextRef(html));
         html.on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => this.changeContextRef(html, cfi);
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => this.changeContextRef(html, dragData.item));
         });
-        html.find('.zoomRow').on('pointerout', e => this.cmmnElement.case.cfiEditor.dropHandler = undefined);
+        html.find('.zoomRow').on('pointerout', e => this.cmmnElement.case.cfiEditor.removeDropHandler());
         this.addDocumentationField();
         this.addIdField();
     }

@@ -127,13 +127,13 @@ class ApplicabilityRuleProperties {
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => {
-                this.change(this.getRule(), 'contextRef', cfi.id);
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
+                this.change(this.getRule(), 'contextRef', dragData.item.id);
                 html.find('.valuelabel').html(this.getRule().contextName);
-            }
+            });
         });
         html.find('.zoomRow').on('pointerout', e => {
-            this.cmmnElement.case.cfiEditor.dropHandler = undefined;
+            this.cmmnElement.case.cfiEditor.removeDropHandler();
         });
         html.find('.clearContextRef').on('click', e => {
             if (this.rule) {

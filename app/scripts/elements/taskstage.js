@@ -135,4 +135,8 @@ class TaskStage extends PlanItemView {
             this.definition.authorizedRoles.filter(r => !r.id).forEach(r => this.raiseValidationIssue(40));
         }
     }
+
+    canHaveCriterion(criterionType) {
+        return criterionType == EntryCriterion.name || criterionType == ExitCriterion.name;
+    }
 }

@@ -30,9 +30,9 @@
     setDropHandlers() {
         super.setDropHandlers();
         // allow for dropping tasks directly from repository browser ...
-        this.case.editor.ide.repositoryBrowser.setDropHandler((dragData, e) => this.addTaskModel(dragData, e));
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData));
         // ... and case file items to be dropped from the cfiEditor
-        this.case.cfiEditor.setDropHandler((dragData, e) => this.addCaseFileItem(dragData, e));
+        this.case.cfiEditor.setDropHandler(dragData => this.addCaseFileItem(dragData));
     }
 
     removeDropHandlers() {
@@ -44,21 +44,19 @@
     /**
      * Add a 'drag-dropped' case file item
      * @param {CaseFileItemDragData} dragData 
-     * @param {JQuery<Event>} e 
      */
-    addCaseFileItem(dragData, e) {
-        const coor = this.case.getCursorCoordinates(e);
+    addCaseFileItem(dragData) {
+        const coor = this.case.getCursorCoordinates(dragData.event);
         this.__addCMMNChild(CaseFileItem.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
      * Add a 'drag-dropped' task implementation
      * @param {DragData} dragData 
-     * @param {*} e 
      */
-    addTaskModel(dragData, e) {
+    addTaskModel(dragData) {
         /** @type {Task} */
-        const element = super.addElementView(dragData.shapeType, e);
+        const element = super.addElementView(dragData.shapeType, dragData.event);
         element.changeTaskImplementation(dragData, true);
     }
 
@@ -315,8 +313,7 @@
      * @param {*} elementType 
      */
     __canHaveAsChild(elementType) {
-        if (elementType == EntryCriterion.name ||
-            elementType == ExitCriterion.name ||
+        if (this.canHaveCriterion(elementType) ||
             elementType == HumanTask.name ||
             elementType == CaseTask.name ||
             elementType == ProcessTask.name ||

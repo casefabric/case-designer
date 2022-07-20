@@ -13,8 +13,4 @@ class HaloItem {
     get element() {
         return this.halo.element;
     }
-
-    get coordinates() {
-        return this.element.case.getCursorCoordinates();
-    }
 }

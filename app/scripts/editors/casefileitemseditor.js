@@ -471,22 +471,7 @@ class CaseFileItemsEditor {
 
     /**
      * Registers a function handler that is invoked upon dropping an element.
-     * @param {Function} handler
-     */
-    set dropHandler(handler) {
-        if (handler === undefined) {
-            this.removeDropHandler();
-        } else {
-            this.setDropHandler(dragData => {
-                const cfi = this.case.caseDefinition.getElement(dragData.fileName);
-                handler(cfi);
-            });                
-        }
-    }
-
-    /**
-     * Registers a drop handler with the repository browser.
-     * If an item from the editor is moved over the canvas, stages will register themselves as a drop handler
+     * If an item from the editor is moved over the canvas, elements and form properties can register themselves as a drop handler
      * @param {Function} dropHandler
      * @param {Function} filter
      */

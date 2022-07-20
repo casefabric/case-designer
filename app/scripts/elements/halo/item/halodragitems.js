@@ -39,7 +39,11 @@ class HaloDragItem extends HaloItem {
         this.halo.element.propertiesView.hide();
 
         // Create a temporary connector to the current coordinates
-        this.tempConnector = new TemporaryConnector(this.halo.element, this.coordinates);
+        this.tempConnector = new TemporaryConnector(this.halo.element, this.getCoordinates(e));
+    }
+
+    getCoordinates(e) {
+        return this.element.case.getCursorCoordinates(e);
     }
 
     handleKeyDown(e) {
@@ -63,7 +67,7 @@ class HaloDragItem extends HaloItem {
      */
     handleMouseMove(e) {
         // Move the temporary connector to current coordinates
-        this.tempConnector.target = this.coordinates;
+        this.tempConnector.target = this.getCoordinates(e);
     }
 
     /**
@@ -130,12 +134,12 @@ class SentryHaloItem extends HaloDragItem {
         super.handleMouseDown(e);
         this.dragImage.attr('src', this.imgURL);
         this.dragImage.css('display', 'block');
-        this.positionDragImage();
+        this.positionDragImage(e);
     }
 
-    handleMouseMove(e, haloType, coordinates) {
-        super.handleMouseMove();
-        this.positionDragImage();
+    handleMouseMove(e) {
+        super.handleMouseMove(e);
+        this.positionDragImage(e);
     }
 
     clear() {
@@ -146,9 +150,10 @@ class SentryHaloItem extends HaloDragItem {
     /**
      * positions the halo drag image next to the cursor
      */
-    positionDragImage() {
-        const x = this.coordinates.x;
-        const y = this.coordinates.y;
+    positionDragImage(e) {
+        const coordinates = this.getCoordinates(e);
+        const x = coordinates.x;
+        const y = coordinates.y;
         const w = this.dragImage.innerWidth();
         const h = this.dragImage.innerHeight();
         this.dragImage.css('top', y - h / 2);
@@ -158,10 +163,8 @@ class SentryHaloItem extends HaloDragItem {
     handleMouseUp(e) {
         super.handleMouseUp(e);
         const newParent = this.element.case.getItemUnderMouse(e);
-        if (newParent && newParent.__canHaveAsChild(this.haloType)) {
-            const sentry = newParent.addShape(this.haloType, e);
-            // Also connect the sentry with this element; will create a corresponding on-part
-            this.element.__connect(sentry);
+        if (newParent && newParent.canHaveCriterion(this.haloType)) {
+            newParent.createCriterionAndConnect(this.haloType, this.element, e);
         }
     }
 

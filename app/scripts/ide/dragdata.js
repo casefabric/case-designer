@@ -26,9 +26,8 @@ class DragData {
         this.mouseUpHandler = e => this.handleMouseupModel(e);
         this.escapeKeyListener = e => {
             if (e.keyCode == 27) {
-                // Hide dragbox, and remove drop handler
-                this.dragBox.css('display', 'none');
-                this._dropHandler = () => {};
+                // Close and clean when pressing escape
+                this.cleanUp();
             }
         }
 
@@ -53,7 +52,7 @@ class DragData {
         });
 
         //model can be dragged over properties menu or elements
-        if (this.canDrop) {
+        if (this.canDrop(e)) {
             this.dragBox.addClass('drop-allowed');
             this.dragBox.removeClass('drop-not-allowed');
         } else {
@@ -82,25 +81,25 @@ class DragData {
         this._dropFilter = undefined;
     }
 
-    get canDrop() {
+    canDrop(e) {
+        this.event = e;
         if (!this._dropHandler) {
             // console.log("No drop handler to invoke")
-            return false;
         }
-        if (this._dropFilter) {
-            return this._dropFilter(this.shapeType);
-        }
-        return true;
+        const result = this._dropHandler ? this._dropFilter ? this._dropFilter(this, e) : true : false;
+        return result;
     }
 
     handleMouseupModel(e) {
-        if (this.canDrop) {
+        this.event = e;
+        if (this.canDrop(e)) {
             this._dropHandler(this, e);
         }
         this.cleanUp();
     }
 
     cleanUp() {
+        this.event = undefined;
         this.ide.dragging = false;
         this.dragBox.remove();
         this.owner.dragData = undefined;
