@@ -58,7 +58,7 @@
      */
     addTaskModel(dragData, e) {
         /** @type {Task} */
-        const element = super.addShape(dragData.shapeType, e);
+        const element = super.addElementView(dragData.shapeType, e);
         element.changeTaskImplementation(dragData, true);
     }
 

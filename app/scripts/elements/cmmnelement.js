@@ -184,7 +184,7 @@ class CMMNElement extends CanvasElement {
      * Method invoked when mouse hovers on the element
      */
     setDropHandlers() {
-        this.case.shapeBox.setDropHandler((dragData, e) => this.addShape(dragData.shapeType, e), shapeType => this.__canHaveAsChild(shapeType));
+        this.case.shapeBox.setDropHandler((dragData, e) => this.addElementView(dragData.shapeType, e), shapeType => this.__canHaveAsChild(shapeType));
     }
 
     /**
@@ -199,7 +199,7 @@ class CMMNElement extends CanvasElement {
      * @param {String} shapeType
      * @param {*} e
      */
-    addShape(shapeType, e) {
+    addElementView(shapeType, e) {
         const coor = this.case.getCursorCoordinates(e);
         const cmmnType = CMMNElement.constructors[shapeType];
         const cmmnElement = this.createCMMNChild(cmmnType, Grid.snap(coor.x), Grid.snap(coor.y));
