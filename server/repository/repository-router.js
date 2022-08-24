@@ -11,7 +11,7 @@ const backend = require('./backend_rest');
 const caseService = new backend.Backend(config.backendUrl);
 
 const router = express.Router();
-const xmlParser = bodyParser.text({ type: 'application/xml' });
+const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
 
 /**
  * Returns the repository contents by name, last modified timestamp and usage information
