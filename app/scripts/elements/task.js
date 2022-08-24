@@ -42,7 +42,7 @@
     setDropHandlers() {
         super.setDropHandlers();
         // Add drop handler with repository browser to handle changing task implementation when it is drag/dropped from there.
-        this.case.editor.ide.repositoryBrowser.setDropHandler(model => this.changeTaskImplementation(model), shapeType => this.constructor.name == shapeType);
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.changeTaskImplementation(dragData), dragData => this.constructor.name == dragData.shapeType);
     }
 
     removeDropHandlers() {
@@ -162,7 +162,7 @@
 
     //returns true when an element of type 'elementType' can be added as a child to this element
     __canHaveAsChild(elementType) {
-        return elementType == EntryCriterion.name || elementType == ExitCriterion.name;
+        return super.canHaveCriterion(elementType);
     }
 
     __delete() {

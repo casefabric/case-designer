@@ -110,13 +110,8 @@ class CasePlanModel extends Stage {
         delete this.case.casePlanModel;
     }
 
-    /**
-     * returns true when an element of type 'elementType' can be added as a child to this element
-     */
-    __canHaveAsChild(elementType) {
-        // Case plan can have all items of stage, except for entry criterion
-        if (elementType == EntryCriterion.name) return false;
-        return super.__canHaveAsChild(elementType);
+    canHaveCriterion(criterionType) {
+        return criterionType == ExitCriterion.name;
     }
 
     createCMMNChild(cmmnType, x, y) {

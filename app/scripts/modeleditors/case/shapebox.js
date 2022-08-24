@@ -68,17 +68,6 @@ class ShapeBox {
         if (this.dragData) this.dragData.removeDropHandler();
     }
 
-    /** @param {Function} dropHandler */
-    set dropHandler(dropHandler) {
-        if (this.dragData) {
-            if (dropHandler == undefined) {
-                this.dragData.removeDropHandler();
-            } else {
-                this.dragData.setDropHandler(dropHandler);
-            }
-        }
-    }
-
     /**
      * Handles the onmousedown event on a shape in the repository
      * The shape can be dragged to the canvas to create an element

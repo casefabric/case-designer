@@ -145,11 +145,11 @@ class TimerEventProperties extends PlanItemProperties {
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => {
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 const trigger = this.cmmnElement.planItemDefinition.getCaseFileItemStartTrigger();
-                this.change(trigger, 'sourceRef', cfi.id);
+                this.change(trigger, 'sourceRef', dragData.item.id);
                 this.show();
-            }
+            });
         });
         html.find('#selectCaseFileItemTransition').on('change', e => {
             const trigger = this.cmmnElement.planItemDefinition.getCaseFileItemStartTrigger();
@@ -159,7 +159,7 @@ class TimerEventProperties extends PlanItemProperties {
             this.show();
         });
         html.find('.zoomRow').on('pointerout', e => {
-            this.cmmnElement.case.cfiEditor.dropHandler = undefined;
+            this.cmmnElement.case.cfiEditor.removeDropHandler();
         });
         this.htmlContainer.append(html);
     }

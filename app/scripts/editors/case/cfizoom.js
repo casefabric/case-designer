@@ -26,10 +26,10 @@ class CFIZoom {
         // BindingRef event handlers
         td.on('pointerover', e => {
             e.stopPropagation();
-            row.case.cfiEditor.dropHandler = cfi => row.changeBindingRef(cfi);
+            row.case.cfiEditor.setDropHandler(dragData => row.changeBindingRef(dragData.item));
         });
         td.on('pointerleave', e => {
-            row.case.cfiEditor.dropHandler = undefined;
+            row.case.cfiEditor.removeDropHandler();
         });
         td.find('.removeReferenceButton').on('click', e => {
             row.change('bindingRef', undefined)

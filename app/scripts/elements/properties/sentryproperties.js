@@ -108,15 +108,15 @@ class SentryProperties extends Properties {
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => {
-                const newContextRef = cfi.id;
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
+                const newContextRef = dragData.item.id;
                 this.change(this.cmmnElement.definition.getIfPart(), 'contextRef', newContextRef);
                 const name = newContextRef ? this.cmmnElement.definition.caseDefinition.getElement(newContextRef).name : '';
                 html.find('.valuelabel').html(name);
-            }
+            });
         });
         html.find('.zoomRow').on('pointerout', e => {
-            this.cmmnElement.case.cfiEditor.dropHandler = undefined;
+            this.cmmnElement.case.cfiEditor.removeDropHandler();
         })
         this.htmlContainer.append(html);
         return html;
@@ -384,10 +384,10 @@ class SentryProperties extends Properties {
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => this.changeCaseFileItemOnPart(onPart, connector, html, cfi);
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => this.changeCaseFileItemOnPart(onPart, connector, html, dragData.item));
         });
         html.find('.zoomRow').on('pointerout', e => {
-            this.cmmnElement.case.cfiEditor.dropHandler = undefined;
+            this.cmmnElement.case.cfiEditor.removeDropHandler();
         });
         // Event handler for changing the standardEvent
         html.find('.standard-event').on('change', e => this.changeStandardEvent(e, onPart, connector));

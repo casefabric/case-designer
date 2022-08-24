@@ -184,7 +184,7 @@ class CMMNElement extends CanvasElement {
      * Method invoked when mouse hovers on the element
      */
     setDropHandlers() {
-        this.case.shapeBox.setDropHandler((dragData, e) => this.addShape(dragData.shapeType, e), shapeType => this.__canHaveAsChild(shapeType));
+        this.case.shapeBox.setDropHandler(dragData => this.addElementView(dragData.shapeType, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
     }
 
     /**
@@ -199,7 +199,7 @@ class CMMNElement extends CanvasElement {
      * @param {String} shapeType
      * @param {*} e
      */
-    addShape(shapeType, e) {
+    addElementView(shapeType, e) {
         const coor = this.case.getCursorCoordinates(e);
         const cmmnType = CMMNElement.constructors[shapeType];
         const cmmnElement = this.createCMMNChild(cmmnType, Grid.snap(coor.x), Grid.snap(coor.y));
@@ -539,11 +539,33 @@ class CMMNElement extends CanvasElement {
     /**
      * returns true if this element can contain elements of type 'elementType'.
      * By default it returns false
-     * @param {*} elementType 
+     * @param {String} elementType 
      * @returns {Boolean}
      */
     __canHaveAsChild(elementType) {
         return false;
+    }
+
+    /**
+     * Determine whether this element can have a criterion added with the specified type.
+     * @param {String} criterionType 
+     * @returns {Boolean}
+     */
+    canHaveCriterion(criterionType) {
+        return false;
+    }
+
+    /**
+     * Add a criterion to this element sourcing the incoming element.
+     * Default implementation is empty, task, stage, caseplan and milestone can override it.
+     * @param {string} criterionType 
+     * @param {CMMNElement} sourceElement 
+     * @param {JQuery<Event>} e event indicating x and y position of cursor
+     */
+    createCriterionAndConnect(criterionType, sourceElement, e) {
+        const sentry = this.addShape(criterionType, e);
+        // Also connect the sentry with the source element to create a corresponding on-part
+        sourceElement.__connect(sentry);
     }
 
     /**

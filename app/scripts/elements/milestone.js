@@ -64,10 +64,19 @@ class Milestone extends PlanItemView {
 
     /**
      * returns true when an element of type 'elementType' can be added as a child to this element
-     * @param {*} elementType 
+     * @param {String} elementType 
      */
     __canHaveAsChild(elementType) {
-        return elementType == EntryCriterion.name;
+        return this.canHaveCriterion(elementType);
+    }
+
+    /**
+     * 
+     * @param {String} criterionType 
+     * @returns 
+     */
+    canHaveCriterion(criterionType) {
+        return criterionType == EntryCriterion.name;
     }
 }
 CMMNElement.registerType(Milestone, 'Milestone', 'images/svg/milestone.svg');

@@ -109,12 +109,13 @@ gulp.task('serve', ['styles', 'fonts', 'nodemon'], () => {
   gulp.watch([
     'app/*.html',
     'app/scripts/**/*.js',
+    'app/styles/**/*.css',
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
 
-  gulp.watch('app/styles/**/*.css', ['styles']);
-  gulp.watch('app/fonts/**/*', ['fonts']);
+  // gulp.watch('app/styles/**/*.css', ['styles']);
+  // gulp.watch('app/fonts/**/*', ['fonts']);
   //gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
@@ -125,22 +126,6 @@ gulp.task('run', ['styles', 'nodemon'], () => {
     'app/*.html',
     'app/scripts/**/*.js',
     'app/images/**/*'
-  ]).on('change', reload);
-
-  gulp.watch('app/styles/**/*.css', ['styles']);
-  gulp.watch('app/fonts/**/*', ['fonts']);
-  //gulp.watch('bower.json', ['wiredep', 'fonts']);
-});
-
-// start in debug mode for nodemon
-gulp.task('serve:debug', ['styles', 'fonts', 'nodemon-debug'], () => {
-  browserSync({ proxy, port });
-
-  gulp.watch([
-    'app/*.html',
-    'app/scripts/**/*.js',
-    'app/images/**/*',
-    '.tmp/fonts/**/*'
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.css', ['styles']);

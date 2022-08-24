@@ -103,15 +103,15 @@ class PlanItemProperties extends Properties {
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
-            this.cmmnElement.case.cfiEditor.dropHandler = cfi => {
-                const newContextRef = cfi.id;
+            this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
+                const newContextRef = dragData.item.id;
                 this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', newContextRef);
                 const name = newContextRef ? this.cmmnElement.definition.caseDefinition.getElement(newContextRef).name : '';
                 html.find('.valuelabel').html(name);
-            }
+            });
         });
         html.find('.zoomRow').on('pointerout', e => {
-            this.cmmnElement.case.cfiEditor.dropHandler = undefined;
+            this.cmmnElement.case.cfiEditor.removeDropHandler();
         });
         this.htmlContainer.append(html);
         return html;

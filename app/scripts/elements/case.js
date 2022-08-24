@@ -372,7 +372,7 @@
 
     setDropHandlers() {
         if (!this.casePlanModel) {
-            this.shapeBox.setDropHandler((model, e) => this.createCasePlan(CasePlanModel, e), shapeType => this.__canHaveAsChild(shapeType));
+            this.shapeBox.setDropHandler(dragData => this.createCasePlan(CasePlanModel, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
         }
     }
 
@@ -442,7 +442,7 @@
      * Returns the coordinates of the mouse pointer, relative with respect to the top left of the case canvas
      * @param {*} e 
      */
-    getCursorCoordinates(e = event) {
+    getCursorCoordinates(e) {
         const x = e.clientX;
         const y = e.clientY;
         if (!x || !y) {
