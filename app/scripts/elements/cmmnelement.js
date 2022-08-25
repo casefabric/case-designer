@@ -563,7 +563,7 @@ class CMMNElement extends CanvasElement {
      * @param {JQuery<Event>} e event indicating x and y position of cursor
      */
     createCriterionAndConnect(criterionType, sourceElement, e) {
-        const sentry = this.addShape(criterionType, e);
+        const sentry = this.addElementView(criterionType, e);
         // Also connect the sentry with the source element to create a corresponding on-part
         sourceElement.__connect(sentry);
     }
