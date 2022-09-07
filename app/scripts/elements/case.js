@@ -345,7 +345,7 @@
             // Hide all halos (perhaps it is sufficient to just hide current one), and show the new one (if any)
             this.items.forEach(item => item.__renderBoundary(false));
             if (itemUnderMouse) itemUnderMouse.__renderBoundary(true);
-            else this.casePlanModel.hideHalo();          
+            else this.casePlanModel && this.casePlanModel.hideHalo();          
         }
     }
 
