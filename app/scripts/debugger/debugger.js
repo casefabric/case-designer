@@ -40,8 +40,8 @@ class Debugger extends StandardForm {
                         <input class="from" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
                     </td>
                     <td>
-                        <input style="margin-left:15px;position:relative;top:1px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
-                        <label style="position:relative;top:-2px" for="ht">All timestamps</label>
+                        <input style="margin-left:15px;position:relative;top:1px" id="hp" class="inputShowPathInformation" type="checkbox"></input>
+                        <label style="position:relative;top:-2px" for="hp">Show path information</label>
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +49,15 @@ class Debugger extends StandardForm {
                         <input class="to" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
                     </td>
                     <td>        
-                        <input style="margin-left:15px" id="hd" class="inputHideDetails" type="checkbox"></input>
+                        <input style="margin-left:15px;position:relative;top:1px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
+                        <label style="position:relative;top:-2px" for="ht">All timestamps</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <input style="margin-left:15px" id="hd" class="inputHideDetail" type="checkbox"></input>
                         <label style="position:relative;top:-3px" for="hd">Hide generic event data</label>
                     </td>
                 </tr>
@@ -69,11 +77,14 @@ class Debugger extends StandardForm {
         <div class="debug-container">
             <div class="event-list">
                 <table>
-                    <tr>
-                        <td><strong>Nr</strong></td>
-                        <td><strong>Type</strong></td>
-                        <td><strong>Time</strong></td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <td class="event-list-nr"><strong>Nr</strong></td>
+                            <td class="event-list-type"><strong>Type</strong></td>
+                            <td class="event-list-name"><strong>Name</strong></td>
+                            <td class="event-list-time"><strong>Time</strong></td>
+                        </tr>
+                    </thead>
                 </table>
             </div>
             <div class="event-content">
@@ -87,8 +98,16 @@ class Debugger extends StandardForm {
         this.html.find('.from').val(localStorage.getItem('from'))
         this.html.find('.to').val(localStorage.getItem('to'))
         this.login = JSON.parse(localStorage.getItem('login') || '{}')
-        this.html.find('.inputHideDetails').prop('checked', this.hideDetails);
-        this.html.find('.inputHideDetails').on('change', e => this.hideDetails = e.currentTarget.checked);
+        this.html.find('.inputShowPathInformation').prop('checked', this.showPathInformation);
+        this.html.find('.inputShowPathInformation').on('change', e => {
+            this.showPathInformation = e.currentTarget.checked
+            this.renderEvents();
+        });
+        this.html.find('.inputHideDetail').prop('checked', this.hideDetails);
+        this.html.find('.inputHideDetail').on('change', e => {
+            this.hideDetails = e.currentTarget.checked
+            this.renderEventContent();
+        });
         this.html.find('.inputShowAllTimestamps').prop('checked', this.showAllTimestamps);
         this.html.find('.inputShowAllTimestamps').on('change', e => {
             this.showAllTimestamps = e.currentTarget.checked;
@@ -169,6 +188,18 @@ class Debugger extends StandardForm {
     /**
      * @returns {Boolean}
      */
+    get showPathInformation() {
+        const showPath = localStorage.getItem('showPathInformation') === 'true';
+        return showPath;
+    }
+
+    set showPathInformation(show) {
+        localStorage.setItem('showPathInformation', show.toString());
+    }
+
+    /**
+     * @returns {Boolean}
+     */
     get hideDetails() {
         const hide = localStorage.getItem('hideDetails') === 'true';
         return hide;
@@ -195,13 +226,15 @@ class Debugger extends StandardForm {
      * @param {JQuery.KeyDownEvent} e 
      */
     handleKeyDown(e) {
+        e.stopPropagation();
+        e.preventDefault();
         if (e.keyCode == 38) { // arrow up
-            if (this.selectedEventId) {
-                if (this.selectedEventId == this.events.length) {
+            if (this.selectedEvent) {
+                if (this.selectedEvent.localNr == this.events.length) {
                     // console.log("At the beginning of the table")
                     return;
                 }
-                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEventId}']`);
+                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`);
                 if (tr.length) {
                     // console.log("Keying up one");
                     this.selectEvent(tr[0].previousElementSibling)
@@ -215,12 +248,12 @@ class Debugger extends StandardForm {
                 }
             }
         } else if (e.keyCode == 40) { // arrow down
-            if (this.selectedEventId) {
-                if (this.selectedEventId == 0) {
+            if (this.selectedEvent) {
+                if (this.selectedEvent.localNr == 0) {
                     // console.log("At the end of the table")
                     return;
                 }
-                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEventId}']`);
+                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`);
                 if (tr.length) {
                     // console.log("Keying down one");
                     this.selectEvent(tr[0].nextElementSibling);
@@ -252,7 +285,7 @@ class Debugger extends StandardForm {
 
     onHide() {
         $(document).off('keyup', this.keyHandler);
-        this.selectedEventId = undefined;
+        this.selectedEvent = undefined;
     }
 
     setEventContent(label, content) {
@@ -281,6 +314,8 @@ class Debugger extends StandardForm {
         this.renderEvents();
 
         const picPrinter = (pic, index) => {
+            // compatibility on events created up to cafienne engine version 1.1.21: in newer events a path property exists, showing more info.
+            if (pic.content.path) return `${index}: ${pic.content.type}[${pic.content.path}]`;
             return `${index}: ${pic.content.type}[${pic.content.name + '.' + pic.content.planitem.index}]`;
         }
         if (this.pics.length > 0) { // Otherwise probably a tenant is rendered
@@ -289,11 +324,23 @@ class Debugger extends StandardForm {
     }
 
     getEventName(event) {
+        /** @type{String} */
+        const path = event.content.path;
+        const paths = path ? path.split('/') : [];
+
+        if (this.showPathInformation && path) {
+            return paths.length > 1 ? path.split('/').slice(1).join('/') : path;
+        }
+
         const planItemId = event.content.planItemId || event.content.taskId;
         if (!planItemId) return '';
+
+        if (path) {
+            return paths[paths.length - 1];
+        }
+
         // console.log("Searching for event with id "+planItemId)
         const eventWithName = this.getPlanItemName(planItemId);
-        const eventIndex = this.getIndex(eventWithName);
         // console.log("Event with name: "+(eventWithName ? (eventWithName.content.name) : 'none'));
         return eventWithName;
     }
@@ -309,7 +356,11 @@ class Debugger extends StandardForm {
     getPlanItemName(planItemId) {
         const pic = this.pics.find(p => p.content.planItemId === planItemId);
         if (pic) {
-            return pic.content.name + '.' + pic.content.planitem.index;
+            if (pic.content.path) {
+                return pic.content.path.substring(pic.content.path.indexOf('/'))
+            } else {
+                return pic.content.name + '.' + pic.content.planitem.index;
+            }
         } else {
             return '';
         }
@@ -406,6 +457,7 @@ class Debugger extends StandardForm {
         }
         if (!renderedBefore) this.splitter.repositionSplitter(this.eventTable.find('table').width() + 70);
         this.renderEventButtons();
+        this.renderEventContent();
     }
 
     renderEventButtons() {
@@ -419,14 +471,13 @@ class Debugger extends StandardForm {
         }
     }
 
-    get selectedEventId() {
-        return this._evtId;
+    get selectedEvent() {
+        return this._selectedEvent;
     }
 
-    set selectedEventId(id) {
-        this._evtId = id;
+    set selectedEvent(event) {
+        this._selectedEvent = event;
     }
-
 
     /**
      * @param {Element} htmlElement
@@ -457,8 +508,8 @@ class Debugger extends StandardForm {
      */
     selectEvent(tr) {
         const event = this.findEvent(tr);
+        this.selectedEvent = event;
         if (event) {
-            this.selectedEventId = event.localNr;
             if (event.type === 'CaseDefinitionApplied') {
                 console.group('CaseDefinition');
                 console.log(event.content.definition.source);
@@ -466,13 +517,21 @@ class Debugger extends StandardForm {
             }
             this.eventTable.find('tr').css('background-color', '')
             $(tr).css('background-color', 'rgb(156, 175, 226)');
-            const content = JSON.parse(JSON.stringify(event.content));
-            if (this.hideDetails) {
-                delete content.modelEvent;
-                delete content.caseInstanceId;
-            }
-            this.setEventContent('', JSON.stringify(content, undefined, 3));
+            this.renderEventContent();
         }
+    }
+
+    renderEventContent() {
+        if (! this.selectedEvent) {
+            return;
+        }
+        // Make a copy;
+        const content = JSON.parse(JSON.stringify(this.selectedEvent.content));
+        if (this.hideDetails) {
+            delete content.modelEvent;
+            delete content.caseInstanceId;
+        }
+        this.setEventContent('', JSON.stringify(content, undefined, 3));
     }
 
     showEvents() {
