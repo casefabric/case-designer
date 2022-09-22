@@ -24,6 +24,7 @@ class Debugger extends StandardForm {
             <label>Case instance</label>
             <input class="caseInstanceId" type="text"></input>
             <button class="buttonShowEvents">Show Events</button>
+            <button style="display:none" class="buttonClearEvents">Clear</button>
         </span>
         <span style="left:450px;top:-35px;font-size:smaller;position:relative;">
             <table>
@@ -40,8 +41,8 @@ class Debugger extends StandardForm {
                         <input class="from" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
                     </td>
                     <td>
-                        <input style="margin-left:15px;position:relative;top:1px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
-                        <label style="position:relative;top:-2px" for="ht">All timestamps</label>
+                        <input style="margin-left:15px;position:relative;top:1px" id="hp" class="inputShowPathInformation" type="checkbox"></input>
+                        <label style="position:relative;top:-2px" for="hp">Show path information</label>
                     </td>
                 </tr>
                 <tr>
@@ -49,7 +50,15 @@ class Debugger extends StandardForm {
                         <input class="to" type="number" style="margin-left:5px;font-size:smaller;width:50px;position:relative;top:-1px;"></input>
                     </td>
                     <td>        
-                        <input style="margin-left:15px" id="hd" class="inputHideDetails" type="checkbox"></input>
+                        <input style="margin-left:15px;position:relative;top:1px" id="ht" class="inputShowAllTimestamps" type="checkbox"></input>
+                        <label style="position:relative;top:-2px" for="ht">All timestamps</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        <input style="margin-left:15px" id="hd" class="inputHideDetail" type="checkbox"></input>
                         <label style="position:relative;top:-3px" for="hd">Hide generic event data</label>
                     </td>
                 </tr>
@@ -69,11 +78,14 @@ class Debugger extends StandardForm {
         <div class="debug-container">
             <div class="event-list">
                 <table>
-                    <tr>
-                        <td><strong>Nr</strong></td>
-                        <td><strong>Type</strong></td>
-                        <td><strong>Time</strong></td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <td class="event-list-nr"><strong>Nr</strong></td>
+                            <td class="event-list-type"><strong>Type</strong></td>
+                            <td class="event-list-name"><strong>Name</strong></td>
+                            <td class="event-list-time"><strong>Time</strong></td>
+                        </tr>
+                    </thead>
                 </table>
             </div>
             <div class="event-content">
@@ -87,17 +99,26 @@ class Debugger extends StandardForm {
         this.html.find('.from').val(localStorage.getItem('from'))
         this.html.find('.to').val(localStorage.getItem('to'))
         this.login = JSON.parse(localStorage.getItem('login') || '{}')
-        this.html.find('.inputHideDetails').prop('checked', this.hideDetails);
-        this.html.find('.inputHideDetails').on('change', e => this.hideDetails = e.currentTarget.checked);
+        this.html.find('.inputShowPathInformation').prop('checked', this.showPathInformation);
+        this.html.find('.inputShowPathInformation').on('change', e => {
+            this.showPathInformation = e.currentTarget.checked;
+            this.renderEvents();
+        });
+        this.html.find('.inputHideDetail').prop('checked', this.hideDetails);
+        this.html.find('.inputHideDetail').on('change', e => {
+            this.hideDetails = e.currentTarget.checked;
+            this.renderEvents();
+        });
         this.html.find('.inputShowAllTimestamps').prop('checked', this.showAllTimestamps);
         this.html.find('.inputShowAllTimestamps').on('change', e => {
             this.showAllTimestamps = e.currentTarget.checked;
             this.renderEvents();
         });
         this.html.find('.buttonShowEvents').on('click', () => this.showEvents());
+        this.html.find('.buttonClearEvents').on('click', () => this.clearEvents());
         this.html.find('.buttonShowParentEvents').on('click', () => this.showParentEvents());
         this.html.find('.buttonCopyEvents').on('click', () => Util.copyText(JSON.stringify(this.events, undefined, 2)));
-        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this.eventSelection, undefined, 2)));
+        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this._filteredEvents, undefined, 2)));
         this.html.find('.buttonCopyDefinition').on('click', () => Util.copyText(this.currentDefinition));
 
         this.splitter = new RightSplitter(this.html.find('.debug-container'), '150px');
@@ -169,6 +190,18 @@ class Debugger extends StandardForm {
     /**
      * @returns {Boolean}
      */
+    get showPathInformation() {
+        const showPath = localStorage.getItem('showPathInformation') === 'true';
+        return showPath;
+    }
+
+    set showPathInformation(show) {
+        localStorage.setItem('showPathInformation', show.toString());
+    }
+
+    /**
+     * @returns {Boolean}
+     */
     get hideDetails() {
         const hide = localStorage.getItem('hideDetails') === 'true';
         return hide;
@@ -195,40 +228,34 @@ class Debugger extends StandardForm {
      * @param {JQuery.KeyDownEvent} e 
      */
     handleKeyDown(e) {
-        if (e.keyCode == 38) { // arrow up
-            if (this.selectedEventId) {
-                if (this.selectedEventId == this.events.length) {
-                    // console.log("At the beginning of the table")
-                    return;
-                }
-                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEventId}']`);
-                if (tr.length) {
-                    // console.log("Keying up one");
-                    this.selectEvent(tr[0].previousElementSibling)
-                } else {
+        e.stopPropagation();
+        e.preventDefault();
+        if (this.filteredEvents.length == 0) return; // Nothing rendered, hence no event to select.
 
+        if (e.keyCode == 38) { // arrow up
+            if (this.selectedEvent) {
+                if (this.selectedEvent.filterIndex == this.filteredEvents.length - 1) {
+                    return;
+                } else {
+                    this.selectEvent(this.filteredEvents[this.selectedEvent.filterIndex + 1], true);
                 }
             } else {
-                const lastEvent = this.events.length;
+                const lastEvent = this.filteredEvents[this.filteredEvents.length - 1];
                 if (lastEvent) { // If there are events, select the last one (because table is showing reversed list)
-                    this.selectEvent(this.eventTable.find(`tr[event-nr='${lastEvent}']`)[0])
+                    this.selectEvent(lastEvent, true)
                 }
             }
         } else if (e.keyCode == 40) { // arrow down
-            if (this.selectedEventId) {
-                if (this.selectedEventId == 0) {
-                    // console.log("At the end of the table")
+            if (this.selectedEvent) {
+                if (this.selectedEvent.filterIndex == 0) {
                     return;
-                }
-                const tr = this.eventTable.find(`tr[event-nr='${this.selectedEventId}']`);
-                if (tr.length) {
-                    // console.log("Keying down one");
-                    this.selectEvent(tr[0].nextElementSibling);
+                } else {
+                    this.selectEvent(this.filteredEvents[this.selectedEvent.filterIndex - 1], true);
                 }
             } else {
-                const lastEvent = this.events.length;
+                const lastEvent = this.filteredEvents[this.filteredEvents.length - 1];
                 if (lastEvent) { // If there are events, select the last one (because table is showing reversed list)
-                    this.selectEvent(this.eventTable.find(`tr[event-nr='${lastEvent - 1}']`)[0])
+                    this.selectEvent(lastEvent, true)
                 }
             }
         }
@@ -248,11 +275,14 @@ class Debugger extends StandardForm {
         $(document).off('keyup', this.keyHandler);
         $(document).on('keyup', this.keyHandler);
         this.html.find('.buttonShowEvents').focus();
+        if (this.events) {
+            this.renderEvents();
+        }
     }
 
     onHide() {
         $(document).off('keyup', this.keyHandler);
-        this.selectedEventId = undefined;
+        this.selectedEvent = undefined;
     }
 
     setEventContent(label, content) {
@@ -268,10 +298,13 @@ class Debugger extends StandardForm {
      * @param {Array<*>} events 
      */
     set events(events) {
+        this.selectedEvent = undefined;
         this._events = events;
         for (let i = 0; i< events.length; i++) {
             events[i].localNr = i;
         }
+        const clearButtonVisibility = this.events.length > 0 ? '' : 'none';
+        this.html.find('.buttonClearEvents').css('display', clearButtonVisibility);
         this.currentDefinition = ''; // Clear current case definition
         this.events.filter(event => event.type === 'CaseDefinitionApplied').forEach(event => this.currentDefinition = event.content.definition.source);
         this.parentActorId = '';
@@ -281,6 +314,8 @@ class Debugger extends StandardForm {
         this.renderEvents();
 
         const picPrinter = (pic, index) => {
+            // compatibility on events created up to cafienne engine version 1.1.21: in newer events a path property exists, showing more info.
+            if (pic.content.path) return `${index}: ${pic.content.type}[${pic.content.path}]`;
             return `${index}: ${pic.content.type}[${pic.content.name + '.' + pic.content.planitem.index}]`;
         }
         if (this.pics.length > 0) { // Otherwise probably a tenant is rendered
@@ -288,12 +323,45 @@ class Debugger extends StandardForm {
         }
     }
 
+    get filteredEvents() {
+        return this._filteredEvents || []; // If nothing yet selected, return an empty array
+    }
+
+    /**
+     * @param {Array<any>} selection
+     */
+    set filteredEvents(selection) {
+        // Clear filterIndex on current selection
+        if (this._filteredEvents) this._filteredEvents.forEach(value => delete value.filterIndex)
+        // Apply filterIndex to new selection
+        selection.forEach((value, index) => value.filterIndex = index);
+        // And assign the new selection
+        this._filteredEvents = selection;
+        // Also clear the current event if it is not in the selection
+        if (this.selectedEvent && this.selectedEvent.filterIndex === undefined) {
+            console.log("Index is smaller than zero, clearing selected")
+            this.selectEvent(undefined); // Clear the selected event, as it is not in the filter
+        }
+    }
+
     getEventName(event) {
+        /** @type{String} */
+        const path = event.content.path;
+        const paths = path ? path.split('/') : [];
+
+        if (this.showPathInformation && path) {
+            return paths.length > 1 ? path.split('/').slice(1).join('/') : path;
+        }
+
         const planItemId = event.content.planItemId || event.content.taskId;
         if (!planItemId) return '';
+
+        if (path) {
+            return paths[paths.length - 1];
+        }
+
         // console.log("Searching for event with id "+planItemId)
         const eventWithName = this.getPlanItemName(planItemId);
-        const eventIndex = this.getIndex(eventWithName);
         // console.log("Event with name: "+(eventWithName ? (eventWithName.content.name) : 'none'));
         return eventWithName;
     }
@@ -309,7 +377,11 @@ class Debugger extends StandardForm {
     getPlanItemName(planItemId) {
         const pic = this.pics.find(p => p.content.planItemId === planItemId);
         if (pic) {
-            return pic.content.name + '.' + pic.content.planitem.index;
+            if (pic.content.path) {
+                return pic.content.path.substring(pic.content.path.indexOf('/'))
+            } else {
+                return pic.content.name + '.' + pic.content.planitem.index;
+            }
         } else {
             return '';
         }
@@ -358,8 +430,8 @@ class Debugger extends StandardForm {
         let currentTimestamp = '';
         let numTransactions = 0;
 
-        this.eventSelection = this.events.filter(applyFilter);
-        const newRows = this.eventSelection.map(event => {
+        this.filteredEvents = this.events.filter(applyFilter);
+        const newRows = this.filteredEvents.map(event => {
             const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >=0 ? event.content.lastModified : '';
             const format = timestamp => timestamp.substring(0, timestamp.indexOf('.') + 4);
             let timestampString = timestamp;
@@ -387,7 +459,7 @@ class Debugger extends StandardForm {
         <table>
             <thead>
                 <tr>
-                    <td><strong>Nr</strong><br/><div>count: ${this.eventSelection.length}</div></td>
+                    <td><strong>Nr</strong><br/><div>count: ${this._filteredEvents.length}</div></td>
                     <td><strong>Type</strong><br/><input type="text"  filter="eventTypeFilter" value="${this.eventTypeFilter}" /></td>
                     <td style="white-space:nowrap"><strong>Name</strong><br/><input type="text" filter="eventNameFilter" value="${this.eventNameFilter}" /></td>
                     <td style="white-space:nowrap"><strong>Time</strong><div>batches: ${numTransactions}</div></td>
@@ -397,7 +469,7 @@ class Debugger extends StandardForm {
                 ${newRows}
             </tbody>
         </table>`);
-        this.eventTable.find('tr').on('click', e => this.selectEvent(e.currentTarget));
+        this.eventTable.find('tr').on('click', e => this.selectEvent(this.findEvent(e.currentTarget) || this.selectedEvent)); // Note, if clicking outside an event, do not change selection.
         this.eventTable.find('input[filter]').on('change', e => this.searchWith(e));
         this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
 
@@ -406,27 +478,28 @@ class Debugger extends StandardForm {
         }
         if (!renderedBefore) this.splitter.repositionSplitter(this.eventTable.find('table').width() + 70);
         this.renderEventButtons();
+        // Upon rendering the events again (e.g. when changing a tickmark in the show/hide options), let's render the selected event again.
+        this.selectEvent(this.selectedEvent);
     }
 
     renderEventButtons() {
         if (this.events && this.events.length > 0) {
             this.html.find('.spanEventListButtons').css('display', 'block');
             this.html.find('.buttonCopyDefinition').css('display', this.currentDefinition ? '' : 'none');
-            this.html.find('.buttonCopyFilteredEvents').css('display', this.events.length == this.eventSelection.length ? 'none' : '');
+            this.html.find('.buttonCopyFilteredEvents').css('display', this.events.length == this._filteredEvents.length ? 'none' : '');
             this.html.find('.buttonShowParentEvents').css('display', this.parentActorId ? '' : 'none');
         } else {
             this.html.find('.spanEventListButtons').css('display', 'none');
         }
     }
 
-    get selectedEventId() {
-        return this._evtId;
+    get selectedEvent() {
+        return this._selectedEvent;
     }
 
-    set selectedEventId(id) {
-        this._evtId = id;
+    set selectedEvent(event) {
+        this._selectedEvent = event;
     }
-
 
     /**
      * @param {Element} htmlElement
@@ -453,26 +526,38 @@ class Debugger extends StandardForm {
     }
 
     /**
-     * @param {Element} tr
+     * 
+     * @param {*} event 
+     * @param {boolean} scroll Whether to center the selected event. Only done when there is a scrollbar and arrow-down or arrow-up is pressed
+     * @returns 
      */
-    selectEvent(tr) {
-        const event = this.findEvent(tr);
-        if (event) {
-            this.selectedEventId = event.localNr;
-            if (event.type === 'CaseDefinitionApplied') {
-                console.group('CaseDefinition');
-                console.log(event.content.definition.source);
-                console.groupEnd();
-            }
-            this.eventTable.find('tr').css('background-color', '')
-            $(tr).css('background-color', 'rgb(156, 175, 226)');
-            const content = JSON.parse(JSON.stringify(event.content));
-            if (this.hideDetails) {
-                delete content.modelEvent;
-                delete content.caseInstanceId;
-            }
-            this.setEventContent('', JSON.stringify(content, undefined, 3));
+    selectEvent(event, scroll = false) {
+        this.selectedEvent = event;
+        // Clear current selection
+        this.eventTable.find('tr').css('background-color', '')
+
+        if (! this.selectedEvent) {
+            // Return if a new event is not selected.
+            return;
         }
+
+        this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`).css('background-color', 'rgb(156, 175, 226)');
+
+        // Make a copy;
+        const content = JSON.parse(JSON.stringify(this.selectedEvent.content));
+        if (this.hideDetails) {
+            delete content.modelEvent;
+            delete content.caseInstanceId;
+        }
+        this.setEventContent('', JSON.stringify(content, undefined, 3));
+
+        if (scroll) {
+            this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`)[0].scrollIntoView({block: 'center'})
+        }
+    }
+
+    clearEvents() {
+        this.events = [];
     }
 
     showEvents() {
@@ -490,9 +575,12 @@ class Debugger extends StandardForm {
         $.get(`/repository/api/events/${caseInstanceId}?${parameters.join('&')}`)
             .done(data => {
                 this.events = data;
-                localStorage.setItem('debug-case-id', caseInstanceId.toString());
-                localStorage.setItem('from', ''+from);
-                localStorage.setItem('to', ''+to);
+                if (this.events.length > 0) {
+                    // Only overwrite the previous identifier if we have actually found events.
+                    localStorage.setItem('debug-case-id', caseInstanceId.toString());
+                    localStorage.setItem('from', ''+from);
+                    localStorage.setItem('to', ''+to);    
+                }
             })
             .fail(data => ide.danger(data.responseText));
     }
