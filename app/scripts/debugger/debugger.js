@@ -118,7 +118,7 @@ class Debugger extends StandardForm {
         this.html.find('.buttonClearEvents').on('click', () => this.clearEvents());
         this.html.find('.buttonShowParentEvents').on('click', () => this.showParentEvents());
         this.html.find('.buttonCopyEvents').on('click', () => Util.copyText(JSON.stringify(this.events, undefined, 2)));
-        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this._filteredEvents, undefined, 2)));
+        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this.filteredEvents, undefined, 2)));
         this.html.find('.buttonCopyDefinition').on('click', () => Util.copyText(this.currentDefinition));
 
         this.splitter = new RightSplitter(this.html.find('.debug-container'), '150px');
@@ -459,7 +459,7 @@ class Debugger extends StandardForm {
         <table>
             <thead>
                 <tr>
-                    <td><strong>Nr</strong><br/><div>count: ${this._filteredEvents.length}</div></td>
+                    <td><strong>Nr</strong><br/><div>count: ${this.filteredEvents.length}</div></td>
                     <td><strong>Type</strong><br/><input type="text"  filter="eventTypeFilter" value="${this.eventTypeFilter}" /></td>
                     <td style="white-space:nowrap"><strong>Name</strong><br/><input type="text" filter="eventNameFilter" value="${this.eventNameFilter}" /></td>
                     <td style="white-space:nowrap"><strong>Time</strong><div>batches: ${numTransactions}</div></td>
@@ -486,7 +486,7 @@ class Debugger extends StandardForm {
         if (this.events && this.events.length > 0) {
             this.html.find('.spanEventListButtons').css('display', 'block');
             this.html.find('.buttonCopyDefinition').css('display', this.currentDefinition ? '' : 'none');
-            this.html.find('.buttonCopyFilteredEvents').css('display', this.events.length == this._filteredEvents.length ? 'none' : '');
+            this.html.find('.buttonCopyFilteredEvents').css('display', this.events.length == this.filteredEvents.length ? 'none' : '');
             this.html.find('.buttonShowParentEvents').css('display', this.parentActorId ? '' : 'none');
         } else {
             this.html.find('.spanEventListButtons').css('display', 'none');
@@ -514,7 +514,8 @@ class Debugger extends StandardForm {
 
     showSubEvents(btn) {
         const event = this.findEvent(btn);
-        this.html.find('.caseInstanceId').val(event.content.taskId);
+        // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
+        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId);
         this.showEvents();
     }
 
