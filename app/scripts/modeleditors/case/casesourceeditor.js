@@ -70,6 +70,10 @@ class CaseSourceEditor {
         this.html.css('display', 'none');
     }
 
+    get visible() {
+        return this.html.css('display') == 'block';
+    }
+
     open() {
         this.html.css('display', 'block');
         const caseXML = XML.prettyPrint(this.editor.case.caseDefinition.toXML());
