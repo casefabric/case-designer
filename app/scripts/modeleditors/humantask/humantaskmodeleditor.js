@@ -84,6 +84,13 @@ class HumantaskModelEditor extends ModelEditor {
         this.createCodeMirrorEditor();
     }
 
+    onEscapeKey(e) {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+            return;
+        }
+        this.close();
+    }
+
     createCodeMirrorEditor() {
         //add code mirror JSON style
         this.freeContentEditor = CodeMirrorConfig.createJSONEditor(this.html.find('.code-mirror-source'));
