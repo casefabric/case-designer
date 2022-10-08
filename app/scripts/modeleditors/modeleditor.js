@@ -31,6 +31,18 @@ class ModelEditor {
 </div>`);
         this.htmlContainer = this.html.find('.model-editor-content');
         this.divMovableEditors = this.html.find('.divMovableEditors');
+
+        // Listener for keydown event; will be attached/detached from document.body when we become visible/hidden.
+        this.keyStrokeListener = e => {
+            const keyHandler = `on${e.key}Key`;
+            console.log("Pressed key " + e.key + " with code " + e.keyCode +"  from target " + e.target +" custom handler: " + keyHandler +" = " + this[keyHandler]);
+            if (this[keyHandler]) {
+                console.log("Invoking specific key handler")
+                this[keyHandler](e);
+            } else {
+                this.keyStrokeHandler(e);
+            }
+        }
         this.html.find('.closeButton').on('click', e => this.close());
         this.html.find('.refreshButton').on('click', e => this.refresh());
     }
@@ -100,7 +112,7 @@ class ModelEditor {
         }
 
         editor.html.css('top', newPosition.top);
-        editor.html.css('left', newPosition.left);        
+        editor.html.css('left', newPosition.left);
     }
 
     /**
@@ -172,12 +184,21 @@ class ModelEditor {
     /**
      * Handler invoked after the editor becomes visible.
      */
-    onShow() {}
+    onShow() {
+    }
 
     /**
      * Handler invoked after the editor is hidden.
      */
-    onHide() {}
+    onHide() {
+    }
+
+    /**
+     * 
+     * @param {JQuery.KeyDownEvent} e 
+     */
+    keyStrokeHandler(e) {
+    }
 
     get visible() {
         return this.html.css('display') == 'block';
@@ -188,9 +209,14 @@ class ModelEditor {
      */
     set visible(visible) {
         this.html.css('display', visible ? 'block' : 'none');
-        visible ? this.onShow() : this.onHide();
         if (visible) {
+            $(document.body).off('keydown', this.keyStrokeListener);
+            $(document.body).on('keydown', this.keyStrokeListener);    
+            this.onShow();
             this.ide.coverPanel.visible = false;
+        } else {
+            $(document.body).off('keydown', this.keyStrokeListener);
+            this.onHide();
         }
     }
 

@@ -12,9 +12,6 @@ class CaseModelEditor extends ModelEditor {
         super(ide, fileName, modelName, modelType);
         this.ideCaseFooter = $('.ideCaseFooter');
 
-        // Listener for keydown event; will be attached/detached from document.body when we become visible/hidden.
-        this.keyStrokeListener = e => this.keyStrokeHandler(e);
-
         Grid.initialize(); // Initialize the snap-to-grid component
         this.undoManager = new UndoManager(this);
 
@@ -128,7 +125,10 @@ class CaseModelEditor extends ModelEditor {
         switch (e.keyCode) {
         case 27: // esc
             // Clicking Escape closes Movable editors one by one, and if none is left, it deselects current selection
-            if (!this.hideTopEditor()) {
+            //  First check if source editor is currently open, and if so, close that one.
+            if (this.case.sourceEditor.visible) {
+                this.case.sourceEditor.close();
+            } else if (!this.hideTopEditor()) {
                 if (this.case) {
                     this.case.clearSelection();
                 }
@@ -229,13 +229,10 @@ class CaseModelEditor extends ModelEditor {
 
     onShow() {
         this.ideCaseFooter.css('display', 'block');
-        $(document.body).off('keydown', this.keyStrokeListener);
-        $(document.body).on('keydown', this.keyStrokeListener);
     }
 
     onHide() {
         this.ideCaseFooter.css('display', 'none');
-        $(document.body).off('keydown', this.keyStrokeListener);
     }
 
     /**

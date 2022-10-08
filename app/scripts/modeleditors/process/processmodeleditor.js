@@ -97,6 +97,13 @@ class ProcessModelEditor extends ModelEditor {
         this.viewSourceEditor = new ModelSourceEditor(this.html.find('.model-source-tabs .model-source-editor'), this);
     }
 
+    onEscapeKey(e) {
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+            return;
+        }
+        this.close();
+    }
+
     /**
      * 
      * @param {String} propertyName 
