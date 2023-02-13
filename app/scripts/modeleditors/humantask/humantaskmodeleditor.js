@@ -42,7 +42,7 @@ class HumantaskModelEditor extends ModelEditor {
                         <div class="model-content-viewer">
                             <div class="task-preview-header">
                                 <h3>Preview</h3>
-                                <label>Note: the preview below is rendered with <a target="_blank" href="http://www.alpacajs.org/">AlpacaJS</a>; Cafienne UI uses <b><a target="_new" href="https://react-jsonschema-form.readthedocs.io">React JSON Schema Forms</a></b>, which renders slightly different.</label>
+                                <label>Note: the preview below is rendered with <a target="_blank" href="http://www.alpacajs.org/">AlpacaJS</a>; Cafienne UI uses <b><a target="_new" href="https://react-jsonschema-form.readthedocs.io">React JSON Schema Forms</a></b>, which render slightly different.</label>
                                 <br />
                                 <label class="alpaca-error-description"></label>
                             </div>
