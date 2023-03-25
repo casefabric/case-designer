@@ -18,7 +18,7 @@ class Debugger extends StandardForm {
 
     renderData() {
         this.htmlContainer.html(
-`<div>
+            `<div>
     <div>
         <span style="top:-15px;position:relative;">
             <label>Case instance</label>
@@ -185,7 +185,7 @@ class Debugger extends StandardForm {
         const remainingText2 = searchIn.substring(index + 1, searchIn.length);
         const remainingText1 = searchFor.substring(1);
         return this.hasSearchText(remainingText1, remainingText2);
-    }    
+    }
 
     /**
      * @returns {Boolean}
@@ -294,21 +294,34 @@ class Debugger extends StandardForm {
         return this._events;
     }
 
+    detectParentActor() {
+        this.parentActorId = '';
+        const parents = this.events.filter(event => event.content.parentActorId)
+        if (parents.length) {
+            this.parentActorId = parents[parents.length - 1].content.parentActorId;
+        } else {
+            const boards = this.events.filter(event => event.type === 'BusinessIdentifierSet' && event.content.name === '__ttp__boardId__')
+            if (boards.length) {
+                console.log("Found a board")
+                this.parentActorId = boards[0].content.value;
+            }
+        }
+    }
+
     /**
      * @param {Array<*>} events 
      */
     set events(events) {
         this.selectedEvent = undefined;
         this._events = events;
-        for (let i = 0; i< events.length; i++) {
+        for (let i = 0; i < events.length; i++) {
             events[i].localNr = i;
         }
         const clearButtonVisibility = this.events.length > 0 ? '' : 'none';
         this.html.find('.buttonClearEvents').css('display', clearButtonVisibility);
         this.currentDefinition = ''; // Clear current case definition
         this.events.filter(event => event.type === 'CaseDefinitionApplied').forEach(event => this.currentDefinition = event.content.definition.source);
-        this.parentActorId = '';
-        this.events.filter(event => event.content.parentActorId).map(event => this.parentActorId = event.content.parentActorId);
+        this.detectParentActor();
         this.pics = events.filter(event => event.type === 'PlanItemCreated');
         console.log(`Found ${events.length} events`)
         this.renderEvents();
@@ -367,7 +380,7 @@ class Debugger extends StandardForm {
     }
 
     getEventButton(event) {
-        if (event.type==='TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask')) {
+        if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'FlowActivated') {
             return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>'
         } else {
             return '';
@@ -389,9 +402,9 @@ class Debugger extends StandardForm {
     }
 
     getIndex(eventWithName) {
-        if (! eventWithName) return '';
-        if (! eventWithName.content) return '';
-        if (! eventWithName.content.planitem) return '';
+        if (!eventWithName) return '';
+        if (!eventWithName.content) return '';
+        if (!eventWithName.content.planitem) return '';
         const index = eventWithName.content.planitem.index;
         if (index) {
             return '.' + index;
@@ -401,7 +414,7 @@ class Debugger extends StandardForm {
     }
 
     renderEvents() {
-        if (! this.events) {
+        if (!this.events) {
             return;
         }
         const renderedBefore = this.eventTable.find('tr').length > 1;
@@ -432,10 +445,10 @@ class Debugger extends StandardForm {
 
         this.filteredEvents = this.events.filter(applyFilter);
         const newRows = this.filteredEvents.map(event => {
-            const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >=0 ? event.content.lastModified : '';
+            const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >= 0 ? event.content.lastModified : '';
             const format = timestamp => timestamp.substring(0, timestamp.indexOf('.') + 4);
             let timestampString = timestamp;
-            if (! currentTimestamp) { // bootstrap
+            if (!currentTimestamp) { // bootstrap
                 currentTimestamp = timestamp;
                 numTransactions = 1;
                 timestampString = `<strong>${format(timestamp)}</strong>`;
@@ -515,7 +528,7 @@ class Debugger extends StandardForm {
     showSubEvents(btn) {
         const event = this.findEvent(btn);
         // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
-        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId);
+        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.flowId);
         this.showEvents();
     }
 
@@ -537,7 +550,7 @@ class Debugger extends StandardForm {
         // Clear current selection
         this.eventTable.find('tr').css('background-color', '')
 
-        if (! this.selectedEvent) {
+        if (!this.selectedEvent) {
             // Return if a new event is not selected.
             return;
         }
@@ -553,7 +566,7 @@ class Debugger extends StandardForm {
         this.setEventContent('', JSON.stringify(content, undefined, 3));
 
         if (scroll) {
-            this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`)[0].scrollIntoView({block: 'center'})
+            this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`)[0].scrollIntoView({ block: 'center' })
         }
     }
 
@@ -579,8 +592,8 @@ class Debugger extends StandardForm {
                 if (this.events.length > 0) {
                     // Only overwrite the previous identifier if we have actually found events.
                     localStorage.setItem('debug-case-id', caseInstanceId.toString());
-                    localStorage.setItem('from', ''+from);
-                    localStorage.setItem('to', ''+to);    
+                    localStorage.setItem('from', '' + from);
+                    localStorage.setItem('to', '' + to);
                 }
             })
             .fail(data => ide.danger(data.responseText));
