@@ -300,10 +300,16 @@ class Debugger extends StandardForm {
         if (parents.length) {
             this.parentActorId = parents[parents.length - 1].content.parentActorId;
         } else {
+            // Check if there is a case with a business identifier named '__ttp__boardId__'
+            //  and if that is not found, check if we're in a consent group created by a board (then the id ends with '-team')
             const boards = this.events.filter(event => event.type === 'BusinessIdentifierSet' && event.content.name === '__ttp__boardId__')
             if (boards.length) {
-                console.log("Found a board")
                 this.parentActorId = boards[0].content.value;
+            } else {
+                const currentActorId = this.html.find('.caseInstanceId').val();
+                if (currentActorId.toString().endsWith('-team')) {
+                    this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
+                }
             }
         }
     }
@@ -380,7 +386,7 @@ class Debugger extends StandardForm {
     }
 
     getEventButton(event) {
-        if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'FlowActivated') {
+        if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'BoardTeamCreated' || event.type === 'FlowActivated') {
             return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>'
         } else {
             return '';
@@ -528,7 +534,7 @@ class Debugger extends StandardForm {
     showSubEvents(btn) {
         const event = this.findEvent(btn);
         // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
-        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.flowId);
+        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.team || event.content.flowId);
         this.showEvents();
     }
 
