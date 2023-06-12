@@ -496,13 +496,13 @@ class CMMNElement extends CanvasElement {
      * This method is invoked on the element if it created a connection to the target CMMNElement
      * @param {CMMNElement} target 
      */
-    __connectedTo(target) { }
+    __connectTo(target) { }
 
     /**
      * This method is invoked on the element if a connection to it was made from the source CMMNElement
      * @param {CMMNElement} source 
      */
-    __connectedFrom(source) { }
+    __connectFrom(source) { }
 
     /**
      * Removes a connector from the registration in this element.
@@ -563,9 +563,21 @@ class CMMNElement extends CanvasElement {
      * @param {JQuery<Event>} e event indicating x and y position of cursor
      */
     createCriterionAndConnect(criterionType, sourceElement, e) {
-        const sentry = this.addElementView(criterionType, e);
-        // Also connect the sentry with the source element to create a corresponding on-part
-        sourceElement.__connect(sentry);
+        // Create a new criterion and add the source as an on part
+        this.addElementView(criterionType, e).adoptOnPart(sourceElement);
+    }
+
+    /**
+     * Hook for sentries to override.
+     * @param {CMMNElement} sourceElement 
+     */
+    adoptOnPart(sourceElement) {
+    }
+
+    /**
+     * Hook for sentries to override.
+     */
+    updateConnectorLabels() {        
     }
 
     /**

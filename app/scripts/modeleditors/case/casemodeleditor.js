@@ -158,7 +158,16 @@ class CaseModelEditor extends ModelEditor {
             break;
         case 100: //4;
             break;
-        case 83: //s
+        case 76: //L
+            if (e.ctrlKey) {
+                if (!this.case.sourceEditor.visible) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.case.switchLabels();
+                }
+            }
+            break;
+        case 83: //S
             if (e.ctrlKey) { // Avoid the browser's save, and save the current model.
                 e.stopPropagation();
                 e.preventDefault();

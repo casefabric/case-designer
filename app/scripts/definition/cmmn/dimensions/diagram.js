@@ -14,6 +14,7 @@ class Diagram extends DiagramElement {
         this.deprecatedCaseFileItems = this.parseElements('casefileitem', CaseFileItemShape, []);
         /** @type {Array<Edge>} */
         this.edges = this.parseElements(CMMNEDGE, Edge);
+        this.connectorStyle = new ConnectorStyle(this.parseCafienneAttribute('labels'));
     }
 
     createShape(x, y, width, height, cmmnElementRef = undefined) {
@@ -54,5 +55,8 @@ class Diagram extends DiagramElement {
 
     createExportNode(dimensionsNode) {
         super.createExportNode(dimensionsNode, CMMNDIAGRAM, 'shapes', 'edges');
+        if (!this.connectorStyle.isDefault) {
+            this.exportNode.setAttributeNS('org.cafienne', 'labels', this.connectorStyle.style);
+        }
     }
 }

@@ -67,6 +67,22 @@ class XMLElementDefinition {
     }
 
     /**
+     * Parses the attribute with the given name. If it does not exist, returns the defaultValue
+     * @param {String} name 
+     * @param {*} defaultValue 
+     * @returns {String}
+     */
+    parseCafienneAttribute(name, defaultValue = undefined) {
+        if (this.importNode) {
+            const value = this.importNode.getAttributeNS(CAFIENNE_NAMESPACE, name);
+            if (value != null) {
+                return value;
+            }
+        }
+        return defaultValue;
+    }
+
+    /**
      * Searches for the first child element with the given tag name, and, if found, returns it's text content as string.
      * @param {String} childName 
      * @param {String} defaultValue
@@ -303,7 +319,7 @@ class XMLElementDefinition {
         const extensionElements = XML.createChildElement(this.exportNode, 'extensionElements');
         extensionElements.setAttribute('mustUnderstand', 'false');
         const node = XML.createChildElement(extensionElements, tagName);
-        node.setAttribute(IMPLEMENTATION_PREFIX, IMPLEMENTATION_NAMESPACE);
+        node.setAttribute(CAFIENNE_PREFIX, CAFIENNE_NAMESPACE);
         return node;
     }
 

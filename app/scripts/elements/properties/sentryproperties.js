@@ -133,9 +133,14 @@ class SentryProperties extends Properties {
         if (onPart) {
             const selectedStandardEvent = e.currentTarget.selectedOptions[0];
             const newStandardEvent = selectedStandardEvent.value;
-            if (connector && connector.label) {
-                // Only refresh label if it is already visible (i.e., it is not empty).
-                connector.label = newStandardEvent;
+            if (connector) {
+                // If there is a connector, check the label rendering style, and optionally change the label.
+                const style = connector.case.diagram.connectorStyle
+                if (style.isNone || (style.isDefault && onPart.source.defaultTransition == newStandardEvent)) {
+                    connector.label = '';
+                } else {
+                    connector.label = newStandardEvent;
+                }
             }
             this.change(onPart, 'standardEvent', newStandardEvent);
         }
@@ -241,7 +246,7 @@ class SentryProperties extends Properties {
                                 <input id="hideShowConnector" title="Show/hide a visual connector to the plan item" type="checkbox" ${checked}></input>
                             </td>
                             <td>
-                                <input id="hideShowLabel" title="Show/hide the label with the standard event on the connector" type="checkbox" ${checkedLabel}></input>
+                                <input id="hideShowLabel" title="Show/hide the label with the standard event on the connector (CTRL-L changes default settings for this case)" type="checkbox" ${checkedLabel}></input>
                             </td>
                         </tr>`);
         parentHTML.append(html);
@@ -279,7 +284,14 @@ class SentryProperties extends Properties {
                 // Hide/show the connector to the plan item
                 const checked = e.currentTarget.checked;
                 if (checked) {
-                    this.cmmnElement.__connect(planItemView);
+                    const connector = this.cmmnElement.__connect(planItemView);
+                    // If there is a connector, check the label rendering style, and optionally change the label.
+                    const style = connector.case.diagram.connectorStyle;
+                    if (style.isNone || (style.isDefault && onPart.source.defaultTransition == onPart.standardEvent)) {
+                        connector.label = '';
+                    } else {
+                        connector.label = onPart.standardEvent;
+                    }
                     this.show();
                 } else if (connector) {
                     connector.remove();
@@ -373,7 +385,7 @@ class SentryProperties extends Properties {
                                 <input id="hideShowConnector" type="checkbox" ${checked}></input>
                             </td>
                             <td>
-                                <input id="hideShowLabel" title="Show/hide the label with the standard event on the connector" type="checkbox" ${checkedLabel}></input>
+                                <input id="hideShowLabel" title="Show/hide the label with the standard event on the connector (CTRL-L changes default settings for this case)" type="checkbox" ${checkedLabel}></input>
                             </td>
                         </tr>`);
         parentHTML.append(html);

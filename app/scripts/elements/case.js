@@ -550,4 +550,11 @@
     getCaseFileItemElement(caseFileItemID) {
         return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
     }
+
+    switchLabels() {
+        this.diagram.connectorStyle.shiftRight();
+        this.editor.ide.info(this.diagram.connectorStyle.infoMessage, 8000);
+        this.items.filter(item => item instanceof Sentry).forEach(sentry => sentry.updateConnectorLabels());
+        this.editor.saveModel();
+    }
 }
