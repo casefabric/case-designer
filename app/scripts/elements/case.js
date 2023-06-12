@@ -11,6 +11,7 @@
         this.editor = editor;
         this.editor.case = this; // Quick hack to have inline editors have access to the case in their constructor
         this.dimensions = dimensions;
+        this.diagram = dimensions.diagram;
         this.caseDefinition = caseDefinition;
         this.id = this.caseDefinition.id;
         this.name = this.caseDefinition.name;
@@ -67,7 +68,7 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, dimensions.getShape(casePlanDefinition));
+            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
 
 
             const getDefinition = shape => {
@@ -87,7 +88,7 @@
             // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
             /** @type {Array<Stage>} */
             const stages = this.items.filter(element => element instanceof Stage);
-            this.dimensions.shapes.forEach(shape => {
+            this.diagram.shapes.forEach(shape => {
                 const definitionElement = getDefinition(shape);
                 // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
                 if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
@@ -103,7 +104,7 @@
             });
 
             // Finally render all connectors
-            this.dimensions.edges.forEach(edge => Connector.createConnectorFromEdge(this, edge));
+            this.diagram.edges.forEach(edge => Connector.createConnectorFromEdge(this, edge));
 
             //update the usedIn column of the case file items editor
             this.cfiEditor.showUsedIn();

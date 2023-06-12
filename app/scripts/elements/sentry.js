@@ -341,7 +341,7 @@ class Sentry extends CMMNElement {
 class EntryCriterion extends Sentry {
     static create(planItem, x, y) {
         const definition = planItem.definition.createEntryCriterion();
-        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
         return new EntryCriterion(planItem, definition, shape);
     }
 
@@ -371,7 +371,7 @@ class ExitCriterion extends Sentry {
      */
     static create(planItem, x, y) {
         const definition = planItem.definition.createExitCriterion();
-        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
         return new ExitCriterion(planItem, definition, shape);
     }
 

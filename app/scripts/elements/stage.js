@@ -7,7 +7,7 @@
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(StageDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 420, 140, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 420, 140, definition.id);
         if (definition.definition instanceof StageDefinition) {
             return new Stage(stage, definition, definition.definition, shape);
         }
@@ -124,7 +124,7 @@
      */
     createPlanItemView(definition) {
         const planItemDefinition = definition.definition;
-        const shape = this.case.dimensions.getShape(definition);
+        const shape = this.case.diagram.getShape(definition);
         if (! shape) {
             console.warn(`Error: missing shape definition for ${definition.definition.constructor.name} named "${definition.name}" with id "${definition.id}"`)
             return;

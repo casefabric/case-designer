@@ -12,7 +12,7 @@ class CasePlanModel extends Stage {
      */
     static create(cs, x = 10, y = 10) {
         const definition = cs.caseDefinition.getCasePlan();
-        const shape = cs.dimensions.createShape(x, y, 800, 500, definition.id);
+        const shape = cs.diagram.createShape(x, y, 800, 500, definition.id);
         return new CasePlanModel(cs, definition, shape)
     }
 

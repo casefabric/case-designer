@@ -9,7 +9,7 @@ class HumanTask extends Task {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(HumanTaskDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 140, 80, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof HumanTaskDefinition) {
             return new HumanTask(stage, definition, definition.definition, shape);
         }

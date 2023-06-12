@@ -7,7 +7,7 @@ class ProcessTask extends Task {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(ProcessTaskDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 140, 80, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof ProcessTaskDefinition) {
             return new ProcessTask(stage, definition, definition.definition, shape);
         }

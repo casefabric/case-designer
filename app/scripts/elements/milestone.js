@@ -8,7 +8,7 @@ class Milestone extends PlanItemView {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(MilestoneDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 100, 40, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 100, 40, definition.id);
         if (definition.definition instanceof MilestoneDefinition) {
             return new Milestone(stage, definition, definition.definition, shape);
         }

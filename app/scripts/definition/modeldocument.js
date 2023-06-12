@@ -63,8 +63,6 @@ class DimensionsModelDocument extends ModelDocument {
      */
     constructor(ide, fileName, source) {
         super(ide, fileName, source);
-        const diagram = XML.getChildByTagName(this.root, CMMNDIAGRAM);
-        this.root = diagram;
     }
 
     createInstance() {

@@ -7,7 +7,7 @@ class UserEvent extends EventListener {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(UserEventDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 32, 32, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 32, 32, definition.id);
         if (definition.definition instanceof UserEventDefinition) {
             return new UserEvent(stage, definition, definition.definition, shape);
         }

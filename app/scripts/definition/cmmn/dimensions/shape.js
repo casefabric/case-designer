@@ -4,9 +4,11 @@ class ShapeDefinition extends DiagramElement {
      * 
      * @param {Element} importNode 
      * @param {Dimensions} dimensions 
+     * @param {Diagram} parent
      */
-    constructor(importNode, dimensions) {
-        super(importNode, dimensions, dimensions);
+    constructor(importNode, dimensions, parent) {
+        super(importNode, dimensions, parent);
+        this.diagram = parent;
         this.cmmnElementRef = this.parseAttribute(CMMNELEMENTREF);
         if (!this.cmmnElementRef) {
             this.dimensions.addParseWarning('Encountered a shape node in dimensions without a reference to a CMMN element');
@@ -39,11 +41,11 @@ class ShapeDefinition extends DiagramElement {
      */
     removeShape() {
         // Remove the shape from the dimensions as well
-        this.dimensions.removeShape(this);
+        this.diagram.removeShape(this);
     }
 
-    createExportNode(diagramNode, tagName = CMMNSHAPE, ...propertyNames) {
-        super.createExportNode(diagramNode, tagName, 'cmmnElementRef', 'bounds', propertyNames);
+    createExportNode(diagramNode) {
+        super.createExportNode(diagramNode, CMMNSHAPE, 'cmmnElementRef', 'bounds');
     }
 
     get hasError() {
@@ -100,8 +102,8 @@ class ShapeDefinition extends DiagramElement {
 }
 
 class CustomShape extends ShapeDefinition {
-    constructor(importNode, dimensions) {
-        super(importNode, dimensions);
+    constructor(importNode, dimensions, parent) {
+        super(importNode, dimensions, parent);
         this.parentId = this.parseAttribute('parentId');
         if (!this.parentId) { // compatibility
             this.parentId = this.parseAttribute('parentid');
@@ -109,13 +111,13 @@ class CustomShape extends ShapeDefinition {
     }
 
     migrate() {
-        const shape = new ShapeDefinition(undefined, this.dimensions);
+        const shape = new ShapeDefinition(undefined, this.dimensions, this.diagram);
         shape.cmmnElementRef = this.cmmnElementRef;
         shape.x = this.x;
         shape.y = this.y;
         shape.width = this.width;
         shape.height = this.height;
-        this.dimensions.addShape(shape);
+        this.diagram.addShape(shape);
         return shape;
     }
 
@@ -125,15 +127,15 @@ class CustomShape extends ShapeDefinition {
 }
 
 class CaseFileItemShape extends CustomShape {
-    constructor(importNode, dimensions) {
-        super(importNode, dimensions);
+    constructor(importNode, dimensions, parent) {
+        super(importNode, dimensions, parent);
         this.contextRef = this.parseAttribute('contextRef');
     }
 
     migrate() {
-        const shape = new ShapeDefinition(undefined, this.dimensions);
+        const shape = new ShapeDefinition(undefined, this.dimensions, this.diagram);
         shape.cmmnElementRef = this.contextRef;
-        this.dimensions.edges.forEach(edge => {
+        this.diagram.edges.forEach(edge => {
             if (edge.sourceId === this.cmmnElementRef) {
                 edge.sourceId = this.contextRef;
             } else if (edge.targetId === this.cmmnElementRef) {
@@ -144,14 +146,14 @@ class CaseFileItemShape extends CustomShape {
         shape.y = this.y;
         shape.width = this.width;
         shape.height = this.height;
-        this.dimensions.addShape(shape);
+        this.diagram.addShape(shape);
         return shape;
     }
 }
 
 class TextBoxShape extends CustomShape {
-    constructor(importNode, dimensions) {
-        super(importNode, dimensions);
+    constructor(importNode, dimensions, parent) {
+        super(importNode, dimensions, parent);
         this.content = this.parseAttribute('content', '');
     }
 }
