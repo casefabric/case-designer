@@ -164,30 +164,6 @@ class Debugger extends StandardForm {
     }
 
     /**
-     * Determines recursively whether each character of text1 is available in text2
-     * @param {String} searchFor 
-     * @param {String} searchIn 
-     */
-    hasSearchText(searchFor, searchIn) {
-        if (!searchFor) { // Nothing left to search for, so found a hit
-            return true;
-        }
-        if (!searchIn) { // Nothing left to search in, so did not find it.
-            return false;
-        }
-        searchFor = searchFor.toLowerCase();
-        searchIn = searchIn.toLowerCase();
-        const index = searchIn.indexOf(searchFor.charAt(0));
-        if (index < 0) { // Did not find any results, so returning false.
-            return false;
-        }
-        // Continue the search in the remaining parts of text2
-        const remainingText2 = searchIn.substring(index + 1, searchIn.length);
-        const remainingText1 = searchFor.substring(1);
-        return this.hasSearchText(remainingText1, remainingText2);
-    }
-
-    /**
      * @returns {Boolean}
      */
     get showPathInformation() {
@@ -306,8 +282,8 @@ class Debugger extends StandardForm {
             if (boards.length) {
                 this.parentActorId = boards[0].content.value;
             } else {
-                const currentActorId = this.html.find('.caseInstanceId').val();
-                if (currentActorId.toString().endsWith('-team')) {
+                const currentActorId = this.html.find('.caseInstanceId').val().toString();
+                if (currentActorId.endsWith('-team')) {
                     this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
                 }
             }
@@ -358,7 +334,6 @@ class Debugger extends StandardForm {
         this._filteredEvents = selection;
         // Also clear the current event if it is not in the selection
         if (this.selectedEvent && this.selectedEvent.filterIndex === undefined) {
-            console.log("Index is smaller than zero, clearing selected")
             this.selectEvent(undefined); // Clear the selected event, as it is not in the filter
         }
     }
@@ -385,9 +360,15 @@ class Debugger extends StandardForm {
         return eventWithName;
     }
 
+    isDefinitionEvent(event) {
+        return (event.content && event.content.definition && event.content.definition.source && (''+event.content.definition.source).startsWith('<?xml'));
+    }
+
     getEventButton(event) {
         if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'BoardTeamCreated' || event.type === 'FlowActivated') {
-            return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>'
+            return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>';
+        } else if (this.isDefinitionEvent(event)) {
+            return '<span style="padding-left:20px"><button class="buttonCopyEventDefinition">Copy definition</button></span>';
         } else {
             return '';
         }
@@ -441,8 +422,8 @@ class Debugger extends StandardForm {
         const applyFilter = event => {
             const eventType = event.type;
             const eventName = this.getEventName(event);
-            const hasOneOfEventTypes = eventTypes[0] == '' || eventTypes.find(type => this.hasSearchText(type, eventType));
-            const hasOneOfEventNames = eventNames[0] == '' || eventNames.find(name => this.hasSearchText(name, eventName));
+            const hasOneOfEventTypes = eventTypes[0] == '' || eventTypes.find(type => hasSearchText(type, eventType));
+            const hasOneOfEventNames = eventNames[0] == '' || eventNames.find(name => hasSearchText(name, eventName));
             return hasOneOfEventTypes && hasOneOfEventNames;
         }
 
@@ -491,6 +472,7 @@ class Debugger extends StandardForm {
         this.eventTable.find('tr').on('click', e => this.selectEvent(this.findEvent(e.currentTarget) || this.selectedEvent)); // Note, if clicking outside an event, do not change selection.
         this.eventTable.find('input[filter]').on('change', e => this.searchWith(e));
         this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
+        this.eventTable.find('.buttonCopyEventDefinition').on('click', e => this.copyEventDefinition(e.currentTarget));
 
         if (this.eventTable.width() < this.eventTable.find('table').width()) {
             this.splitter.repositionSplitter(this.eventTable.find('table').width() + 20);
@@ -543,6 +525,11 @@ class Debugger extends StandardForm {
             this.html.find('.caseInstanceId').val(this.parentActorId);
             this.showEvents();
         }
+    }
+
+    copyEventDefinition(btn) {
+        const event = this.findEvent(btn);
+        Util.copyText(event.content.definition.source);
     }
 
     /**
@@ -604,4 +591,50 @@ class Debugger extends StandardForm {
             })
             .fail(data => ide.danger(data.responseText));
     }
+}
+
+/**
+ * Determines recursively whether each character of text1 is available in text2 
+ * @param {String} searchFor 
+ * @param {String} searchIn
+ */
+function hasSearchText(searchFor, searchIn) {
+    if (!searchFor) {
+        // Nothing left to search for, so found a hit 
+        return true;
+    } if (!searchIn) {
+        // Nothing left to search in, so did not find it. 
+        return false;
+    }
+    searchFor = searchFor.toLowerCase();
+    searchIn = searchIn.toLowerCase();
+    const searchTerm = searchFor.substring(0, getSearchTerm(searchFor));
+    const index = searchIn.indexOf(searchTerm);
+    if (index < 0) {
+        // Did not find any results, so returning false.
+        return false;
+    }
+    // Continue the search in the remaining parts of text2 
+    const remainingSearchFor = searchFor.substring(searchTerm.length);
+    const remainingSearchIn = searchIn.substring(index + 1, searchIn.length);
+    return hasSearchText(remainingSearchFor, remainingSearchIn);
+}
+
+/**
+ * Returns the next search term to search for.
+ * This is either everything up to a dot or a space, or just the next character.
+ * @param {String} searchFor 
+ * @returns 
+ */
+function getSearchTerm(searchFor) {
+    // Take everything up-to-space, or ...
+    const space = searchFor.indexOf(' ');
+    if (space > 0) return space;
+
+    // ... take everything up-to-dot, or ...
+    const dot = searchFor.indexOf('.');
+    if (dot > 0) return dot;
+
+    // ... just take the next character
+    return 1;
 }
