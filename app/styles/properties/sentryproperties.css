@@ -1,3 +1,7 @@
+.entrycriterion-properties, .exitcriterion-properties {
+    width: 315px;
+}
+
 .onparts-block label {
     font-weight: bold;
 }

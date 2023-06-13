@@ -59,7 +59,6 @@ class Properties extends MovableEditor {
                 // this.html.css('width', 'auto');
             }
         });
-        this.html.css('width', 180);
         this.html.find('.formclose').on('click', () => this.hide());
         this.html.find('.propertiespin').on('click', e => {
             // Pin/unpin the menu
