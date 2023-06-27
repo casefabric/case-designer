@@ -61,7 +61,7 @@ class TaskStage extends PlanItemView {
             // If there is a definition, and we do not yet have a child to render it, then add such a child.
             if (! this.planningTableView) {
                 const position = this.__planningTablePosition;
-                const shape = this.case.dimensions.getShape(ptDefinition) || this.case.dimensions.createShape(position.x, position.y, 24, 16, ptDefinition.id);
+                const shape = this.case.diagram.getShape(ptDefinition) || this.case.diagram.createShape(position.x, position.y, 24, 16, ptDefinition.id);
                 new PlanningTable(this, this.planItemDefinition.planningTable, shape);
             }
         }

@@ -7,7 +7,7 @@ class TimerEvent extends EventListener {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(TimerEventDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 32, 32, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 32, 32, definition.id);
         if (definition.definition instanceof TimerEventDefinition) {
             return new TimerEvent(stage, definition, definition.definition, shape);
         }

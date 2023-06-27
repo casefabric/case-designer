@@ -84,12 +84,12 @@ class CaseModelEditor extends ModelEditor {
     migrateDefinitions(caseDefinition, dimensions) {
         this.__migrated = false;
 
-        dimensions.deprecatedCaseFileItems.forEach(casefileshape => {
+        dimensions.diagram.deprecatedCaseFileItems.forEach(casefileshape => {
             casefileshape.migrate();
             this.migrated(`Migrating casefileshape ${casefileshape.cmmnElementRef}`);
         })
 
-        dimensions.deprecatedTextBoxes.forEach(textbox => {
+        dimensions.diagram.deprecatedTextBoxes.forEach(textbox => {
             const textAnnotationDefinition = caseDefinition.createTextAnnotation(textbox.migrate().cmmnElementRef);
             textAnnotationDefinition.text = textbox.content;
             this.migrated(`Migrating textbox ${textbox.cmmnElementRef}`);
@@ -158,7 +158,16 @@ class CaseModelEditor extends ModelEditor {
             break;
         case 100: //4;
             break;
-        case 83: //s
+        case 76: //L
+            if (e.ctrlKey) {
+                if (!this.case.sourceEditor.visible) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.case.switchLabels();
+                }
+            }
+            break;
+        case 83: //S
             if (e.ctrlKey) { // Avoid the browser's save, and save the current model.
                 e.stopPropagation();
                 e.preventDefault();

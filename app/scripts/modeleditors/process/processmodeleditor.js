@@ -236,7 +236,7 @@ class ProcessModelEditor extends ModelEditor {
         const newModelContent =
 `<process name="${name}" description="${description}">
     <${EXTENSIONELEMENTS}>
-        <${IMPLEMENTATION_TAG} ${IMPLEMENTATION_PREFIX}="${IMPLEMENTATION_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
+        <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
         </${IMPLEMENTATION_TAG}>
     </${EXTENSIONELEMENTS}>
 </process>`;

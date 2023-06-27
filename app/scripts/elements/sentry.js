@@ -31,6 +31,36 @@ class Sentry extends CMMNElement {
         return new SentryProperties(this);
     }
 
+    adoptOnPart(sourceElement) {
+        // Also connect the sentry with the source element to create a corresponding on-part
+        sourceElement.__connect(this);
+        this.updateConnectorLabels();
+        this.propertiesView.refresh();
+    }
+
+    updateConnectorLabels() {
+        const style = this.case.diagram.connectorStyle;
+
+        this.__connectors.forEach(connector => {
+            const onPart = this.__getOnPart(connector);
+            if (style.isNone) { // Remove the label
+                connector.label = '';
+            } else {
+                if (!onPart.source) {
+                    // Only update if we have a source
+                    return;
+                }
+                const defaultTransition = onPart.source.defaultTransition;
+                if (style.isDefault && onPart.standardEvent == defaultTransition) {
+                    connector.label = ''
+                } else {
+                    connector.label = onPart.standardEvent;
+                }
+            }
+        })
+
+    }
+
     /**
      * set a standard event to a sentry with value element, standardEvent
      * When the dataNode exists for the element, look up and set standardEvent
@@ -284,11 +314,11 @@ class Sentry extends CMMNElement {
         return connectableElements;
     }
 
-    __connectedTo(target) {
+    __connectTo(target) {
         this.__connectElement(target);
     }
 
-    __connectedFrom(source) {
+    __connectFrom(source) {
         this.__connectElement(source);
     }
 
@@ -341,7 +371,7 @@ class Sentry extends CMMNElement {
 class EntryCriterion extends Sentry {
     static create(planItem, x, y) {
         const definition = planItem.definition.createEntryCriterion();
-        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
         return new EntryCriterion(planItem, definition, shape);
     }
 
@@ -371,7 +401,7 @@ class ExitCriterion extends Sentry {
      */
     static create(planItem, x, y) {
         const definition = planItem.definition.createExitCriterion();
-        const shape = planItem.case.dimensions.createShape(x, y, 12, 20, definition.id);
+        const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
         return new ExitCriterion(planItem, definition, shape);
     }
 

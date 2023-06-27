@@ -35,9 +35,9 @@ class ModelEditor {
         // Listener for keydown event; will be attached/detached from document.body when we become visible/hidden.
         this.keyStrokeListener = e => {
             const keyHandler = `on${e.key}Key`;
-            console.log("Pressed key " + e.key + " with code " + e.keyCode +"  from target " + e.target +" custom handler: " + keyHandler +" = " + this[keyHandler]);
+            // console.log("Pressed key " + e.key + " with code " + e.keyCode +"  from target " + e.target +" custom handler: " + keyHandler +" = " + this[keyHandler]);
             if (this[keyHandler]) {
-                console.log("Invoking specific key handler")
+                // console.log("Invoking specific key handler")
                 this[keyHandler](e);
             } else {
                 this.keyStrokeHandler(e);

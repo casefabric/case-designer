@@ -10,6 +10,7 @@ class ModelDocument {
         this.fileName = fileName;
         this.source = source instanceof Document ? XML.prettyPrint(source) : source;
         this.xml = source instanceof Document ? source : XML.parseXML(source);
+        /** @type{Element} */
         this.root = this.xml.documentElement;
     }
 
@@ -62,8 +63,6 @@ class DimensionsModelDocument extends ModelDocument {
      */
     constructor(ide, fileName, source) {
         super(ide, fileName, source);
-        const diagram = XML.getChildByTagName(this.root, CMMNDIAGRAM);
-        this.root = diagram;
     }
 
     createInstance() {

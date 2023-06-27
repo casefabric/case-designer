@@ -268,7 +268,7 @@ class HumantaskModelEditor extends ModelEditor {
     static createNewModel(ide, name, description) {
         const newModelContent = 
             `<humantask>
-                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${IMPLEMENTATION_PREFIX}="${IMPLEMENTATION_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
+                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
                     <task-model></task-model>
                 </${IMPLEMENTATION_TAG}>
             </humantask>`;

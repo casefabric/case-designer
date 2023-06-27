@@ -100,9 +100,9 @@
         source.__addConnector(this);
         target.__addConnector(this);
         // Now inform source that it has connected to target
-        source.__connectedTo(target);
+        source.__connectTo(target);
         // And inform target that source has connected to it
-        target.__connectedFrom(source);
+        target.__connectFrom(source);
     }
 
     __setJointLabel(text) {

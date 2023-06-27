@@ -18,7 +18,7 @@ class Debugger extends StandardForm {
 
     renderData() {
         this.htmlContainer.html(
-`<div>
+            `<div>
     <div>
         <span style="top:-15px;position:relative;">
             <label>Case instance</label>
@@ -164,30 +164,6 @@ class Debugger extends StandardForm {
     }
 
     /**
-     * Determines recursively whether each character of text1 is available in text2
-     * @param {String} searchFor 
-     * @param {String} searchIn 
-     */
-    hasSearchText(searchFor, searchIn) {
-        if (!searchFor) { // Nothing left to search for, so found a hit
-            return true;
-        }
-        if (!searchIn) { // Nothing left to search in, so did not find it.
-            return false;
-        }
-        searchFor = searchFor.toLowerCase();
-        searchIn = searchIn.toLowerCase();
-        const index = searchIn.indexOf(searchFor.charAt(0));
-        if (index < 0) { // Did not find any results, so returning false.
-            return false;
-        }
-        // Continue the search in the remaining parts of text2
-        const remainingText2 = searchIn.substring(index + 1, searchIn.length);
-        const remainingText1 = searchFor.substring(1);
-        return this.hasSearchText(remainingText1, remainingText2);
-    }    
-
-    /**
      * @returns {Boolean}
      */
     get showPathInformation() {
@@ -294,21 +270,40 @@ class Debugger extends StandardForm {
         return this._events;
     }
 
+    detectParentActor() {
+        this.parentActorId = '';
+        const parents = this.events.filter(event => event.content.parentActorId)
+        if (parents.length) {
+            this.parentActorId = parents[parents.length - 1].content.parentActorId;
+        } else {
+            // Check if there is a case with a business identifier named '__ttp__boardId__'
+            //  and if that is not found, check if we're in a consent group created by a board (then the id ends with '-team')
+            const boards = this.events.filter(event => event.type === 'BusinessIdentifierSet' && event.content.name === '__ttp__boardId__')
+            if (boards.length) {
+                this.parentActorId = boards[0].content.value;
+            } else {
+                const currentActorId = this.html.find('.caseInstanceId').val().toString();
+                if (currentActorId.endsWith('-team')) {
+                    this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
+                }
+            }
+        }
+    }
+
     /**
      * @param {Array<*>} events 
      */
     set events(events) {
         this.selectedEvent = undefined;
         this._events = events;
-        for (let i = 0; i< events.length; i++) {
+        for (let i = 0; i < events.length; i++) {
             events[i].localNr = i;
         }
         const clearButtonVisibility = this.events.length > 0 ? '' : 'none';
         this.html.find('.buttonClearEvents').css('display', clearButtonVisibility);
         this.currentDefinition = ''; // Clear current case definition
         this.events.filter(event => event.type === 'CaseDefinitionApplied').forEach(event => this.currentDefinition = event.content.definition.source);
-        this.parentActorId = '';
-        this.events.filter(event => event.content.parentActorId).map(event => this.parentActorId = event.content.parentActorId);
+        this.detectParentActor();
         this.pics = events.filter(event => event.type === 'PlanItemCreated');
         console.log(`Found ${events.length} events`)
         this.renderEvents();
@@ -339,7 +334,6 @@ class Debugger extends StandardForm {
         this._filteredEvents = selection;
         // Also clear the current event if it is not in the selection
         if (this.selectedEvent && this.selectedEvent.filterIndex === undefined) {
-            console.log("Index is smaller than zero, clearing selected")
             this.selectEvent(undefined); // Clear the selected event, as it is not in the filter
         }
     }
@@ -366,9 +360,15 @@ class Debugger extends StandardForm {
         return eventWithName;
     }
 
+    isDefinitionEvent(event) {
+        return (event.content && event.content.definition && event.content.definition.source && (''+event.content.definition.source).startsWith('<?xml'));
+    }
+
     getEventButton(event) {
-        if (event.type==='TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask')) {
-            return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>'
+        if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'BoardTeamCreated' || event.type === 'FlowActivated') {
+            return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>';
+        } else if (this.isDefinitionEvent(event)) {
+            return '<span style="padding-left:20px"><button class="buttonCopyEventDefinition">Copy definition</button></span>';
         } else {
             return '';
         }
@@ -389,9 +389,9 @@ class Debugger extends StandardForm {
     }
 
     getIndex(eventWithName) {
-        if (! eventWithName) return '';
-        if (! eventWithName.content) return '';
-        if (! eventWithName.content.planitem) return '';
+        if (!eventWithName) return '';
+        if (!eventWithName.content) return '';
+        if (!eventWithName.content.planitem) return '';
         const index = eventWithName.content.planitem.index;
         if (index) {
             return '.' + index;
@@ -401,7 +401,7 @@ class Debugger extends StandardForm {
     }
 
     renderEvents() {
-        if (! this.events) {
+        if (!this.events) {
             return;
         }
         const renderedBefore = this.eventTable.find('tr').length > 1;
@@ -422,8 +422,8 @@ class Debugger extends StandardForm {
         const applyFilter = event => {
             const eventType = event.type;
             const eventName = this.getEventName(event);
-            const hasOneOfEventTypes = eventTypes[0] == '' || eventTypes.find(type => this.hasSearchText(type, eventType));
-            const hasOneOfEventNames = eventNames[0] == '' || eventNames.find(name => this.hasSearchText(name, eventName));
+            const hasOneOfEventTypes = eventTypes[0] == '' || eventTypes.find(type => hasSearchText(type, eventType));
+            const hasOneOfEventNames = eventNames[0] == '' || eventNames.find(name => hasSearchText(name, eventName));
             return hasOneOfEventTypes && hasOneOfEventNames;
         }
 
@@ -432,10 +432,10 @@ class Debugger extends StandardForm {
 
         this.filteredEvents = this.events.filter(applyFilter);
         const newRows = this.filteredEvents.map(event => {
-            const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >=0 ? event.content.lastModified : '';
+            const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >= 0 ? event.content.lastModified : '';
             const format = timestamp => timestamp.substring(0, timestamp.indexOf('.') + 4);
             let timestampString = timestamp;
-            if (! currentTimestamp) { // bootstrap
+            if (!currentTimestamp) { // bootstrap
                 currentTimestamp = timestamp;
                 numTransactions = 1;
                 timestampString = `<strong>${format(timestamp)}</strong>`;
@@ -472,6 +472,7 @@ class Debugger extends StandardForm {
         this.eventTable.find('tr').on('click', e => this.selectEvent(this.findEvent(e.currentTarget) || this.selectedEvent)); // Note, if clicking outside an event, do not change selection.
         this.eventTable.find('input[filter]').on('change', e => this.searchWith(e));
         this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
+        this.eventTable.find('.buttonCopyEventDefinition').on('click', e => this.copyEventDefinition(e.currentTarget));
 
         if (this.eventTable.width() < this.eventTable.find('table').width()) {
             this.splitter.repositionSplitter(this.eventTable.find('table').width() + 20);
@@ -515,7 +516,7 @@ class Debugger extends StandardForm {
     showSubEvents(btn) {
         const event = this.findEvent(btn);
         // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
-        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId);
+        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.team || event.content.flowId);
         this.showEvents();
     }
 
@@ -524,6 +525,11 @@ class Debugger extends StandardForm {
             this.html.find('.caseInstanceId').val(this.parentActorId);
             this.showEvents();
         }
+    }
+
+    copyEventDefinition(btn) {
+        const event = this.findEvent(btn);
+        Util.copyText(event.content.definition.source);
     }
 
     /**
@@ -537,7 +543,7 @@ class Debugger extends StandardForm {
         // Clear current selection
         this.eventTable.find('tr').css('background-color', '')
 
-        if (! this.selectedEvent) {
+        if (!this.selectedEvent) {
             // Return if a new event is not selected.
             return;
         }
@@ -553,7 +559,7 @@ class Debugger extends StandardForm {
         this.setEventContent('', JSON.stringify(content, undefined, 3));
 
         if (scroll) {
-            this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`)[0].scrollIntoView({block: 'center'})
+            this.eventTable.find(`tr[event-nr='${this.selectedEvent.localNr}']`)[0].scrollIntoView({ block: 'center' })
         }
     }
 
@@ -579,10 +585,56 @@ class Debugger extends StandardForm {
                 if (this.events.length > 0) {
                     // Only overwrite the previous identifier if we have actually found events.
                     localStorage.setItem('debug-case-id', caseInstanceId.toString());
-                    localStorage.setItem('from', ''+from);
-                    localStorage.setItem('to', ''+to);    
+                    localStorage.setItem('from', '' + from);
+                    localStorage.setItem('to', '' + to);
                 }
             })
             .fail(data => ide.danger(data.responseText));
     }
+}
+
+/**
+ * Determines recursively whether each character of text1 is available in text2 
+ * @param {String} searchFor 
+ * @param {String} searchIn
+ */
+function hasSearchText(searchFor, searchIn) {
+    if (!searchFor) {
+        // Nothing left to search for, so found a hit 
+        return true;
+    } if (!searchIn) {
+        // Nothing left to search in, so did not find it. 
+        return false;
+    }
+    searchFor = searchFor.toLowerCase();
+    searchIn = searchIn.toLowerCase();
+    const searchTerm = searchFor.substring(0, getSearchTerm(searchFor));
+    const index = searchIn.indexOf(searchTerm);
+    if (index < 0) {
+        // Did not find any results, so returning false.
+        return false;
+    }
+    // Continue the search in the remaining parts of text2 
+    const remainingSearchFor = searchFor.substring(searchTerm.length);
+    const remainingSearchIn = searchIn.substring(index + 1, searchIn.length);
+    return hasSearchText(remainingSearchFor, remainingSearchIn);
+}
+
+/**
+ * Returns the next search term to search for.
+ * This is either everything up to a dot or a space, or just the next character.
+ * @param {String} searchFor 
+ * @returns 
+ */
+function getSearchTerm(searchFor) {
+    // Take everything up-to-space, or ...
+    const space = searchFor.indexOf(' ');
+    if (space > 0) return space;
+
+    // ... take everything up-to-dot, or ...
+    const dot = searchFor.indexOf('.');
+    if (dot > 0) return dot;
+
+    // ... just take the next character
+    return 1;
 }

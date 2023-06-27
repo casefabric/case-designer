@@ -8,7 +8,7 @@
      */
     static create(stage, x, y, definition = undefined) {
         definition = definition || CaseFileItemDef.createEmptyDefinition(stage.case.caseDefinition);
-        const shape = stage.case.dimensions.createShape(x, y, 25, 40, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 25, 40, definition.id);
         return new CaseFileItem(stage, definition, shape);
     }
 

@@ -6,10 +6,10 @@ class Edge extends DiagramElement {
      * @returns {Edge}
      */
     static create(source, target) {
-        const edge = new Edge(undefined, source.case.dimensions);
+        const edge = new Edge(undefined, source.case.dimensions, source.case.diagram);
         edge.sourceId = source.id;
         edge.targetId = target.id;
-        source.case.dimensions.edges.push(edge);
+        source.case.diagram.edges.push(edge);
         return edge;
     }
 
@@ -17,10 +17,11 @@ class Edge extends DiagramElement {
      * Representation of a <CMMNEdge> element
      * @param {Element} importNode 
      * @param {Dimensions} dimensions 
-     * @param {XMLElementDefinition} parent 
+     * @param {Diagram} parent 
      */
-    constructor(importNode, dimensions, parent = dimensions) {
+    constructor(importNode, dimensions, parent) {
         super(importNode, dimensions, parent);
+        this.diagram = parent;
         this.sourceId = this.parseAttribute(SOURCECMMNELEMENTREF);
         this.targetId = this.parseAttribute(TARGETCMMNELEMENTREF);
         /** @type {Array<Vertex>} */
@@ -40,7 +41,7 @@ class Edge extends DiagramElement {
      * Removes this edge from the dimensions.
      */
     removeDefinition() {
-        Util.removeFromArray(this.dimensions.edges, this);
+        Util.removeFromArray(this.diagram.edges, this);
     }
 
     createExportNode(diagramNode) {

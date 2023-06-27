@@ -20,26 +20,14 @@ class Dimensions extends ModelDefinition {
     }
 
     createShape(x, y, width, height, cmmnElementRef = undefined) {
-        const shape = new ShapeDefinition(undefined, this);
-        shape.cmmnElementRef = cmmnElementRef;
-        shape.x = x;
-        shape.y = y;
-        shape.width = width;
-        shape.height = height;
-        this.addShape(shape);
-        return shape;
+        return this.diagram.createShape(x, y, width, height, cmmnElementRef);
     }
 
     parseDocument() {
         super.parseDocument();
-        /** @type {Array<ShapeDefinition>} */
-        this.shapes = this.parseElements(CMMNSHAPE, ShapeDefinition);
-        this.deprecatedTextBoxes = this.parseElements('textbox', TextBoxShape, []);
-        this.deprecatedCaseFileItems = this.parseElements('casefileitem', CaseFileItemShape, []);
-        /** @type {Array<Edge>} */
-        this.edges = this.parseElements(CMMNEDGE, Edge);
+        this.diagram = this.parseElement(CMMNDIAGRAM, Diagram);
     }
-
+    
     /**
      * While parsing the XML, an error may occur. This is stored in the overall list of parse errors.
      * @param {String} msg 
@@ -56,37 +44,7 @@ class Dimensions extends ModelDefinition {
         this.errors.push(msg);
     }
 
-    /**
-     * Returns the shape with the identifier or undefined.
-     * @param {CMMNElementDefinition} definition
-     * @returns {ShapeDefinition}
-     */
-    getShape(definition) {
-        return this.shapes.find(shape => definition && shape.cmmnElementRef == definition.id);
-    }
-
-    /**
-     * Adds a shape to the dimensions list.
-     * @param {ShapeDefinition} shape 
-     */
-    addShape(shape) {
-        this.shapes.push(shape);
-    }
-
-    /**
-     * Removes the shape
-     * @param {ShapeDefinition} shape 
-     */
-    removeShape(shape) {
-        Util.removeFromArray(this.shapes, shape);
-    }
-
     toXML() {
-        const dimString = `<${CMMNDI}> <${CMMNDIAGRAM} /> </${CMMNDI}>`;
-        const dimensionsXML = XML.loadXMLString(dimString);
-        const diagramNode = dimensionsXML.getElementsByTagName(CMMNDIAGRAM)[0];
-        this.shapes.forEach(shape => shape.createExportNode(diagramNode));
-        this.edges.forEach(edge => edge.createExportNode(diagramNode));
-        return dimensionsXML;
+        return super.exportModel(CMMNDI, 'diagram');
     }
 }
