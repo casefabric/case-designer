@@ -7,7 +7,7 @@ class CaseTask extends Task {
      */
     static create(stage, x, y) {
         const definition = stage.planItemDefinition.createPlanItem(CaseTaskDefinition);
-        const shape = stage.diagram.createShape(x, y, 140, 80, definition.id);
+        const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof CaseTaskDefinition) {
             return new CaseTask(stage, definition, definition.definition, shape);
         }
