@@ -57,6 +57,15 @@ class HumanTask extends Task {
     }
 
     /**
+     * Method invoked after a role or case file item has changed
+     * @param {CMMNElementDefinition} definitionElement 
+     */
+    refreshReferencingFields(definitionElement) {
+        super.refreshReferencingFields(definitionElement);
+        this.workflowProperties.refresh();
+    }
+
+    /**
      * This method may only be invoked from within a human task planning table
      * @param {PlanItem} definition 
      */

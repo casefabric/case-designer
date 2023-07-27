@@ -16,6 +16,7 @@ class PlanItem extends CMMNElementDefinition {
         this.applicabilityRules = [];
         /** @type{Array<CaseRoleReference>} */
         this.authorizedRoles = [];
+        this.fourEyes = this.parseExtension(FourEyesDefinition);
     }
 
     /**
@@ -50,6 +51,17 @@ class PlanItem extends CMMNElementDefinition {
         } else {
             return this.parent;
         }
+    }
+
+    /**
+     * @returns {FourEyesDefinition}
+     */
+    get fourEyes() {
+        return this._4eyes;
+    }
+
+    set fourEyes(value) {
+        this._4eyes = value;
     }
 
     /**
@@ -191,7 +203,7 @@ class PlanItem extends CMMNElementDefinition {
         this.applicabilityRuleRefs = super.flattenListToString(this.isDiscretionary ? this.filterExistingRules() : []);
 
         const tagName = this.isDiscretionary ? 'discretionaryItem' : 'planItem';
-        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs');
+        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs', 'fourEyes');
     }
 
     removeDefinition() {

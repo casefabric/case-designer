@@ -105,6 +105,14 @@ class CaseDefinition extends ModelDefinition {
         return annotation;
     }
 
+    /**
+     * Return all plan items in this stage and its children, including all discretionaries.
+     * @returns {Array<PlanItem>}
+     */
+    getAllPlanItems() {
+        return this.getCasePlan().getAllPlanItems();
+    }
+
     toXML() {
         const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output', 'annotations', 'startCaseSchema');
 
