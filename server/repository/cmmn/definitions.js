@@ -137,7 +137,7 @@ class Definitions {
         this._appendCaseDefinitions();
         this._appendProcesses();
         this._appendCMMNDI();
-        return XML.printNiceXML(this.definitionsElement);
+        return XML.printNiceXML(this.definitionsElement) + '\n';
     }
 
     _appendCaseDefinitions() {

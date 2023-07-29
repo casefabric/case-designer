@@ -48,7 +48,7 @@ router.get('/load/*', function (req, res, next) {
 router.post('/save/*', xmlParser, function (req, res, next) {
     try {
         const fileName = req.params[0];
-        repository.save(fileName, req.body);
+        repository.save(fileName, req.body + '\n');
 
         const list = repository.list();
         res.json(list);
