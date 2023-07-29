@@ -55,7 +55,7 @@ class CMMNElement extends CanvasElement {
      * Removes properties view when the case is refreshed.
      * Can be used in sub classes to remove other element pop up views (e.g. workflow properties in a human task)
      */
-    deletePropertyViews() {
+    deletePropertiesView() {
         this.__properties && this.__properties.delete();
     }
 
@@ -240,12 +240,7 @@ class CMMNElement extends CanvasElement {
             return;
         }
         this.refreshText();
-        if (this._halo && this._halo.visible) {
-            this._halo.refresh();
-        }
-        if (this.__properties && this.__properties.visible) {
-            this.__properties.refresh();
-        }
+        this.refreshSubViews();
         this.__childElements.forEach(child => child.refreshView());
     }
 
@@ -256,6 +251,23 @@ class CMMNElement extends CanvasElement {
         const rawText = this.text;
         const formattedText = this.wrapText ? joint.util.breakText(rawText, { width: this.shape.width, height: this.shape.height }) : rawText;
         this.xyz_joint.attr('text/text', formattedText);
+    }
+
+    refreshSubViews() {
+        this.refreshHalo();
+        this.refreshProperties();
+    }
+
+    refreshHalo() {
+        if (this._halo && this._halo.visible) {
+            this._halo.refresh();
+        }
+    }
+
+    refreshProperties() {
+        if (this.__properties && this.__properties.visible) {
+            this.__properties.refresh();
+        }
     }
 
     /**
@@ -316,8 +328,16 @@ class CMMNElement extends CanvasElement {
         return this._resizer;
     }
 
+    deleteResizer() {
+        if (this._resizer) this.resizer.delete();
+    }
+
     createHalo() {
         return new Halo(this);
+    }
+
+    deleteHalo() {
+        if (this._halo) this.halo.delete();
     }
 
     get halo() {
@@ -452,9 +472,7 @@ class CMMNElement extends CanvasElement {
         }
 
         // Remove resizr, halo and propertiesview; but only if they have been created
-        if (this._resizer) this.resizer.delete();
-        if (this._halo) this.halo.delete();
-        if (this.__properties) this.propertiesView.delete();
+        this.deleteSubViews();
 
         this.__connectors.forEach(connector => connector.remove());
 
@@ -472,6 +490,12 @@ class CMMNElement extends CanvasElement {
 
         // Finally remove the UI element as well. 
         this.xyz_joint.remove();
+    }
+
+    deleteSubViews() {
+        this.deleteResizer();
+        this.deleteHalo();
+        this.deletePropertiesView();
     }
 
     __removeElementDefinition() {

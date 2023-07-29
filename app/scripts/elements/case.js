@@ -290,6 +290,10 @@
         this.editor.movableEditors.forEach(editor => editor.refreshReferencingFields(definitionElement));
     }
 
+    refreshMovableViews() {
+        this.editor.movableEditors.filter(view => view.visible).forEach(editor => editor.refresh());
+    }
+
     /**
      * Sets/gets the element currently (to be) selected.
      * Upon setting a new selection, the previously selected element is de-selected
@@ -393,7 +397,7 @@
         this.sourceEditor.delete();
         this.deployForm.delete();
         this.splitter.delete();
-        this.items.forEach(canvasItem => canvasItem.deletePropertyViews());
+        this.items.forEach(canvasItem => canvasItem.deletePropertiesView());
         Util.removeHTML(this.html);
     };
 
@@ -492,6 +496,10 @@
         cmmnElement.__moveConstraint(cmmnElement.shape.x, cmmnElement.shape.y);
 
         this.editor.completeUserAction();
+
+        // Also refresh the properties visible in the case view
+        this.refreshMovableViews();
+
         return cmmnElement;
     }
 
@@ -531,6 +539,9 @@
 
         //update the column UsedIn in the case file items treetable
         this.cfiEditor.showUsedIn();
+
+        // Also refresh the properties visible in the case view
+        this.refreshMovableViews();
     }
 
     /**

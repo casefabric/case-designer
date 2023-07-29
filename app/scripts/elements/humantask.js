@@ -38,8 +38,19 @@ class HumanTask extends Task {
         return new HumanTaskProperties(this);
     }
 
-    deletePropertyViews() {
-        super.deletePropertyViews();
+    createHalo() {
+        return new HumanTaskHalo(this);
+    }
+
+    refreshSubViews() {
+        super.refreshSubViews();
+        if (this.workflowProperties.visible) {
+            this.workflowProperties.refresh();
+        }
+    }
+
+    deleteSubViews() {
+        super.deleteSubViews();
         this.workflowProperties.delete();
         this.previewForm.delete();
     }
@@ -50,10 +61,6 @@ class HumanTask extends Task {
 
     previewTaskForm() {
         this.previewForm.visible = true;
-    }
-
-    createHalo() {
-        return new HumanTaskHalo(this);
     }
 
     /**

@@ -49,11 +49,6 @@ class StandardForm extends MovableEditor {
         this.renderData();
     }
 
-    delete() {
-        // Delete the generic events of the editor (e.g. click add button, ...)
-        Util.removeHTML(this.html);
-    }
-
     get label() {
         return this._label;
     }

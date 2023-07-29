@@ -85,11 +85,6 @@ class Properties extends MovableEditor {
      */
     renderData() {}
 
-    delete() {
-        // console.log("Deleting properties for " + cmmnElement)
-        Util.removeHTML(this.html);
-    }
-
     clear() {
         if (this.htmlContainer) {
             Util.clearHTML(this.htmlContainer);
