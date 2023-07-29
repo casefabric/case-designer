@@ -1,4 +1,4 @@
-class FourEyesDefinition extends TaskPairingDefinition {
+class RendezVousDefinition extends TaskPairingDefinition {
     /**
      * 
      * @param {*} importNode 
@@ -14,12 +14,14 @@ class FourEyesDefinition extends TaskPairingDefinition {
      * @returns {TaskPairingDefinition}
      */
     counterPartOf(item) {
-        return item.fourEyes;
+        return item.rendezVous;
     }
 
     createExportNode(parentNode) {
-        super.createExportNode(parentNode, FourEyesDefinition.TAG);
+        if (this.present) {
+            super.createExportNode(parentNode, RendezVousDefinition.TAG);
+        }
     }
 }
 
-FourEyesDefinition.TAG = 'four_eyes';
+RendezVousDefinition.TAG = 'rendez_vous';

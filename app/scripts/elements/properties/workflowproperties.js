@@ -182,7 +182,7 @@ class WorkflowProperties extends TaskProperties {
                         </div>`);
         const taskList = html.find('.list-human-tasks');
         const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
-        tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, task));
+        tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'fourEyes', task));
         html.find(`#${checkboxIdentifier}`).on('click', e => {
             const newPresence = e.target.checked;
             html.find('.list-human-tasks').css('display', newPresence ? 'block' : 'none');
@@ -190,6 +190,35 @@ class WorkflowProperties extends TaskProperties {
                 planItem.fourEyes.drop();
             } else {
                 planItem.fourEyes.present = true;
+            }
+            this.done();
+        });
+        this.htmlContainer.append(html);
+        return html;
+    }
+
+    addRendezVousField() {
+        const planItem = this.cmmnElement.definition;
+        const hasRendezVous = planItem.rendezVous.present;
+        const checkboxIdentifier = Util.createID();
+        const html = $(`<div class="propertyRule">
+                            <div class="propertyRow">
+                                <input id="${checkboxIdentifier}" type="checkbox" ${hasRendezVous ? 'checked' : ''}/>
+                                <label for="${checkboxIdentifier}">Rendez-vous</label>
+                            </div>
+                            <div style="display:${hasRendezVous ? 'block' : 'none'}" title="Select ." class="list-human-tasks">
+                            </div>
+                        </div>`);
+        const taskList = html.find('.list-human-tasks');
+        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
+        tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'rendezVous', task));
+        html.find(`#${checkboxIdentifier}`).on('click', e => {
+            const newPresence = e.target.checked;
+            html.find('.list-human-tasks').css('display', newPresence ? 'block' : 'none');
+            if (!newPresence) {
+                planItem.rendezVous.drop();
+            } else {
+                planItem.rendezVous.present = true;
             }
             this.done();
         });
@@ -205,11 +234,12 @@ class WorkflowProperties extends TaskProperties {
 
     /**
      * Adds a task with a checkbox to enable or disable it with 4-eyes.
+     * @param {String} workflowProperty 
      * @param {PlanItem} task 
      */
-    addTask(htmlParent, task) {
+    addTask(htmlParent, workflowProperty, task) {
         const planItem = this.cmmnElement.definition;
-        const isSelected = planItem.fourEyes && planItem.fourEyes.has(task) ? true : false;
+        const isSelected = planItem[workflowProperty] && planItem[workflowProperty].has(task) ? true : false;
 
         const label = task.name;
 
@@ -223,10 +253,9 @@ class WorkflowProperties extends TaskProperties {
                         </div>`);
         html.on('change', e => {
             if (e.target.checked) {
-                console.log("Adding to: " , planItem)
-                planItem.fourEyes.add(task)
+                planItem[workflowProperty].add(task)
             } else {
-                planItem.fourEyes.remove(task)
+                planItem[workflowProperty].remove(task)
             }
             this.done();
         });
@@ -244,6 +273,8 @@ class WorkflowProperties extends TaskProperties {
         this.addAssignmentField();
         this.addSeparator();
         this.addFourEyesField();
+        this.addSeparator();
+        this.addRendezVousField();
         this.addIdField();
     }
 }
