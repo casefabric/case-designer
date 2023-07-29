@@ -115,6 +115,15 @@
     }
 
     /**
+     * Simple helper function that removes all elements from an array.
+     * @param {Array} array 
+     */
+    static clearArray(array) {
+        array.splice(0, array.length);
+        return array;
+    }
+
+    /**
      * 
      * @param {String} str 
      */
