@@ -393,8 +393,7 @@
         this.sourceEditor.delete();
         this.deployForm.delete();
         this.splitter.delete();
-        // All propertyViews that have been created must also be deleted. But we do not go via .propertiesView, because that would unnecessarily create'm
-        this.items.forEach(canvasItem => canvasItem.__properties && canvasItem.__properties.delete());
+        this.items.forEach(canvasItem => canvasItem.deletePropertyViews());
         Util.removeHTML(this.html);
     };
 

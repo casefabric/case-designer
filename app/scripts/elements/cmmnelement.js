@@ -52,6 +52,14 @@ class CMMNElement extends CanvasElement {
     }
 
     /**
+     * Removes properties view when the case is refreshed.
+     * Can be used in sub classes to remove other element pop up views (e.g. workflow properties in a human task)
+     */
+    deletePropertyViews() {
+        this.__properties && this.__properties.delete();
+    }
+
+    /**
      * Returns the raw html/svg element.
      * @returns {JQuery<HTMLElement>}
      */

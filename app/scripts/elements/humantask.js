@@ -38,6 +38,12 @@ class HumanTask extends Task {
         return new HumanTaskProperties(this);
     }
 
+    deletePropertyViews() {
+        super.deletePropertyViews();
+        this.workflowProperties.delete();
+        this.previewForm.delete();
+    }
+
     showWorkflowProperties() {
         this.workflowProperties.show(true);
     }
