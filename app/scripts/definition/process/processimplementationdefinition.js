@@ -1,4 +1,4 @@
-class ProcessImplementationDefinition extends XMLElementDefinition {
+class ProcessImplementationDefinition extends CafienneImplementationDefinition {
     /**
     * @param {Element} importNode 
     * @param {CaseDefinition} caseDefinition
@@ -20,10 +20,9 @@ class ProcessImplementationDefinition extends XMLElementDefinition {
 
     /**
      * 
-     * @param {Element} parent 
+     * @param {Element} parentNode 
      */
-    createExportNode(parent) {
-        this.exportNode = XML.loadXMLString('<extensionElements>'+this._xml+'</extensionElements>').documentElement;
-        parent.appendChild(this.exportNode);
+    createExportNode(parentNode) {
+        super.getExtensionsElement(parentNode).appendChild(XML.loadXMLString(this._xml).documentElement);
     }
 }

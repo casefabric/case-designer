@@ -1,11 +1,4 @@
-﻿// Some constants
-const EXTENSIONELEMENTS = 'extensionElements';
-const CAFIENNE_NAMESPACE = 'org.cafienne';
-const CAFIENNE_PREFIX = 'xmlns:cafienne';
-const IMPLEMENTATION_TAG = 'cafienne:implementation';
-const STARTCASEMODEL_TAG = 'cafienne:start-case-model';
-
-const EXPANDEDPLANNINGTABLE_IMG = 'images/expandedplanningtable_32.png';
+﻿const EXPANDEDPLANNINGTABLE_IMG = 'images/expandedplanningtable_32.png';
 
 //decorator images  (define as decorator + '_IMG')
 const REPETITION_IMG = 'images/repetitiondecorator_32.png';

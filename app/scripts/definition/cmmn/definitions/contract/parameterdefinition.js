@@ -4,8 +4,7 @@ class ParameterDefinition extends CMMNElementDefinition {
         super(importNode, caseDefinition, parent);
         this.bindingRef = this.parseAttribute('bindingRef');
         this.bindingRefinement = this.parseElement('bindingRefinement', ExpressionDefinition);
-        this.extensionImplementation = this.parseExtension(CafienneExtension);
-        this.required = this.extensionImplementation ? this.extensionImplementation.parseBooleanAttribute('required', false) : false;
+        this.required = this.parseImplementation().parseBooleanAttribute('required', false);
     }
 
     /**
@@ -64,7 +63,7 @@ class ParameterDefinition extends CMMNElementDefinition {
         // Parameters have different tagnames depending on their type, so this must be passed.
         super.createExportNode(parentNode, tagName, 'bindingRef', 'bindingRefinement');
         if (this.required) { // Required is a customization to the spec, put in an extension element
-            this.exportExtensionElement().setAttribute('required', 'true');
+            this.createImplementationNode().setAttribute('required', 'true');
         }
     }
 }

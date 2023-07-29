@@ -1,3 +1,5 @@
+const STARTCASEMODEL_TAG = 'cafienne:start-case-model';
+
 class CaseDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
@@ -15,7 +17,7 @@ class CaseDefinition extends ModelDefinition {
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
         this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
-        this.startCaseSchema = this.parseStartCaseSchema();
+        this.startCaseSchema = this.parseExtension(StartCaseSchemaDefinition);
         this.defaultExpressionLanguage = this.parseAttribute('expressionLanguage', 'spel');
     }
 
@@ -89,9 +91,8 @@ class CaseDefinition extends ModelDefinition {
     }
 
     parseStartCaseSchema() {
-        const extensionElement = XML.getChildByTagName(this.importNode, 'extensionElements');
-        const startCaseNode = XML.getChildByTagName(extensionElement, STARTCASEMODEL_TAG);
-        return startCaseNode ? startCaseNode.textContent : '';
+        const startCaseNode = this.parseExtension(StartCaseSchemaDefinition);
+        return startCaseNode ? startCaseNode.value : '';
     }
 
     /**
@@ -105,12 +106,7 @@ class CaseDefinition extends ModelDefinition {
     }
 
     toXML() {
-        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output', 'annotations');
-        // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
-        // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
-        if (this.startCaseSchema && this.startCaseSchema.trim()) {
-            this.exportExtensionElement('cafienne:start-case-model').textContent = this.startCaseSchema;
-        }
+        const xmlDocument = super.exportModel('case', 'caseFile', 'casePlan', 'caseTeam', 'input', 'output', 'annotations', 'startCaseSchema');
 
         if (this.defaultExpressionLanguage) this.exportNode.setAttribute('expressionLanguage', this.defaultExpressionLanguage);
 
@@ -119,3 +115,37 @@ class CaseDefinition extends ModelDefinition {
         return xmlDocument;
     }
 }
+
+class StartCaseSchemaDefinition extends CMMNExtensionDefinition {
+    /**
+    * @param {Element} importNode 
+    * @param {CaseDefinition} caseDefinition
+    * @param {CMMNElementDefinition} parent optional
+    */
+    constructor(importNode, caseDefinition, parent = undefined) {
+        super(importNode, caseDefinition, parent);
+        this.value = importNode ? importNode.textContent : '';
+    }
+
+    get value() {
+        return this._value;
+    }
+
+    /**
+     * @param {String} value
+     */
+    set value(value) {
+        this._value = value;
+    }
+
+    createExportNode(parentNode) {
+        if (this.value.trim()) {
+        // Now dump start case schema if there is one. Should we also do ampersand replacements??? Not sure. Perhaps that belongs in business logic??
+        // const startCaseSchemaValue = this.case.startCaseEditor.value.replace(/&/g, '&amp;');
+            super.createExportNode(parentNode, StartCaseSchemaDefinition.TAG)
+            this.exportNode.textContent = this.value;
+        }
+    }
+}
+
+StartCaseSchemaDefinition.TAG = STARTCASEMODEL_TAG;
