@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build:
+  snapshot-build-on-branch:
     working_directory: ~/cafienne-ide
     docker:
       - image: cimg/node:8.17.0
@@ -41,7 +41,7 @@ jobs:
               docker push cafienne/ide:snapshot
             fi
 
-  build for release:
+  latest-build-on-main:
     working_directory: ~/cafienne-ide
     docker:
       - image: cimg/node:8.17.0
@@ -79,9 +79,9 @@ workflows:
   version: 2
   ci:
     jobs:
-      - build:
+      - snapshot-build-on-branch:
           context: automation-context
-      - build for release:
+      - latest-build-on-main:
           context: automation-context
           filters:
             tags:
