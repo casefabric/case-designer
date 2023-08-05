@@ -1,3 +1,9 @@
+// Some constants
+const EXTENSIONELEMENTS = 'extensionElements';
+const CAFIENNE_NAMESPACE = 'org.cafienne';
+const CAFIENNE_PREFIX = 'xmlns:cafienne';
+const IMPLEMENTATION_TAG = 'cafienne:implementation';
+
 class XMLElementDefinition {
     /**
      * Creates a new XMLElementDefinition that belongs to the Definition object.
@@ -7,6 +13,7 @@ class XMLElementDefinition {
      */
     constructor(importNode, modelDefinition, parent = undefined) {
         this.importNode = importNode;
+        this.extensionElement = XML.getChildByTagName(this.importNode, EXTENSIONELEMENTS);
         this.modelDefinition = modelDefinition;
         if (modelDefinition) {
             this.modelDefinition.elements.push(this);
@@ -119,29 +126,24 @@ class XMLElementDefinition {
     }
 
     /**
-     * Searches for the first child element with the given tag name, and, if found, instantiates it with the constructor and returns it.
-     * @param {String} childName The name of the xml element inside the extensionElements
-     * @param {Function} constructor 
-     * @param {Function} extensionType
-     * @returns {*}
-     */
-    parseExtensionElement(constructor, childName = constructor.TAG, extensionType = CafienneExtension) {
-        const tagname = CafienneExtension.TAG;
-        const cafienneExtension = this.parseExtension(extensionType, extensionType.TAG);
-        return cafienneExtension ? cafienneExtension.parseElement(childName, constructor) : undefined;
-    }
-
-    /**
-     * Parses the <cafienne:implementation> node from <extensionElements>. If present, then an instance of the constructor is returned for it.
+     * Searches for the node with the specified tagName inside the <extensionElements>. If present, then an instance of the constructor is returned for it.
       * 
       * @param {Function} constructor 
       * @param {String} tagName
       * @returns {*} an instance of the given constructor if the extension element is found.
       */
-    parseExtension(constructor = CafienneExtension, tagName = IMPLEMENTATION_TAG) {
-        this.extensionElement = XML.getChildByTagName(this.importNode, 'extensionElements');
-        const extensionImplementation = this.instantiateChild(XML.getChildByTagName(this.extensionElement, tagName), constructor);
-        return extensionImplementation;
+    parseExtension(constructor, tagName = constructor.TAG) {
+        const node = XML.getChildByTagName(this.extensionElement, tagName);
+        return this.createChild(node, constructor);
+    }
+
+    /**
+     * Searches for the cafienne:implementation tag and instantiates it with the given constructor.
+     * @param {Function} constructor 
+     * @returns {*}
+     */
+    parseImplementation(constructor = CafienneImplementationDefinition) {
+        return this.parseExtension(constructor, IMPLEMENTATION_TAG);
     }
 
     /**
@@ -157,7 +159,7 @@ class XMLElementDefinition {
             return undefined;
         }
 
-        const newChild = new constructor(childNode, this.modelDefinition, this);
+        const newChild = this.createChild(childNode, constructor);
         if (collection) {
             if (collection.constructor.name == 'Array') {
                 collection.push(newChild);
@@ -166,6 +168,18 @@ class XMLElementDefinition {
             }
         }
         return newChild;
+    }
+
+    /**
+     * Instantiates the constructor as a child to this element, and leaves it to the constructor to parse the childNode.
+     * This method has no check on the presence of the childNode. That way it can also be used in empty CMMNExtensionDefinitions.
+     * 
+     * @param {Node} childNode 
+     * @param {Function} constructor
+     * @returns {XMLElementDefinition} Returns an instance of XMLElementDefinition
+     */
+    createChild(childNode, constructor) {
+        return new constructor(childNode, this.modelDefinition, this);
     }
 
     /**
@@ -207,7 +221,7 @@ class XMLElementDefinition {
                 // if (removed > -1) {
                 //     console.log("Removed "+element.constructor.name+" from "+this.constructor.name+"["+this.name+"]"+"."+key+"[]");
                 // }
-            } else if (typeof (value) === "string") {
+            } else if (typeof (value) === 'string') {
                 // If it is a string, and it has a non-empty value, and they are equal (and 'this !== removedElement', as that is the first check)
                 if (value && removedElement.id && value === removedElement.id) {
                     // console.log("Deleting string reference "+this.constructor.name+"["+this.name+"]"+".'"+key+"'");
@@ -310,17 +324,33 @@ class XMLElementDefinition {
     }
 
     /**
-     * Creates and returns an extension element with a custom tag inside having the given tagName (it defaults to <cafienne:implementation>).
-     * Sets the namespace attribute to 'org.cafienne'
-     * Does NOT set the class attribute on it (e.g. for WorkflowTaskDefinition)
+     * Creates and returns an extension element with a custom tag inside having the given tagName (it defaults to <cafienne:implementation xmlns:cafienne="org.cafienne">).
      * @param {String} tagName 
      */
-    exportExtensionElement(tagName = IMPLEMENTATION_TAG) {
-        const extensionElements = XML.createChildElement(this.exportNode, 'extensionElements');
-        extensionElements.setAttribute('mustUnderstand', 'false');
-        const node = XML.createChildElement(extensionElements, tagName);
-        node.setAttribute(CAFIENNE_PREFIX, CAFIENNE_NAMESPACE);
-        return node;
+    createExtensionNode(parentNode, tagName = IMPLEMENTATION_TAG, ...propertyNames) {
+        this.exportNode = XML.createChildElement(this.getExtensionsElement(parentNode), tagName);
+        const prefixAndLocalName = tagName.split(':');
+        const prefix = `xmlns${prefixAndLocalName.length === 1 ? '' : ':'+prefixAndLocalName[0] }`;
+        this.exportNode.setAttribute(prefix, CAFIENNE_NAMESPACE);
+        this.exportProperties(propertyNames);
+        return this.exportNode;
+    }
+
+    getExtensionsElement(parentNode = this.exportNode) {
+        let element = XML.getChildByTagName(parentNode, EXTENSIONELEMENTS);
+        if (! element) {
+            element = XML.createChildElement(parentNode, EXTENSIONELEMENTS);
+            element.setAttribute('mustUnderstand', 'false');
+        }
+        return element;
+    }
+
+    /**
+     * Creates and returns a <cafienne:implementation xmlns:cafienne="org.cafienne"> node and returns it.
+     * Does NOT set the class attribute on it (e.g. for WorkflowTaskDefinition)
+     */
+    createImplementationNode() {
+        return this.createExtensionNode(this.exportNode, IMPLEMENTATION_TAG);
     }
 
     /**

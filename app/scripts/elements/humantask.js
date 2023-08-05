@@ -38,6 +38,23 @@ class HumanTask extends Task {
         return new HumanTaskProperties(this);
     }
 
+    createHalo() {
+        return new HumanTaskHalo(this);
+    }
+
+    refreshSubViews() {
+        super.refreshSubViews();
+        if (this.workflowProperties.visible) {
+            this.workflowProperties.refresh();
+        }
+    }
+
+    deleteSubViews() {
+        super.deleteSubViews();
+        this.workflowProperties.delete();
+        this.previewForm.delete();
+    }
+
     showWorkflowProperties() {
         this.workflowProperties.show(true);
     }
@@ -46,8 +63,13 @@ class HumanTask extends Task {
         this.previewForm.visible = true;
     }
 
-    createHalo() {
-        return new HumanTaskHalo(this);
+    /**
+     * Method invoked after a role or case file item has changed
+     * @param {CMMNElementDefinition} definitionElement 
+     */
+    refreshReferencingFields(definitionElement) {
+        super.refreshReferencingFields(definitionElement);
+        this.workflowProperties.refresh();
     }
 
     /**

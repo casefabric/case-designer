@@ -30,6 +30,14 @@ class MovableEditor {
         console.warn('The editor ' + this.constructor.name + ' does not implement the renderForm() function, but that is expected');
     }
 
+    renderHead() {
+        console.warn('The editor ' + this.constructor.name + ' does not implement the renderHead() function, but that is expected');
+    }
+
+    renderData() {
+        console.warn('The editor ' + this.constructor.name + ' does not implement the renderData() function, but that is expected');
+    }
+
     /**
      * Brings this editor in front of the others
      */
@@ -60,6 +68,11 @@ class MovableEditor {
                 this._changingVisiblity = false;
             }
         }
+    }
+
+    delete() {
+        this._visible = false; // Set visible to false to avoid refresh invocations from refreshMovableViews() inside case.js
+        Util.removeHTML(this.html);
     }
 
     show() {
@@ -97,6 +110,9 @@ class MovableEditor {
         const left = parseInt(this.html.css('left'));
         this.html.css('left', left + x);
         this.html.css('top', top + y);
+    }
+
+    refresh() {
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * Simple helper class to support specific extensions to CMMN   
+ * Simple helper class to support specific extension <cafienne:implementation>  
  */
 class UnnamedCMMNElementDefinition extends CMMNElementDefinition {
     isNamedElement() {

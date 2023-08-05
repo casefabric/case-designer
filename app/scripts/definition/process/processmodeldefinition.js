@@ -13,7 +13,7 @@ class ProcessModelDefinition extends ModelDefinition {
         this.input = this.parseElements('input', ImplementationParameterDefinition);
         /** @type {Array<ImplementationParameterDefinition>} */
         this.output = this.parseElements('output', ImplementationParameterDefinition);
-        this.implementation = this.parseExtension(ProcessImplementationDefinition);
+        this.implementation = this.parseImplementation(ProcessImplementationDefinition);
     }
 
     get inputParameters() {

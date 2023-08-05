@@ -35,6 +35,18 @@
         return new TaskProperties(this);
     }
 
+    deleteSubViews() {
+        super.deleteSubViews();
+        this.mappingsEditor.delete();
+    }
+
+    refreshSubViews() {
+        super.refreshSubViews();
+        if (this.mappingsEditor.visible) {
+            this.mappingsEditor.refresh();
+        }
+    }
+
     createHalo() {
         return new TaskHalo(this);
     }

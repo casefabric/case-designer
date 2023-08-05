@@ -2,6 +2,7 @@ class StageDefinition extends TaskStageDefinition {
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
         this.autoComplete = this.parseBooleanAttribute('autoComplete', true);
+        /** @type {Array<PlanItem>} */
         this.planItems = this.parseElements('planItem', PlanItem);
         this.sentries = this.parseElements('sentry', SentryDefinition);
     }
@@ -18,6 +19,32 @@ class StageDefinition extends TaskStageDefinition {
         planItem.definition = planItemDefinition;
         this.planItems.push(planItem);
         return planItem;
+    }
+
+    /**
+     * Return all plan items in this stage and its children, including all discretionaries.
+     * @returns {Array<PlanItem>}
+     */
+    getAllPlanItems() {
+        const items = new Array(...this.planItems); // First copy all our children
+
+        if (this.planningTable) { // Next, copy all discretionary items in our stage
+            items.push(...this.planningTable.getAllPlanItems());
+        }
+        this.planItems.forEach(item => { // And then also all discretionaries in our human tasks
+            if (item.definition instanceof HumanTaskDefinition) {
+                if (item.definition.planningTable) {
+                    items.push(...item.definition.planningTable.getAllPlanItems());
+                }
+            }
+        });
+        this.planItems.forEach(item => { // Ffinally copy the items of our children of type stage.
+            if (item.definition instanceof StageDefinition) {
+                items.push(...item.definition.getAllPlanItems());
+            }
+        });
+
+        return items;
     }
 
     /**

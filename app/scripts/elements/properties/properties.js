@@ -59,7 +59,6 @@ class Properties extends MovableEditor {
                 // this.html.css('width', 'auto');
             }
         });
-        this.html.css('width', 180);
         this.html.find('.formclose').on('click', () => this.hide());
         this.html.find('.propertiespin').on('click', e => {
             // Pin/unpin the menu
@@ -85,11 +84,6 @@ class Properties extends MovableEditor {
      * Renders the content of the properties view
      */
     renderData() {}
-
-    delete() {
-        // console.log("Deleting properties for " + cmmnElement)
-        Util.removeHTML(this.html);
-    }
 
     clear() {
         if (this.htmlContainer) {

@@ -14,6 +14,10 @@ class WorkflowProperties extends TaskProperties {
         return 'Properties';
     }
 
+    refresh() {
+        super.refresh();
+    }
+
     addPerformerField() {
         const html = $(`<div class="szoomDoubleRow performer-field" title="Select a Case Role that is required to perform the task.\nWhen empty all case team members can perform the task.">
                             <label class="zoomlabel">Performer (role needed to do task)</label>
@@ -43,10 +47,10 @@ class WorkflowProperties extends TaskProperties {
         // const checked = ;
         const html = $(`<div class="propertyRule" title="Provide an expression that dynamically assigns the task to a user">
                             <div class="propertyRow">
-                                <input id="${assignmentPresenceIdentifier}" type="checkbox" ${ruleAvailable?'checked':''}/>
+                                <input id="${assignmentPresenceIdentifier}" type="checkbox" ${ruleAvailable ? 'checked' : ''}/>
                                 <label for="${assignmentPresenceIdentifier}">Dynamic Assignment</label>
                             </div>
-                            <div style="display:${ruleAvailable?'block':'none'}" class="ruleProperty">
+                            <div style="display:${ruleAvailable ? 'block' : 'none'}" class="ruleProperty">
                                 <div class="propertyBlock">
                                     <label>Expression</label>
                                     <textarea class="multi">${expressionBody}</textarea>
@@ -110,10 +114,10 @@ class WorkflowProperties extends TaskProperties {
         // const checked = ;
         const html = $(`<div class="propertyRule" title="Provide an expression returning a due date to set on the task">
                             <div class="propertyRow">
-                                <input id="${assignmentPresenceIdentifier}" type="checkbox" ${ruleAvailable?'checked':''}/>
+                                <input id="${assignmentPresenceIdentifier}" type="checkbox" ${ruleAvailable ? 'checked' : ''}/>
                                 <label for="${assignmentPresenceIdentifier}">Due Date</label>
                             </div>
-                            <div style="display:${ruleAvailable?'block':'none'}" class="ruleProperty">
+                            <div style="display:${ruleAvailable ? 'block' : 'none'}" class="ruleProperty">
                                 <div class="propertyBlock">
                                     <label>Expression</label>
                                     <textarea class="multi">${expressionBody}</textarea>
@@ -164,17 +168,113 @@ class WorkflowProperties extends TaskProperties {
         return html;
     }
 
+    addFourEyesField() {
+        const planItem = this.cmmnElement.definition;
+        const has4Eyes = planItem.fourEyes.present;
+        const checkboxIdentifier = Util.createID();
+        const html = $(`<div class="propertyRule">
+                            <div class="propertyRow">
+                                <input id="${checkboxIdentifier}" type="checkbox" ${has4Eyes ? 'checked' : ''}/>
+                                <label for="${checkboxIdentifier}">4-eyes</label>
+                            </div>
+                            <div style="display:${has4Eyes ? 'block' : 'none'}" title="Select ." class="list-human-tasks">
+                            </div>
+                        </div>`);
+        const taskList = html.find('.list-human-tasks');
+        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
+        tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'fourEyes', task));
+        html.find(`#${checkboxIdentifier}`).on('click', e => {
+            const newPresence = e.target.checked;
+            html.find('.list-human-tasks').css('display', newPresence ? 'block' : 'none');
+            if (!newPresence) {
+                planItem.fourEyes.drop();
+            } else {
+                planItem.fourEyes.present = true;
+            }
+            this.done();
+        });
+        this.htmlContainer.append(html);
+        return html;
+    }
+
+    addRendezVousField() {
+        const planItem = this.cmmnElement.definition;
+        const hasRendezVous = planItem.rendezVous.present;
+        const checkboxIdentifier = Util.createID();
+        const html = $(`<div class="propertyRule">
+                            <div class="propertyRow">
+                                <input id="${checkboxIdentifier}" type="checkbox" ${hasRendezVous ? 'checked' : ''}/>
+                                <label for="${checkboxIdentifier}">Rendez-vous</label>
+                            </div>
+                            <div style="display:${hasRendezVous ? 'block' : 'none'}" title="Select ." class="list-human-tasks">
+                            </div>
+                        </div>`);
+        const taskList = html.find('.list-human-tasks');
+        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
+        tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'rendezVous', task));
+        html.find(`#${checkboxIdentifier}`).on('click', e => {
+            const newPresence = e.target.checked;
+            html.find('.list-human-tasks').css('display', newPresence ? 'block' : 'none');
+            if (!newPresence) {
+                planItem.rendezVous.drop();
+            } else {
+                planItem.rendezVous.present = true;
+            }
+            this.done();
+        });
+        this.htmlContainer.append(html);
+        return html;
+    }
+
+    done() {
+        super.done();
+        // Also refresh other workflow properties ...
+        this.case.items.filter(item => item instanceof HumanTask).map((/** @type{HumanTask} */ item) => item.workflowProperties && item.workflowProperties.visible && item.workflowProperties.refresh());
+    }
+
+    /**
+     * Adds a task with a checkbox to enable or disable it with 4-eyes.
+     * @param {String} workflowProperty 
+     * @param {PlanItem} task 
+     */
+    addTask(htmlParent, workflowProperty, task) {
+        const planItem = this.cmmnElement.definition;
+        const isSelected = planItem[workflowProperty] && planItem[workflowProperty].has(task) ? true : false;
+
+        const label = task.name;
+
+        const checked = isSelected ? ' checked' : '';
+        const checkboxIdentifier = Util.createID();
+        const html = $(`<div class="propertyRule">
+                            <div class="propertyRow">
+                                <input id="${checkboxIdentifier}" type="checkbox" ${checked} />
+                                <label for="${checkboxIdentifier}">${label}</label>
+                            </div>
+                        </div>`);
+        html.on('change', e => {
+            if (e.target.checked) {
+                planItem[workflowProperty].add(task)
+            } else {
+                planItem[workflowProperty].remove(task)
+            }
+            this.done();
+        });
+        htmlParent.append(html);
+        return html;
+    }
+
     renderData() {
         this.addLabelField('Workflow properties for', `'${this.cmmnElement.name}'`);
         this.addSeparator();
-        this.addSeparator();
         this.addPerformerField();
-        this.addSeparator();
         this.addSeparator();
         this.addDueDateField();
         this.addSeparator();
-        this.addSeparator();
         this.addAssignmentField();
+        this.addSeparator();
+        this.addFourEyesField();
+        this.addSeparator();
+        this.addRendezVousField();
         this.addIdField();
     }
 }

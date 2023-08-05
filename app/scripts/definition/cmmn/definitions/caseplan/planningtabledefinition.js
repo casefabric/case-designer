@@ -8,6 +8,17 @@ class PlanningTableDefinition extends UnnamedCMMNElementDefinition {
         // TODO: PlanningTables can be nested in themselves, according to the spec. But we will not implement that here.
     }
 
+    getAllPlanItems() {
+        const items = new Array(...this.tableItems); // First copy all table entries
+        this.tableItems.forEach(item => { // And for those that are of type stage, get the content as well.
+            if (item.definition instanceof StageDefinition) {
+                items.push(...item.definition.getAllPlanItems());
+            }
+        });
+
+        return items;
+    }
+
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'planningTable', 'tableItems', 'ruleDefinitions');
     }

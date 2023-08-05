@@ -4,15 +4,7 @@ class TaskDefinition extends TaskStageDefinition {
         this.isBlocking = this.parseBooleanAttribute('isBlocking', true);
         this.inputs = this.parseElements('inputs', ParameterDefinition);
         this.outputs = this.parseElements('outputs', ParameterDefinition);
-        this.parseMappings();
-    }
-
-    /**
-     * Parse the parameter mappings to either an input or an output mapping, depending on the values of the attributes 'sourceRef' and 'targetRef'
-     * @param {Element} node 
-     */
-    parseMappings(node = this.importNode) {
-        this.mappings = XML.getChildrenByTagName(node, 'parameterMapping').map(mappingNode => this.instantiateChild(mappingNode, ParameterMappingDefinition));
+        this.parseElements('parameterMapping', ParameterMappingDefinition, this.mappings);
     }
 
     /**
@@ -27,6 +19,16 @@ class TaskDefinition extends TaskStageDefinition {
      */
     set implementationRef(ref) {
         throw new Error('Method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * @returns {Array<ParameterMappingDefinition>}
+     */
+    get mappings() {
+        if (! this._mappings) {
+            this._mappings = [];
+        }
+        return this._mappings;
     }
 
     /**
@@ -188,8 +190,7 @@ class TaskDefinition extends TaskStageDefinition {
     changeTaskImplementation(implementationRef, implementationModel) {
         console.log("Associating new implementation ref (current is " + this.implementationRef + ", new is " + implementationRef + ")");
         // First remove existing mappings and parameters.
-        /** @type {Array<ParameterMappingDefinition>} */
-        this.mappings = [];
+        Util.clearArray(this.mappings);
         this.inputs = [];
         this.outputs = [];
         this.implementationRef = implementationRef;

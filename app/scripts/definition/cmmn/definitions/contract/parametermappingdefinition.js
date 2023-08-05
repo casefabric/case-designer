@@ -7,10 +7,23 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
      */
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
-        this.parent = parent;
         this.sourceRef = this.parseAttribute('sourceRef');
         this.targetRef = this.parseAttribute('targetRef');
         this.transformation = this.parseElement('transformation', ExpressionDefinition);
+    }
+
+    /**
+     * @returns {TaskDefinition}
+     */
+    get task() {
+        let ancestor = this.parent;
+        while (ancestor) {
+            if (ancestor instanceof TaskDefinition) {
+                return ancestor;
+            }
+            ancestor = ancestor.parent;
+        }
+        console.warn('Cannot find task parent in parameter mapping definition');
     }
 
     get taskParameterName() {
@@ -22,20 +35,21 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
      * @param {CaseFileItemDef} newBinding 
      */
     updateBindingRef(newBinding) {
+        const task = this.task;
         // In input mappings we try to reuse parameters. In output mappings they are unique
         if (this.isInputMapping) {
             if (this.taskParameter) {
                 // If we have other mappings for this parameter, then we must create a new parameter;
                 // If we do not have a bindingRef currently, then we will get a parameter based on the new binding
-                if (this.parent.mappings.find(m => m != this && m.taskParameter == this.taskParameter)) {
+                if (task.mappings.find(m => m != this && m.taskParameter == this.taskParameter)) {
                     // The name of the new parameter is either from the new binding or we take it from the implementation parameter.
                     const newParameterName = newBinding ? newBinding.name : this.implementationParameter.name;
-                    this.taskParameter = this.parent.getInputParameterWithName(newParameterName);
+                    this.taskParameter = task.getInputParameterWithName(newParameterName);
                 } else if (newBinding && this.taskParameter.binding != newBinding) {
-                    this.taskParameter = this.parent.getInputParameterWithName(newBinding.name);
+                    this.taskParameter = task.getInputParameterWithName(newBinding.name);
                 }
             } else if (newBinding) { // We have no task parameter, let's try to find one with the CaseFileItem's name
-                this.taskParameter = this.parent.getInputParameterWithName(newBinding.name);
+                this.taskParameter = task.getInputParameterWithName(newBinding.name);
             } else {
                 // We have no task parameter, but also no new binding. Quite strange.
                 // Let's just simply return to avoid script error in last line of method
@@ -47,13 +61,13 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                     // Again strange situation
                     return;
                 }
-                this.taskParameter = this.parent.createOutputParameterWithName(newBinding.name);
+                this.taskParameter = task.createOutputParameterWithName(newBinding.name);
             } else {
                 // We have an existing parameter, now check if there is a new binding
                 if (newBinding) {
                     // If we have an existing name in our parameter that starts with the newBinding's name, let's keep it, otherwise generate a new name
                     if (!this.taskParameter.name || this.taskParameter.name.indexOf(newBinding.name) != 0) {
-                        this.taskParameter.name = this.parent.generateUniqueOutputParameterName(newBinding.name);
+                        this.taskParameter.name = task.generateUniqueOutputParameterName(newBinding.name);
                     }
                 }
             }
@@ -165,7 +179,7 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
      * @returns {Boolean}
      */
     get isInputMapping() {
-        const task = this.parent;
+        const task = this.task;
         if (task.inputs.find(input => input.id === this.sourceRef)) {
             return true;
         } else if (task.outputs.find(output => output.id === this.targetRef)) {
@@ -209,7 +223,7 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
                 // If it is an input mapping, we need to make sure there is an actual corresponding task input parameter as well.
                 if (! this.sourceRef) {
                     if (this.targetRef) { // Actually, a target ref always exists, otherwise there would not be a mapping option
-                        this.sourceRef = this.parent.createInputParameterWithName(this.implementationParameterName||this.implementationParameterId).id;
+                        this.sourceRef = this.task.createInputParameterWithName(this.implementationParameterName||this.implementationParameterId).id;
                     }
                 }
             }

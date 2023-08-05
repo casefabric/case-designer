@@ -8,7 +8,6 @@ class SentryProperties extends Properties {
     }
 
     renderData() {
-        $(this.html).css('width', '315px');
         this.addIfPart();
         this.addSeparator();
         this.addPlanItemOnParts();

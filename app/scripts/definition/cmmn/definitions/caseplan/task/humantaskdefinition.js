@@ -7,15 +7,12 @@ class HumanTaskDefinition extends TaskDefinition {
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
         this.performerRef = this.parseAttribute('performerRef');
-        this.extensionElement = XML.getChildByTagName(this.importNode, 'extensionElements');
-        this.extensionImplementation = XML.getChildByTagName(this.extensionElement, IMPLEMENTATION_TAG);
-        if (this.extensionImplementation) {
-            this.humanTaskRef = this.extensionImplementation.getAttribute('humanTaskRef');
-            this.validatorRef = this.extensionImplementation.getAttribute('validatorRef');
-            super.parseMappings(this.extensionImplementation);
-            this.assignment = this.parseExtensionElement(AssignmentDefinition);
-            this.dueDate = this.parseExtensionElement(DueDateDefinition);
-        }
+        /** @type {CafienneWorkflowDefinition} */
+        this.workflow = this.parseImplementation(CafienneWorkflowDefinition);
+    }
+    
+    createExportNode(parentNode) {
+        super.createExportNode(parentNode, 'humanTask', 'planningTable', 'performerRef', 'workflow');
     }
 
     /**
@@ -23,26 +20,6 @@ class HumanTaskDefinition extends TaskDefinition {
      */
     get performer() {
         return this.caseDefinition.getElement(this.performerRef);
-    }
-    
-    createExportNode(parentNode) {
-        super.createExportNode(parentNode, 'humanTask', 'planningTable', 'performerRef');
-        if (this.mappings.length > 0 || this.humanTaskRef || this.assignment || this.validatorRef) {
-            const extensionImplementationNode = this.exportExtensionElement();
-            if (this.humanTaskRef) {
-                extensionImplementationNode.setAttribute('humanTaskRef', this.humanTaskRef);
-            }
-            if (this.validatorRef) {
-                extensionImplementationNode.setAttribute('validatorRef', this.validatorRef);
-            }
-            this.mappings.forEach(mapping => mapping.createExportNode(extensionImplementationNode));
-            if (this.assignment) {
-                this.assignment.createExportNode(extensionImplementationNode);
-            }
-            if (this.dueDate) {
-                this.dueDate.createExportNode(extensionImplementationNode);
-            }
-        }
     }
 
     /**
@@ -57,43 +34,50 @@ class HumanTaskDefinition extends TaskDefinition {
      * @returns {String}
      */
     get implementationRef() {
-        return this.humanTaskRef;
+        return this.workflow.humanTaskRef;
     }
 
     set implementationRef(ref) {
-        this.humanTaskRef = ref;
+        this.workflow.humanTaskRef = ref;
+    }
+
+    get mappings() {
+        if (! this.workflow) {
+            return [];
+        }
+        return this.workflow.mappings;
     }
 
     /**
      * @returns {DueDateDefinition}
      */
     get dueDate() {
-        return this._dueDate;
+        return this.workflow.dueDate;
     }
 
     set dueDate(duedate) {
-        this._dueDate = duedate;
+        this.workflow.dueDate = duedate;
     }
 
     /**
      * @returns {AssignmentDefinition}
      */
     get assignment() {
-        return this._assignment;
+        return this.workflow.assignment;
     }
 
     set assignment(assignment) {
-        this._assignment = assignment;
+        this.workflow.assignment = assignment;
     }
 
     /**
      * @returns {String}
      */
     get validatorRef() {
-        return this._validatorRef;
+        return this.workflow.validatorRef;
     }
 
     set validatorRef(ref) {
-        this._validatorRef = ref;
+        this.workflow.validatorRef = ref;
     }
 }
