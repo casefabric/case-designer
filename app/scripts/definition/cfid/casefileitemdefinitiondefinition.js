@@ -19,8 +19,8 @@ class CaseFileDefinitionDefinition extends ModelDefinition {
     parseDocument() {
         super.parseDocument();
         this.definitionType = this.parseAttribute('definitionType', UNSPECIFIED_URI);
-        this.importRef = this.parseAttribute('import', '');
-        this.structureRef = this.parseAttribute('structure', '');
+        this.structureRef = this.parseAttribute('structureRef', '');
+        this.importRef = this.parseAttribute('importRef', '');
         this.properties = this.parseElements('property', PropertyDefinition)
         switch (this.definitionType) {
             case XMLELEMENT_URI: {
