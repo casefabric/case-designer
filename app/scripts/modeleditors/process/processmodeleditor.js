@@ -43,7 +43,15 @@ class ProcessModelEditor extends ModelEditor {
                         <div class="model-output-parameters"></div>
                     </div>
                     <div class="process-model-source">
-                        <label>Process Implementation (XML)</label>
+                        <label>Process Type&nbsp;&nbsp;</label>
+                        <select class="selectImplementationType">
+                            <option value="" disabled selected>select implementation type</option>
+                            <option value="${HTTP_CALL_DEFINITION_IMPLEMENTATION_CLASS}">${HTTP_CALL_DEFINITION}</option>
+                            <option value="${CALCULATION_DEFINITION_IMPLEMENTATION_CLASS}">${CALCULATION_DEFINITION}</option>
+                            <option value="${MAIL_DEFINITION_IMPLEMENTATION_CLASS}">${MAIL_DEFINITION}</option>
+                            <option value="${PDF_REPORT_DEFINITION_IMPLEMENTATION_CLASS}">${PDF_REPORT_DEFINITION}</option>
+                            <option value="${CUSTOM_IMPLEMENTATION_DEFINITION_IMPLEMENTATION_CLASS}">${CUSTOM_IMPLEMENTATION_DEFINITION}</option>
+                        </select>
                         <div class="code-mirror-container"></div>
                     </div>
                 </div>
@@ -56,7 +64,7 @@ class ProcessModelEditor extends ModelEditor {
         //add change event to input fields
         this.htmlContainer.find('.inputName').on('change', e => this.change('name', e.currentTarget.value));
         this.htmlContainer.find('.inputDocumentation').on('change', e => this.change('text', e.currentTarget.value, this.model.implementation.documentation));
-
+        this.htmlContainer.find('.selectImplementationType').on('change', e => this.changeImplementationType(e.currentTarget.value));
 
         // Render input parameters
         this.inputParametersControl = new ModelParameters(this, this.html.find('.model-input-parameters'), 'Input Parameters');
@@ -115,17 +123,41 @@ class ProcessModelEditor extends ModelEditor {
         this.saveModel();
     }
 
+    /**
+     * 
+     * @param {String} propertyValue 
+     */
+    changeImplementationType(propertyValue) {
+        const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        modelImplementation.setAttribute("class", propertyValue);
+        this.model.implementation.xml = XML.prettyPrint(modelImplementation);
+        this.freeContentEditor.setValue(this.model.implementation.xml);
+        this.saveModel();
+    }
+
     render() {
-        // Render name and description
+        // Render name, description and implementationType
         this.htmlContainer.find('.inputName').val(this.model.name);
         this.htmlContainer.find('.inputDocumentation').val(this.model.documentation.text);
-
+        this.renderImplementationType();
         this.inputParametersControl.renderParameters(this.model.inputParameters);
         this.outputParametersControl.renderParameters(this.model.outputParameters);
 
         // Set the implementation content in the code mirror editor and
         this.freeContentEditor.setValue(this.model.implementation.xml);
         this.freeContentEditor.refresh();
+    }
+
+    renderImplementationType() {
+        const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        const implementationType = modelImplementationDocument.getAttribute("class");
+        const implementationTypeSelect = this.htmlContainer.find('.selectImplementationType');
+        implementationTypeSelect.val(implementationType);
+
+        if(implementationTypeSelect.val() != implementationType) {
+            //Unknown value in the select, reset select to custom value
+            implementationTypeSelect.val(CUSTOM_IMPLEMENTATION_DEFINITION_IMPLEMENTATION_CLASS);
+        }
     }
 
     completeUserAction() {
@@ -221,6 +253,7 @@ class ProcessModelEditor extends ModelEditor {
         }
 
         this.model.implementation.xml = value;
+        this.renderImplementationType();
 
         this.saveModel();
     }
