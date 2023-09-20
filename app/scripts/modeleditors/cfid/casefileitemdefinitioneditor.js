@@ -161,8 +161,8 @@
 
         const defType = definition.definitionType;
 
-        $('.cfidefeditor .maincfidefdata input').val(definition.name);
-        $('.cfidefeditor .maincfidefdata select').val(defType);
+        this.html.find('.maincfidefdata input').val(definition.name);
+        this.html.find('.maincfidefdata select').val(defType);
         this.renderDefinitionTypeEditor();
     }
 
