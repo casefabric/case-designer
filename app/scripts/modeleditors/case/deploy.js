@@ -19,6 +19,10 @@ class Deploy extends StandardForm {
         <button class="btn btn-default btnDeploy">Deploy</button>
     </div>
     <span class="deployed_timestamp"></span>
+    <div class="where_used_content">
+        <br/>
+        <div class="whereUsedContent"/>
+    </div>
     <div class="deploy_content">
         <label class="deployFormLabel"></label>
         <div class="codeMirrorSource deployFormContent" />
@@ -30,6 +34,14 @@ class Deploy extends StandardForm {
         this.html.find('.btnServerValidation').on('click', () => this.runServerValidation());
 
         this.codeMirrorCaseXML = CodeMirrorConfig.createXMLEditor(this.htmlContainer.find('.deployFormContent'));
+
+        const model = this.modelEditor.ide.repository.get(this.case.editor.fileName);
+        if (model.usage.length > 0) {
+            const modelRenderer = e => `<a href="./#${e.id}?deploy=true" title="Click to open the deploy form of ${e.id}">${e.name}</a>`;
+            const whereUsedCounter = `Used in ${model.usage.length} other model${model.usage.length == 1 ? '' : 's'}`;
+            const whereUsedModels = `${model.usage.map(modelRenderer).join(",&nbsp;&nbsp;")}`;
+            this.html.find('.whereUsedContent').html(whereUsedCounter + ": " + whereUsedModels);
+        }
     }
 
     _setDeployedTimestamp(text) {
@@ -52,7 +64,7 @@ class Deploy extends StandardForm {
 
     deploy() {
         // By logging the deploy action in a group, we can see in the console how many times the file has been deployed. UI only shows latest...
-        console.group("Deploying case file "+this.case.editor.fileName);
+        console.group("Deploying case file " + this.case.editor.fileName);
         $.get('/repository/deploy/' + this.case.editor.fileName)
             .done(data => {
                 const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
@@ -65,12 +77,12 @@ class Deploy extends StandardForm {
                 console.groupEnd();
                 this._setDeployTextArea(data.responseText);
                 this._setDeployedTimestamp('');
-                this.case.editor.ide.danger('Deploy of CMMN model '+this.case.name+' failed');
+                this.case.editor.ide.danger('Deploy of CMMN model ' + this.case.name + ' failed');
             });
     }
 
     viewCMMN() {
-       this._setDeployTextArea('Fetching CMMN ...');
+        this._setDeployTextArea('Fetching CMMN ...');
         $.get('/repository/viewCMMN/' + this.case.editor.fileName)
             .done(data => this._setDeployTextArea((new XMLSerializer()).serializeToString(data)))
             .fail(data => this._setDeployTextArea(data.responseText));
