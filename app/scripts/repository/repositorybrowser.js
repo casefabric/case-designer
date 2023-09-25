@@ -152,7 +152,8 @@ class RepositoryBrowser {
      */
     loadModelFromBrowserLocation() {
         // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
-        const fileName = window.location.hash.slice(1);
+        //  Skip anything that is behind the optional question mark
+        const fileName = window.location.hash.slice(1).split('?')[0];
         this.currentFileName = fileName;
         this.refreshAccordionStatus();
 
