@@ -10,6 +10,7 @@ class Sentry extends CMMNElement {
      */
     constructor(planItem, definition, shape) {
         super(planItem, definition, shape);
+        this.planItem = planItem;
         this.definition = definition;
 
         //define default color
@@ -193,7 +194,6 @@ class Sentry extends CMMNElement {
     /** 
      * Check if the onPart planItem reference in sentry of discretionary element refers to a plan item inside the
      * parent stage (required). PlanItem reference must be inside parent stage
-     * @param {Sentry} this
     */
     planItemReferenceDiscretionaryParent() {
         //check if sentry has onPart planItems
@@ -365,6 +365,10 @@ class Sentry extends CMMNElement {
         }
         return super.referencesDefinitionElement(definitionId);
     }
+
+    get purpose() {
+        return "test123";
+    }
 }
 
 
@@ -387,6 +391,12 @@ class EntryCriterion extends Sentry {
         }
     }
 
+    get purpose() {
+        const hasRepetition = this.planItem.definition.planItemControl.repetitionRule != undefined;
+        const transition = this.planItem.definition.definition.entryTransition;
+        return `This condition causes ${hasRepetition ? 'the next ' : ''}'${this.planItem.name}' to ${transition}`;
+    }
+
     createHalo() {
         return new EntryCriterionHalo(this);
     }
@@ -403,6 +413,10 @@ class ExitCriterion extends Sentry {
         const definition = planItem.definition.createExitCriterion();
         const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
         return new ExitCriterion(planItem, definition, shape);
+    }
+
+    get purpose() {
+        return `This condition '${this.planItem.name}' to stop`;
     }
 
     createHalo() {
