@@ -32,7 +32,7 @@ class HumanTaskHalo extends TaskHalo {
         const task = this.element;
         this.addItems(ConnectorHaloItem, PropertiesHaloItem, WorkflowHaloItem, DeleteHaloItem);
         if (!this.element.definition.isDiscretionary) {
-            this.addItems(EntryCriterionHaloItem, ExitCriterionHaloItem);
+            this.addItems(EntryCriterionHaloItem, ReactivateCriterionHaloItem, ExitCriterionHaloItem);
         }
         if (this.element.planItemDefinition.implementationRef) {
             const model = task.planItemDefinition.implementationModel && task.planItemDefinition.implementationModel.taskModel;

@@ -6,6 +6,8 @@ class PlanItem extends CMMNElementDefinition {
         this.planItemControl = this.parseElement('itemControl', ItemControlDefinition);
         /** @type{Array<EntryCriterionDefinition>} */
         this.entryCriteria = this.parseElements('entryCriterion', EntryCriterionDefinition, []);
+        /** @type{Array<ReactivateCriterionDefinition>} */
+        this.reactivateCriteria = this.parseExtensions(ReactivateCriterionDefinition, []);
         /** @type{Array<ExitCriterionDefinition>} */
         this.exitCriteria = this.parseElements('exitCriterion', ExitCriterionDefinition, []);
         // Properties below are special for discretionary items
@@ -92,6 +94,10 @@ class PlanItem extends CMMNElementDefinition {
 
     createEntryCriterion() {
         return this.createSentry(EntryCriterionDefinition, this.entryCriteria);
+    }
+
+    createReactivateCriterion() {
+        return this.createSentry(ReactivateCriterionDefinition, this.reactivateCriteria);
     }
 
     createExitCriterion() {
@@ -215,7 +221,7 @@ class PlanItem extends CMMNElementDefinition {
         this.applicabilityRuleRefs = super.flattenListToString(this.isDiscretionary ? this.filterExistingRules() : []);
 
         const tagName = this.isDiscretionary ? 'discretionaryItem' : 'planItem';
-        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs', 'fourEyes', 'rendezVous');
+        super.createExportNode(parentNode, tagName, 'definitionRef', 'entryCriteria', 'reactivateCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs', 'fourEyes', 'rendezVous');
     }
 
     removeDefinition() {

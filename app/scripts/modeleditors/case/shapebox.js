@@ -35,6 +35,7 @@ class ShapeBox {
             UserEvent,
             Stage,
             EntryCriterion,
+            ReactivateCriterion,
             ExitCriterion,
             CasePlanModel,
             CaseFileItem,

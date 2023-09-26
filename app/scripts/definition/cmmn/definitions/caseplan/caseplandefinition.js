@@ -5,6 +5,8 @@ class CasePlanDefinition extends StageDefinition {
         this.definition = this; // Case plan is both plan item and plan item definition (yes, it is little weird)
         /** @type{Array<EntryCriterionDefinition>} */
         this.entryCriteria = []; // Caseplan cannot have entry criteria, but we still create the array, because caseplan extends stage
+        /** @type{Array<ReactivateCriterionDefinition>} */
+        this.reactivateCriteria = []; // Same goes for reactivation criteria.
         /** @type{Array<ExitCriterionDefinition>} */
         this.exitCriteria = this.parseElements('exitCriterion', ExitCriterionDefinition, []);
 

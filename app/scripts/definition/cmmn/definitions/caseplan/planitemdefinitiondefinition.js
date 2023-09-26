@@ -8,7 +8,15 @@ class PlanItemDefinitionDefinition extends CMMNElementDefinition {
      * @returns {Array<String>}
      */
     get transitions() {
-        throw new Error('Transitions getter not implemented for class ' + this.constructor.name);
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * Returns the entry transition for this type of plan item definition (Task/Stage => Start, Event/Milestone => Occur)
+     * @returns {String}
+     */
+    get entryTransition() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }
 
@@ -33,6 +41,10 @@ class TaskStageDefinition extends PlanItemDefinitionDefinition {
     get transitions() {
         return ['complete', 'create', 'disable', 'enable', 'exit', 'fault', 'manualStart', 'parentResume', 'parentSuspend', 'reactivate', 'reenable', 'resume', 'start', 'suspend', 'terminate'];
     }
+
+    get entryTransition() {
+        return 'start';
+    }
 }
 
 /**
@@ -45,5 +57,9 @@ class MilestoneEventListenerDefinition extends PlanItemDefinitionDefinition {
 
     get transitions() {
         return ['occur', 'create', 'reactivate', 'resume', 'suspend', 'terminate'];
+    }
+
+    get entryTransition() {
+        return 'occur';
     }
 }

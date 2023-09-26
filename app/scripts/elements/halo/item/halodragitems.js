@@ -184,6 +184,16 @@ class EntryCriterionHaloItem extends SentryHaloItem {
     }
 }
 
+class ReactivateCriterionHaloItem extends SentryHaloItem {
+    constructor(halo) {
+        super(halo, ReactivateCriterion.smallImage, ReactivateCriterion.typeDescription);
+    }
+
+    get haloType() {
+        return ReactivateCriterion.name;
+    }
+}
+
 class ExitCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
         super(halo, ExitCriterion.smallImage, ExitCriterion.typeDescription);
