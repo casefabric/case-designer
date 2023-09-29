@@ -30,7 +30,7 @@
     width: 417px;
 }
 
-/*Task Model json editor*/
+/*Process Model XML editor*/
 .process-model-editor .process-model-source {
     top: 255px;
     bottom: 10px;
@@ -38,7 +38,7 @@
 
 .process-model-editor .process-model-source>div {
     position: absolute;
-    top: 15px;
+    top: 20px;
     left: 0px;
     right: 0px;
     bottom: 0px;
