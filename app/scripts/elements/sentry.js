@@ -105,7 +105,7 @@ class Sentry extends CMMNElement {
     }
 
     get markup() {
-        return `<polyline class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0" />`;
+        return `<polyline style="pointer-events: bounding-box;" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0" />`;
     }
 
     __resize() {
@@ -410,7 +410,7 @@ class ReactivateCriterion extends Sentry {
     }
 
     get markup() {
-        return `<path style="fill:white; stroke:black; stroke-width:1" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" d="M 3.827 2.137 L 9.807 1.377 L 5.657 8.494 L 11.141 7.923 L 2.696 19.454 L 5.157 11.663 L 0.787 12.164 C 0.85 12.173 3.827 2.137 3.827 2.137 Z" />`;
+        return `<path style="pointer-events: bounding-box; fill:white; stroke:black; stroke-width:1" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" d="M 3.827 2.137 L 9.807 1.377 L 5.657 8.494 L 11.141 7.923 L 2.696 19.454 L 5.157 11.663 L 0.787 12.164 C 0.85 12.173 3.827 2.137 3.827 2.137 Z" />`;
     }
 
     get purpose() {
