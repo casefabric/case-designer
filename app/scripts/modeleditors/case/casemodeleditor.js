@@ -238,6 +238,7 @@ class CaseModelEditor extends ModelEditor {
 
     onShow() {
         this.ideCaseFooter.css('display', 'block');
+        this.case && this.case.onShow();
     }
 
     onHide() {
