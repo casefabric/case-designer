@@ -14,7 +14,7 @@ class PlanItemHalo extends Halo {
     createItems() {
         this.addItems(ConnectorHaloItem, PropertiesHaloItem, DeleteHaloItem);
         if (!this.element.definition.isDiscretionary) {
-            this.addItems(EntryCriterionHaloItem, ExitCriterionHaloItem);
+            this.addItems(EntryCriterionHaloItem, ReactivateCriterionHaloItem, ExitCriterionHaloItem);
         }
     }
 }

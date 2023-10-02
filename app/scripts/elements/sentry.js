@@ -10,6 +10,7 @@ class Sentry extends CMMNElement {
      */
     constructor(planItem, definition, shape) {
         super(planItem, definition, shape);
+        this.planItem = planItem;
         this.definition = definition;
 
         //define default color
@@ -104,7 +105,7 @@ class Sentry extends CMMNElement {
     }
 
     get markup() {
-        return `<polyline class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0" />`;
+        return `<polyline style="pointer-events: bounding-box;" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0" />`;
     }
 
     __resize() {
@@ -193,7 +194,6 @@ class Sentry extends CMMNElement {
     /** 
      * Check if the onPart planItem reference in sentry of discretionary element refers to a plan item inside the
      * parent stage (required). PlanItem reference must be inside parent stage
-     * @param {Sentry} this
     */
     planItemReferenceDiscretionaryParent() {
         //check if sentry has onPart planItems
@@ -365,6 +365,10 @@ class Sentry extends CMMNElement {
         }
         return super.referencesDefinitionElement(definitionId);
     }
+
+    get purpose() {
+        return "test123";
+    }
 }
 
 
@@ -387,8 +391,34 @@ class EntryCriterion extends Sentry {
         }
     }
 
+    get purpose() {
+        const hasRepetition = this.planItem.definition.planItemControl.repetitionRule != undefined;
+        const transition = this.planItem.definition.definition.entryTransition;
+        return `This condition causes ${hasRepetition ? 'the next ' : ''}'${this.planItem.name}' to ${transition}`;
+    }
+
     createHalo() {
         return new EntryCriterionHalo(this);
+    }
+}
+
+class ReactivateCriterion extends Sentry {
+    static create(planItem, x, y) {
+        const definition = planItem.definition.createReactivateCriterion();
+        const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
+        return new ReactivateCriterion(planItem, definition, shape);
+    }
+
+    get markup() {
+        return `<path style="pointer-events: bounding-box; fill:white; stroke:black; stroke-width:1" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" d="M 3.827 2.137 L 9.807 1.377 L 5.657 8.494 L 11.141 7.923 L 2.696 19.454 L 5.157 11.663 L 0.787 12.164 C 0.85 12.173 3.827 2.137 3.827 2.137 Z" />`;
+    }
+
+    get purpose() {
+        return `This condition causes '${this.planItem.name}' to reactivate - if it is in failed state`;
+    }
+
+    createHalo() {
+        return new ReactivateCriterionHalo(this);
     }
 }
 
@@ -405,10 +435,15 @@ class ExitCriterion extends Sentry {
         return new ExitCriterion(planItem, definition, shape);
     }
 
+    get purpose() {
+        return `This condition causes '${this.planItem.name}' to stop`;
+    }
+
     createHalo() {
         return new ExitCriterionHalo(this);
     }
 }
-CMMNElement.registerType(EntryCriterion, 'Entry Criterion', 'images/svg/entrycriterion.svg');
-CMMNElement.registerType(ExitCriterion, 'Exit Criterion', 'images/svg/exitcriterion.svg');
 
+CMMNElement.registerType(EntryCriterion, 'Entry Criterion', 'images/svg/entrycriterion.svg');
+CMMNElement.registerType(ReactivateCriterion, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
+CMMNElement.registerType(ExitCriterion, 'Exit Criterion', 'images/svg/exitcriterion.svg');

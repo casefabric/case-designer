@@ -28,6 +28,7 @@ class PlanItemView extends CMMNElement {
 
         // Add the sentries
         this.definition.entryCriteria.forEach(criterion => this.addCriterion(criterion, EntryCriterion));
+        this.definition.reactivateCriteria.forEach(criterion => this.addCriterion(criterion, ReactivateCriterion));
         this.definition.exitCriteria.forEach(criterion => this.addCriterion(criterion, ExitCriterion));
     }
 
@@ -144,6 +145,8 @@ class PlanItemView extends CMMNElement {
     createCMMNChild(cmmnType, x, y) {
         if (cmmnType == EntryCriterion) {
             return this.__addCMMNChild(EntryCriterion.create(this, x, y));
+        } else if (cmmnType == ReactivateCriterion) {
+            return this.__addCMMNChild(ReactivateCriterion.create(this, x, y));
         } else if (cmmnType == ExitCriterion) {
             return this.__addCMMNChild(ExitCriterion.create(this, x, y));
         } else {

@@ -16,6 +16,24 @@ class EntryCriterionHalo extends Halo {
     }
 }
 
+class ReactivateCriterionHalo extends Halo {
+    /**
+     * Create the halo for the entry criterion.
+     * @param {EntryCriterion} element 
+     */
+    constructor(element) {
+        super(element);
+        this.element = element;
+    }
+
+    /**
+     * sets the halo images in the resizer
+     */
+    createItems() {
+        this.addItems(ConnectorHaloItem, PropertiesHaloItem, DeleteHaloItem);
+    }
+}
+
 class ExitCriterionHalo extends Halo {
     /**
      * Create the halo for the exit criterion.

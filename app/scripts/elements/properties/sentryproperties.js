@@ -8,6 +8,8 @@ class SentryProperties extends Properties {
     }
 
     renderData() {
+        this.addDescription(this.cmmnElement.purpose);
+        this.addSeparator();
         this.addIfPart();
         this.addSeparator();
         this.addPlanItemOnParts();

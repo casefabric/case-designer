@@ -48,6 +48,11 @@
     background-color: #f5f5f5;
 }
 
+.properties-container .descriptionBlock {
+    padding: 8px 16px 8px 12px;
+    background-color: #f5f5f5;
+}
+
 .properties-container .propertyRow {
     display: block;
 }

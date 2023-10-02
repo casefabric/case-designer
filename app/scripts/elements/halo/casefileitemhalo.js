@@ -12,7 +12,7 @@ class CaseFileItemHalo extends Halo {
         this.addItems(ConnectorHaloItem, PropertiesHaloItem, DeleteHaloItem);
         if (! this.element.definition.isEmpty) {
             // Only show sentry options when a case file item is associated
-            this.addItems(EntryCriterionHaloItem, ExitCriterionHaloItem);
+            this.addItems(EntryCriterionHaloItem, ReactivateCriterionHaloItem, ExitCriterionHaloItem);
         }
     }
 }

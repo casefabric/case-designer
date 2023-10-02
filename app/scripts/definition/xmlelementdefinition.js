@@ -138,6 +138,18 @@ class XMLElementDefinition {
     }
 
     /**
+     * Searches for nodes with the specified tagName inside the <extensionElements>. If present, then an instance of the constructor on the nodes and add them to the collection.
+      * 
+      * @param {Function} constructor 
+      * @param {String} tagName
+      * @returns {Array<*>} The collection of parsed nodes in the extension element.
+      */
+    parseExtensions(constructor, collection = [], tagName = constructor.TAG) {
+        XML.getChildrenByTagName(this.extensionElement, tagName).forEach(childNode => this.instantiateChild(childNode, constructor, collection));
+        return collection;
+    }
+
+    /**
      * Searches for the cafienne:implementation tag and instantiates it with the given constructor.
      * @param {Function} constructor 
      * @returns {*}

@@ -11,7 +11,7 @@ class WorkflowProperties extends TaskProperties {
     }
 
     get label() {
-        return 'Properties';
+        return 'Workflow Properties';
     }
 
     refresh() {

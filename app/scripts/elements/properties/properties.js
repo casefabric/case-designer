@@ -26,7 +26,7 @@ class Properties extends MovableEditor {
      * @returns {String}
      */
     get label() {
-        return 'Properties'
+        return `${this.cmmnElement.typeDescription} Properties`;
     }
 
     renderHead() {
@@ -83,7 +83,7 @@ class Properties extends MovableEditor {
     /**
      * Renders the content of the properties view
      */
-    renderData() {}
+    renderData() { }
 
     clear() {
         if (this.htmlContainer) {
@@ -171,12 +171,22 @@ class Properties extends MovableEditor {
     }
 
     /**
+     * Insert a description field
+     * @param {String} description 
+     */
+    addDescription(description) {
+        const html = $(`<div class="descriptionBlock">${description}</div>`);
+        this.htmlContainer.append(html);
+        return html;
+    }
+
+    /**
      * Add a label, e.g. for an explanation.
      * @param {Array<String>} labels 
      */
     addLabelField(...labels) {
         const html = $(`<div class="propertyBlock">
-                            ${labels.map(label => `<label>${label}</label>`).join('\n')}                            
+                            ${labels.map(label => `<label>${label}</label>`).join('\n')}
                         </div>`);
         this.htmlContainer.append(html);
         return html;
@@ -220,7 +230,7 @@ class Properties extends MovableEditor {
         const documentation = this.cmmnElement.documentation;
         const html = $(`<div class="propertyBlock">
                             <label>Documentation</label>
-                            <textarea class="multi cmmn-element-documentation" readonly>${documentation && documentation.text || '' }</textarea>
+                            <textarea class="multi cmmn-element-documentation" readonly>${documentation && documentation.text || ''}</textarea>
                         </div>`);
         this.htmlContainer.append(html);
         const textarea = html.find('textarea');
@@ -228,18 +238,18 @@ class Properties extends MovableEditor {
         textarea.on('pointerdown', () => {
             if (documentation) {
                 textarea.attr('readonly', false);
-                textarea.addClass('edit-cmmn-documentation')    
+                textarea.addClass('edit-cmmn-documentation')
             }
         });
         // After change we make the textarea readonly again
-        textarea.on('change', e =>  {
+        textarea.on('change', e => {
             textarea.removeClass('edit-cmmn-documentation')
             textarea.attr('readonly', 'true');
             documentation.text = e.target.value;
             this.done();
         });
         // And on blur as well
-        textarea.on('blur', () =>  {
+        textarea.on('blur', () => {
             textarea.removeClass('edit-cmmn-documentation');
             textarea.attr('readonly', 'true');
         });
