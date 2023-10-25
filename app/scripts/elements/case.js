@@ -135,7 +135,9 @@
 
         const end = new Date();
         console.log('Case loaded in ' + ((end - now) / 1000) + ' seconds')
+    }
 
+    onShow() {
         const urlQuery = window.location.hash.slice(1).split('?');
         if (urlQuery.length > 1) {
             if (urlQuery[1].startsWith('deploy=true')) {
