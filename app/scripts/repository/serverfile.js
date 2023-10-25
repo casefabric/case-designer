@@ -156,6 +156,40 @@ class ServerFile {
         });
     }
 
+    /**
+     * Gives this file a new name
+     * @param {String} newName the new name for the file
+     * @param {Function} callback 
+     */
+    rename(newName, callback = undefined) {
+        const url = '/repository/rename/' + this.fileName;
+        const type = 'post';
+        const data = JSON.stringify({ newName }, undefined, 2);
+        $.ajax({ url, data, type,
+            headers: { 'content-type': 'application/json' },
+            success: (data, status, xhr) => {
+                this.hasBeenSavedJustNow = true;
+                this.fileName = newName;
+                this.repository.updateFileList(data);
+                this.hasBeenSavedJustNow = false;
+                if (typeof (callback) == 'function') {
+                    callback(data, status, xhr);
+                } else {
+                    // Also print a timestampe of the new last modified information
+                    const lmDate = new Date(this.lastModified);
+                    const HHmmss = lmDate.toTimeString().substring(0, 8);
+                    const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
+
+                    console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
+                }
+            },
+            error: (xhr, error, eThrown) => {
+                this.ide.danger('We could not rename the file: ' + error);
+            }
+        });
+
+    }
+
     get data() {
         return this.content ? this.content.data : '';
     }

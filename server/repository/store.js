@@ -26,6 +26,15 @@ class Store {
         fs.writeFileSync(fileName, data);
     }
 
+    rename(artifactName, newArtifactName) {
+        console.log(`Changing artifact ${artifactName} to ${newArtifactName} `);
+        const fileName = Utilities.createAbsolutePath(this.repositoryPath, artifactName);
+        const newFileName = Utilities.createAbsolutePath(this.repositoryPath, newArtifactName);
+        mkdirp.sync(pathLib.dirname(fileName));
+        mkdirp.sync(pathLib.dirname(newFileName));
+        fs.renameSync(fileName, newFileName);
+    }
+
     list() {
         const files = walkSync.entries(this.repositoryPath, { directories: false, ignore: ['**/.*'] });
         const models = files.filter(file => Utilities.isKnownRepositoryExtension(pathLib.extname(file.relativePath))).map(entry => new ModelInfo(this, entry));

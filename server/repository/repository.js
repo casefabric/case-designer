@@ -28,6 +28,10 @@ class Repository {
         return this.store.save(artifactName, data);
     }
 
+    rename(artifactName, newArtifactName) {
+        return this.store.rename(artifactName, newArtifactName);
+    }
+
     composeDefinitionsDocument(artifactName) {
         return new Definitions(artifactName, this.store);
     }

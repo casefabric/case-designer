@@ -136,6 +136,23 @@ class Repository {
         serverFile.save(callback);
     }
 
+    rename(fileName, newFileName) {
+        console.log(`Requesting to change [${fileName} to ${newFileName}]`);
+        newFileName = newFileName.split(' ').join('');
+        console.log(`Actual new file name ${newFileName}]`);
+        const serverFile = this.get(fileName);
+        if (!serverFile) {
+            console.log(`Cannot rename ${fileName} as the file is not available on the front end`);
+        } else if (fileName === newFileName) {
+            console.log(`Renaming ${fileName} requested, but new name is the same as the current name`);
+        } else if (this.get(newFileName)) {
+            console.log(`Cannot rename ${fileName} to ${newFileName} as that name already exists`);
+        } else {
+            console.log(`REnaming ${fileName} to ${newFileName}`)
+            serverFile.rename(newFileName);
+        }
+    }
+
     get(fileName) {
         return this.list.find(serverFile => serverFile.fileName === fileName);
     }

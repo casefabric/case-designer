@@ -12,6 +12,7 @@ const caseService = new backend.Backend(config.backendUrl);
 
 const router = express.Router();
 const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
+const jsonParser = bodyParser.json({ type: 'application/json' });
 
 /**
  * Returns the repository contents by name, last modified timestamp and usage information
@@ -49,6 +50,24 @@ router.post('/save/*', xmlParser, function (req, res, next) {
     try {
         const fileName = req.params[0];
         repository.save(fileName, req.body + '\n');
+
+        const list = repository.list();
+        res.json(list);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
+});
+
+/**
+ * Rename a file in the repository
+ */
+router.post('/rename/*', jsonParser, function (req, res, next) {
+    try {
+        const fileName = req.params[0];
+        const newFileName = req.body.newName;
+        console.log(`Received request to change file name ${fileName} to ${newFileName} `);
+        repository.rename(fileName, newFileName);
 
         const list = repository.list();
         res.json(list);
