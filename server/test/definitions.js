@@ -1,7 +1,7 @@
 "use strict";
 
 const assert = require('assert');
-const Store = require("../repository/store").Store;
+const Store = require("../repository/store/store").Store;
 const Definitions = require("../repository/cmmn/definitions").Definitions;
 const consts = require('../repository/constant.js');
 

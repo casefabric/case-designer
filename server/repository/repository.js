@@ -4,7 +4,7 @@ const fs = require('fs');
 const pathLib = require('path');
 const mkdirp = require('mkdirp');
 const Definitions = require('./cmmn/definitions').Definitions;
-const Store = require('./store').Store;
+const Store = require('./store/store').Store;
 const Utilities = require('./utilities').Utilities;
 const Upgrade = require('./upgrade').Upgrade;
 

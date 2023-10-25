@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const assert = require('assert');
-const Store = require("../repository/store").Store;
+const Store = require("../repository/store/store").Store;
 const consts = require('../repository/constant.js');
 
 describe("Store tests", function () {
