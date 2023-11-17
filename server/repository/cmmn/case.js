@@ -3,7 +3,7 @@
 const Consts = require('../constant.js');
 const XML = require('../xml').XML;
 const Definitions = require('./definitions').Definitions;
-const Store = require('../store').Store;
+const Store = require('../store/store.js').Store;
 
 class CaseDefinition {
     /**
