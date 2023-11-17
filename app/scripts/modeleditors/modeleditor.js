@@ -3,16 +3,14 @@
 class ModelEditor {
     /**
      * Basic model editor
-     * @param {IDE} ide 
-     * @param {String} fileName The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
-     * @param {String} modelName The file name without the extension, e.g. 'helloworld'
-     * @param {String} modelType  The extension of the fileName, e.g. 'case', 'process', 'humantask'
+     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(ide, fileName, modelName, modelType) {
-        this.ide = ide;
-        this.fileName = fileName;
-        this.modelName = modelName;
-        this.modelType = modelType;
+    constructor(file) {
+        this.ide = file.repository.ide;
+        this.file = file;
+        this.fileName = file.metadata.fileName;
+        this.modelName = file.name;
+        this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */
         this.movableEditors = [];
         this.html = $(
@@ -225,7 +223,7 @@ class ModelEditor {
     }
 
     refresh() {
-        this.ide.repository.clear(this.fileName);
+        this.file.clear();
         this.loadModel();
     }
 

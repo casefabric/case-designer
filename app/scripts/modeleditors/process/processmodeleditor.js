@@ -3,13 +3,10 @@
 class ProcessModelEditor extends ModelEditor {
     /** 
      * This editor handles process models; only validates the xml
-     * @param {IDE} ide 
-     * @param {String} fileName The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
-     * @param {String} modelName The file name without the extension, e.g. 'helloworld'
-     * @param {String} modelType  The extension of the fileName, e.g. 'case', 'process', 'humantask'
+     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(ide, fileName, modelName, modelType) {
-        super(ide, fileName, modelName, modelType);
+    constructor(file) {
+        super(file);
         this.generateHTML();
     }
 
@@ -204,7 +201,7 @@ class ProcessModelEditor extends ModelEditor {
     }
 
     loadModel() {
-        this.ide.repository.readModel(this.fileName, model => this.renderModel(model));
+        this.file.load(definition => this.renderModel(definition));
     }
 
     /**

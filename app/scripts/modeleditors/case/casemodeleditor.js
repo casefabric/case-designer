@@ -3,13 +3,10 @@
 class CaseModelEditor extends ModelEditor {
     /**
      * This editor handles Case models
-     * @param {IDE} ide 
-     * @param {String} fileName The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
-     * @param {String} modelName The file name without the extension, e.g. 'helloworld'
-     * @param {String} modelType  The extension of the fileName, e.g. 'case', 'process', 'humantask'
+     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(ide, fileName, modelName, modelType) {
-        super(ide, fileName, modelName, modelType);
+    constructor(file) {
+        super(file);
         this.caseFileName = this.fileName;
         this.dimensionsFileName = this.modelName + '.dimensions';
         this.ideCaseFooter = $('.ideCaseFooter');

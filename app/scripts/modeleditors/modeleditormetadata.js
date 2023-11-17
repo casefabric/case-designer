@@ -43,11 +43,11 @@ class ModelEditorMetadata {
 
     /**
      * Creates a new instance of the editor for the model.
-     * @param {ServerFile} model 
+     * @param {ServerFile} file 
      * @returns {ModelEditor} editor
      */
-    createEditor(ide, fileName, modelName, modelType) {
-        const editor = new this.editorType(this.ide, fileName, modelName, modelType);
+    createEditor(file) {
+        const editor = new this.editorType(file);
         this.ide._editors.push(editor);
         return editor;
     }

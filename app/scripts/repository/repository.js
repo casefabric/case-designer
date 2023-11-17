@@ -158,7 +158,7 @@ class Repository {
     }
 
     /**
-     * Reads the file from the repository, parses it into a ModelDefinition, and invokes the callback on succesfull completion
+     * Reads the file from the repository, parses it into a ModelDefinition, and invokes the callback on successful completion
      * @param {String} fileName 
      * @param {Function} callback 
      */
@@ -166,17 +166,9 @@ class Repository {
         // TODO: we must add a check on existence of the serverfile in the local cache, and also whether it exists in the server.
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
         if (!serverFile) {
-            console.log("Does not exist")
+            console.log(`File ${fileName} does not exist and cannot be loaded`);
             return;
         }
-        serverFile.load(file => {
-            // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
-            const model = serverFile.parseToModel();
-            if (model.hasMigrated()) {
-                console.log(`Definition of ${model.constructor.name} '${fileName}' has migrated; uploading result`);
-                this.saveXMLFile(fileName, model.toXML());
-            }
-            callback(model);
-        });
+        serverFile.load(callback);
     }
 }

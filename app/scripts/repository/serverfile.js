@@ -90,7 +90,7 @@ class ServerFile {
      * Loads the data of file, and invokes the callback there-after.
      * @param {Function} callback 
      */
-    load(callback) {
+    fetch(callback) {
         if (this.source) {
             callback(this);
             return;
@@ -122,6 +122,18 @@ class ServerFile {
                 this.ide.danger('Could not read file ' + this.fileName + ' due to an error:<div>' + str + '</div>');
             }
         });
+    }
+
+    load(callback) {
+        const file = this;
+        this.fetch(_ => {
+            const definition = ModelDocument.parse(this.ide, this)
+            if (definition.hasMigrated()) {
+                console.log(`Definition of ${definition.constructor.name} '${file.fileName}' has migrated; uploading result`);
+                file.repository.saveXMLFile(file.fileName, definition.toXML());
+            }
+            callback(definition);
+        })
     }
 
     /**
@@ -188,9 +200,5 @@ class ServerFile {
                 this.ide.danger('We could not rename the file: ' + error);
             }
         });
-    }
-
-    parseToModel() {
-        return ModelDocument.parse(this.repository.ide, this);
     }
 }
