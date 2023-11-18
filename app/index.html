@@ -254,6 +254,11 @@
     <script src="scripts/definition/cmmn/definitions/caseteam/caserolereference.js"></script>
     <script src="scripts/repository/metadata.js"></script>
     <script src="scripts/repository/serverfile.js"></script>
+    <script src="scripts/repository/serverfile/casefile.js"></script>
+    <script src="scripts/repository/serverfile/cfidfile.js"></script>
+    <script src="scripts/repository/serverfile/dimensionsfile.js"></script>
+    <script src="scripts/repository/serverfile/humantaskfile.js"></script>
+    <script src="scripts/repository/serverfile/processfile.js"></script>
     <script src="scripts/repository/repository.js"></script>
     <script src="scripts/repository/repositorybrowser.js"></script>
     <script src="scripts/repository/modellistpanel.js"></script>
@@ -346,5 +351,11 @@
 </head>
 <body>
     <div class="iIDE" />
+    <script>                
+        // For now create a global IDE pointer.
+        const ide = new IDE();
+        //Start initialization after the entire page is loaded
+        $(window).on('load', e => ide.init());
+    </script>
 </body>
 </html>

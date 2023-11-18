@@ -8,23 +8,48 @@ class ModelDocument {
     constructor(ide, fileName, source) {
         this.ide = ide;
         this.fileName = fileName;
-        this.source = source instanceof Document ? XML.prettyPrint(source) : source;
-        this.xml = source instanceof Document ? source : XML.parseXML(source);
-        /** @type{Element} */
-        this.root = this.xml.documentElement;
+        this.source = source;
+    }
+
+    get source() {
+        return this._source;
+    }
+
+    set source(source) {
+        // If we get a new source, flatten and parse it, and also remove the existing definition
+        if (source && source !== this._source) {
+            this._source = source && source instanceof Document ? XML.prettyPrint(source) : source;
+            this.xml = source && source instanceof Document ? source : XML.parseXML(source);
+            this.definition = undefined;
+        }
     }
 
     /**
-     * 
-     * @param {IDE} ide 
-     * @param {ServerFile} serverFile 
+     * @returns {Element}
      */
-    static parse(ide, serverFile) {
-        const source = serverFile.source;
-        const fileName = serverFile.fileName;
-        const fileType = serverFile.fileType;
-        const document = getParser(ide, fileName, fileType, source);
-        return document.createInstance();
+    get root() {
+        return this.xml && this.xml.documentElement;
+    }
+
+    /** @type {ModelDefinition} */
+    get definition() {
+        if (!this._definition) {
+            this._definition = this.createDefinitionObject();
+            this._definition.parseDocument();
+            this._definition.validateDocument();
+        }
+        return this._definition;
+    }
+
+    set definition(definition) {
+        this._definition = definition;
+    }
+
+    /**
+     * @returns {ModelDefinition}
+     */
+    createDefinitionObject() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }
 
@@ -46,56 +71,31 @@ function getParser(ide, fileName, fileType, source) {
 }
 
 class CaseModelDocument extends ModelDocument {
-    createInstance() {
-        const model = new CaseDefinition(this.root);
-        model.parseDocument();
-        model.validateDocument();
-        return model;
+    createDefinitionObject() {
+        return new CaseDefinition(this.root);
     }
 }
 
 class DimensionsModelDocument extends ModelDocument {
-    /**
-     * 
-     * @param {IDE} ide 
-     * @param {String} fileName 
-     * @param {*} source 
-     */
-    constructor(ide, fileName, source) {
-        super(ide, fileName, source);
-    }
-
-    createInstance() {
-        const model = new Dimensions(this.root);
-        model.parseDocument();
-        model.validateDocument();
-        return model;
+    createDefinitionObject() {
+        return new Dimensions(this.root);
     }
 }
 
 class ProcessModelDocument extends ModelDocument {
-    createInstance() {
-        const model = new ProcessModelDefinition(this.root);
-        model.parseDocument();
-        model.validateDocument();
-        return model;
+    createDefinitionObject() {
+        return new ProcessModelDefinition(this.root);
     }
 }
 
 class HumanTaskModelDocument extends ModelDocument {
-    createInstance() {
-        const model = new HumanTaskModelDefinition(this.root);
-        model.parseDocument();
-        model.validateDocument();
-        return model;
+    createDefinitionObject() {
+        return new HumanTaskModelDefinition(this.root);
     }
 }
 
 class CaseFileModelDocument extends ModelDocument {
-    createInstance() {
-        const model = new CaseFileDefinitionDefinition(this.root);
-        model.parseDocument();
-        model.validateDocument();
-        return model;
+    createDefinitionObject() {
+        return new CaseFileDefinitionDefinition(this.root);
     }
 }

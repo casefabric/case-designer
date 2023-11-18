@@ -68,9 +68,10 @@
         if (existingModel) {
             this.planItemDefinition.implementationRef = existingModel.fileName;
         } else {
-            const fileName = this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text);
+            const fileName = this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text, fileName => {
+                window.location.hash = fileName;
+            });
             this.planItemDefinition.implementationRef = fileName;
-            window.location.hash = fileName;
         }
         this.case.editor.completeUserAction();
         this.refreshView();
@@ -101,8 +102,9 @@
      */
     fetchTaskImplementation(saveChanges = false, fileName = this.planItemDefinition.implementationRef, updateTaskName = false, showProperties = false) {
         // Now, read the file, and update the information in the task parameters.
-        this.case.editor.ide.repository.readModel(fileName, model => {
-            if (! model) {
+        this.case.editor.ide.repository.load(fileName, file => {
+            const model = file.definition;
+            if (!model) {
                 this.case.editor.ide.warning('Could not read the model ' + fileName + ' which is referenced from the task ' + this.name);
                 return;
             }

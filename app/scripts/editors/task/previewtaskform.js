@@ -10,7 +10,7 @@ class PreviewTaskForm extends StandardForm {
     }
     
     get label() {
-        const name = this.task ? this.task.name : this.modelEditor.modelName;
+        const name = this.task ? this.task.name : this.modelEditor.file.name;
         return 'Task Preview - ' + name;
     }
 

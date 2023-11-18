@@ -7,9 +7,8 @@ class ModelEditor {
      */
     constructor(file) {
         this.ide = file.repository.ide;
+        this.ide.register(this);
         this.file = file;
-        this.fileName = file.metadata.fileName;
-        this.modelName = file.name;
         this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */
         this.movableEditors = [];
@@ -43,6 +42,10 @@ class ModelEditor {
         }
         this.html.find('.closeButton').on('click', e => this.close());
         this.html.find('.refreshButton').on('click', e => this.refresh());
+    }
+
+    get fileName() {
+        return this.file.fileName;
     }
 
     /**
@@ -225,16 +228,5 @@ class ModelEditor {
     refresh() {
         this.file.clear();
         this.loadModel();
-    }
-
-    /**
-     * Create a new model with given name and description and return the fileName of the model.
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @returns {String} fileName of the new model
-     */
-    static createNewModel(ide, name, description) {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }

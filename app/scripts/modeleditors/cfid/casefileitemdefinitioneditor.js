@@ -142,13 +142,14 @@
 
         if (isNew) {
             // First create and upload a new definition, then load it
-            const name = definitionRef.substring(0, definitionRef.length - 5);
-            const data = XML.loadXMLString(`<caseFileItemDefinition name="${name}" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" />`);
-            this.ide.repository.saveXMLFile(definitionRef, data);
+            const newFile = this.ide.repository.createCFIDFile(definitionRef);
+            newFile.source = XML.loadXMLString(`<caseFileItemDefinition name="${newFile.name}" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" />`);
+            // Save and then render.
+            newFile.save(() => this.renderDefinition(newFile.definition));
+        } else {
+            // Read it from the repository, and only render upon callback.
+            this.ide.repository.load(definitionRef, file => this.renderDefinition(file.definition));
         }
-
-        // Read it from the repository, and only render upon callback.
-        this.ide.repository.readModel(definitionRef, definition => this.renderDefinition(definition));
     }
 
     /**

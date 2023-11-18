@@ -6,13 +6,34 @@ class ServerFile {
      * demand through the load method, which can be invoked with a callback.
      * @param {Repository} repository 
      * @param {String} fileName 
-     * @param {*} serverMetadata 
+     * @param {*} source
      */
-    constructor(repository, fileName, serverMetadata = {}) {
+    constructor(repository, fileName, source) {
         this.repository = repository;
         this.ide = this.repository.ide;
         this.fileName = fileName;
-        this.refreshMetadata(serverMetadata);
+        this.modelDocument = getParser(repository.ide, this.fileName, this.fileType);
+        this.source = source;
+    }
+
+    /**
+     * Returns true if this server file has a model editor that can render it
+     * @returns {boolean}
+     */
+    get hasModelEditor() {
+        return false;
+    }
+
+    /** @returns {ModelDefinition} */
+    get definition() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * @returns {ModelEditor}
+     */
+    createEditor() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     get fileName() {
@@ -57,6 +78,7 @@ class ServerFile {
 
     set source(source) {
         this._source = source;
+        this.modelDocument.source = source;
     }
 
     /**
@@ -73,7 +95,7 @@ class ServerFile {
     deprecate() {
         // TODO: here we should check if there are any editors that are still open for this serverFile;
         //  if so, then we should show a message in those editors in an overlay, with a decision what to do.
-        console.warn("Still using " + this.fileName + " ???  Better not, since it no longer exists in the server ...");
+        console.warn(`Still using ${this.fileName} ???  Better not, since it no longer exists in the server ...`);
     }
 
     /**
@@ -127,12 +149,12 @@ class ServerFile {
     load(callback) {
         const file = this;
         this.fetch(_ => {
-            const definition = ModelDocument.parse(this.ide, this)
-            if (definition.hasMigrated()) {
-                console.log(`Definition of ${definition.constructor.name} '${file.fileName}' has migrated; uploading result`);
-                file.repository.saveXMLFile(file.fileName, definition.toXML());
+            if (file.definition.hasMigrated()) {
+                console.log(`Definition of ${file.definition.constructor.name} '${file.fileName}' has migrated; uploading result`);
+                file.source = file.definition.toXML();
+                file.save();
             }
-            callback(definition);
+            callback(file);
         })
     }
 
@@ -142,6 +164,10 @@ class ServerFile {
      * @param {Function} callback 
      */
     save(callback = undefined) {
+        if (!this.repository.isExistingModel(this.fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
+            this.repository.list.push(this);
+        }
+
         const xmlString = XML.prettyPrint(this.source);
         const url = '/repository/save/' + this.fileName;
         const type = 'post';
@@ -152,15 +178,14 @@ class ServerFile {
                 this.hasBeenSavedJustNow = true;
                 this.repository.updateFileList(data);
                 this.hasBeenSavedJustNow = false;
+                // Also print a timestampe of the new last modified information
+                const lmDate = new Date(this.lastModified);
+                const HHmmss = lmDate.toTimeString().substring(0, 8);
+                const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
+                console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
+
                 if (typeof (callback) == 'function') {
                     callback(data, status, xhr);
-                } else {
-                    // Also print a timestampe of the new last modified information
-                    const lmDate = new Date(this.lastModified);
-                    const HHmmss = lmDate.toTimeString().substring(0, 8);
-                    const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
-
-                    console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
                 }
             },
             error: (xhr, error, eThrown) => {
@@ -200,5 +225,11 @@ class ServerFile {
                 this.ide.danger('We could not rename the file: ' + error);
             }
         });
+    }
+}
+
+class ServerFileWithEditor extends ServerFile {
+    get hasModelEditor() {
+        return true;
     }
 }

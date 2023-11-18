@@ -135,16 +135,15 @@ class RepositoryBrowser {
             return;
         }
 
-        this.ide.createNewModel(filetype, newModelName, newModelDescription);
+        this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
+            // Clear the input boxes, such that new valuess can be entered
+            this.inputNewModelName.val('');
+            this.inputNewModelDescription.val('');
 
-        // Clear the input boxes, such that new valuess can be entered
-        this.inputNewModelName.val('');
-        this.inputNewModelDescription.val('');
-
-        if (buttonType == 'createopen') {
-            // Change the url to navigate into the newly created model
-            window.location.hash = fileName;
-        }
+            if (buttonType == 'createopen') {
+                window.location.hash = fileName;
+            };
+        });
     }
 
     /**

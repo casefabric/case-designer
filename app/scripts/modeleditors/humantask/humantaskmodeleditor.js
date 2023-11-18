@@ -3,10 +3,11 @@
 class HumantaskModelEditor extends ModelEditor {
     /**
      * This object handles human task models, includes ui-editor and source editor
-     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
+     * @param {HumanTaskFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
     constructor(file) {
         super(file);
+        this.file = file;
         const html = $(`
             <div class="basicbox model-source-tabs">
                 <ul>
@@ -143,7 +144,7 @@ class HumantaskModelEditor extends ModelEditor {
 
         // Now check if there is a "sensible" expectation that we have a JSON schema in the taskmodel
         const taskModel = this.model.implementation.taskModel.value;
-        if (! taskModel || taskModel.trim().indexOf('{')<0) {
+        if (!taskModel || taskModel.trim().indexOf('{') < 0) {
             return;
         }
 
@@ -216,15 +217,14 @@ class HumantaskModelEditor extends ModelEditor {
     }
 
     loadModel() {
-        this.ide.repository.readModel(this.fileName, model => this.renderModel(model));
+        this.file.load(() => this.renderModel());
     }
 
     /**
      * 
-     * @param {HumanTaskModelDefinition} model 
      */
-    renderModel(model) {
-        this._model = model;
+    renderModel() {
+        this._model = this.file.definition;
         this.render();
         this.visible = true;
     }
@@ -233,15 +233,16 @@ class HumantaskModelEditor extends ModelEditor {
      * handle the change of the source (in 2nd tab)
      */
     loadSource(source) {
-        const document = new HumanTaskModelDocument(this.ide, this.fileName, source);
-        this.renderModel(document.createInstance());
+        this.file.source = source;
+        this.renderModel();
         this.saveModel();
     }
 
     saveModel() {
         // Remove 'changed' flag just prior to saving
         this._changed = false;
-        this.ide.repository.saveXMLFile(this.fileName, this.model.toXML());
+        this.file.source = this.model.toXML();
+        this.file.save();
     }
 
     /**
@@ -253,25 +254,6 @@ class HumantaskModelEditor extends ModelEditor {
 
     get label() {
         return 'Edit Human Task - ' + this.fileName;
-    }
-
-    /**
-     * Create a new HumanTask model with given name and description 
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @returns {String} fileName of the new model
-     */
-    static createNewModel(ide, name, description) {
-        const newModelContent = 
-            `<humantask>
-                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
-                    <task-model></task-model>
-                </${IMPLEMENTATION_TAG}>
-            </humantask>`;
-        const fileName = name + '.humantask';
-        ide.repository.saveXMLFile(fileName, newModelContent);        
-        return fileName;
     }
 }
 
@@ -290,13 +272,29 @@ class HumantaskModelEditorMetadata extends ModelEditorMetadata {
         return HumanTask;
     }
 
-    get editorType() {
-        return HumantaskModelEditor;
-    }
-
     get description() {
         return 'Human Task Models';
-    }    
+    }
+
+    /**
+     * Create a new HumanTask model with given name and description 
+     * @param {IDE} ide 
+     * @param {String} name 
+     * @param {String} description 
+     * @param {Function} callback
+     * @returns {String} fileName of the new model
+     */
+    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
+        const newModelContent =
+            `<humantask>
+                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
+                    <task-model></task-model>
+                </${IMPLEMENTATION_TAG}>
+            </humantask>`;
+        const fileName = name + '.humantask';
+        ide.repository.createHumanTaskFile(fileName, newModelContent).save(() => callback(fileName));
+        return fileName;
+    }
 }
 
-IDE.registerEditorType(HumantaskModelEditorMetadata);
+IDE.registerEditorType(new HumantaskModelEditorMetadata());

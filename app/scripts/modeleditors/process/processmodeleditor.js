@@ -3,10 +3,11 @@
 class ProcessModelEditor extends ModelEditor {
     /** 
      * This editor handles process models; only validates the xml
-     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
+     * @param {ProcessFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
     constructor(file) {
         super(file);
+        this.file = file;
         this.generateHTML();
     }
 
@@ -201,15 +202,13 @@ class ProcessModelEditor extends ModelEditor {
     }
 
     loadModel() {
-        this.file.load(definition => this.renderModel(definition));
+        this.file.load(() => this.renderModel());
     }
 
     /**
-     * 
-     * @param {ProcessModelDefinition} model 
      */
-    renderModel(model) {
-        this._model = model;
+    renderModel() {
+        this._model = this.file.definition;
         this.render();
         this.visible = true;
     }
@@ -218,17 +217,16 @@ class ProcessModelEditor extends ModelEditor {
      * handle the change of the source (in 2nd tab)
      */
     loadSource(newSource) {
-        const document = new ProcessModelDocument(this.ide, this.fileName, newSource);
-        this.renderModel(document.createInstance());
+        this.file.source = newSource;
+        this.renderModel();
         this.saveModel();
     }
 
     saveModel() {
         // Remove 'changed' flag just prior to saving
         this._changed = false;
-
-        const data = XML.prettyPrint(this.model.toXML());
-        this.ide.repository.saveXMLFile(this.fileName, data);
+        this.file.source = this.model.toXML();
+        this.file.save();
     }
 
     /**
@@ -254,26 +252,6 @@ class ProcessModelEditor extends ModelEditor {
 
         this.saveModel();
     }
-
-    /**
-     * Create a new Process model with given name and description 
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @returns {String} fileName of the new model
-     */
-    static createNewModel(ide, name, description) {
-        const newModelContent =
-`<process name="${name}" description="${description}">
-    <${EXTENSIONELEMENTS}>
-        <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
-        </${IMPLEMENTATION_TAG}>
-    </${EXTENSIONELEMENTS}>
-</process>`;
-        const fileName = name + '.process';
-        ide.repository.saveXMLFile(fileName, newModelContent);
-        return fileName;        
-    }
 }
 
 class ProcessModelEditorMetadata extends ModelEditorMetadata {
@@ -291,13 +269,35 @@ class ProcessModelEditorMetadata extends ModelEditorMetadata {
         return ProcessTask;
     }
 
-    get editorType() {
-        return ProcessModelEditor;
-    }
-
     get description() {
         return 'Processes';
     }
+
+    toString() {
+        // Override base implementation, because that cuts off only the s, and we need to also cut off the e.
+        return 'process';
+    }
+
+    /**
+     * Create a new Process model with given name and description 
+     * @param {IDE} ide 
+     * @param {String} name 
+     * @param {String} description 
+     * @param {Function} callback
+     * @returns {String} fileName of the new model
+     */
+    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
+        const newModelContent =
+`<process name="${name}" description="${description}">
+    <${EXTENSIONELEMENTS}>
+        <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
+        </${IMPLEMENTATION_TAG}>
+    </${EXTENSIONELEMENTS}>
+</process>`;
+        const fileName = name + '.process';
+        ide.repository.createProcessFile(fileName, newModelContent).save(() => callback(fileName));
+        return fileName;
+    }
 }
 
-IDE.registerEditorType(ProcessModelEditorMetadata);
+IDE.registerEditorType(new ProcessModelEditorMetadata());

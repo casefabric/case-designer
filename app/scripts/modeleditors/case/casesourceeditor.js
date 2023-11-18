@@ -55,8 +55,8 @@ class CaseSourceEditor {
             return;
         };
 
-        const caseDefinition = caseModelDocument.createInstance();
-        const dimensions = dimensionModelDocument.createInstance();
+        const caseDefinition = caseModelDocument.definition;
+        const dimensions = dimensionModelDocument.definition;
 
         // TODO add more checks for validity?
 

@@ -10,11 +10,10 @@ class Action {
         // console.log("Creating new action with dimensions: ", dimensions)
         this.undoManager = undoManager;
         this.repository = undoManager.editor.ide.repository;
-        this.modelName = caseDefinition.name;
         this.caseString = XML.prettyPrint(caseDefinition.toXML());
         this.dimensionsString = XML.prettyPrint(dimensions.toXML());
-        this.caseFileName = this.undoManager.editor.caseFileName;
-        this.dimensionsFileName = this.undoManager.editor.dimensionsFileName;
+        this.caseFileName = undoManager.editor.caseFileName;
+        this.dimensionsFileName = undoManager.editor.dimensionsFileName;
         this.caseChanged = false;
         this.dimensionsChanged = false;
         this.previousAction = previousAction;
@@ -92,8 +91,8 @@ class Action {
         // console.log("Performing "+direction+" on action "+this.undoCount )
         this.undoManager.performingBufferAction = true;
         // Parse the sources again into a definition and load that in the editor.        
-        const caseDefinition = new CaseModelDocument(this.repository.ide, this.caseFileName, this.caseString).createInstance();
-        const dimensions = new DimensionsModelDocument(this.repository.ide, this.dimensionsFileName, this.dimensionsString).createInstance();
+        const caseDefinition = new CaseModelDocument(this.repository.ide, this.caseFileName, this.caseString).createDefinitionObject();
+        const dimensions = new DimensionsModelDocument(this.repository.ide, this.dimensionsFileName, this.dimensionsString).createDefinitionObject();
         this.undoManager.editor.loadDefinition(caseDefinition, dimensions);
         // Reset the "saved" flag.
         this.saved = false;

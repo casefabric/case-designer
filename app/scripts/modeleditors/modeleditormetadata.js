@@ -1,13 +1,10 @@
 class ModelEditorMetadata {
     /**
-     * Creates metadata for a type of ModelEditor within the IDE
+     * Initializes metadata for a type of ModelEditor within the IDE
      * @param {IDE} ide 
      */
-    constructor(ide) {
+    init(ide) {
         this.ide = ide;
-    }
-
-    init() {
         this.ide.repository.onListRefresh(() => {
             if (! this.modelListPanel) {
                 this.modelListPanel = this.ide.repositoryBrowser.createModelListPanel(this);
@@ -36,29 +33,19 @@ class ModelEditorMetadata {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {Function} */
-    get editorType() {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    /**
-     * Creates a new instance of the editor for the model.
-     * @param {ServerFile} file 
-     * @returns {ModelEditor} editor
-     */
-    createEditor(file) {
-        const editor = new this.editorType(file);
-        this.ide._editors.push(editor);
-        return editor;
+    toString() {
+        return this.description.substring(0, this.description.length - 1).toLowerCase();
     }
 
     /**
      * Create a new model with the specified model name.
-     * @param {*} newModelName 
-     * @param {*} newModelDescription 
+     * @param {IDE} ide 
+     * @param {String} newModelName 
+     * @param {String} newModelDescription 
+     * @param {Function} callback 
      * @returns {String} fileName of the new model
      */
-    createNewModel(newModelName, newModelDescription) {
-        return this.editorType.createNewModel(this.ide, newModelName, newModelDescription);
+    createNewModel(ide, newModelName, newModelDescription, callback) {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }
