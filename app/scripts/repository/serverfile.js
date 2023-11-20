@@ -12,7 +12,7 @@ class ServerFile {
         this.repository = repository;
         this.ide = this.repository.ide;
         this.fileName = fileName;
-        this.modelDocument = getParser(repository.ide, this.fileName, this.fileType);
+        this.content = new Content(this);
         this.source = source;
     }
 
@@ -25,7 +25,7 @@ class ServerFile {
     }
 
     /** @returns {ModelDefinition} */
-    get definition() {
+    createDefinition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -73,12 +73,16 @@ class ServerFile {
     }
 
     get source() {
-        return this._source;
+        return this.content.source;
     }
 
     set source(source) {
-        this._source = source;
-        this.modelDocument.source = source;
+        this.content.source = source;
+    }
+
+    /** @returns {ModelDefinition} */
+    get definition() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
@@ -200,11 +204,11 @@ class ServerFile {
      * @param {Function} callback 
      */
     rename(newName, callback = undefined) {
-        const url = '/repository/rename/' + this.fileName;
-        const type = 'post';
-        const data = JSON.stringify({ newName }, undefined, 2);
-        $.ajax({ url, data, type,
-            headers: { 'content-type': 'application/json' },
+        const oldName = this.fileName;
+        const url = `/repository/rename/${oldName}?newName=${newName}`;
+        const type = 'put';
+        $.ajax({
+            url, type,
             success: (data, status, xhr) => {
                 this.hasBeenSavedJustNow = true;
                 this.fileName = newName;
@@ -218,11 +222,35 @@ class ServerFile {
                     const HHmmss = lmDate.toTimeString().substring(0, 8);
                     const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
 
-                    console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
+                    console.log(`Renamed ${oldName} to ${newName} at ${HHmmss}:${millis}`);
                 }
             },
             error: (xhr, error, eThrown) => {
                 this.ide.danger('We could not rename the file: ' + error);
+            }
+        });
+    }
+
+    /**
+     * Delete the file
+     * @param {Function} callback 
+     */
+    delete(callback = undefined) {
+        const url = '/repository/delete/' + this.fileName;
+        const type = 'delete';
+        $.ajax({
+            url, type,
+            success: (data, status, xhr) => {
+                Util.removeFromArray(this.repository.list, this);
+                this.repository.updateFileList(data);
+                if (typeof (callback) == 'function') {
+                    callback(data, status, xhr);
+                } else {
+                    console.log('Deleted ' + this.fileName);
+                }
+            },
+            error: (xhr, error, eThrown) => {
+                this.ide.danger('We could not delete the file: ' + error);
             }
         });
     }

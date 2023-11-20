@@ -3,8 +3,12 @@ class HumanTaskFile extends ServerFileWithEditor {
         return new HumantaskModelEditor(this);
     }
 
+    createDefinition() {
+        return new HumanTaskModelDefinition(this.content.xml);
+    }
+
     /** @returns {HumanTaskModelDefinition} */
     get definition() {
-        return /** @type {HumanTaskModelDefinition} */ (this.modelDocument.definition);
+        return /** @type {HumanTaskModelDefinition} */ (this.content.definition);
     }
 }

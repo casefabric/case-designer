@@ -3,8 +3,12 @@ class CaseFile extends ServerFileWithEditor {
         return new CaseModelEditor(this);
     }
 
+    createDefinition() {
+        return new CaseDefinition(this.content.xml);
+    }
+
     /** @returns {CaseDefinition} */
     get definition() {
-        return /** @type {CaseDefinition} */ (this.modelDocument.definition);
+        return /** @type {CaseDefinition} */ (this.content.definition);
     }
 }
