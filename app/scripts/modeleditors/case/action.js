@@ -12,8 +12,8 @@ class Action {
         this.repository = undoManager.editor.ide.repository;
         this.caseString = XML.prettyPrint(caseDefinition.toXML());
         this.dimensionsString = XML.prettyPrint(dimensions.toXML());
-        this.caseFileName = undoManager.editor.caseFileName;
-        this.dimensionsFileName = undoManager.editor.dimensionsFileName;
+        this.caseFile = undoManager.editor.caseFile;
+        this.dimensionsFile = undoManager.editor.dimensionsFile;
         this.caseChanged = false;
         this.dimensionsChanged = false;
         this.previousAction = previousAction;
@@ -90,10 +90,10 @@ class Action {
     perform(direction, caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
         // console.log("Performing "+direction+" on action "+this.undoCount )
         this.undoManager.performingBufferAction = true;
-        // Parse the sources again into a definition and load that in the editor.        
-        const caseDefinition = new CaseModelDocument(this.repository.ide, this.caseFileName, this.caseString).createDefinitionObject();
-        const dimensions = new DimensionsModelDocument(this.repository.ide, this.dimensionsFileName, this.dimensionsString).createDefinitionObject();
-        this.undoManager.editor.loadDefinition(caseDefinition, dimensions);
+        // Parse the sources again into a definition and load that in the editor.
+        this.caseFile.source = this.caseString;
+        this.dimensionsFile.source = this.dimensionsString;
+        this.undoManager.editor.loadDefinition(this.caseFile.definition, this.dimensionsFile.definition);
         // Reset the "saved" flag.
         this.saved = false;
         this.save(caseChanged, dimensionsChanged);
@@ -115,10 +115,12 @@ class Action {
             return;
         }
         if (caseChanged) {
-            this.repository.saveXMLFile(this.caseFileName, this.caseString);
+            this.caseFile.source = this.caseString;
+            this.caseFile.save();
         }
         if (dimensionsChanged) {
-            this.repository.saveXMLFile(this.dimensionsFileName, this.dimensionsString);
+            this.dimensionsFile.source = this.dimensionsString;
+            this.dimensionsFile.save();
         }
         this.saved = true;
     }

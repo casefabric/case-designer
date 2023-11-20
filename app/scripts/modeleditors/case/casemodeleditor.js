@@ -48,7 +48,7 @@ class CaseModelEditor extends ModelEditor {
         this.undoManager.resetActionBuffer(caseDefinition, dimensions);
 
         // Now that the visualization information is available, we can start the import.
-        this.loadDefinition(this.file.definition, this.dimensionsFile.definition);
+        this.loadDefinition();
 
         super.visible = true;
     }
@@ -58,7 +58,7 @@ class CaseModelEditor extends ModelEditor {
      * @param {CaseDefinition} caseDefinition 
      * @param {Dimensions} dimensions 
      */
-    loadDefinition(caseDefinition, dimensions) {
+    loadDefinition(caseDefinition = this.caseFile.definition, dimensions = this.dimensionsFile.definition) {
         // During import no live validation and storage of changes
         this.trackChanges = false;
 
