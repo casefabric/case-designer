@@ -57,12 +57,39 @@
     position: relative;
 }
 
-.repository-browser .divModelList .divAccordionList>div img {
+.repository-browser .divModelList .divAccordionList .menu-icon {
     width: 16px;
     height: 16px;
     position: absolute;
     left: 2px;
     top: 4px;
+    z-index: 0;
+}
+
+.model-item:hover {
+    background-color: #f6f6f6;
+}
+
+.repository-browser .action-icon {
+    display: none;
+}
+
+.model-item:hover .action-icon {
+    display: block;
+    float: right;
+    width: 16px;
+    height: 16px;
+    position:relative;
+    top: 2px;
+    z-index: 0;
+}
+
+.ui-accordion-header:hover .action-icon {
+    display: block;
+    float: right;
+    width: 16px;
+    height: 16px;
+    position: relative;
     z-index: 0;
 }
 
@@ -73,8 +100,10 @@
     position: absolute;
     top: 3px;
     left: 0px;
-    right: 0px;
+    right: 32px;
     bottom: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .repository-browser .divModelList .divAccordionList>div .modelselected {

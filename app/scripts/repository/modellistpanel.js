@@ -13,7 +13,7 @@ class ModelListPanel {
 
         this.htmlPanel = $(
             `<h3 filetype="${type.modelType}" createMessage="Create ${type.description}">${type.description}</h3>
-             <div class="file-list-${type.modelType}"></div>`);
+            <div class="file-list-${type.modelType}"></div>`);
 
         this.accordion.append(this.htmlPanel);
         this.accordion.accordion('refresh');
@@ -36,13 +36,15 @@ class ModelListPanel {
         files.forEach(file => {
             const shapeImg = shapeType.menuImage;
             const error = file.metadata && file.metadata.error;
-            const usageTooltip = `Used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
+            const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
             const modelURL = urlPrefix + file.fileName;
             const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
-                                <img src="${shapeImg}" />
+                                <img class="menu-icon" src="${shapeImg}" />
                                 <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
+                                <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete model ..."/>
+                                <img class="action-icon rename-icon" src="images/svg/rename.svg" title="Rename model ..."/>
                             </div>`);
             this.container.append(html);
             // Add event handler for dragging.
@@ -51,8 +53,93 @@ class ModelListPanel {
                 e.stopPropagation();
                 this.repositoryBrowser.startDrag(file.name, shapeType.name, shapeImg, file.fileName);
             });
+            html.find('.delete-icon').on('click', e => this.delete(file));
+            html.find('.rename-icon').on('click', e => this.rename(file));
         });
 
         this.repositoryBrowser.refreshAccordionStatus();
+    }
+
+    /**
+     * Delete a file, when a .case file is deleted also delete the .dimensions file. 
+     * 
+     * @param {ServerFile} file 
+     */
+    delete(file) {
+        if (file.usage.length) {
+            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
+        } else {
+            const text = `Are  you sure you want to delete '${file.fileName}'?`;
+            if (confirm(text) == true) {
+                if (file.usage.lenth) {
+                    this.ide.danger(`Cannot delete ${file.fileName} because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
+                } else {
+                    this.ide.repository.delete(file.fileName, () => {
+                        if (file.fileType == 'case') {
+                            // When we delete a .case model we also need to delete the .dimensions
+                            this.ide.repository.delete(file.name + '.dimensions');
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    /**
+     * Rename a file
+     * all references to the model in other models will be renamed as well.
+     * 
+     * @param {ServerFile} file
+     */
+    rename(file) {
+        const prompter = (/** @type {String} */ previousProposal = '') => {
+            const warningMsg = previousProposal !== file.name ? `\n   ${this.type} '${previousProposal}' already exists` : '';
+            const text = `Specify a new name for ${this.type} '${file.name}'${warningMsg}`;
+            const newName = prompt(text, previousProposal);
+            if (newName && newName !== file.name && this.ide.repository.get(newName + '.' + file.fileType)) {
+                return prompter(newName)
+            } else {
+                return newName;
+            }
+        }
+        // const text = `Specify a new name for ${this.type} '${file.name}'`;
+        const newName = prompter(file.name);
+        if (!newName) {
+            // User canceled the rename action.
+            return;
+        }
+        const oldName = file.name;
+        const oldFileName = file.fileName;
+        if (newName == oldName) {
+            // No need to update any information to the client, it is simply the same name
+            return;
+        } else {
+            if (this.repositoryBrowser.isValidEntryName(newName)) {
+                const newFileName = newName + '.' + file.fileType;
+                if (this.ide.repository.get(newFileName)) {
+                    this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
+                } else {
+                    const locationResetter = () => {
+                        if (this.repositoryBrowser.currentFileName === oldFileName) {
+                            window.location.hash = newFileName;
+                            const editor = this.ide.editors.find(editor => editor.visible);
+                            if (editor && editor instanceof ModelEditor) {
+                                editor.refresh();
+                            }
+                        }
+                    };
+                    this.ide.repository.rename(file.fileName, newFileName, () => {
+                        if (file.fileType == 'case') {
+                            // when a .case file is renamed also the .dimensions file will be renamed
+                            const oldDimensionsFileName = oldName + '.dimensions';
+                            const newDimensionsFileName = newName + '.dimensions';
+                            this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName, locationResetter);
+                        } else {
+                            locationResetter();
+                        }
+                    });
+                }
+            }
+        }
     }
 }
