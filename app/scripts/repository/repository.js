@@ -217,20 +217,41 @@ class Repository {
         serverFile.save(callback);
     }
 
-    rename(fileName, newFileName) {
-        console.log(`Requesting to change [${fileName} to ${newFileName}]`);
+    /**
+     * Rename file and update all references to file on server and invokes the callback on succesfull completion
+     * @param {String} fileName
+     * @param {String} newFileName
+     * @param {Function} callback 
+     */
+    rename(fileName, newFileName, callback = undefined) {
         newFileName = newFileName.split(' ').join('');
-        console.log(`Actual new file name ${newFileName}]`);
         const serverFile = this.get(fileName);
         if (!serverFile) {
-            console.log(`Cannot rename ${fileName} as the file is not available on the front end`);
+            console.log(`Cannot rename ${fileName} to ${newFileName} as the file is not available on the front end`);
         } else if (fileName === newFileName) {
-            console.log(`Renaming ${fileName} requested, but new name is the same as the current name`);
+            console.log(`Renaming ${fileName} to ${newFileName} requested, but new name is the same as the current name`);
         } else if (this.get(newFileName)) {
             console.log(`Cannot rename ${fileName} to ${newFileName} as that name already exists`);
         } else {
-            console.log(`REnaming ${fileName} to ${newFileName}`)
-            serverFile.rename(newFileName);
+            console.log(`Renaming '${fileName}' to '${newFileName}'`);
+            serverFile.rename(newFileName, callback);
+        }
+    }
+
+    /**
+     * Delete file and invokes the callback on succesfull completion
+     * @param {String} fileName
+     * @param {Function} callback 
+     */
+    delete(fileName, callback = undefined) {
+        console.log(`Requesting to delete [${fileName}]`);
+        const serverFile = this.get(fileName);
+        if (!serverFile) {
+            console.log(`Cannot delete ${fileName} as the file is not available on the front end`);
+        } else {
+            //TODO: Check for usage in other models
+            console.log(`Deleting ${fileName}`)
+            serverFile.delete(callback);
         }
     }
 
