@@ -114,9 +114,9 @@ class ImportElement {
 
     save() {
         const serverFile = this.repository.get(this.fileName) || new ServerFile(this.repository, this.fileName);
-        serverFile.data = XML.prettyPrint(this.xmlElement);
+        serverFile.source = XML.prettyPrint(this.xmlElement);
         const document = ModelDocument.parse(this.repository.ide, serverFile);
-        serverFile.data = document.modelDefinition.toXML();
+        serverFile.source = document.modelDefinition.toXML();
         serverFile.save();
     }
 }

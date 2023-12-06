@@ -10,6 +10,8 @@ class CaseModelEditor extends ModelEditor {
      */
     constructor(ide, fileName, modelName, modelType) {
         super(ide, fileName, modelName, modelType);
+        this.caseFileName = this.fileName;
+        this.dimensionsFileName = this.modelName + '.dimensions';
         this.ideCaseFooter = $('.ideCaseFooter');
 
         Grid.initialize(); // Initialize the snap-to-grid component
@@ -27,7 +29,6 @@ class CaseModelEditor extends ModelEditor {
      * Loads the model and makes the editor visible
      */
     loadModel() {
-        this.dimensionsFileName = this.modelName + '.dimensions';
         this.ide.repository.readModel(this.fileName, caseDefinition => this.ide.repository.readModel(this.dimensionsFileName, dimensions => this.open(caseDefinition, dimensions)));
     }
 

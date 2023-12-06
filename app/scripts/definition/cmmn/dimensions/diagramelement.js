@@ -10,10 +10,6 @@ class DiagramElement extends XMLElementDefinition {
         // Handy to keep track of dimensions object directly
         this.dimensions = dimensions;
     }
-
-    get caseDefinition() {
-        return this.dimensions.modelDocument.caseDefinition;
-    }
     
     writeAttribute(name, optionalValue) {
         if (optionalValue == undefined) {

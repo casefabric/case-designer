@@ -13,8 +13,8 @@ class Action {
         this.modelName = caseDefinition.name;
         this.caseString = XML.prettyPrint(caseDefinition.toXML());
         this.dimensionsString = XML.prettyPrint(dimensions.toXML());
-        this.caseFileName = caseDefinition.modelDocument.fileName;
-        this.dimensionsFileName = dimensions.modelDocument.fileName;
+        this.caseFileName = this.undoManager.editor.caseFileName;
+        this.dimensionsFileName = this.undoManager.editor.dimensionsFileName;
         this.caseChanged = false;
         this.dimensionsChanged = false;
         this.previousAction = previousAction;

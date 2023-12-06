@@ -23,36 +23,33 @@ class ModelListPanel {
     /**
      * Re-creates the items in the accordion for this panel
      * 
-     * @param {Array<ServerFile>} models 
+     * @param {Array<ServerFile>} files 
      * @param {Function} shapeType 
      */
-    setModelList(models, shapeType) {
+    setModelList(files, shapeType) {
         // First create a big HTML string with for each model an <a> element
         const urlPrefix = window.location.origin + '/#';
 
         // Clean current file list
         Util.clearHTML(this.container);
 
-        models.forEach(model => {
+        files.forEach(file => {
             const shapeImg = shapeType.menuImage;
-            const modelName = model.name;
-            const fileType = model.fileType;
-            const fileName = model.fileName;
-            const error = model.metadata && model.metadata.error;
-            const usageTooltip = `Used in ${model.usage.length} other model${model.usage.length == 1 ? '' : 's'}\n${model.usage.length ? model.usage.map(e => '- ' + e.id).join('\n') : ''}`;
+            const error = file.metadata && file.metadata.error;
+            const usageTooltip = `Used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
-            const modelURL = urlPrefix + model.fileName;
-            const html = $(`<div class="model-item" title="${tooltip}" fileName="${model.fileName}">
+            const modelURL = urlPrefix + file.fileName;
+            const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
                                 <img src="${shapeImg}" />
-                                <a name="${modelName}" fileType="${fileType}" href="${modelURL}"><span ${nameStyle}>${modelName}</span></a>
+                                <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
                             </div>`);
             this.container.append(html);
             // Add event handler for dragging.
             html.on('pointerdown', e => {
                 e.preventDefault();
                 e.stopPropagation();
-                this.repositoryBrowser.startDrag(modelName, shapeType.name, shapeImg, fileName);
+                this.repositoryBrowser.startDrag(file.name, shapeType.name, shapeImg, file.fileName);
             });
         });
 

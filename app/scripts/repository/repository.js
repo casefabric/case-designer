@@ -132,7 +132,7 @@ class Repository {
         }
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
         const data = xml instanceof String ? xml : XML.prettyPrint(xml);
-        serverFile.data = data;
+        serverFile.source = data;
         serverFile.save(callback);
     }
 

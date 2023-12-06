@@ -1,13 +1,3 @@
-class Metadata {
-    constructor(json) {
-        this.fileName = json.fileName;
-        this.lastModified = json.lastModified;
-        this.usage = json.usage;
-        this.error = json.error;
-        this.type = json.type;
-    }
-}
-
 class ServerFile {
     /**
      * Creates a new local reference of the server file, based on the json structure given
@@ -25,16 +15,29 @@ class ServerFile {
         this.refreshMetadata(serverMetadata);
     }
 
+    get fileName() {
+        return this._fileName;
+    }
+
+    /**
+     * @param {String} fileName
+     */
+    set fileName(fileName) {
+        if (fileName !== this._fileName) {
+            this._fileName = fileName;
+            // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
+            const splitList = fileName.split('.');
+            this.fileType = splitList.pop(); // Last one is extension
+            this.name = splitList.join('.'); // name becomes "MyMap/myMod.el"
+        }
+    }
+
     /**
      * Refreshes the metadata of the model, based on the server side content.
      * @param {Metadata} serverMetadata 
      */
     refreshMetadata(serverMetadata) {
         this.metadata = serverMetadata;
-        const dotSplitter = this.fileName.split('.');
-        this.fileType = dotSplitter[dotSplitter.length - 1];
-        this.name = dotSplitter.slice(0, dotSplitter.length - 1).join('');
-        this.model = name; // Who uses this?
         if (this.lastModified === serverMetadata.lastModified || this.hasBeenSavedJustNow) {
             // still the same contents, but potentially a new lastmodified timestamp
             // console.log("Data of "+this.fileName+" has not changed on the server-side");
@@ -48,16 +51,12 @@ class ServerFile {
         this.lastModified = serverMetadata.lastModified;
     }
 
-    get content() {
-        // if (this._content) console.warn("Retrieving content of "+this.fileName);
-        return this._content;
+    get source() {
+        return this._source;
     }
 
-    set content(content) {
-        // if (content) {
-        //     console.warn("Setting the contents of "+this.fileName);
-        // }
-        this._content = content;
+    set source(source) {
+        this._source = source;
     }
 
     /**
@@ -74,17 +73,17 @@ class ServerFile {
     deprecate() {
         // TODO: here we should check if there are any editors that are still open for this serverFile;
         //  if so, then we should show a message in those editors in an overlay, with a decision what to do.
-        console.warn("Still using "+this.fileName+" ???  Better not, since it no longer exists in the server ...");
+        console.warn("Still using " + this.fileName + " ???  Better not, since it no longer exists in the server ...");
     }
 
     /**
      * Removes local content caches, in order to enforce reloading of the file when it's content is read.
      */
     clear() {
-        if (this.content) {
-            console.warn("Clearing the contents of "+this.fileName);
+        if (this.source) {
+            console.warn(`Clearing the contents of ${this.fileName}`);
         }
-        this.content = undefined;
+        this.source = undefined;
     }
 
     /**
@@ -92,7 +91,7 @@ class ServerFile {
      * @param {Function} callback 
      */
     load(callback) {
-        if (this.content) {
+        if (this.source) {
             callback(this);
             return;
         }
@@ -104,14 +103,15 @@ class ServerFile {
         // Simple method for easy checking whether the functionality is still working ...
         // this.usage();
 
-        $.ajax({ url, type,
+        $.ajax({
+            url, type,
             success: (data, status, xhr) => {
                 if (xhr.responseText == '') {
                     const msg = this.fileName + ' does not exist or is an empty file in the repository';
                     console.warn(msg);
                     this.ide.info(msg);
                 } else {
-                    this.content = { data, status, xhr };
+                    this.source = data;
                     callback(this);
                 }
             },
@@ -130,10 +130,11 @@ class ServerFile {
      * @param {Function} callback 
      */
     save(callback = undefined) {
-        const xmlString = XML.prettyPrint(this.data);
+        const xmlString = XML.prettyPrint(this.source);
         const url = '/repository/save/' + this.fileName;
         const type = 'post';
-        $.ajax({ url, data: xmlString, type,
+        $.ajax({
+            url, data: xmlString, type,
             headers: { 'content-type': 'application/xml' },
             success: (data, status, xhr) => {
                 this.hasBeenSavedJustNow = true;
@@ -187,15 +188,6 @@ class ServerFile {
                 this.ide.danger('We could not rename the file: ' + error);
             }
         });
-
-    }
-
-    get data() {
-        return this.content ? this.content.data : '';
-    }
-
-    set data(data) {
-        this.content ? this.content.data = data : this.content = { data };
     }
 
     parseToModel() {

@@ -3,10 +3,10 @@ const STARTCASEMODEL_TAG = 'cafienne:start-case-model';
 class CaseDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {ModelDocument} modelDocument 
+     * @param {Element} importNode
      */
-    constructor(modelDocument) {
-        super(modelDocument);
+    constructor(importNode) {
+        super(importNode);
     }
 
     parseDocument() {

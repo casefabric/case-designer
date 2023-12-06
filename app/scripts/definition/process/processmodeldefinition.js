@@ -16,10 +16,10 @@ const CUSTOM_IMPLEMENTATION_DEFINITION_IMPLEMENTATION_CLASS = 'SPECIFY_IMPLEMENT
 class ProcessModelDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {ModelDocument} modelDocument 
+     * @param {Element} importNode
      */
-    constructor(modelDocument) {
-        super(modelDocument);
+    constructor(importNode) {
+        super(importNode);
     }
 
     parseDocument() {

@@ -10,10 +10,10 @@ const UNKNOWN_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unknown';
 class CaseFileDefinitionDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {ModelDocument} modelDocument 
+     * @param {Element} importNode
      */
-    constructor(modelDocument) {
-        super(modelDocument);
+    constructor(importNode) {
+        super(importNode);
     }
 
     parseDocument() {

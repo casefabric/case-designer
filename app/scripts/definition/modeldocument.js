@@ -20,7 +20,7 @@ class ModelDocument {
      * @param {ServerFile} serverFile 
      */
     static parse(ide, serverFile) {
-        const source = serverFile.data;
+        const source = serverFile.source;
         const fileName = serverFile.fileName;
         const fileType = serverFile.fileType;
         const document = getParser(ide, fileName, fileType, source);
@@ -47,7 +47,7 @@ function getParser(ide, fileName, fileType, source) {
 
 class CaseModelDocument extends ModelDocument {
     createInstance() {
-        const model = new CaseDefinition(this);
+        const model = new CaseDefinition(this.root);
         model.parseDocument();
         model.validateDocument();
         return model;
@@ -66,7 +66,7 @@ class DimensionsModelDocument extends ModelDocument {
     }
 
     createInstance() {
-        const model = new Dimensions(this);
+        const model = new Dimensions(this.root);
         model.parseDocument();
         model.validateDocument();
         return model;
@@ -75,7 +75,7 @@ class DimensionsModelDocument extends ModelDocument {
 
 class ProcessModelDocument extends ModelDocument {
     createInstance() {
-        const model = new ProcessModelDefinition(this);
+        const model = new ProcessModelDefinition(this.root);
         model.parseDocument();
         model.validateDocument();
         return model;
@@ -84,7 +84,7 @@ class ProcessModelDocument extends ModelDocument {
 
 class HumanTaskModelDocument extends ModelDocument {
     createInstance() {
-        const model = new HumanTaskModelDefinition(this);
+        const model = new HumanTaskModelDefinition(this.root);
         model.parseDocument();
         model.validateDocument();
         return model;
@@ -93,7 +93,7 @@ class HumanTaskModelDocument extends ModelDocument {
 
 class CaseFileModelDocument extends ModelDocument {
     createInstance() {
-        const model = new CaseFileDefinitionDefinition(this);
+        const model = new CaseFileDefinitionDefinition(this.root);
         model.parseDocument();
         model.validateDocument();
         return model;
