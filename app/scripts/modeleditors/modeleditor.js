@@ -225,6 +225,15 @@ class ModelEditor {
         this.ide.back();
     }
 
+    destroy() {
+        Util.removeFromArray(this.ide.editors, this);
+        if (this.visible) {
+            this.visible = false;
+            window.location.hash = '';
+        }
+        Util.removeHTML(this.html);
+    }
+
     refresh() {
         this.file.clear();
         this.loadModel();

@@ -73,17 +73,22 @@ class ModelListPanel {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
         } else {
             const text = `Are  you sure you want to delete '${file.fileName}'?`;
-            if (confirm(text) == true) {
-                if (file.usage.lenth) {
-                    this.ide.danger(`Cannot delete ${file.fileName} because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
-                } else {
-                    this.ide.repository.delete(file.fileName, () => {
-                        if (file.fileType == 'case') {
-                            // When we delete a .case model we also need to delete the .dimensions
-                            this.ide.repository.delete(file.name + '.dimensions');
-                        }
-                    });
+            if (confirm(text) === true) {
+                const editorCloser = () => {
+                    const editor = this.ide.editors.find(editor => editor.fileName === file.fileName);
+                    if (editor) {
+                        editor.destroy();
+                    }
                 }
+
+                this.ide.repository.delete(file.fileName, () => {
+                    if (file.fileType === 'case') {
+                        // When we delete a .case model we also need to delete the .dimensions
+                        this.ide.repository.delete(file.name + '.dimensions', editorCloser);
+                    } else {
+                        editorCloser();
+                    }
+                });
             }
         }
     }
