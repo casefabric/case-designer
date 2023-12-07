@@ -40,11 +40,13 @@ class ModelListPanel {
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
             const modelURL = urlPrefix + file.fileName;
+            const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="images/deploy_128.png" title="Deploy ${file.name} ..."/>` : '';
             const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
                                 <img class="menu-icon" src="${shapeImg}" />
                                 <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
                                 <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete model ..."/>
                                 <img class="action-icon rename-icon" src="images/svg/rename.svg" title="Rename model ..."/>
+                                ${optionalDeployIcon}
                             </div>`);
             this.container.append(html);
             // Add event handler for dragging.
@@ -55,6 +57,7 @@ class ModelListPanel {
             });
             html.find('.delete-icon').on('click', e => this.delete(file));
             html.find('.rename-icon').on('click', e => this.rename(file));
+            html.find('.deploy-icon').on('click', e => this.deploy(file));
         });
 
         this.repositoryBrowser.refreshAccordionStatus();
@@ -141,5 +144,9 @@ class ModelListPanel {
                 }
             }
         }
+    }
+
+    deploy(file) {
+        window.location.hash = file.fileName + '?deploy=true';
     }
 }

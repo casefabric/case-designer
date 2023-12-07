@@ -259,6 +259,10 @@ class CaseModelEditorMetadata extends ModelEditorMetadata {
         return this.ide.repository.getCases();
     }
 
+    get supportsDeploy() {
+        return true;
+    }
+
     get modelType() {
         return 'case';
     }
