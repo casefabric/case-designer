@@ -32,7 +32,8 @@ class StoreAnalyzer {
      * @returns {Array<Reference>}
      */
     findReferences(source) {
-        const references = this.models.map(model => model.referencedArtifacts.filter(reference => reference.id === source.fileName)).filter(use => use.length > 0);
+        // Filter out models that have parse errors.
+        const references = this.models.filter(model => !model.error).map(model => model.referencedArtifacts.filter(reference => reference.id === source.fileName)).filter(use => use.length > 0);
         // Flatten to set and then make it an array ...
         return Array.from(new Set(flatten(references)));
     }
