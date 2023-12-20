@@ -47,6 +47,7 @@ class ReferableElementDefinition extends XMLElementDefinition {
         return this.__name;
     }
 
+    /** @param {String} name */
     set name(name) {
         this.__name = name;
     }

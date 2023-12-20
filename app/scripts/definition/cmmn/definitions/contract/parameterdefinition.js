@@ -7,11 +7,8 @@ class ParameterDefinition extends CMMNElementDefinition {
         this.required = this.parseImplementation().parseBooleanAttribute('required', false);
     }
 
-    /**
-     * @returns {CaseFileItemDef}
-     */
     get binding() {
-        return this.caseDefinition.getElement(this.bindingRef, CaseFileItemDef);
+        return /** @type {CaseFileItemDef} */ (this.caseDefinition.getElement(this.bindingRef, CaseFileItemDef));
     }
 
     get bindingName() {
