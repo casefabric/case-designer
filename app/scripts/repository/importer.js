@@ -113,25 +113,45 @@ class ImportElement {
     }
 
     save() {
-        const serverFile = this.repository.get(this.fileName) || new ServerFile(this.repository, this.fileName);
-        serverFile.data = XML.prettyPrint(this.xmlElement);
-        const document = ModelDocument.parse(this.repository.ide, serverFile);
-        serverFile.data = document.modelDefinition.toXML();
-        serverFile.save();
+        const file = this.repository.get(this.fileName) || this.createFile();
+        file.source = file.definition.toXML();
+        file.save();
+    }
+
+    /**
+     * @returns {ServerFile}
+     */
+    createFile() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }
 
 class CaseImporter extends ImportElement {
+    createFile() {
+        return this.repository.createCaseFile(this.fileName, this.content);
+    }
 }
 
 class DimensionsImporter extends ImportElement {
+    createFile() {
+        return this.repository.createDimensionsFile(this.fileName, this.content);
+    }
 }
 
 class ProcessImporter extends ImportElement {
+    createFile() {
+        return this.repository.createProcessFile(this.fileName, this.content);
+    }
 }
 
 class HumanTaskImporter extends ImportElement {
+    createFile() {
+        return this.repository.createHumanTaskFile(this.fileName, this.content);
+    }
 }
 
 class CFIDImporter extends ImportElement {
+    createFile() {
+        return this.repository.createCFIDFile(this.fileName, this.content);
+    }
 }

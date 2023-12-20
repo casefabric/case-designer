@@ -32,6 +32,10 @@ class Repository {
         return this.store.rename(artifactName, newArtifactName);
     }
 
+    delete(artifactName) {
+        return this.store.delete(artifactName);
+    }
+
     composeDefinitionsDocument(artifactName) {
         return new Definitions(artifactName, this.store);
     }

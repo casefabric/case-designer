@@ -3,16 +3,13 @@
 class ModelEditor {
     /**
      * Basic model editor
-     * @param {IDE} ide 
-     * @param {String} fileName The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
-     * @param {String} modelName The file name without the extension, e.g. 'helloworld'
-     * @param {String} modelType  The extension of the fileName, e.g. 'case', 'process', 'humantask'
+     * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(ide, fileName, modelName, modelType) {
-        this.ide = ide;
-        this.fileName = fileName;
-        this.modelName = modelName;
-        this.modelType = modelType;
+    constructor(file) {
+        this.ide = file.repository.ide;
+        this.ide.register(this);
+        this.file = file;
+        this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */
         this.movableEditors = [];
         this.html = $(
@@ -45,6 +42,10 @@ class ModelEditor {
         }
         this.html.find('.closeButton').on('click', e => this.close());
         this.html.find('.refreshButton').on('click', e => this.refresh());
+    }
+
+    get fileName() {
+        return this.file.fileName;
     }
 
     /**
@@ -224,19 +225,17 @@ class ModelEditor {
         this.ide.back();
     }
 
-    refresh() {
-        this.ide.repository.clear(this.fileName);
-        this.loadModel();
+    destroy() {
+        Util.removeFromArray(this.ide.editors, this);
+        if (this.visible) {
+            this.visible = false;
+            window.location.hash = '';
+        }
+        Util.removeHTML(this.html);
     }
 
-    /**
-     * Create a new model with given name and description and return the fileName of the model.
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @returns {String} fileName of the new model
-     */
-    static createNewModel(ide, name, description) {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
+    refresh() {
+        this.file.clear();
+        this.loadModel();
     }
 }

@@ -5,6 +5,7 @@ const fs = require('fs');
 const pathLib = require('path');
 const walkSync = require('walk-sync');
 const mkdirp = require('mkdirp');
+const { XML } = require('../xml.js');
 const RepositoryElement = require('./repositoryelement.js').RepositoryElement;
 const StoreAnalyzer = require('./storeanalyzer.js').StoreAnalyzer;
 const Utilities = require('../utilities.js').Utilities;
@@ -32,11 +33,9 @@ class Store {
     }
 
     rename(artifactName, newArtifactName) {
-        console.log(`Changing artifact ${artifactName} to ${newArtifactName} `);
-
         const analyzer = new StoreAnalyzer(this);
-        const element = analyzer.models.find(model => model.fileName === artifactName);
-        const usedIn = analyzer.findReferences(element);
+        const model = analyzer.models.find(model => model.fileName === artifactName);
+        const usedIn = analyzer.findReferences(model);
         usedIn.forEach(reference => reference.setNewId(newArtifactName))
 
         const fileName = Utilities.createAbsolutePath(this.repositoryPath, artifactName);
@@ -44,7 +43,31 @@ class Store {
         mkdirp.sync(pathLib.dirname(fileName));
         mkdirp.sync(pathLib.dirname(newFileName));
         fs.renameSync(fileName, newFileName);
+
+        const nameReader = (/** @type {String} */ nameWithExtension) => {
+            const splitList = nameWithExtension.split('.');
+            splitList.pop(); // Last one is extension, we should remove it.
+            return splitList.join('.'); // name becomes "MyMap/myMod.el"
+        }
+
+        // Also rename the value of the id attribute (if it exists and holds exactly the old file name)
+        if (model.xml.element.getAttribute('id') === artifactName) {
+            model.xml.element.setAttribute('id', newArtifactName);
+            const oldName = nameReader(artifactName);
+            const modelName = model.xml.element.getAttribute('name');
+            const newModelName = oldName === modelName ? nameReader(newArtifactName) : modelName;
+            model.xml.element.setAttribute('name', newModelName);
+            console.log(` ===> UPDATE <${model.xml.element.tagName} id="${artifactName}" name="${oldName}">...</> to <${model.xml.element.tagName} id="${newArtifactName}" name="${newModelName}">...</>`);
+            
+
+            this.save(newArtifactName, XML.printNiceXML(model.xml.element) + '\n');
+        }
         usedIn.forEach(reference => reference.model.save())
+    }
+
+    delete(artifactName) {
+        const fileName = Utilities.createAbsolutePath(this.repositoryPath, artifactName);
+        fs.unlinkSync(fileName);
     }
 
     /**

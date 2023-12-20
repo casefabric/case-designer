@@ -15,34 +15,113 @@ class Repository {
     }
 
     /**
+     * Create a client side represenatation for the file on the server with the specified name.
+     * Parses the extension of the file and uses that to create a client side object that can also parse the source of the file.
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns 
+     */
+    create(fileName, source) {
+        // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
+        const fileType = fileName.split('.').pop();
+        switch (fileType) {
+            case 'case': return this.createCaseFile(fileName, source);
+            case 'dimensions': return this.createDimensionsFile(fileName, source);
+            case 'process': return this.createProcessFile(fileName, source);
+            case 'humantask': return this.createHumanTaskFile(fileName, source);
+            case 'cfid': return this.createCFIDFile(fileName, source);
+            default: throw new Error(`File type ${fileType} is not supported on the client`);
+        }
+    }
+
+    /**
      * Returns the list of case models in the repository
-     * @returns {Array<ServerFile>}
+     * @returns {Array<CaseFile>}
      */
     getCases() {
-        return this.list.filter(serverFile => serverFile.fileType == 'case');
+        return /** @type {Array<CaseFile>} */ (this.list.filter(serverFile => serverFile instanceof CaseFile));
+    }
+
+    /**
+     * Create a new CaseFile that can parse and write server side .case files
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns {CaseFile}
+     */
+    createCaseFile(fileName, source) {
+        return new CaseFile(this, fileName, source);        
+    }
+
+    /**
+     * Returns the list of case models in the repository
+     * @returns {Array<DimensionsFile>}
+     */
+    getDimensions() {
+        return /** @type {Array<DimensionsFile>} */ (this.list.filter(serverFile => serverFile instanceof DimensionsFile));
+    }
+
+    /**
+     * Create a new DimensionsFile that can parse and write server side .dimension files
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns {DimensionsFile}
+     */
+    createDimensionsFile(fileName, source) {
+        return new DimensionsFile(this, fileName, source);        
     }
 
     /**
      * Returns the list of process implementations in the repository
-     * @returns {Array<ServerFile>}
+     * @returns {Array<ProcessFile>}
      */
     getProcesses() {
-        return this.list.filter(serverFile => serverFile.fileType == 'process');
+        return /** @type {Array<ProcessFile>} */ (this.list.filter(serverFile => serverFile instanceof ProcessFile));
+    }
+
+    /**
+     * Create a new ProcessFile that can parse and write server side .process files
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns {ProcessFile}
+     */
+    createProcessFile(fileName, source) {
+        return new ProcessFile(this, fileName, source);        
     }
 
     /**
      * Returns the list of human task implementations in the repository
-     * @returns {Array<ServerFile>}
+     * @returns {Array<HumanTaskFile>}
      */
     getHumanTasks() {
-        return this.list.filter(serverFile => serverFile.fileType == 'humantask');
+        return /** @type {Array<HumanTaskFile>} */ (this.list.filter(serverFile => serverFile instanceof HumanTaskFile));
+    }
+
+    /**
+     * Create a new HumanTaskFile that can parse and write server side .humantask files
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns {HumanTaskFile}
+     */
+    createHumanTaskFile(fileName, source) {
+        return new HumanTaskFile(this, fileName, source);        
     }
 
     /**
      * Returns the list of case file item definitions in the repository
+     * @returns {Array<CFIDFile>}
      */
     getCaseFileItemDefinitions() {
-        return this.list.filter(serverFile => serverFile.fileType == 'cfid');
+        return /** @type {Array<CFIDFile>} */ (this.list.filter(serverFile => serverFile instanceof CFIDFile));
+    }
+
+    /**
+     * Create a new CFIDFile that can parse and write server side .cfid files
+     * @param {String} fileName 
+     * @param {*} source 
+     * @returns {CFIDFile}
+     */
+    createCFIDFile(fileName, source) {
+        return new CFIDFile(this, fileName, source);        
     }
 
     /**
@@ -105,11 +184,13 @@ class Repository {
         /** @type {Array<ServerFile>} */
         this.list = newServerFileList.map(fileMetadata => {
             const fileName = fileMetadata.fileName;
-            const existingServerFile = this.list.find(file => file.fileName == fileName);
+            const existingServerFile = oldList.find(file => file.fileName == fileName);
             if (!existingServerFile) {
-                return new ServerFile(this, fileName, fileMetadata);
+                const newFile = this.create(fileName);
+                newFile.refreshMetadata(fileMetadata);
+                return newFile;
             } else {
-                Util.removeFromArray(this.list, existingServerFile);
+                Util.removeFromArray(oldList, existingServerFile);
                 existingServerFile.refreshMetadata(fileMetadata);
                 return existingServerFile;
             }
@@ -128,28 +209,49 @@ class Repository {
      */
     saveXMLFile(fileName, xml, callback = undefined) {
         if (!this.isExistingModel(fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
-            this.list.push(new ServerFile(this, fileName));
+            this.list.push(this.create(fileName));
         }
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
         const data = xml instanceof String ? xml : XML.prettyPrint(xml);
-        serverFile.data = data;
+        serverFile.source = data;
         serverFile.save(callback);
     }
 
-    rename(fileName, newFileName) {
-        console.log(`Requesting to change [${fileName} to ${newFileName}]`);
+    /**
+     * Rename file and update all references to file on server and invokes the callback on succesfull completion
+     * @param {String} fileName
+     * @param {String} newFileName
+     * @param {Function} callback 
+     */
+    rename(fileName, newFileName, callback = undefined) {
         newFileName = newFileName.split(' ').join('');
-        console.log(`Actual new file name ${newFileName}]`);
         const serverFile = this.get(fileName);
         if (!serverFile) {
-            console.log(`Cannot rename ${fileName} as the file is not available on the front end`);
+            console.log(`Cannot rename ${fileName} to ${newFileName} as the file is not available on the front end`);
         } else if (fileName === newFileName) {
-            console.log(`Renaming ${fileName} requested, but new name is the same as the current name`);
+            console.log(`Renaming ${fileName} to ${newFileName} requested, but new name is the same as the current name`);
         } else if (this.get(newFileName)) {
             console.log(`Cannot rename ${fileName} to ${newFileName} as that name already exists`);
         } else {
-            console.log(`REnaming ${fileName} to ${newFileName}`)
-            serverFile.rename(newFileName);
+            console.log(`Renaming '${fileName}' to '${newFileName}'`);
+            serverFile.rename(newFileName, callback);
+        }
+    }
+
+    /**
+     * Delete file and invokes the callback on succesfull completion
+     * @param {String} fileName
+     * @param {Function} callback 
+     */
+    delete(fileName, callback = undefined) {
+        console.log(`Requesting to delete [${fileName}]`);
+        const serverFile = this.get(fileName);
+        if (!serverFile) {
+            console.log(`Cannot delete ${fileName} as the file is not available on the front end`);
+        } else {
+            //TODO: Check for usage in other models
+            console.log(`Deleting ${fileName}`)
+            serverFile.delete(callback);
         }
     }
 
@@ -158,25 +260,17 @@ class Repository {
     }
 
     /**
-     * Reads the file from the repository, parses it into a ModelDefinition, and invokes the callback on succesfull completion
+     * Loads the file from the repository and invokes the callback on successful completion
      * @param {String} fileName 
      * @param {Function} callback 
      */
-    readModel(fileName, callback) {
-        // TODO: we must add a check on existence of the serverfile in the local cache, and also whether it exists in the server.
-        const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
+    load(fileName, callback) {
+        const serverFile = this.get(fileName);
         if (!serverFile) {
-            console.log("Does not exist")
+            console.warn(`File ${fileName} does not exist and cannot be loaded`);
+            this.ide.warning(`File ${fileName} does not exist and cannot be loaded`, 2000);
             return;
         }
-        serverFile.load(file => {
-            // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
-            const model = serverFile.parseToModel();
-            if (model.hasMigrated()) {
-                console.log(`Definition of ${model.constructor.name} '${fileName}' has migrated; uploading result`);
-                this.saveXMLFile(fileName, model.toXML());
-            }
-            callback(model);
-        });
+        serverFile.load(callback);
     }
 }

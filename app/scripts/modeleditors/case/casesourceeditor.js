@@ -37,30 +37,39 @@ class CaseSourceEditor {
         const newSource = this.codeMirrorCaseXML.getValue();
         const newDimensions = this.codeMirrorDimensionsXML.getValue();
 
-        const caseModelDocument = new CaseModelDocument(this.editor.ide, this.editor.fileName, newSource);
-        const dimensionModelDocument = new DimensionsModelDocument(this.editor.ide, this.editor.dimensionsFileName, newDimensions);
-
-        if (! caseModelDocument.xml) {
-            this.editor.ide.danger('Cannot import because definition does not contain proper XML');
+        const caseXML = XML.loadXMLString(newSource);
+        if (! XML.isValidXMLImport(caseXML, true)) {
+            this.editor.ide.danger('Cannot import because definition does not contain proper XML', 3000);
             return;
         }
 
-        if (! caseModelDocument.xml || !XML.getChildByTagName(caseModelDocument.xml, 'case')) {
-            this.editor.ide.danger('Cannot import because definition does not contain a root &lt;case&gt; tag');
+        const dimensionsXML = XML.loadXMLString(newDimensions);
+        if (! XML.isValidXMLImport(dimensionsXML, true)) {
+            this.editor.ide.danger('Cannot import because dimensions does not contain proper XML', 3000);
+            return;
+        }
+
+        if (!XML.getChildByTagName(caseXML, 'case')) {
+            this.editor.ide.danger('Cannot import because definition does not contain a root &lt;case&gt; tag', 3000);
             return;
         };
 
-        if (! dimensionModelDocument.xml || !dimensionModelDocument.xml.getElementsByTagName(CMMNDIAGRAM).length) {
-            this.editor.ide.danger('The node &lt;' + CMMNDIAGRAM + '&gt; could not be found in the dimensions document');
+        if (!XML.getChildByTagName(dimensionsXML, CMMNDI)) {
+            this.editor.ide.danger(`Cannot import because definition does not contain a root &lt;${CMMNDI}&gt; tag`, 3000);
             return;
         };
 
-        const caseDefinition = caseModelDocument.createInstance();
-        const dimensions = dimensionModelDocument.createInstance();
+        if (!dimensionsXML.getElementsByTagName(CMMNDIAGRAM).length) {
+            this.editor.ide.danger(`Cannot import because definition does not contain a &lt;${CMMNDIAGRAM}&gt; tag`, 3000);
+            return;
+        };
 
         // TODO add more checks for validity?
 
-        this.editor.loadDefinition(caseDefinition, dimensions);
+        // Now replace the content in the editor, and reload
+        this.editor.caseFile.source = caseXML;
+        this.editor.dimensionsFile.source = dimensionsXML;
+        this.editor.loadDefinition();
         // Completing the action will save the model and add a corresponding action to the undo/redo buffer
         this.editor.completeUserAction();
         this.close();

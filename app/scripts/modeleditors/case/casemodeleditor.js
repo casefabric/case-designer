@@ -3,13 +3,15 @@
 class CaseModelEditor extends ModelEditor {
     /**
      * This editor handles Case models
-     * @param {IDE} ide 
-     * @param {String} fileName The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
-     * @param {String} modelName The file name without the extension, e.g. 'helloworld'
-     * @param {String} modelType  The extension of the fileName, e.g. 'case', 'process', 'humantask'
+     * @param {CaseFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(ide, fileName, modelName, modelType) {
-        super(ide, fileName, modelName, modelType);
+    constructor(file) {
+        super(file);
+        this.file = file;
+        this.caseFile = file;
+        this.caseFileName = this.fileName;
+        this.dimensionsFile = this.ide.repository.getDimensions().find(file => file.name === this.file.name);
+        this.dimensionsFileName = this.file.name + '.dimensions';
         this.ideCaseFooter = $('.ideCaseFooter');
 
         Grid.initialize(); // Initialize the snap-to-grid component
@@ -27,8 +29,13 @@ class CaseModelEditor extends ModelEditor {
      * Loads the model and makes the editor visible
      */
     loadModel() {
-        this.dimensionsFileName = this.modelName + '.dimensions';
-        this.ide.repository.readModel(this.fileName, caseDefinition => this.ide.repository.readModel(this.dimensionsFileName, dimensions => this.open(caseDefinition, dimensions)));
+        this.ide.repository.load(this.fileName, file => {
+            const caseDefinition = file.definition;
+            this.ide.repository.load(this.dimensionsFileName, file => {
+                const dimensions = file.definition;
+                this.open(caseDefinition, dimensions)
+            });
+        });
     }
 
     /**
@@ -41,7 +48,7 @@ class CaseModelEditor extends ModelEditor {
         this.undoManager.resetActionBuffer(caseDefinition, dimensions);
 
         // Now that the visualization information is available, we can start the import.
-        this.loadDefinition(caseDefinition, dimensions);
+        this.loadDefinition();
 
         super.visible = true;
     }
@@ -51,7 +58,7 @@ class CaseModelEditor extends ModelEditor {
      * @param {CaseDefinition} caseDefinition 
      * @param {Dimensions} dimensions 
      */
-    loadDefinition(caseDefinition, dimensions) {
+    loadDefinition(caseDefinition = this.caseFile.definition, dimensions = this.dimensionsFile.definition) {
         // During import no live validation and storage of changes
         this.trackChanges = false;
 
@@ -232,7 +239,6 @@ class CaseModelEditor extends ModelEditor {
     saveModel() {
         // Validate all models currently active in the ide
         if (this.case) this.case.runValidation();
-        // Get the modelName from the url every thing after the hash (#), excluding the hash
         this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions);
     }
 
@@ -245,14 +251,40 @@ class CaseModelEditor extends ModelEditor {
         this.ideCaseFooter.css('display', 'none');
     }
 
+}
+
+class CaseModelEditorMetadata extends ModelEditorMetadata {
+    /** @returns {Array<ServerFile>} */
+    get modelList() {
+        return this.ide.repository.getCases();
+    }
+
+    get supportsDeploy() {
+        return true;
+    }
+
+    get modelType() {
+        return 'case';
+    }
+
+    /** @returns {Function} */
+    get shapeType() {
+        return CaseTask;
+    }
+
+    get description() {
+        return 'Cases';
+    }
+
     /**
      * Creates a new case model
      * @param {IDE} ide
      * @param {String} name The user entered case name
      * @param {String} description The description given by the user (can be empty)
+     * @param {Function} callback 
      * @returns {String} fileName of the new model
      */
-    static createNewModel(ide, name, description) {
+    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
         // By default we create a case plan that fills the whole canvas size;
         //  We position it left and top at 2 times the grid size, with a minimum of 10px;
         //  Width and height have to be adjusted for scrollbar size.
@@ -289,35 +321,12 @@ class CaseModelEditor extends ModelEditor {
     </validation>
 </${CMMNDI}>`;
 
-        // Upload models to server
-        ide.repository.saveXMLFile(caseFileName, caseString)
-        ide.repository.saveXMLFile(dimensionsFileName, dimensionsString)
+        // Upload models to server, and call back
+        const caseFile = this.ide.repository.createCaseFile(caseFileName, caseString);
+        const dimensionsFile = this.ide.repository.createDimensionsFile(dimensionsFileName, dimensionsString);
+        caseFile.save(() => dimensionsFile.save(() => callback(caseFileName)));
         return caseFileName;
     }
 }
 
-class CaseModelEditorMetadata extends ModelEditorMetadata {
-    /** @returns {Array<ServerFile>} */
-    get modelList() {
-        return this.ide.repository.getCases();
-    }
-
-    get modelType() {
-        return 'case';
-    }
-
-    /** @returns {Function} */
-    get shapeType() {
-        return CaseTask;
-    }
-
-    get editorType() {
-        return CaseModelEditor;
-    }
-
-    get description() {
-        return 'Cases';
-    }
-}
-
-IDE.registerEditorType(CaseModelEditorMetadata);
+IDE.registerEditorType(new CaseModelEditorMetadata());

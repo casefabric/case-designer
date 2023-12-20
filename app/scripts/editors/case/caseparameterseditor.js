@@ -147,10 +147,10 @@ class ParameterRow extends RowRenderer {
         this.bindingName = parameter ? parameter.bindingName : '';
     }
 
-    /** @returns {ParameterDefinition} */
+    
     get parameter() {
         // Just to have some typesafe reference
-        return this.element;
+        return /** @type {ParameterDefinition} */ (this.element);
     }
 
     /**

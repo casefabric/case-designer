@@ -1,10 +1,10 @@
 'use strict';
 
 class IDE {
+    /** @type {Array<ModelEditorMetadata>} */
+    static editorTypes = []
     constructor() {
         this._editors = [];
-        /** @type {Array<ModelEditorMetadata>} */
-        this.editorTypes = [];
     }
 
     back() {
@@ -35,7 +35,7 @@ class IDE {
         this.html.on('paste', e => this.handlePasteText(e))
 
 
-        this.editorTypes.forEach(type => type.init());
+        IDE.editorTypes.forEach(type => type.init(this));
     }
 
     /**
@@ -65,10 +65,17 @@ class IDE {
     }
 
     /**
+     * @param {ModelEditor} editor 
+     */
+    register(editor) {
+        this.editors.push(editor);
+    }
+
+    /**
      * @returns {CaseModelEditor}
      */
     get caseModelEditor() {
-        return this.editors.find(editor => editor instanceof CaseModelEditor);
+        return /** @type {CaseModelEditor} */ (this.editors.find(editor => editor instanceof CaseModelEditor));
     }
 
     /**
@@ -87,17 +94,18 @@ class IDE {
      * @param {String} modelType 
      * @param {String} newModelName 
      * @param {String} newModelDescription 
+     * @param {Function} callback 
      * @returns {String} fileName of the new model
      */
-    createNewModel(modelType, newModelName, newModelDescription) {
-        const editorMetadata = this.editorTypes.find(type => type.modelType == modelType);
+    createNewModel(modelType, newModelName, newModelDescription, callback) {
+        const editorMetadata = IDE.editorTypes.find(type => type.modelType == modelType);
         if (!editorMetadata) {
             const msg = 'Cannot create new models of type ' + modelType;
             console.error(msg);
             this.danger(msg);
             return;
         }
-        return editorMetadata.createNewModel(newModelName, newModelDescription);
+        return editorMetadata.createNewModel(this, newModelName, newModelDescription, callback);
     }
 
     /**
@@ -105,7 +113,7 @@ class IDE {
      * @param {ModelDefinition} model 
      */
     openModel(model) {
-        console.log("Opened model "+model.name)
+        console.log("Opened model " + model.name)
     }
 
     /**
@@ -113,23 +121,28 @@ class IDE {
      * @param {String} fileName 
      */
     open(fileName) {
-        // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
-        const splitList = fileName.split('.');
-        const modelType = splitList.pop();
-        const modelName = splitList.join('.');
-        // Get editor for this type, if available at all. Otherwise type is not supported.
-        const editorMetadata = this.editorTypes.find(type => type.modelType == modelType);
-        // Determine error message based on absence of loader function name, and absence of name (which really means absence of type)
-        const failure = editorMetadata ? '' : modelName ? 'Cannot read ' + location.hash + ' because the file type is not supported' : 'Cannot read ' + location.hash + ' because the file type is missing';
-
-        // Some error checking first
         if (!fileName) {
             // Simply no model to load; but hide all existing editors.
             this.editors.forEach(editor => editor.visible = false);
             this.coverPanel.show('Please, open or create a model.');
             return;
-        } else if (failure) {
-            this.danger(failure);
+        }
+
+        const serverFile = this.repository.get(fileName);
+        if (!serverFile) {
+            this.danger(`File ${fileName} does not exist and cannot be opened`, 2000);
+            if (this.editors.length === 0) {
+                this.coverPanel.show('Please, open or create a model.');
+            }
+            return;
+        }
+
+        // Check if this file type has a model editor.
+        if (!serverFile.hasModelEditor) {
+            this.danger(`File type ${serverFile.fileType} has no editor associated with it`, 3000);
+            if (this.editors.length === 0) {
+                this.coverPanel.show('Please, open or create a model.');
+            }
             return;
         }
 
@@ -141,7 +154,7 @@ class IDE {
         this.editors.forEach(editor => editor.visible = (editor.fileName == fileName));
 
         //show model name on browser tab
-        document.title = 'Cafienne IDE - ' + modelName;
+        document.title = 'Cafienne IDE - ' + serverFile.name;
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
         const existingEditor = this.editors.find(editor => editor.fileName == fileName);
@@ -153,7 +166,7 @@ class IDE {
         //  the cover panel will be closed.
         this.coverPanel.show('Opening ' + fileName);
 
-        const editor = editorMetadata.createEditor(this, fileName, modelName, modelType);
+        const editor = serverFile.createEditor();
         editor.loadModel();
     }
 
@@ -195,15 +208,9 @@ class IDE {
 
     /**
      * Registers a type of editor, e.g. HumanTaskEditor, CaseModelEditor, ProcessModelEditor
-     * @param {Function} editorMetadata 
+     * @param {ModelEditorMetadata} editorMetadata 
      */
     static registerEditorType(editorMetadata) {
-        // Assumes ide pointer exists ;)
-        ide.editorTypes.push(new editorMetadata(ide));
+        IDE.editorTypes.push(editorMetadata);
     }
 }
-
-// For now create a global IDE pointer.
-const ide = new IDE();
-//Start initialization after the entire page is loaded
-$(window).on('load', e => ide.init());

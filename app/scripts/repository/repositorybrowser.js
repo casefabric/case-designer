@@ -135,16 +135,15 @@ class RepositoryBrowser {
             return;
         }
 
-        this.ide.createNewModel(filetype, newModelName, newModelDescription);
+        this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
+            // Clear the input boxes, such that new valuess can be entered
+            this.inputNewModelName.val('');
+            this.inputNewModelDescription.val('');
 
-        // Clear the input boxes, such that new valuess can be entered
-        this.inputNewModelName.val('');
-        this.inputNewModelDescription.val('');
-
-        if (buttonType == 'createopen') {
-            // Change the url to navigate into the newly created model
-            window.location.hash = fileName;
-        }
+            if (buttonType == 'createopen') {
+                window.location.hash = fileName;
+            };
+        });
     }
 
     /**
@@ -177,9 +176,8 @@ class RepositoryBrowser {
             this.ide.danger('Please enter a name for the model.');
         } else if (/\s/.test(entryName)) {
             this.ide.danger('The model name should not contain spaces');
-        }
-        if (!/^[a-zA-Z0-9_/]+$/.test(entryName)) {
-            this.ide.danger('The model name should not invalid characters (like !@#$%^&* etc)');
+        } else if (!/^[a-zA-Z0-9_/]+$/.test(entryName)) {
+            this.ide.danger('The model name should not contain invalid characters (like !@#$%^&* etc)');
         } else {
             // Everything ok then, return true;
             return true;

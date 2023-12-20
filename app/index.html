@@ -191,7 +191,6 @@
     <!-- endbuild -->
     <!-- build:js scripts/cmmn-lib.js -->
     <!-- bower:js -->
-    <script src="scripts/definition/modeldocument.js"></script>
     <script src="scripts/definition/xmlelementdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/cmmndocumentationdefinition.js"></script>
     <script src="scripts/definition/referableelementdefinition.js"></script>
@@ -215,7 +214,7 @@
     <script src="scripts/definition/cmmn/definitions/expression/expressiondefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/casefile/casefileitemcollection.js"></script>
     <script src="scripts/definition/cmmn/definitions/casefile/casefiledefinition.js"></script>
-    <script src="scripts/definition/cmmn/definitions/casefile/casefileitemdefinition.js"></script>
+    <script src="scripts/definition/cmmn/definitions/casefile/casefileitemdef.js"></script>
     <script src="scripts/definition/cmmn/definitions/contract/parameterdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/contract/parametermappingdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseplan/planitem.js"></script>
@@ -252,7 +251,14 @@
     <script src="scripts/definition/cmmn/definitions/caseteam/caseteamdefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseteam/caseroledefinition.js"></script>
     <script src="scripts/definition/cmmn/definitions/caseteam/caserolereference.js"></script>
+    <script src="scripts/repository/metadata.js"></script>
+    <script src="scripts/repository/content.js"></script>
     <script src="scripts/repository/serverfile.js"></script>
+    <script src="scripts/repository/serverfile/casefile.js"></script>
+    <script src="scripts/repository/serverfile/cfidfile.js"></script>
+    <script src="scripts/repository/serverfile/dimensionsfile.js"></script>
+    <script src="scripts/repository/serverfile/humantaskfile.js"></script>
+    <script src="scripts/repository/serverfile/processfile.js"></script>
     <script src="scripts/repository/repository.js"></script>
     <script src="scripts/repository/repositorybrowser.js"></script>
     <script src="scripts/repository/modellistpanel.js"></script>
@@ -345,5 +351,11 @@
 </head>
 <body>
     <div class="iIDE" />
+    <script>                
+        // For now create a global IDE pointer.
+        const ide = new IDE();
+        //Start initialization after the entire page is loaded
+        $(window).on('load', e => ide.init());
+    </script>
 </body>
 </html>
