@@ -156,7 +156,8 @@ class XML {
     static prettyPrint(object) {
         if (! object) return '';
         // Algorithm below takes a string and formats it; if an XML node is passed, we first serialize it to string.
-        const text = new XMLSerializer().serializeToString(this.parseXML(object));
+        const xml = typeof (object) == 'string' ? this.parseXML(object) : object;
+        const text = new XMLSerializer().serializeToString(xml);
         //  This code is based on jquery.format.js by Zach Shelton
         //  https://github.com/zachofalltrades/jquery.format        
         const shift = createShiftArr('    '); // 4 spaces
