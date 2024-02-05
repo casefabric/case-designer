@@ -347,6 +347,10 @@ class Debugger extends StandardForm {
             return paths.length > 1 ? path.split('/').slice(1).join('/') : path;
         }
 
+        if (event.content.messages && event.content.messages['1']) {
+            return `<b style='text-align:center'>${event.content.messages['1'].type}</b>`;
+        }
+
         const planItemId = event.content.planItemId || event.content.taskId;
         if (!planItemId) return '';
 
