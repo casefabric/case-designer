@@ -12,12 +12,14 @@ class ModelListPanel {
         this.type = type;
 
         this.htmlPanel = $(
-            `<h3 filetype="${type.modelType}" createMessage="Create ${type.description}">${type.description}</h3>
+            `<h3 filetype="${type.modelType}">${type.description}
+            <img class="plus-icon" src="images/plus_32.png" title="Create new ${type} ..."/></h3>
             <div class="file-list-${type.modelType}"></div>`);
 
         this.accordion.append(this.htmlPanel);
         this.accordion.accordion('refresh');
         this.container = this.accordion.find('.file-list-' + type.modelType);
+        this.htmlPanel.find('.plus-icon').on('click', e => this.create());
     }
 
     /**
@@ -153,5 +155,36 @@ class ModelListPanel {
 
     deploy(file) {
         window.location.hash = file.fileName + '?deploy=true';
+    }
+
+    /**
+     * Creates a new model based on name
+     */
+    create() {
+        const filetype = this.type.modelType;
+        const text = `Create a new ${this.type}`;
+        const dialog = new CreateNewModelDialog(this.ide, text);
+        dialog.showModalDialog((newModelInfo) => {
+            if (newModelInfo) {
+                const newModelName = newModelInfo.name;
+                const newModelDescription = newModelInfo.description;
+
+                //check if a valid name is used
+                if (!this.repositoryBrowser.isValidEntryName(newModelName)) {
+                    return;
+                }
+
+                const fileName = newModelName + '.' + filetype;
+
+                if (this.ide.repository.isExistingModel(fileName)) {
+                    this.ide.danger('A ' + filetype + ' with this name already exists and cannot be overwritten', 5000);
+                    return;
+                }
+
+                this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
+                    window.location.hash = fileName;
+                });
+            };
+        });
     }
 }
