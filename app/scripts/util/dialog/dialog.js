@@ -20,7 +20,7 @@ class Dialog {
     }
 
     renderHeader() {
-        if (! this.dialogHTML) {
+        if (!this.dialogHTML) {
             this.dialogHTML = $(`
             <dialog>
                 <div class='dialogHeader'>
@@ -44,8 +44,7 @@ class Dialog {
     }
 
     /** @param {any} returnValue */
-    closeModalDialog(returnValue)
-    {
+    closeModalDialog(returnValue) {
         if (this.callback) this.callback(returnValue);
         Util.removeHTML(this.dialogHTML);
     }

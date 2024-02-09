@@ -3,8 +3,7 @@ class CreateNewModelDialog extends Dialog {
      * @param {IDE} ide
      * @param {string} label
      */
-    constructor(ide, label)
-    {
+    constructor(ide, label) {
         super(ide, label);
     }
 
@@ -27,7 +26,7 @@ class CreateNewModelDialog extends Dialog {
             <button class='buttonCancel'>Cancel</button>
         `);
         this.dialogHTML.append(htmlDialog);
-        this.dialogHTML.find('.buttonOk').on('click', e => this.closeModalDialog({name: this.name, description: this.description}));
+        this.dialogHTML.find('.buttonOk').on('click', e => this.closeModalDialog({ name: this.name, description: this.description }));
         this.dialogHTML.find('.buttonCancel').on('click', e => this.closeModalDialog(false));
     }
 }
