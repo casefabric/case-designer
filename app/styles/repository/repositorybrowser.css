@@ -11,7 +11,7 @@
     left: 0px;
     right: 0px;
     top: 0px;
-    bottom: 130px;
+    bottom: 0px;
 }
 
 .repository-browser .btnRefresh {
@@ -68,6 +68,19 @@
 
 .model-item:hover {
     background-color: #f6f6f6;
+}
+
+.repository-browser .plus-icon {
+    display: block;
+    float: right;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    z-index: 0;
+}
+
+.repository-browser .ui-state-active .plus-icon {
+    filter: invert(1);
 }
 
 .repository-browser .action-icon {

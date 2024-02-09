@@ -26,34 +26,13 @@ class RepositoryBrowser {
                     <div class="divAccordionList">
                     </div>
                 </div>
-            </div>
-            <div class="divCreateNewModel basicform">
-                <div class="formheader formheadernoradius">
-                    <label>Create Case Model</label>
-                </div>
-                <div class="formcontainer">
-                    <div>
-                        <label>Name</label>
-                        <input class="inputNewModelName" type="text" />
-                    </div>
-                    <div>
-                        <label>Description</label>
-                        <input class="inputNewModelDescription" type="text" />
-                    </div>
-                    <button bttype="create">Create</button>
-                    <button bttype="createopen">Create + Open</button>
-                </div>
             </div>`);
 
         //set accordion for the various types of model lists
         this.accordion = this.html.find('.divAccordionList');
         this.accordion.accordion({
             heightStyle: 'fill',
-            animate: false,
-            activate: (e, ui) => {
-                const createMessage = ui.newHeader.attr('createMessage');
-                this.divModelCreator.find('.formheader label').html(createMessage);
-            }
+            animate: false
         });
 
         //add events search model field
@@ -69,13 +48,6 @@ class RepositoryBrowser {
             this.repository.listModels();
             this.searchBox.val('');
         });
-
-
-        //add handles for creating new models
-        this.divModelCreator = this.html.find('.divCreateNewModel');
-        this.inputNewModelName = this.divModelCreator.find('.inputNewModelName');
-        this.inputNewModelDescription = this.divModelCreator.find('.inputNewModelDescription');
-        this.divModelCreator.find('button').on('click', e => this.createNewEntry(e));
 
         // Add handler for hash changes, that should load the new model
         $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
@@ -111,39 +83,6 @@ class RepositoryBrowser {
      */
     removeDropHandler() {
         if (this.dragData) this.dragData.removeDropHandler();
-    }
-
-    /**
-     * Creates a new model based on name and description.
-     * @param {JQuery.ClickEvent} e
-     */
-    createNewEntry(e) {
-        const buttonType = $(e.currentTarget).attr('bttype');
-        const filetype = this.accordion.accordion('instance').active.attr('filetype');
-        const newModelName = this.inputNewModelName.val().toString();
-        const newModelDescription = this.inputNewModelDescription.val().toString();
-
-        //check if a valid name is used
-        if (!this.isValidEntryName(newModelName)) {
-            return;
-        }
-
-        const fileName = newModelName + '.' + filetype;
-
-        if (this.repository.isExistingModel(fileName)) {
-            this.ide.danger('A ' + filetype + ' with this name already exists and cannot be overwritten');
-            return;
-        }
-
-        this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
-            // Clear the input boxes, such that new valuess can be entered
-            this.inputNewModelName.val('');
-            this.inputNewModelDescription.val('');
-
-            if (buttonType == 'createopen') {
-                window.location.hash = fileName;
-            };
-        });
     }
 
     /**
