@@ -1,6 +1,8 @@
+import Util from "@util/util";
 import ReferableElementDefinition from "../referableelementdefinition";
 import SchemaDefinition from "./schemadefinition";
 import TypeDefinition from "./typedefinition";
+import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
 
 export default class SchemaPropertyDefinition extends ReferableElementDefinition<TypeDefinition> {
     _type: string;
@@ -24,6 +26,10 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
     get isNew() {
         // A property is new if it has all default values
         return this.name === '' && this.type === '' && this.format === '' && this.multiplicity === 'ExactlyOne' && this.isBusinessIdentifier !== true;
+    }
+    
+    getCaseFileItemReferences(): CaseFileItemTypeDefinition[] {
+        return <CaseFileItemTypeDefinition[]>Util.removeDuplicates(this.searchInboundReferences().filter(element => element instanceof CaseFileItemTypeDefinition));
     }
 
     hasExternalReferences(): boolean {
