@@ -15,7 +15,7 @@ const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
  * Returns the repository contents by name, last modified timestamp and usage information
  */
 router.get('/list', function (req, res, next) {
-    const list = repository.list();
+    const list = repository.contents();
     res.json(list);
 });
 
@@ -67,7 +67,7 @@ router.put('/rename/:fileName', xmlParser, function (req, res, next) {
         console.log(`RENAME /${fileName} to /${newFileName}`);
         repository.rename(fileName, newFileName);
 
-        const list = repository.list();
+        const list = repository.contents();
         res.json(list);
     } catch (err) {
         console.error(err);

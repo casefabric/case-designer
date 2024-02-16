@@ -5,5 +5,6 @@ class Metadata {
         this.usage = json.usage;
         this.error = json.error;
         this.type = json.type;
+        this.serverContent = json.content;
     }
 }
