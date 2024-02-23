@@ -16,7 +16,17 @@ class Dialog {
         this.renderHeader();
         this.renderDialog();
         this.callback = callback;
-        this.dialogHTML[0].showModal();
+        const dialogHTML = this.dialogHTML[0]; // Save DOM pointer to HTMLElement (not jQuery as we don't have the showModal native method available in jQuery API)
+        dialogHTML.showModal();
+
+        // Normalize left/top style to absolute values to make it draggable with jQuery draggable
+        // By default a modal <dialog> is positioned in the center of viewport using a margin style. This should be disabled setting margin to 0px;
+        const cs = getComputedStyle(dialogHTML);
+        const left = cs.marginLeft;
+        const top = cs.marginTop;
+        dialogHTML.style.margin= '0px';
+        dialogHTML.style.left = left;
+        dialogHTML.style.top = top;
     }
 
     renderHeader() {
@@ -25,11 +35,12 @@ class Dialog {
             <dialog>
                 <div class='dialogHeader'>
                     <label class="dialogLabel">${this.label}</label>
-                    <br>
-                    <br>
                 </div>
+                <br>
             </dialog>`);
             this.ide.html.append(this.dialogHTML);
+            this.dialogHTML.draggable({ handle: '.dialogHeader' });
+            this.dialogHTML.on('selectstart', e => e.preventDefault());
         }
         return this.dialogHTML;
     }
