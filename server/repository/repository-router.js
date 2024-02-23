@@ -3,12 +3,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('../../config/config');
-const repositoryModule = require('./repository');
-const Repository = repositoryModule.Repository;
-const repository = new Repository(config.repository, config.deploy);
-
-const backend = require('./backend_rest');
-const caseService = new backend.Backend(config.backendUrl);
+const Repository = require('@cafienne/repository').Repository;
+const repository = new Repository(config);
+const Backend = require('@cafienne/repository').Backend;
+const caseService = new Backend(config.backendUrl);
 
 const router = express.Router();
 const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
@@ -48,7 +46,7 @@ router.get('/load/*', function (req, res, next) {
 router.post('/save/*', xmlParser, function (req, res, next) {
     try {
         const fileName = req.params[0];
-        repository.save(fileName, req.body + '\n');
+        repository.save(fileName, req.body);
 
         const list = repository.list();
         res.json(list);
