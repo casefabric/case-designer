@@ -69,6 +69,9 @@ class ServerFile {
         } else {
             this.clear();
         }
+        if (serverMetadata.serverContent) {
+            this.source = serverMetadata.serverContent;
+        }
         this.lastModified = serverMetadata.lastModified;
     }
 
