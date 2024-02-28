@@ -44,6 +44,11 @@ class Deploy extends StandardForm {
         }
     }
 
+    onHide() {
+        window.location.hash = window.location.hash.replace('deploy=true', '');
+        if (window.location.hash.endsWith('?')) window.location.hash = window.location.hash.replace('?', '');
+    }
+
     _setDeployedTimestamp(text) {
         this.html.find('.deployed_timestamp').text(text);
     }
