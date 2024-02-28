@@ -105,6 +105,8 @@ class RepositoryBrowser {
         //  That requires that we also know what the current model is.
         this.accordion.find('.model-item').removeClass('modelselected');
         this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').addClass('modelselected');
+        // Also select the corresponding accordion tab
+        $(this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').closest('.file-container')).prev('h3')[0]?.click();
     }
 
     /**
