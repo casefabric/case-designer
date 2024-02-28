@@ -13,13 +13,17 @@ class ModelListPanel {
 
         this.htmlPanel = $(
             `<h3 filetype="${type.modelType}">${type.description}
-            <img class="plus-icon" src="images/plus_32.png" title="Create new ${type} ..."/></h3>
-            <div class="file-list-${type.modelType}"></div>`);
+                <img class="plus-icon" src="images/plus_32.png" title="Create new ${type} ..."/>
+            </h3>
+            <div class="file-container file-list-${type.modelType}"></div>`);
 
         this.accordion.append(this.htmlPanel);
         this.accordion.accordion('refresh');
         this.container = this.accordion.find('.file-list-' + type.modelType);
-        this.htmlPanel.find('.plus-icon').on('click', e => this.create());
+        this.htmlPanel.find('.plus-icon').on('click', e => {
+            e.stopPropagation();
+            this.create(e)
+        });
     }
 
     /**
@@ -159,8 +163,10 @@ class ModelListPanel {
 
     /**
      * Creates a new model based on name
+     * @param {*} e The click event
      */
-    create() {
+    create(e) {
+        e.stopPropagation();
         const filetype = this.type.modelType;
         const text = `Create a new ${this.type}`;
         const dialog = new CreateNewModelDialog(this.ide, text);
