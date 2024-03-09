@@ -22,6 +22,10 @@ class Decorator {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
+    get tooltip() {
+        return '';
+    }
+
     get html() {
         return this.box.html.find('.' + this.id);
     }
@@ -29,12 +33,18 @@ class Decorator {
     refreshView() {
         const visibility = this.visibility ? 'visible' : 'hidden';
         this.html.attr('visibility', visibility);
+        if (this.visibility) {
+            this.html.find('.tooltip').html(this.tooltip);
+        }
     }
 
     get markup() {
         const visibility = this.visibility ? 'visible' : 'hidden';
         const i = this.box.decorators.indexOf(this);
-        return `<image x="${(i * DECORATORSIZE)}" y="${this.box.decoratorsTop}" visibility="${visibility}" width="${DECORATORSIZE}" height="${DECORATORSIZE}" class="${this.id}" xlink:href="${this.imgURL}" />`;
+        return `
+        <image x="${(i * DECORATORSIZE)}" y="${this.box.decoratorsTop}" visibility="${visibility}" width="${DECORATORSIZE}" height="${DECORATORSIZE}" class="${this.id}" xlink:href="${this.imgURL}">
+            <title class="tooltip"></title>
+        </image>`;
     }
 }
 
@@ -61,6 +71,11 @@ class AutoCompleteDecorator extends Decorator {
         super(box, view, AUTOCOMPLETE_IMG);
         this.view = view;
     }
+    
+    get tooltip() {
+        const type = this.view.planItemDefinition.toString().replace('Definition', '');
+        return `${type} will complete when all active items have been completed and no required items are pending`
+    }
 
     get visibility() {
         return this.view.planItemDefinition.autoComplete;
@@ -77,8 +92,22 @@ class ExpressionDecorator extends Decorator {
         this.expressionProperty = expressionProperty;
     }
 
-    get visibility() {
+    get rule() {
         return this.view.definition.itemControl[this.expressionProperty];
+    }
+
+    get visibility() {
+        return this.rule;
+    }
+
+    get tooltip() {
+        const rule = this.rule;
+        if (! rule) {
+            return '';
+        }
+        // Make rule name uppercase
+        const ruleDescription = this.expressionProperty[0].toUpperCase() + this.expressionProperty.slice(1);
+        return this.rule.createTooltip(ruleDescription);
     }
 }
 
