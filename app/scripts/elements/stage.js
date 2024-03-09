@@ -97,6 +97,10 @@
         return new StageProperties(this);
     }
 
+    createDecoratorBox() {
+        return new StageDecoratorBox(this);
+    }
+
     get __planningTablePosition() {
         return { x: 50, y: -9 };
     }
@@ -283,7 +287,7 @@
                     <polyline class="cmmn-shape cmmn-border cmmn-stage-shape" points=" 20,0 0,20 0,280 20,300 480,300 500,280 500,20 480,0 20,0" />
                 </g>
                 <text class="cmmn-bold-text" font-size="12" />
-                ${this.decoratorBox}`;
+                ${this.decoratorBox.markup}`;
     }
 
     get textAttributes() {
@@ -296,16 +300,6 @@
                 'y-alignment': 'top'
             }
         };
-    }
-
-    createDecorators() {
-        return [
-            new Decorator(MANUALACTIVATION_IMG, () => this.definition.itemControl.manualActivationRule),
-            new Decorator(REQUIRED_IMG, () => this.definition.itemControl.requiredRule),
-            new Decorator(MINUS_IMG, () => true),
-            new Decorator(AUTOCOMPLETE_IMG, () => this.planItemDefinition.autoComplete),
-            new Decorator(REPETITION_IMG, () => this.definition.itemControl.repetitionRule)
-        ];
     }
 
     /**

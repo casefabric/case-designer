@@ -51,6 +51,10 @@
         return new TaskHalo(this);
     }
 
+    createDecoratorBox() {
+        return new TaskDecoratorBox(this);
+    }
+
     setDropHandlers() {
         super.setDropHandlers();
         // Add drop handler with repository browser to handle changing task implementation when it is drag/dropped from there.
@@ -151,7 +155,7 @@
                 </g>
                 <text class="cmmn-text" />
                 <image class="taskImage" x="0" y="-4" width="24" height="24" xlink:href="${this.imageURL}" />
-                ${this.decoratorBox}`;
+                ${this.decoratorBox.markup}`;
     }
 
     get textAttributes() {
@@ -164,14 +168,6 @@
                 'x-alignment': 'middle'
             }
         };
-    }
-
-    createDecorators() {
-        return [
-            new Decorator(MANUALACTIVATION_IMG, () => this.definition.itemControl.manualActivationRule),
-            new Decorator(REQUIRED_IMG, () => this.definition.itemControl.requiredRule),
-            new Decorator(REPETITION_IMG, () => this.definition.itemControl.repetitionRule)
-        ];
     }
 
     //returns true when an element of type 'elementType' can be added as a child to this element
