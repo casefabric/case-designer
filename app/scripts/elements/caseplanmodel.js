@@ -40,6 +40,10 @@ class CasePlanModel extends Stage {
         return new CasePlanHalo(this);
     }
 
+    createDecoratorBox() {
+        return new CasePlanDecoratorBox(this);
+    }
+
     /**
      * Show or hide the halo and resizer
      * @param {Boolean} show 
@@ -72,7 +76,7 @@ class CasePlanModel extends Stage {
                     <text class="cmmn-bold-text" font-size="12" />
                     <rect class="cmmn-shape cmmn-border cmmn-caseplan-shape" x="0" y="${CPM_TAB_HEIGHT}" width="${this.shape.width}" height="${this.shape.height - CPM_TAB_HEIGHT}"/>
                 </g>
-                ${this.decoratorBox}`;
+                ${this.decoratorBox.markup}`;
     }
 
     get textAttributes() {
@@ -85,12 +89,6 @@ class CasePlanModel extends Stage {
                 'y-alignment': 'bottom'
             }
         };
-    }
-
-    createDecorators() {
-        return [
-            new Decorator(AUTOCOMPLETE_IMG, () => this.planItemDefinition.autoComplete),
-        ];
     }
 
     /**

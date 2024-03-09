@@ -1,19 +1,3 @@
-const DECORATORFROMBOTTOM = 4;
-const DECORATORSIZE = 12;
-
-class Decorator {
-    /**
-     * Simple helper class to visualize Decorator images on a PlanItem (like AutoComplete, RequiredRule, etc.)
-     * @param {String} imgURL 
-     * @param {Function} visibilityCondition 
-     */
-    constructor(imgURL, visibilityCondition) {
-        this.imgURL = imgURL;
-        this.visibilityEvaluator = visibilityCondition;
-        this.id = Util.createID();
-    }
-}
-
 class PlanItemView extends CMMNElement {
     /**
      * This is a generic class for plan item rendering; it takes default properties of the definition
@@ -59,9 +43,13 @@ class PlanItemView extends CMMNElement {
         return new PlanItemHalo(this);
     }
 
+    createDecoratorBox() {
+        return new DecoratorBox(this);
+    }
+
     __resize(w, h) {
         super.__resize(w, h);
-        this.moveDecoratorsToMiddle();
+        this.decoratorBox.moveDecoratorsToMiddle();
         // reposition our sentries on the right and bottom
         this.__childElements.filter(child => child instanceof Sentry).forEach(sentry => {
             //get the current position of sentry (the centre)
@@ -84,62 +72,18 @@ class PlanItemView extends CMMNElement {
      */
     refreshView() {
         super.refreshView();
-        this.decoratorImages.forEach(decoratorImage => {
-            const visibility = decoratorImage.visibilityEvaluator() ? 'visible' : 'hidden';
-            this.html.find('.'+decoratorImage.id).attr('visibility', visibility);
-        })
-    }
-
-    get decoratorBox() {
-        const images = this.decoratorImages.map((d, i) => `<image x="${(i * DECORATORSIZE)}" y="${this.decoratorsTop}" visibility="${d.visibilityEvaluator() ? 'visible' : 'hidden'}" width="${DECORATORSIZE}" height="${DECORATORSIZE}" class="${d.id}" xlink:href="${d.imgURL}" />`).join('\n');
-        return `<g transform="translate(${this.decoratorsLeft})" class="decoratorBox">${images}</g>`;
-    }
-
-    /**
-     * @returns {Array<Decorator>}
-     */
-    createDecorators() {
-        return [];
+        this.decoratorBox.refreshView();
     }
 
     /**
      * Returns the list of decorator images used in this item.
-     * @returns {Array<Decorator>}
+     * @returns {DecoratorBox}
      */
-    get decoratorImages() {
-        if (!this._decorators) this._decorators = this.createDecorators();
-        return this._decorators;
-    }
-
-    /**
-     * Calculates the left position that the decoratorBox should move to in order for the images to render in the middle of the bottom of the element
-     */
-    get decoratorsLeft() {
-        const decoratorBoxWidth = this.decoratorImages.length * DECORATORSIZE;
-        const decoratorLeft = Math.round((this.shape.width - decoratorBoxWidth) / 2);
-        return decoratorLeft;
-    }
-
-    /**
-     * Calculates the top position that the images in the decoratorBox should have in order for the images to render in the middle of the bottom of the element
-     */
-    get decoratorsTop() {
-        const imgHeight = DECORATORSIZE + DECORATORFROMBOTTOM;
-        const decoratorBoxTop = this.shape.height - imgHeight;
-        return decoratorBoxTop;
-    }
-
-    /**
-     * Position the decorators after resize again in the middle of the element
-     */
-    moveDecoratorsToMiddle() {
-        const decoratorBox = this.html.find('.decoratorBox');
-        const decoratorImages = decoratorBox.find('image');
-        //y position at bottom of element
-        decoratorImages.attr('y', this.decoratorsTop)
-
-        //x position in middle
-        decoratorBox.attr('transform', 'translate(' + this.decoratorsLeft + ')');
+    get decoratorBox() {
+        if (!this._decoratorBox) {
+            this._decoratorBox = this.createDecoratorBox();
+        }
+        return this._decoratorBox;
     }
 
     createCMMNChild(cmmnType, x, y) {

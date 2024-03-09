@@ -35,12 +35,16 @@ class Milestone extends PlanItemView {
         return new MilestoneProperties(this);
     }
 
+    createDecoratorBox() {
+        return new MilestoneDecoratorBox(this);
+    }
+
     get markup() {
         return `<g class="scalable">
                     <rect class="cmmn-shape cmmn-border cmmn-milestone-shape" rx="20" ry="20" width="100" height="40" />
                 </g>
                 <text class="cmmn-text" />
-                ${this.decoratorBox}`;
+                ${this.decoratorBox.markup}`;
     }
 
     get textAttributes() {
@@ -53,13 +57,6 @@ class Milestone extends PlanItemView {
                 'x-alignment': 'middle'
             }
         };
-    }
-
-    createDecorators() {
-        return [
-            new Decorator(REQUIRED_IMG, () => this.definition.itemControl.requiredRule),
-            new Decorator(REPETITION_IMG, () => this.definition.itemControl.repetitionRule)
-        ];
     }
 
     /**
