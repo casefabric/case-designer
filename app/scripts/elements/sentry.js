@@ -32,6 +32,19 @@ class Sentry extends CMMNElement {
         return new SentryProperties(this);
     }
 
+    refreshIfPartTooltip() {
+        const tooltip = this.definition.ifPart ? this.definition.ifPart.createTooltip('If Part') : '';
+        this.html.find('.tooltip').html(tooltip);
+    }
+
+    /**
+     * shows the element properties as icons in the element
+     */
+    refreshView() {
+        super.refreshView();
+        this.refreshIfPartTooltip();
+    }
+
     adoptOnPart(sourceElement) {
         // Also connect the sentry with the source element to create a corresponding on-part
         sourceElement.__connect(this);
@@ -105,7 +118,10 @@ class Sentry extends CMMNElement {
     }
 
     get markup() {
-        return `<polyline style="pointer-events: bounding-box;" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0" />`;
+        return `
+        <polyline style="pointer-events: bounding-box;" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0">
+            <title class="tooltip"></title>
+        </polyline>`;
     }
 
     __resize() {
