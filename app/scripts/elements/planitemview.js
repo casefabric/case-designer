@@ -141,7 +141,7 @@ class PlanItemView extends CMMNElement {
             this.raiseValidationIssue(24, [this.name, this.case.name, ruleType, 'rule expression']);
         }
 
-        if (rule && !rule.contextRef) {
+        if (rule && !rule.contextRef && rule.body !== 'true' && rule.body !== 'false') {
             this.raiseValidationIssue(39, [this.name, this.case.name, ruleType, 'context (case file item)']);
         }
     }
