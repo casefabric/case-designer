@@ -30,7 +30,7 @@ class Settings {
     }
 
     static get gridVisibility () {
-        return SettingsStorage.getItem(GRID_VISIBILITY) == 'true';
+        return SettingsStorage.getItem(GRID_VISIBILITY) == true;
     }
 
     static set gridVisibility (visibility) {

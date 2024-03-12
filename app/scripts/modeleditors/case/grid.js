@@ -5,33 +5,39 @@
  * Grid is currently attached to the paper object of each case (see case.js).
  */
 
+/**
+ * @type {Array<Grid>}
+ */
 const grids = []; // List of all grid objects; forms a memory leak, in anticipation of keeping only one canvas for all cases, instead of a canvas per case.
 
 class Grid {
 
-    static initialize() {
-        if (this.initialized) {
-            return;
-        }
-        this.initialized = true;
-        // Restore settings from local storage.
-        $('#inputGridSize')[0].value = Grid.Size = Settings.gridSize;
-        $('#inputShowGrid')[0].checked = Grid.Visible = Settings.gridVisibility
+    /**
+     * 
+     * @param {Grid} grid 
+     */
+    static register(grid) {
+        grids.push(grid);
+        if (!this.initialized) {
+            this.initialized = true;
+            $('#inputGridSize').val(Grid.Size);
+            $('#inputShowGrid').prop('checked', Grid.Visible);
 
-        // Attach listeners to the HTML with the settings.
-        // These are "global" listeners, and we keep track of an array with ALL grids (so basically a memory leak, because grid objects are create in case.js)
-        // Whenever a settings is modified, all grids will be informed of the change and everything will be recalculated
-        $('#inputGridSize').on('change', e => Grid.Size = e.currentTarget.value);
-        $('#inputGridSize').on('keydown', e => e.stopPropagation()); // Avoid backspace and delete to remove elements from the canvas
-        $('#inputShowGrid').on('change', e => Grid.Visible = e.currentTarget.checked);
+            // Attach listeners to the HTML with the settings.
+            // These are "global" listeners, and we keep track of an array with ALL grids (so basically a memory leak, because grid objects are create in case.js)
+            // Whenever a settings is modified, all grids will be informed of the change and everything will be recalculated
+            $('#inputGridSize').on('change', e => Grid.Size = e.currentTarget.value);
+            $('#inputGridSize').on('keydown', e => e.stopPropagation()); // Avoid backspace and delete to remove elements from the canvas
+            $('#inputShowGrid').on('change', e => Grid.Visible = e.currentTarget.checked);
+        }
     }
 
     /**
      * Returns global grid size setting
      */
     static get Size() {
-        this.initialize();
-        return Grid.__size;
+        // this.initialize();
+        return Settings.gridSize;
     }
 
     /**
@@ -44,29 +50,16 @@ class Grid {
     static set Size(newSize) {
         // Only set new grid size if it is a valid value.
         if (newSize <= 0 || !Number.isInteger(Number.parseFloat(newSize)) || isNaN(newSize)) {
-            ide.warning(`Grid size must be a whole number greater than zero instead of ${newSize}`);
+            ide.warning(`Grid size must be a whole number greater than zero instead of ${newSize}`, 1000);
+            // Restore the previous value
+            $('#inputGridSize').val(Grid.Size);
             return;
         }
         // Store it in the settings
         Settings.gridSize = newSize;
-        Grid.__size = newSize;
 
         // And inform all grids about the new size
-        grids.forEach(grid => grid.size = newSize);
-    }
-
-    /**
-     * Fetches the background image setting (whether filled with the raster or empty, depending on the visibility setting)
-     */
-    static get BackgroundImage () {
-        return Grid.Visible ? Grid.Raster : '';
-    }
-
-    /**
-     * Returns global grid visibility setting
-     */
-    static get Visible() {
-        return Grid.__visible;
+        this.renderAllGrids();
     }
 
     /**
@@ -75,7 +68,14 @@ class Grid {
      * @returns {Number}
      */
     static snap(number) {
-        return window.event.ctrlKey ? number : Grid.Size * Math.round(number / Grid.Size);
+        return window.event && window.event.ctrlKey ? number : Grid.Size * Math.round(number / Grid.Size);
+    }
+
+    /**
+     * Returns global grid visibility setting
+     */
+    static get Visible() {
+        return Settings.gridVisibility;
     }
 
     /**
@@ -90,15 +90,12 @@ class Grid {
             return;
         }
         Settings.gridVisibility = visibility;
-        Grid.__visible = visibility;
+        this.renderAllGrids();
+    }
+
+    static renderAllGrids() {
         // Change the background image
-        grids.forEach(grid => grid.paper.$el.css('background-image', Grid.BackgroundImage));
-        if (visibility) {
-            grids.forEach(grid => grid.paper.drawGrid({ color: 'black' }));
-        }
-        else {
-            grids.forEach(grid => grid.paper.clearGrid());
-        }
+        grids.forEach(grid => grid.render());
     }
 
     static blurSetSize() {
@@ -110,26 +107,25 @@ class Grid {
     /**
      * Helper class that adds grid structure to the jointjs paper element.
      * We can set the .size and the .visible property.
-     * @param {*} paper 
+     * @param {*} paper effectively joint.dia.Paper
      */
     constructor(paper) {
         this.paper = paper;
-        // Initialize grid from global settings
-        this.size = Grid.Size;
         // Register grid for changes to the settings
-        grids.push(this);
+        Grid.register(this);
+        // Do a first time render
+        this.render();
     }
 
-    /**
-     * Sets a new grid size. This must be a valid number higher than 0.
-     * @param {number} newSize The new size of the grid
-     */
-    set size(newSize) {
-        // Set grid size on the JointJS paper object (joint.dia.Paper instance)
-        this.paper.options.gridSize = newSize;
-        Grid.Visible = Grid.__visible;
+    render() {
+        if (Grid.Visible) {
+            // Note: we do this asynchronously, because the paper in joint may not yet have been created properly
+            window.setTimeout(() => this.paper.drawGrid({ color: 'black' }), 0);
 
-        // Set background image again, because it may have changed
-        this.paper.$el.css('background-image', Grid.BackgroundImage);
+        } else {
+            this.paper.clearGrid();
+        }
+        // Set grid size on the JointJS paper object (joint.dia.Paper instance)
+        this.paper.options.gridSize = Grid.Size;
     }
 }
