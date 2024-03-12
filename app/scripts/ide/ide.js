@@ -151,7 +151,9 @@ class IDE {
         console.group(fileName);
 
         // Show the editor with the fileName (if available), hide all the ones with a different fileName
-        this.editors.forEach(editor => editor.visible = (editor.fileName == fileName));
+        const showableEditor = this.editors.find(editor => editor.fileName == fileName);
+        this.editors.forEach(editor => editor.visible = (editor === showableEditor));
+        if (showableEditor) showableEditor.visible = true;
 
         //show model name on browser tab
         document.title = 'Cafienne IDE - ' + serverFile.name;
