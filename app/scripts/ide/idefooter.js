@@ -18,12 +18,6 @@ class IDEFooter {
         <div class="btn-group validatemessage">
             <a class="validateLabel"></a>
         </div>
-        <div style="display:none" class="btn-group">
-            <button type="button" id="buttonShowPreferences" onclick="SettingsEditor.show()" class="btn btn-default" title="Settings in local storage (raw JSON)">
-                <img src="images/settings_128.png" />
-                <label>Settings</label>
-            </button>
-        </div>            
     </div>
 </div>`);
         this.ide.html.append(this.html);

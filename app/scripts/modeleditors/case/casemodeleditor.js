@@ -14,7 +14,6 @@ class CaseModelEditor extends ModelEditor {
         this.dimensionsFileName = this.file.name + '.dimensions';
         this.ideCaseFooter = $('.ideCaseFooter');
 
-        Grid.initialize(); // Initialize the snap-to-grid component
         this.undoManager = new UndoManager(this);
 
         // Upon clicking the case footer's validation label, render the validateform of the case (if a case is there)
