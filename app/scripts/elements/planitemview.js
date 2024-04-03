@@ -1,7 +1,7 @@
 class PlanItemView extends CMMNElementView {
     /**
      * This is a generic class for plan item rendering; it takes default properties of the definition
-     * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, Stage, Milestone).
+     * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, StageView, Milestone).
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ShapeDefinition} shape 
@@ -145,5 +145,4 @@ class PlanItemView extends CMMNElementView {
             this.raiseValidationIssue(39, [this.name, this.case.name, ruleType, 'context (case file item)']);
         }
     }
-
 }

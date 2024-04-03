@@ -3,7 +3,7 @@ const CPM_WIDTH = 800;
 const CPM_HEIGHT = 500;
 const CPM_TAB_HEIGHT = 22;
 
-class CasePlanView extends Stage {
+class CasePlanView extends StageView {
     /**
      * 
      * @param {CaseView} cs 
@@ -66,7 +66,7 @@ class CasePlanView extends Stage {
     }
 
     surrounds(element) {
-        // Avoid the Stage.acquireChildren method to throw out elements outside the case plan (even though visually they can be dragged outside)
+        // Avoid the StageView.acquireChildren method to throw out elements outside the case plan (even though visually they can be dragged outside)
         return element != this;
     }
 

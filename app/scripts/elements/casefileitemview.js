@@ -1,7 +1,7 @@
 ﻿class CaseFileItemView extends CMMNElementView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {Number} x 
      * @param {Number} y 
      * @param {CaseFileItemDef} y 
@@ -26,7 +26,7 @@
 
     /**
      * Creates a new CaseFileItemView
-     * @param {Stage} parent 
+     * @param {StageView} parent 
      * @param {CaseFileItemDef} definition 
      * @param {ShapeDefinition} shape 
      */

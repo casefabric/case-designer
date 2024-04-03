@@ -1,7 +1,7 @@
 ﻿class TextAnnotation extends CMMNElementView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {Number} x 
      * @param {Number} y 
      */
@@ -13,7 +13,7 @@
 
     /**
      * Creates a new TextAnnotation element
-     * @param {Stage} parent 
+     * @param {StageView} parent 
      * @param {TextAnnotationDefinition} definition 
      * @param {ShapeDefinition} shape 
      */

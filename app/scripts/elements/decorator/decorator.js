@@ -51,7 +51,7 @@ class Decorator {
 class MinusDecorator extends Decorator {
     /**
      * @param {DecoratorBox} box 
-     * @param {Stage} view 
+     * @param {StageView} view 
      */
     constructor(box, view) {
         super(box, view, MINUS_IMG);
@@ -65,7 +65,7 @@ class MinusDecorator extends Decorator {
 class AutoCompleteDecorator extends Decorator {
     /**
      * @param {StageDecoratorBox} box 
-     * @param {Stage} view 
+     * @param {StageView} view 
      */
     constructor(box, view) {
         super(box, view, AUTOCOMPLETE_IMG);

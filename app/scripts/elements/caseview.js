@@ -86,8 +86,8 @@
                 }
             }
             // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
-            /** @type {Array<Stage>} */
-            const stages = this.items.filter(element => element instanceof Stage);
+            /** @type {Array<StageView>} */
+            const stages = this.items.filter(element => element instanceof StageView);
             this.diagram.shapes.forEach(shape => {
                 const definitionElement = getDefinition(shape);
                 // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
@@ -148,9 +148,9 @@
 
     /**
      * 
-     * @param {Array<Stage>} stages 
+     * @param {Array<StageView>} stages 
      * @param {ShapeDefinition} shape 
-     * @returns {Stage}
+     * @returns {StageView}
      */
     getSurroundingStage(stages, shape) {
         const surroundingStages = stages.filter(stage => stage.shape.surrounds(shape));

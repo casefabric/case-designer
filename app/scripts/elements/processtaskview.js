@@ -1,7 +1,7 @@
 class ProcessTaskView extends Task {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */

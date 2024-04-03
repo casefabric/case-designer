@@ -1,7 +1,7 @@
-﻿class Stage extends TaskStage {
+﻿class StageView extends TaskStage {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */
@@ -9,13 +9,13 @@
         const definition = stage.planItemDefinition.createPlanItem(StageDefinition);
         const shape = stage.case.diagram.createShape(x, y, 420, 140, definition.id);
         if (definition.definition instanceof StageDefinition) {
-            return new Stage(stage, definition, definition.definition, shape);
+            return new StageView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new Stage element.
+     * Creates a new StageView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {StageDefinition} planItemDefinition 
@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, Stage, UserEvent, TimerEvent),
+     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEvent, TimerEvent),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */
@@ -141,7 +141,7 @@
         } else if (planItemDefinition instanceof ProcessTaskDefinition) {
             return new ProcessTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof StageDefinition) {
-            return new Stage(this, definition, planItemDefinition, shape);
+            return new StageView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof MilestoneDefinition) {
             return new MilestoneView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof UserEventDefinition) {
@@ -164,7 +164,7 @@
             // then also move the definition
             childElement.definition.switchParent(this.planItemDefinition);
             // If the item is discretionary, we may also have to clean up the former planning table and refresh ours.
-            if (childElement.definition.isDiscretionary && previousParent && previousParent instanceof Stage) {
+            if (childElement.definition.isDiscretionary && previousParent && previousParent instanceof StageView) {
                 previousParent.cleanupPlanningTableIfPossible();
                 this.showPlanningTable();
             }
@@ -315,11 +315,11 @@
             elementType == UserEvent.name ||
             elementType == TimerEvent.name ||
             elementType == CaseFileItemView.name ||
-            elementType == Stage.name ||
+            elementType == StageView.name ||
             elementType == TextAnnotation.name) {
             return true;
         }
         return false;
     }
 }
-CMMNElementView.registerType(Stage, 'Stage', 'images/svg/collapsedstage.svg');
+CMMNElementView.registerType(StageView, 'StageView', 'images/svg/collapsedstage.svg');

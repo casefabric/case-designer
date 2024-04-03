@@ -2,7 +2,7 @@
 class MilestoneView extends PlanItemView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */

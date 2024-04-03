@@ -444,7 +444,7 @@ class CaseFileItemsEditor {
                 chars[8] = 'O';
             } else if (object instanceof Task) {
                 chars[1] = 'T'
-            } else if (object instanceof Stage) {
+            } else if (object instanceof StageView) {
                 chars[4] = 'S';
             } else if (object instanceof MilestoneView) {
                 chars[3] = 'M';

@@ -1,6 +1,6 @@
 class TaskStage extends PlanItemView {
     /**
-     * Simple class to share some logic from Task and Stage.
+     * Simple class to share some logic from Task and StageView.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition 
      * @param {TaskStageDefinition} planItemDefinition 
@@ -91,7 +91,7 @@ class TaskStage extends PlanItemView {
         super.__removeConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
-            if (target instanceof HumanTaskView) { // If target is HumanTaskView, then we are the Stage containing that task.
+            if (target instanceof HumanTaskView) { // If target is HumanTaskView, then we are the StageView containing that task.
                 this.definition.switchParent(target.parent.planItemDefinition);
                 this.parent.refreshView();
             }

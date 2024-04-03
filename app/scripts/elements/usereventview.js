@@ -1,7 +1,7 @@
 class UserEvent extends EventListenerView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */

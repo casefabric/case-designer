@@ -33,7 +33,7 @@ class ShapeBox {
             MilestoneView,
             TimerEvent,
             UserEvent,
-            Stage,
+            StageView,
             EntryCriterionView,
             ReactivateCriterionView,
             ExitCriterionView,

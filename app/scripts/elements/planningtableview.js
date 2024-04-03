@@ -14,7 +14,7 @@
         this.__resizable = false;
         parent.__addCMMNChild(this);
 
-        this.stage = this.parent instanceof Stage ? this.parent : this.parent.parent;
+        this.stage = this.parent instanceof StageView ? this.parent : this.parent.parent;
         // Now also render the discretionary items from the definition in our parent
         this.definition.tableItems.forEach(item => this.parent.addDiscretionaryItem(item));
     }
@@ -73,7 +73,7 @@
             return;
         }
 
-        if (cmmnParentElement instanceof Stage) {
+        if (cmmnParentElement instanceof StageView) {
             const stage = cmmnParentElement;
             if (stage.planningTableView.definition.tableItems.length == 0) {
                 if (!stage.__getConnectedElements().find(element => element instanceof PlanItemView && element.definition.isDiscretionary)) {

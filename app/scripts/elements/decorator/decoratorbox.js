@@ -56,7 +56,7 @@ class DecoratorBox {
 
 class StageDecoratorBox extends DecoratorBox {
     /**
-     * @param {Stage} view 
+     * @param {StageView} view 
      */
     constructor(view) {
         super(view);
