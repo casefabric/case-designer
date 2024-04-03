@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEvent, TimerEvent),
+     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEvent, TimerEventView),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */
@@ -147,7 +147,7 @@
         } else if (planItemDefinition instanceof UserEventDefinition) {
             return new UserEvent(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof TimerEventDefinition) {
-            return new TimerEvent(this, definition, planItemDefinition, shape);
+            return new TimerEventView(this, definition, planItemDefinition, shape);
         } else {
             throw new Error('This type of plan item cannot be instantiated into a view' + definition.name);
         }
@@ -313,7 +313,7 @@
             elementType == ProcessTaskView.name ||
             elementType == MilestoneView.name ||
             elementType == UserEvent.name ||
-            elementType == TimerEvent.name ||
+            elementType == TimerEventView.name ||
             elementType == CaseFileItemView.name ||
             elementType == StageView.name ||
             elementType == TextAnnotationView.name) {

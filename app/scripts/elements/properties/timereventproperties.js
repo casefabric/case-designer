@@ -1,7 +1,7 @@
 class TimerEventProperties extends PlanItemProperties {
     /**
      * 
-     * @param {TimerEvent} timerEvent 
+     * @param {TimerEventView} timerEvent 
      */
     constructor(timerEvent) {
         super(timerEvent);

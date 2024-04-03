@@ -1,4 +1,4 @@
-class TimerEvent extends EventListenerView {
+class TimerEventView extends EventListenerView {
     /**
      * 
      * @param {StageView} stage 
@@ -9,13 +9,13 @@ class TimerEvent extends EventListenerView {
         const definition = stage.planItemDefinition.createPlanItem(TimerEventDefinition);
         const shape = stage.case.diagram.createShape(x, y, 32, 32, definition.id);
         if (definition.definition instanceof TimerEventDefinition) {
-            return new TimerEvent(stage, definition, definition.definition, shape);
+            return new TimerEventView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new UserEvent element.
+     * Creates a new TimerEventView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {TimerEventDefinition} planItemDefinition 
@@ -42,4 +42,4 @@ class TimerEvent extends EventListenerView {
         return super.referencesDefinitionElement(definitionId);
     }    
 }
-CMMNElementView.registerType(TimerEvent, 'Timer Event', 'images/svg/timerevent.svg');
+CMMNElementView.registerType(TimerEventView, 'Timer Event', 'images/svg/timerevent.svg');
