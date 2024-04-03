@@ -47,7 +47,7 @@
      */
     addCaseFileItem(dragData) {
         const coor = this.case.getCursorCoordinates(dragData.event);
-        this.__addCMMNChild(CaseFileItem.create(this, coor.x, coor.y, dragData.item));
+        this.__addCMMNChild(CaseFileItemView.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
@@ -191,8 +191,8 @@
     createCMMNChild(cmmnType, x, y) {
         if (Util.isSubClassOf(PlanItemView, cmmnType)) {
             return this.__addCMMNChild(cmmnType.create(this, x, y));
-        } else if (cmmnType == CaseFileItem) {
-            return this.__addCMMNChild(CaseFileItem.create(this, x, y));
+        } else if (cmmnType == CaseFileItemView) {
+            return this.__addCMMNChild(CaseFileItemView.create(this, x, y));
         } else if (cmmnType == TextAnnotation) {
             return this.__addCMMNChild(TextAnnotation.create(this, x, y));
         } else { // Could (should?) be sentry
@@ -314,7 +314,7 @@
             elementType == Milestone.name ||
             elementType == UserEvent.name ||
             elementType == TimerEvent.name ||
-            elementType == CaseFileItem.name ||
+            elementType == CaseFileItemView.name ||
             elementType == Stage.name ||
             elementType == TextAnnotation.name) {
             return true;

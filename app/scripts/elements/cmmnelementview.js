@@ -98,9 +98,9 @@ class CMMNElementView extends CanvasElement {
     }
 
     /**
-     * Properties show the documentation. For CaseFileItem shape we also have
+     * Properties show the documentation. For CaseFileItemView shape we also have
      * to render documentation, but there the "definition" refers to the shape instead
-     * of the actual case file item; through this method CaseFileItem shape can override the getter.
+     * of the actual case file item; through this method CaseFileItemView shape can override the getter.
      * @returns {CMMNDocumentationDefinition}
      */
     get documentation() {
@@ -482,7 +482,7 @@ class CMMNElementView extends CanvasElement {
         // Remove the shape from the definitions
         this.shape.removeShape();
 
-        // Now remove our definition element from the case (overridden in CaseFileItem, since that only needs to remove the shape)
+        // Now remove our definition element from the case (overridden in CaseFileItemView, since that only needs to remove the shape)
         this.__removeElementDefinition();
 
         // Delete us from the case

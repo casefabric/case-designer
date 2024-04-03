@@ -76,8 +76,8 @@
                 if (element) {
                     return element;
                 } else {
-                    // It may well be an empty, unreferenced CaseFileItem, as that is not resizable; let CaseFileItem figure that out
-                    const emptyCaseFileItem = CaseFileItem.createElementForShape(caseDefinition, shape);
+                    // It may well be an empty, unreferenced CaseFileItemView, as that is not resizable; let CaseFileItemView figure that out
+                    const emptyCaseFileItem = CaseFileItemView.createElementForShape(caseDefinition, shape);
                     if (! emptyCaseFileItem) {
                         // But if it is not, then we should print a warning
                         console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
@@ -94,7 +94,7 @@
                 if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
                     const parent = this.getSurroundingStage(stages, shape);
                     if (definitionElement instanceof CaseFileItemDef) {
-                        parent.__addCMMNChild(new CaseFileItem(parent, definitionElement, shape));
+                        parent.__addCMMNChild(new CaseFileItemView(parent, definitionElement, shape));
                     } else if (definitionElement instanceof TextAnnotationDefinition) {
                         parent.__addCMMNChild(new TextAnnotation(parent, definitionElement, shape)); 
                     } else {
@@ -489,7 +489,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElementView|CaseFileItem|TextAnnotation} cmmnElement 
+     * @param {CMMNElementView|CaseFileItemView|TextAnnotation} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.
@@ -567,7 +567,7 @@
      * @param {String} caseFileItemID 
      */
     getCaseFileItemElement(caseFileItemID) {
-        return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
+        return this.items.find(item => item instanceof CaseFileItemView && item.definition.id == caseFileItemID);
     }
 
     switchLabels() {

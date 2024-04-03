@@ -112,7 +112,7 @@ class DragData {
 
 class CaseFileItemDragData extends DragData {
     constructor(editor, cfi) {
-        super(editor.ide, editor, cfi.name, CaseFileItem.name, CaseFileItem.smallImage, cfi.id);
+        super(editor.ide, editor, cfi.name, CaseFileItemView.name, CaseFileItemView.smallImage, cfi.id);
         this.item = cfi;
     }
 }

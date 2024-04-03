@@ -454,7 +454,7 @@ class CaseFileItemsEditor {
                 chars[0] = 's';
             } else if (object instanceof PlanningTable) {
                 chars[5] = 'P';
-            } else if (object instanceof CaseFileItem) {
+            } else if (object instanceof CaseFileItemView) {
                 chars[6] = 'C';
             }
         })

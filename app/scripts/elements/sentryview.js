@@ -101,14 +101,14 @@ class Sentry extends CMMNElementView {
     /**
      * sets the properties of the case file item onpart of a sentry,
      * when manually linking a case file item element with a sentry
-     * @param {CaseFileItem} source 
+     * @param {CaseFileItemView} source 
      */
     setCaseFileItemOnPart(source, defaultEvent) {
         if (source.definition.isEmpty) {
             // Do not create an onpart if the definition is not set.
             return;
         }
-        const sourceRef = source.definition.id; // CaseFileItem stores it's value in the contextRef property
+        const sourceRef = source.definition.id; // CaseFileItemView stores it's value in the contextRef property
         // If we cannot find the onpart in our definition, then we'll create a new one
         if (!this.definition.caseFileItemOnParts.find(onPart => onPart.sourceRef == sourceRef)) {
             const newOnPart = this.definition.createCaseFileItemOnPart();
@@ -339,7 +339,7 @@ class Sentry extends CMMNElementView {
     }
 
     __connectElement(target) {
-        if (target instanceof CaseFileItem) {
+        if (target instanceof CaseFileItemView) {
             this.setCaseFileItemOnPart(target, 'create');
         } else if (target instanceof PlanItemView) {
             this.setPlanItemOnPart(target, target.definition.defaultTransition);

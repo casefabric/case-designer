@@ -38,7 +38,7 @@ class ShapeBox {
             ReactivateCriterion,
             ExitCriterion,
             CasePlanModel,
-            CaseFileItem,
+            CaseFileItemView,
             TextAnnotation
         ];
         shapeTypes.forEach(shapeType => {

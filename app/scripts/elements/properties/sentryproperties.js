@@ -317,7 +317,7 @@ class SentryProperties extends Properties {
 
     addCaseFileItemOnParts() {
         const html = $(`<div class="onparts-block">
-                            <label>CaseFileItem On Parts</label>
+                            <label>CaseFileItemView On Parts</label>
                             <table class="onparts-table">
                                 <colgroup>
                                     <col width="15px"></col>
@@ -379,7 +379,7 @@ class SentryProperties extends Properties {
                                     <button class="zoombt"></button>
                                 </div>
                             </td>
-                            <td title="Select the CaseFileItem event to which the sentry listens">
+                            <td title="Select the CaseFileItemView event to which the sentry listens">
                                 <select class="standard-event">${standardEvents}</select>
                             </td>
                             <td title="Show/hide a visual connector to the case file item">
