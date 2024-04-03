@@ -1,5 +1,5 @@
 ﻿
-class Milestone extends PlanItemView {
+class MilestoneView extends PlanItemView {
     /**
      * 
      * @param {Stage} stage 
@@ -10,7 +10,7 @@ class Milestone extends PlanItemView {
         const definition = stage.planItemDefinition.createPlanItem(MilestoneDefinition);
         const shape = stage.case.diagram.createShape(x, y, 100, 40, definition.id);
         if (definition.definition instanceof MilestoneDefinition) {
-            return new Milestone(stage, definition, definition.definition, shape);
+            return new MilestoneView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
@@ -76,4 +76,4 @@ class Milestone extends PlanItemView {
         return criterionType == EntryCriterion.name;
     }
 }
-CMMNElementView.registerType(Milestone, 'Milestone', 'images/svg/milestone.svg');
+CMMNElementView.registerType(MilestoneView, 'MilestoneView', 'images/svg/milestone.svg');

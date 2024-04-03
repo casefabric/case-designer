@@ -30,7 +30,7 @@ class ShapeBox {
             HumanTaskView,
             CaseTaskView,
             ProcessTask,
-            Milestone,
+            MilestoneView,
             TimerEvent,
             UserEvent,
             Stage,

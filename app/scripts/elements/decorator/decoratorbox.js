@@ -88,7 +88,7 @@ class TaskDecoratorBox extends DecoratorBox {
 
 class MilestoneDecoratorBox extends DecoratorBox {
     /**
-     * @param {Milestone} view 
+     * @param {MilestoneView} view 
      */
     constructor(view) {
         super(view);
