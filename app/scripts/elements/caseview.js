@@ -96,7 +96,7 @@
                     if (definitionElement instanceof CaseFileItemDef) {
                         parent.__addCMMNChild(new CaseFileItemView(parent, definitionElement, shape));
                     } else if (definitionElement instanceof TextAnnotationDefinition) {
-                        parent.__addCMMNChild(new TextAnnotation(parent, definitionElement, shape)); 
+                        parent.__addCMMNChild(new TextAnnotationView(parent, definitionElement, shape)); 
                     } else {
                         // Quite weird :)
                     }
@@ -489,7 +489,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElementView|CaseFileItemView|TextAnnotation} cmmnElement 
+     * @param {CMMNElementView|CaseFileItemView|TextAnnotationView} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.

@@ -39,7 +39,7 @@ class ShapeBox {
             ExitCriterionView,
             CasePlanView,
             CaseFileItemView,
-            TextAnnotation
+            TextAnnotationView
         ];
         shapeTypes.forEach(shapeType => {
             const description = shapeType.typeDescription;

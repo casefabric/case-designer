@@ -193,8 +193,8 @@
             return this.__addCMMNChild(cmmnType.create(this, x, y));
         } else if (cmmnType == CaseFileItemView) {
             return this.__addCMMNChild(CaseFileItemView.create(this, x, y));
-        } else if (cmmnType == TextAnnotation) {
-            return this.__addCMMNChild(TextAnnotation.create(this, x, y));
+        } else if (cmmnType == TextAnnotationView) {
+            return this.__addCMMNChild(TextAnnotationView.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createCMMNChild(cmmnType, x, y);
         }
@@ -316,7 +316,7 @@
             elementType == TimerEvent.name ||
             elementType == CaseFileItemView.name ||
             elementType == StageView.name ||
-            elementType == TextAnnotation.name) {
+            elementType == TextAnnotationView.name) {
             return true;
         }
         return false;

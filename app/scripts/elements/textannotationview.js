@@ -1,4 +1,4 @@
-﻿class TextAnnotation extends CMMNElementView {
+﻿class TextAnnotationView extends CMMNElementView {
     /**
      * 
      * @param {StageView} stage 
@@ -8,11 +8,11 @@
     static create(stage, x, y) {
         const definition = stage.case.caseDefinition.createTextAnnotation();
         const shape = stage.case.diagram.createShape(x, y, 100, 60, definition.id);
-        return new TextAnnotation(stage, definition, shape);
+        return new TextAnnotationView(stage, definition, shape);
     }
 
     /**
-     * Creates a new TextAnnotation element
+     * Creates a new TextAnnotationView element
      * @param {StageView} parent 
      * @param {TextAnnotationDefinition} definition 
      * @param {ShapeDefinition} shape 
@@ -53,4 +53,4 @@
         };
     }
 }
-CMMNElementView.registerType(TextAnnotation, 'Text Annotation', 'images/svg/textannotation.svg');
+CMMNElementView.registerType(TextAnnotationView, 'Text Annotation', 'images/svg/textannotation.svg');
