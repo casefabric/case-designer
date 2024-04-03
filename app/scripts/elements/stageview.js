@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTask, CaseTaskView, ProcessTask, CasePlanModel, Milestone, Stage, UserEvent, TimerEvent),
+     * Creates a new view (either HumanTask, CaseTaskView, ProcessTask, CasePlanView, Milestone, Stage, UserEvent, TimerEvent),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */

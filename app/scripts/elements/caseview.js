@@ -68,7 +68,7 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
+            this.casePlanModel = new CasePlanView(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
 
 
             const getDefinition = shape => {
@@ -386,7 +386,7 @@
 
     setDropHandlers() {
         if (!this.casePlanModel) {
-            this.shapeBox.setDropHandler(dragData => this.createCasePlan(CasePlanModel, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
+            this.shapeBox.setDropHandler(dragData => this.createCasePlan(CasePlanView, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
         }
     }
 
@@ -448,7 +448,7 @@
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {
-        return elementType == CasePlanModel.name && !this.casePlanModel;
+        return elementType == CasePlanView.name && !this.casePlanModel;
     }
 
     /**
@@ -476,9 +476,9 @@
      * @param {*} e 
      */
     createCasePlan(cmmnType, e) {
-        if (cmmnType == CasePlanModel) {
+        if (cmmnType == CasePlanView) {
             const coor = this.getCursorCoordinates(e);
-            this.casePlanModel = CasePlanModel.create(this, coor.x, coor.y);
+            this.casePlanModel = CasePlanView.create(this, coor.x, coor.y);
             this.__addElement(this.casePlanModel);
             this.casePlanModel.propertiesView.show(true);
             return this.casePlanModel;

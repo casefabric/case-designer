@@ -106,7 +106,7 @@ class ConnectorHaloItem extends HaloDragItem {
         // Connectors to the case plan are not created, because that looks silly.
         //  As a matter of fact, connecting to a parent stage also still looks silly. Need to find a better solution.
         const cmmnElement = this.element.case.getItemUnderMouse(e);
-        if (cmmnElement && !(cmmnElement instanceof CasePlanModel)) {
+        if (cmmnElement && !(cmmnElement instanceof CasePlanView)) {
             // Note, we should connect to the source of the tempConnector, not to this.element;
             //  The reason is, that in between some other logic may have selected a new object,
             //  resulting in a new this.element.

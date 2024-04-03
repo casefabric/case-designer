@@ -1,7 +1,7 @@
 class CasePlanHalo extends Halo {
     /**
      * Create the halo for the caseplan model. This halo is situated next to the top tab of the case plan model
-     * @param {CasePlanModel} element 
+     * @param {CasePlanView} element 
      */
     constructor(element) {
         super(element);

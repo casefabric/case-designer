@@ -1,6 +1,6 @@
 class CasePlanProperties extends StageProperties {
     /**
-     * @param {CasePlanModel} casePlan 
+     * @param {CasePlanView} casePlan 
      */
     constructor(casePlan) {
         super(casePlan);

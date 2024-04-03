@@ -102,7 +102,7 @@ class MilestoneDecoratorBox extends DecoratorBox {
 
 class CasePlanDecoratorBox extends StageDecoratorBox {
     /**
-     * @param {CasePlanModel} view 
+     * @param {CasePlanView} view 
      */
     constructor(view) {
         super(view);

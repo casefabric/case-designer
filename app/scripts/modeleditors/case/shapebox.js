@@ -37,7 +37,7 @@ class ShapeBox {
             EntryCriterion,
             ReactivateCriterion,
             ExitCriterion,
-            CasePlanModel,
+            CasePlanView,
             CaseFileItemView,
             TextAnnotation
         ];

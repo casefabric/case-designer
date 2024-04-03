@@ -3,7 +3,7 @@ const CPM_WIDTH = 800;
 const CPM_HEIGHT = 500;
 const CPM_TAB_HEIGHT = 22;
 
-class CasePlanModel extends Stage {
+class CasePlanView extends Stage {
     /**
      * 
      * @param {CaseView} cs 
@@ -13,7 +13,7 @@ class CasePlanModel extends Stage {
     static create(cs, x = 10, y = 10) {
         const definition = cs.caseDefinition.getCasePlan();
         const shape = cs.diagram.createShape(x, y, 800, 500, definition.id);
-        return new CasePlanModel(cs, definition, shape)
+        return new CasePlanView(cs, definition, shape)
     }
 
     /**
@@ -120,4 +120,4 @@ class CasePlanModel extends Stage {
         }
     }
 }
-CMMNElementView.registerType(CasePlanModel, 'Case Plan', 'images/svg/caseplanmodel.svg');
+CMMNElementView.registerType(CasePlanView, 'Case Plan', 'images/svg/caseplanmodel.svg');

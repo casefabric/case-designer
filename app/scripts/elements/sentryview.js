@@ -4,7 +4,7 @@ class Sentry extends CMMNElementView {
     /**
      * Creates a new Sentry element.
      * Is an abstract sub class for EntryCriterion and ExitCriterion.
-     * @param {PlanItemView|CasePlanModel} planItem 
+     * @param {PlanItemView|CasePlanView} planItem 
      * @param {CriterionDefinition} definition 
      * @param {ShapeDefinition} shape 
      */
@@ -304,7 +304,7 @@ class Sentry extends CMMNElementView {
             if (!(cmmnElement instanceof Sentry || cmmnElement instanceof PlanItemView)) {
                 return false;
             }
-            if (cmmnElement instanceof CasePlanModel) {
+            if (cmmnElement instanceof CasePlanView) {
                 return false;
             }
             if (this.constructor == cmmnElement.constructor) {
@@ -401,7 +401,7 @@ class EntryCriterion extends Sentry {
             const targetParent = target.parent;
             // It does not make sense to listen and start a new plan item when the CasePlan goes exit,
             //  so skip that one.
-            if (!(targetParent instanceof CasePlanModel)) {
+            if (!(targetParent instanceof CasePlanView)) {
                 this.setPlanItemOnPart(targetParent, 'exit', target);
             }
         }
