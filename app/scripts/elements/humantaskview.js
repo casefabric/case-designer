@@ -1,6 +1,6 @@
 const BLOCKINGHUMANTASK_IMG = 'images/svg/blockinghumantask.svg';
 const NONBLOCKINGHUMANTASK_IMG = 'images/svg/nonblockinghumantask.svg';
-class HumanTaskView extends Task {
+class HumanTaskView extends TaskView {
     /**
      * 
      * @param {StageView} stage 
@@ -98,4 +98,4 @@ class HumanTaskView extends Task {
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElementView.registerType(HumanTaskView, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');
+CMMNElementView.registerType(HumanTaskView, 'Human TaskView', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');

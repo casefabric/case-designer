@@ -1,4 +1,4 @@
-class ProcessTaskView extends Task {
+class ProcessTaskView extends TaskView {
     /**
      * 
      * @param {StageView} stage 
@@ -41,4 +41,4 @@ class ProcessTaskView extends Task {
         return 'process';
     }
 }
-CMMNElementView.registerType(ProcessTaskView, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');
+CMMNElementView.registerType(ProcessTaskView, 'Process TaskView', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');

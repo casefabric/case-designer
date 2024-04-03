@@ -73,7 +73,7 @@ class StageDecoratorBox extends DecoratorBox {
 
 class TaskDecoratorBox extends DecoratorBox {
     /**
-     * @param {Task} view 
+     * @param {TaskView} view 
      */
     constructor(view) {
         super(view);

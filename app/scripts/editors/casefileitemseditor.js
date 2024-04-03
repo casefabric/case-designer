@@ -442,7 +442,7 @@ class CaseFileItemsEditor {
                 // TODO: this can be made more precise through navigating the definition structure instead of the visualization structure.
                 chars[7] = 'I';
                 chars[8] = 'O';
-            } else if (object instanceof Task) {
+            } else if (object instanceof TaskView) {
                 chars[1] = 'T'
             } else if (object instanceof StageView) {
                 chars[4] = 'S';

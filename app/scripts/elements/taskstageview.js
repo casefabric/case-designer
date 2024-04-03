@@ -1,6 +1,6 @@
 class TaskStageView extends PlanItemView {
     /**
-     * Simple class to share some logic from Task and StageView.
+     * Simple class to share some logic from TaskView and StageView.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition 
      * @param {TaskStageDefinition} planItemDefinition 

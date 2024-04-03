@@ -1,4 +1,4 @@
-class CaseTaskView extends Task {
+class CaseTaskView extends TaskView {
     /**
      * 
      * @param {StageView} stage 
@@ -41,4 +41,4 @@ class CaseTaskView extends Task {
         return 'case';
     }
 }
-CMMNElementView.registerType(CaseTaskView, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');
+CMMNElementView.registerType(CaseTaskView, 'Case TaskView', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');

@@ -80,7 +80,7 @@
                     this.raiseValidationIssue(19, [stage.typeDescription, stage.name, this.case.name]);
                 }
             }
-        } else if (cmmnParentElement instanceof Task) {
+        } else if (cmmnParentElement instanceof TaskView) {
             const task = cmmnParentElement;
             if (!task.__getConnectedElements().find(element => element instanceof PlanItemView && element.definition.isDiscretionary)) {
                 this.raiseValidationIssue(19, [task.typeDescription, task.name, this.case.name]);
