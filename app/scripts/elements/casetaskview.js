@@ -1,4 +1,4 @@
-class CaseTask extends Task {
+class CaseTaskView extends Task {
     /**
      * 
      * @param {Stage} stage 
@@ -9,13 +9,13 @@ class CaseTask extends Task {
         const definition = stage.planItemDefinition.createPlanItem(CaseTaskDefinition);
         const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof CaseTaskDefinition) {
-            return new CaseTask(stage, definition, definition.definition, shape);
+            return new CaseTaskView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new CaseTask element.
+     * Creates a new CaseTaskView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {CaseTaskDefinition} planItemDefinition 
@@ -27,7 +27,7 @@ class CaseTask extends Task {
     }
 
     getImplementationList() {
-        return ide.repository.getCases();
+        return this.editor.ide.repository.getCases();
     }
 
     /**
@@ -41,4 +41,4 @@ class CaseTask extends Task {
         return 'case';
     }
 }
-CMMNElementView.registerType(CaseTask, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');
+CMMNElementView.registerType(CaseTaskView, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');

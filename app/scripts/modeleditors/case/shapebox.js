@@ -28,7 +28,7 @@ class ShapeBox {
         // add following shapes
         const shapeTypes = [
             HumanTask,
-            CaseTask,
+            CaseTaskView,
             ProcessTask,
             Milestone,
             TimerEvent,

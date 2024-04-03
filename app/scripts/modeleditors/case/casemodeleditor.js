@@ -268,7 +268,7 @@ class CaseModelEditorMetadata extends ModelEditorMetadata {
 
     /** @returns {Function} */
     get shapeType() {
-        return CaseTask;
+        return CaseTaskView;
     }
 
     get description() {
