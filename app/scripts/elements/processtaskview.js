@@ -1,4 +1,4 @@
-class ProcessTask extends Task {
+class ProcessTaskView extends Task {
     /**
      * 
      * @param {Stage} stage 
@@ -9,13 +9,13 @@ class ProcessTask extends Task {
         const definition = stage.planItemDefinition.createPlanItem(ProcessTaskDefinition);
         const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof ProcessTaskDefinition) {
-            return new ProcessTask(stage, definition, definition.definition, shape);
+            return new ProcessTaskView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new ProcessTask element.
+     * Creates a new ProcessTaskView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ProcessTaskDefinition} planItemDefinition 
@@ -41,4 +41,4 @@ class ProcessTask extends Task {
         return 'process';
     }
 }
-CMMNElementView.registerType(ProcessTask, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');
+CMMNElementView.registerType(ProcessTaskView, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');

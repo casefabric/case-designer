@@ -266,7 +266,7 @@ class ProcessModelEditorMetadata extends ModelEditorMetadata {
 
     /** @returns {Function} */
     get shapeType() {
-        return ProcessTask;
+        return ProcessTaskView;
     }
 
     get description() {
