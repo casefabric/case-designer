@@ -176,30 +176,30 @@ class SentryHaloItem extends HaloDragItem {
 
 class EntryCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, EntryCriterion.smallImage, EntryCriterion.typeDescription);
+        super(halo, EntryCriterionView.smallImage, EntryCriterionView.typeDescription);
     }
 
     get haloType() {
-        return EntryCriterion.name;
+        return EntryCriterionView.name;
     }
 }
 
 class ReactivateCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, ReactivateCriterion.smallImage, ReactivateCriterion.typeDescription);
+        super(halo, ReactivateCriterionView.smallImage, ReactivateCriterionView.typeDescription);
     }
 
     get haloType() {
-        return ReactivateCriterion.name;
+        return ReactivateCriterionView.name;
     }
 }
 
 class ExitCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, ExitCriterion.smallImage, ExitCriterion.typeDescription);
+        super(halo, ExitCriterionView.smallImage, ExitCriterionView.typeDescription);
     }
 
     get haloType() {
-        return ExitCriterion.name;
+        return ExitCriterionView.name;
     }
 }

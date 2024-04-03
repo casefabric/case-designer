@@ -1,6 +1,6 @@
 class SentryProperties extends Properties {
     /**
-     * @param {Sentry} sentry 
+     * @param {SentryView} sentry 
      */
     constructor(sentry) {
         super(sentry);

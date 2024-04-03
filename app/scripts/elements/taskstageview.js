@@ -137,6 +137,6 @@ class TaskStage extends PlanItemView {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterion.name || criterionType == ReactivateCriterion.name || criterionType == ExitCriterion.name;
+        return criterionType == EntryCriterionView.name || criterionType == ReactivateCriterionView.name || criterionType == ExitCriterionView.name;
     }
 }

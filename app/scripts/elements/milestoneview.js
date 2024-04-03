@@ -73,7 +73,7 @@ class MilestoneView extends PlanItemView {
      * @returns 
      */
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterion.name;
+        return criterionType == EntryCriterionView.name;
     }
 }
 CMMNElementView.registerType(MilestoneView, 'MilestoneView', 'images/svg/milestone.svg');

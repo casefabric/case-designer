@@ -58,11 +58,11 @@
     fill: rgb(156, 175, 226);
 }
 
-.cmmn-exitcriterion-shape {
+.cmmn-exitcriterionview-shape {
     fill: black;
 }
 
-.cmmn-entrycriterion-shape {
+.cmmn-entrycriterionview-shape {
     fill: white;
 }
 

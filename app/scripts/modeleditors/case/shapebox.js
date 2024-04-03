@@ -34,9 +34,9 @@ class ShapeBox {
             TimerEvent,
             UserEvent,
             Stage,
-            EntryCriterion,
-            ReactivateCriterion,
-            ExitCriterion,
+            EntryCriterionView,
+            ReactivateCriterionView,
+            ExitCriterionView,
             CasePlanView,
             CaseFileItemView,
             TextAnnotation

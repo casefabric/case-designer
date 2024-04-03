@@ -109,12 +109,12 @@ class CasePlanView extends Stage {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == ExitCriterion.name;
+        return criterionType == ExitCriterionView.name;
     }
 
     createCMMNChild(cmmnType, x, y) {
-        if (cmmnType == ExitCriterion) {
-            return this.__addCMMNChild(ExitCriterion.create(this, x, y));
+        if (cmmnType == ExitCriterionView) {
+            return this.__addCMMNChild(ExitCriterionView.create(this, x, y));
         } else {
             return super.createCMMNChild(cmmnType, x, y);
         }

@@ -1,7 +1,7 @@
 class EntryCriterionHalo extends Halo {
     /**
      * Create the halo for the entry criterion.
-     * @param {EntryCriterion} element 
+     * @param {EntryCriterionView} element 
      */
     constructor(element) {
         super(element);
@@ -19,7 +19,7 @@ class EntryCriterionHalo extends Halo {
 class ReactivateCriterionHalo extends Halo {
     /**
      * Create the halo for the entry criterion.
-     * @param {EntryCriterion} element 
+     * @param {EntryCriterionView} element 
      */
     constructor(element) {
         super(element);
@@ -37,7 +37,7 @@ class ReactivateCriterionHalo extends Halo {
 class ExitCriterionHalo extends Halo {
     /**
      * Create the halo for the exit criterion.
-     * @param {ExitCriterion} element 
+     * @param {ExitCriterionView} element 
      */
     constructor(element) {
         super(element);

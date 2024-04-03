@@ -63,7 +63,7 @@
         this.source = source;
         this.target = target;
         this.edge = edge;
-        this.sentry = source instanceof Sentry ? source : target instanceof Sentry ? target : undefined;
+        this.sentry = source instanceof SentryView ? source : target instanceof SentryView ? target : undefined;
 
         const arrowStyle = this.sentry ? '8 3 3 3 3 3' : '5 5'
 
