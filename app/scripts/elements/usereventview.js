@@ -1,4 +1,4 @@
-class UserEvent extends EventListenerView {
+class UserEventView extends EventListenerView {
     /**
      * 
      * @param {StageView} stage 
@@ -9,13 +9,13 @@ class UserEvent extends EventListenerView {
         const definition = stage.planItemDefinition.createPlanItem(UserEventDefinition);
         const shape = stage.case.diagram.createShape(x, y, 32, 32, definition.id);
         if (definition.definition instanceof UserEventDefinition) {
-            return new UserEvent(stage, definition, definition.definition, shape);
+            return new UserEventView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new UserEvent element.
+     * Creates a new UserEventView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {UserEventDefinition} planItemDefinition 
@@ -51,4 +51,4 @@ class UserEvent extends EventListenerView {
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElementView.registerType(UserEvent, 'User Event', 'images/svg/userevent.svg');
+CMMNElementView.registerType(UserEventView, 'User Event', 'images/svg/userevent.svg');

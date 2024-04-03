@@ -32,7 +32,7 @@ class ShapeBox {
             ProcessTaskView,
             MilestoneView,
             TimerEventView,
-            UserEvent,
+            UserEventView,
             StageView,
             EntryCriterionView,
             ReactivateCriterionView,

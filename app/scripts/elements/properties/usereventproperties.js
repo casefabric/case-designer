@@ -1,7 +1,7 @@
 class UserEventProperties extends PlanItemProperties {
     /**
      * 
-     * @param {UserEvent} userEvent 
+     * @param {UserEventView} userEvent 
      */
     constructor(userEvent) {
         super(userEvent);

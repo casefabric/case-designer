@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEvent, TimerEventView),
+     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEventView, TimerEventView),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */
@@ -145,7 +145,7 @@
         } else if (planItemDefinition instanceof MilestoneDefinition) {
             return new MilestoneView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof UserEventDefinition) {
-            return new UserEvent(this, definition, planItemDefinition, shape);
+            return new UserEventView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof TimerEventDefinition) {
             return new TimerEventView(this, definition, planItemDefinition, shape);
         } else {
@@ -312,7 +312,7 @@
             elementType == CaseTaskView.name ||
             elementType == ProcessTaskView.name ||
             elementType == MilestoneView.name ||
-            elementType == UserEvent.name ||
+            elementType == UserEventView.name ||
             elementType == TimerEventView.name ||
             elementType == CaseFileItemView.name ||
             elementType == StageView.name ||
