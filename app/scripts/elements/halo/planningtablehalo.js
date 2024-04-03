@@ -1,7 +1,7 @@
 class PlanningTableHalo extends Halo {
     /**
      * Create the halo for the planning table.
-     * @param {PlanningTable} element 
+     * @param {PlanningTableView} element 
      */
     constructor(element) {
         super(element);

@@ -1,4 +1,4 @@
-﻿class PlanningTable extends CMMNElementView {
+﻿class PlanningTableView extends CMMNElementView {
 
     /**
      * 
@@ -135,4 +135,4 @@
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElementView.registerType(PlanningTable, 'Planning Table');
+CMMNElementView.registerType(PlanningTableView, 'Planning Table');

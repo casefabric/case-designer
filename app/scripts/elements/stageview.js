@@ -68,7 +68,7 @@
     resetChildren() {
         const currentChildren = this.__childElements;
         // Only other plan items, case file items and textboxes can move in/out of us. Not planning tables or sentries.
-        const allCaseItems = this.case.items.filter(item => !(item instanceof PlanningTable) && !(item instanceof Sentry));
+        const allCaseItems = this.case.items.filter(item => !(item instanceof PlanningTableView) && !(item instanceof Sentry));
         // Create a collection of items we surround visually, but only the "top-level", not their children.
         const visuallySurroundedItems = allCaseItems.filter(item => this.surrounds(item) && !this.surrounds(item.parent));
         // Former children: those that are currently a descendant, but that we no longer surround visually.

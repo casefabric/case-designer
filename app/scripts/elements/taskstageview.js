@@ -62,17 +62,17 @@ class TaskStage extends PlanItemView {
             if (! this.planningTableView) {
                 const position = this.__planningTablePosition;
                 const shape = this.case.diagram.getShape(ptDefinition) || this.case.diagram.createShape(position.x, position.y, 24, 16, ptDefinition.id);
-                new PlanningTable(this, this.planItemDefinition.planningTable, shape);
+                new PlanningTableView(this, this.planItemDefinition.planningTable, shape);
             }
         }
     }
 
     /**
-     * @returns {PlanningTable}
+     * @returns {PlanningTableView}
      */
     get planningTableView() {
-        const table = this.__childElements.find(child => child instanceof PlanningTable);
-        if (table instanceof PlanningTable) return table; // Adds "typesafety"
+        const table = this.__childElements.find(child => child instanceof PlanningTableView);
+        if (table instanceof PlanningTableView) return table; // Adds "typesafety"
     }
 
     __addConnector(connector) {

@@ -538,7 +538,7 @@
      * @param {CMMNElementView} cmmnElement 
      */
     __removeElement(cmmnElement) {
-        // if (cmmnElement instanceof PlanningTable) return; // Cannot delete planning table images.
+        // if (cmmnElement instanceof PlanningTableView) return; // Cannot delete planning table images.
 
         // Remove it; which recursively also removes the children; only then save it.
         cmmnElement.__delete();

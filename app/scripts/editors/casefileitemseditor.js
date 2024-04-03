@@ -452,7 +452,7 @@ class CaseFileItemsEditor {
                 chars[2] = 'E';
             } else if (object instanceof Sentry) {
                 chars[0] = 's';
-            } else if (object instanceof PlanningTable) {
+            } else if (object instanceof PlanningTableView) {
                 chars[5] = 'P';
             } else if (object instanceof CaseFileItemView) {
                 chars[6] = 'C';
