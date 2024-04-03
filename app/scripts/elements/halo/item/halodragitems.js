@@ -89,7 +89,7 @@ class ConnectorHaloItem extends HaloDragItem {
      * @param {Halo} halo 
      */
     static defaultBar(halo) {
-        if (halo.element instanceof EventListener) {
+        if (halo.element instanceof EventListenerView) {
             return halo.topRightBar;
         }
         return halo.rightBar;

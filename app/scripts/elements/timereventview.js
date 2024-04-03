@@ -1,4 +1,4 @@
-class TimerEvent extends EventListener {
+class TimerEvent extends EventListenerView {
     /**
      * 
      * @param {Stage} stage 

@@ -168,10 +168,10 @@ class CMMNElementView extends CanvasElement {
     nearElement(e, distance) {
         const offset = this.html.offset();
 
-        // EventListener somehow have an unclear and weird positioning with jointjs. Hence we need to do some correction for that.
+        // EventListenerView somehow have an unclear and weird positioning with jointjs. Hence we need to do some correction for that.
         //  Note that this is still not a flawless improvement :(
-        const left = this instanceof EventListener ? offset.left - 0.5 * distance : offset.left - distance;
-        const right = this instanceof EventListener ? offset.left + this.shape.width + 1.5 * distance : offset.left + this.shape.width + distance;
+        const left = this instanceof EventListenerView ? offset.left - 0.5 * distance : offset.left - distance;
+        const right = this instanceof EventListenerView ? offset.left + this.shape.width + 1.5 * distance : offset.left + this.shape.width + distance;
         const top = offset.top - distance;
         const bottom = offset.top + this.shape.height + distance;
         const x = e.clientX;

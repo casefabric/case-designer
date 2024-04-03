@@ -1,4 +1,4 @@
-class UserEvent extends EventListener {
+class UserEvent extends EventListenerView {
     /**
      * 
      * @param {Stage} stage 

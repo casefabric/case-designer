@@ -1,6 +1,6 @@
-﻿class EventListener extends PlanItemView {
+﻿class EventListenerView extends PlanItemView {
     /**
-     * Creates a new EventListener
+     * Creates a new EventListenerView
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ShapeDefinition} shape 

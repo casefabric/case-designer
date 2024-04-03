@@ -448,7 +448,7 @@ class CaseFileItemsEditor {
                 chars[4] = 'S';
             } else if (object instanceof Milestone) {
                 chars[3] = 'M';
-            } else if (object instanceof EventListener) {
+            } else if (object instanceof EventListenerView) {
                 chars[2] = 'E';
             } else if (object instanceof Sentry) {
                 chars[0] = 's';
