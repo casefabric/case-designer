@@ -1,4 +1,4 @@
-﻿class StageView extends TaskStage {
+﻿class StageView extends TaskStageView {
     /**
      * 
      * @param {StageView} stage 

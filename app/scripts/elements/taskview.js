@@ -1,4 +1,4 @@
-﻿class Task extends TaskStage {
+﻿class Task extends TaskStageView {
 
     /**
      * Creates a new Task element.

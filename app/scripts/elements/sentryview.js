@@ -219,7 +219,7 @@ class SentryView extends CMMNElementView {
 
         //check if parent is discretionary
         const cmmnParentElement = this.parent;
-        if (cmmnParentElement instanceof TaskStage && !cmmnParentElement.definition.isDiscretionary) {
+        if (cmmnParentElement instanceof TaskStageView && !cmmnParentElement.definition.isDiscretionary) {
             return;
         }
 

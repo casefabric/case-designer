@@ -1,4 +1,4 @@
-class TaskStage extends PlanItemView {
+class TaskStageView extends PlanItemView {
     /**
      * Simple class to share some logic from Task and StageView.
      * @param {CMMNElementView} parent 
@@ -112,13 +112,13 @@ class TaskStage extends PlanItemView {
         // Check discretionary
         if (this.definition.isDiscretionary) {
             // ------- check if connected to a stage or task with a planning table first check connected to element with planningTable
-            const numberOfConnectionsToPlanningTable = this.__getConnectedElements().filter(item => item instanceof TaskStage && item.planItemDefinition.planningTable).length;
+            const numberOfConnectionsToPlanningTable = this.__getConnectedElements().filter(item => item instanceof TaskStageView && item.planItemDefinition.planningTable).length;
             //not connected check if inside stage/case plan model with plannnigTable
             if (numberOfConnectionsToPlanningTable == 0) {
                 // not connected to task with planningTable check if parent is stage or case plan
                 // model with planningTable
                 const cmmnParent = this.parent;
-                if (cmmnParent && cmmnParent instanceof TaskStage) {
+                if (cmmnParent && cmmnParent instanceof TaskStageView) {
                     if (!cmmnParent.planItemDefinition.planningTable) {
                         this.raiseValidationIssue(20);
                     }

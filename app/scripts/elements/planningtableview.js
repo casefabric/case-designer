@@ -2,7 +2,7 @@
 
     /**
      * 
-     * @param {TaskStage} parent 
+     * @param {TaskStageView} parent 
      * @param {PlanningTableDefinition} definition 
      * @param {ShapeDefinition} shape 
      */
