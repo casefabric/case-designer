@@ -1,7 +1,7 @@
 ﻿class Connector extends CanvasElement {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {Edge} edge 
      */
     static createConnectorFromEdge(cs, edge) {
@@ -53,7 +53,7 @@
 
     /**
      * Creates a connector (=link in jointJS) between a source and a target.
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {CMMNElementView} source 
      * @param {CMMNElementView} target 
      * @param {Edge} edge 

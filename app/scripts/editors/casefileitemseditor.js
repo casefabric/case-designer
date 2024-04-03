@@ -3,7 +3,7 @@
 class CaseFileItemsEditor {
     /**
      * Renders the CaseFile definition through fancytree
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {JQuery<HTMLElement>} htmlParent 
      */
     constructor(cs, htmlParent) {

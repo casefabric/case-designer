@@ -1,6 +1,6 @@
-﻿class Case {
+﻿class CaseView {
     /**
-     * Creates a new Case object based on the definition and dimensions
+     * Creates a new CaseView object based on the definition and dimensions
      * @param {CaseModelEditor} editor
      * @param {JQuery<HTMLElement>} htmlParent
      * @param {CaseDefinition} caseDefinition 
@@ -415,7 +415,7 @@
      * @returns {String}
      */
     get typeDescription() {
-        return 'Case';
+        return 'CaseView';
     };
 
     /**

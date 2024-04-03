@@ -20,8 +20,8 @@ class CMMNElementView extends CanvasElement {
         this.parent = parent;
         this.definition = definition;
         this.shape = shape;
-        /** @type{Case} */
-        this.case = parent instanceof Case ? parent : parent.case;
+        /** @type{CaseView} */
+        this.case = parent instanceof CaseView ? parent : parent.case;
         this.case.items.push(this);
         this.editor = this.case.editor;
         /** @type{Array<Connector>} */

@@ -1,7 +1,7 @@
 class ShapeBox {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {JQuery<HTMLElement>} htmlElement 
      */
     constructor(cs, htmlElement) {

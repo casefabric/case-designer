@@ -69,7 +69,7 @@ class CaseModelEditor extends ModelEditor {
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new Case(this, this.htmlContainer, caseDefinition, dimensions);
+        this.case = new CaseView(this, this.htmlContainer, caseDefinition, dimensions);
 
         if (this.__migrated) {
             this.saveModel();

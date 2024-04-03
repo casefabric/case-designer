@@ -6,7 +6,7 @@ const CPM_TAB_HEIGHT = 22;
 class CasePlanModel extends Stage {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {*} x 
      * @param {*} y 
      */
@@ -18,7 +18,7 @@ class CasePlanModel extends Stage {
 
     /**
      * Creates a new CasePlan model
-     * @param {*} parent Must be the Case object itself.
+     * @param {*} parent Must be the CaseView object itself.
      * @param {CasePlanDefinition} definition 
      * @param {ShapeDefinition} shape 
      */
