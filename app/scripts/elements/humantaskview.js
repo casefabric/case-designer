@@ -1,6 +1,6 @@
 const BLOCKINGHUMANTASK_IMG = 'images/svg/blockinghumantask.svg';
 const NONBLOCKINGHUMANTASK_IMG = 'images/svg/nonblockinghumantask.svg';
-class HumanTask extends Task {
+class HumanTaskView extends Task {
     /**
      * 
      * @param {Stage} stage 
@@ -11,13 +11,13 @@ class HumanTask extends Task {
         const definition = stage.planItemDefinition.createPlanItem(HumanTaskDefinition);
         const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
         if (definition.definition instanceof HumanTaskDefinition) {
-            return new HumanTask(stage, definition, definition.definition, shape);
+            return new HumanTaskView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new HumanTask element.
+     * Creates a new HumanTaskView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {HumanTaskDefinition} planItemDefinition 
@@ -98,4 +98,4 @@ class HumanTask extends Task {
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElementView.registerType(HumanTask, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');
+CMMNElementView.registerType(HumanTaskView, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');

@@ -15,7 +15,7 @@
     }
 
     /**
-     * Creates a new HumanTask element.
+     * Creates a new Stage element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {StageDefinition} planItemDefinition 
@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTask, CaseTaskView, ProcessTask, CasePlanView, Milestone, Stage, UserEvent, TimerEvent),
+     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTask, CasePlanView, Milestone, Stage, UserEvent, TimerEvent),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */
@@ -135,7 +135,7 @@
         }
 
         if (planItemDefinition instanceof HumanTaskDefinition) {
-            return new HumanTask(this, definition, planItemDefinition, shape);
+            return new HumanTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof CaseTaskDefinition) {
             return new CaseTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof ProcessTaskDefinition) {
@@ -308,7 +308,7 @@
      */
     __canHaveAsChild(elementType) {
         if (this.canHaveCriterion(elementType) ||
-            elementType == HumanTask.name ||
+            elementType == HumanTaskView.name ||
             elementType == CaseTaskView.name ||
             elementType == ProcessTask.name ||
             elementType == Milestone.name ||

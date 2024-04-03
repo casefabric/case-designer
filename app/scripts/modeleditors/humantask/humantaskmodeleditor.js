@@ -269,7 +269,7 @@ class HumantaskModelEditorMetadata extends ModelEditorMetadata {
 
     /** @returns {Function} */
     get shapeType() {
-        return HumanTask;
+        return HumanTaskView;
     }
 
     get description() {
@@ -277,7 +277,7 @@ class HumantaskModelEditorMetadata extends ModelEditorMetadata {
     }
 
     /**
-     * Create a new HumanTask model with given name and description 
+     * Create a new HumanTaskView model with given name and description 
      * @param {IDE} ide 
      * @param {String} name 
      * @param {String} description 

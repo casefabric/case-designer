@@ -27,7 +27,7 @@ class ShapeBox {
         this.htmlContainer = html.find('ul');
         // add following shapes
         const shapeTypes = [
-            HumanTask,
+            HumanTaskView,
             CaseTaskView,
             ProcessTask,
             Milestone,

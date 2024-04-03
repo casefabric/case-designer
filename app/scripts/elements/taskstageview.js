@@ -79,8 +79,8 @@ class TaskStage extends PlanItemView {
         super.__addConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
-            if (target instanceof HumanTask) {
-                // We are discretionary, and need to be added to the discretionary items in the planning table of the HumanTask
+            if (target instanceof HumanTaskView) {
+                // We are discretionary, and need to be added to the discretionary items in the planning table of the HumanTaskView
                 this.definition.switchParent(target.planItemDefinition);
             }
             this.parent.refreshView();
@@ -91,7 +91,7 @@ class TaskStage extends PlanItemView {
         super.__removeConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
-            if (target instanceof HumanTask) { // If target is HumanTask, then we are the Stage containing that task.
+            if (target instanceof HumanTaskView) { // If target is HumanTaskView, then we are the Stage containing that task.
                 this.definition.switchParent(target.parent.planItemDefinition);
                 this.parent.refreshView();
             }

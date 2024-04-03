@@ -2,7 +2,7 @@ class PreviewTaskForm extends StandardForm {
     /**
      * Editor for the content of the extension element <start-case-schema>
      * @param {ModelEditor} editor
-     * @param {HumanTask} task
+     * @param {HumanTaskView} task
      */
     constructor(editor, task, dataGetter = undefined) {
         super(editor, 'Task Preview', 'task-preview');

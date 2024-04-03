@@ -21,7 +21,7 @@ class TaskHalo extends PlanItemHalo {
 class HumanTaskHalo extends TaskHalo {
     /**
      * Create the halo for the task.
-     * @param {HumanTask} element 
+     * @param {HumanTaskView} element 
      */
     constructor(element) {
         super(element);

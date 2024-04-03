@@ -16,7 +16,7 @@ class Milestone extends PlanItemView {
     }
 
     /**
-     * Creates a new HumanTask element.
+     * Creates a new HumanTaskView element.
      * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {MilestoneDefinition} planItemDefinition 
