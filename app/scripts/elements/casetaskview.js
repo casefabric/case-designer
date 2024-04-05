@@ -16,7 +16,7 @@ class CaseTask extends Task {
 
     /**
      * Creates a new CaseTask element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {CaseTaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -41,4 +41,4 @@ class CaseTask extends Task {
         return 'case';
     }
 }
-CMMNElement.registerType(CaseTask, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');
+CMMNElementView.registerType(CaseTask, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');

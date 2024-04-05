@@ -1,8 +1,8 @@
-class PlanItemView extends CMMNElement {
+class PlanItemView extends CMMNElementView {
     /**
      * This is a generic class for plan item rendering; it takes default properties of the definition
      * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, Stage, Milestone).
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ShapeDefinition} shape 
      */

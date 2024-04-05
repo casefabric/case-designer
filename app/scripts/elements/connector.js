@@ -43,8 +43,8 @@
 
     /**
      * Creates a connector object and an edge between the source and the target element.
-     * @param {CMMNElement} source 
-     * @param {CMMNElement} target 
+     * @param {CMMNElementView} source 
+     * @param {CMMNElementView} target 
      */
     static createConnector(source, target) {
         const edge = Edge.create(source, target);
@@ -54,8 +54,8 @@
     /**
      * Creates a connector (=link in jointJS) between a source and a target.
      * @param {Case} cs 
-     * @param {CMMNElement} source 
-     * @param {CMMNElement} target 
+     * @param {CMMNElementView} source 
+     * @param {CMMNElementView} target 
      * @param {Edge} edge 
      */
     constructor(cs, source, target, edge) {
@@ -164,7 +164,7 @@
 class TemporaryConnector extends CanvasElement {
     /**
      * Creates a temporary connector (=link in jointJS) from the source to a set of target coordinates
-     * @param {CMMNElement} source 
+     * @param {CMMNElementView} source 
      * @param {*} coordinates 
      */
     constructor(source, coordinates) {

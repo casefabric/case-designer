@@ -3,7 +3,7 @@ class Halo {
      * Creates a halo for the cmmn element.
      * The content of the halo need not be set it in the constructor, but rather
      * in the implementation of the createContent() method. This is invoked right after constructor invocation.
-     * @param {CMMNElement} element 
+     * @param {CMMNElementView} element 
      */
     constructor(element) {
         this.element = element;

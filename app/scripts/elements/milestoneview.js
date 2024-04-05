@@ -17,7 +17,7 @@ class Milestone extends PlanItemView {
 
     /**
      * Creates a new HumanTask element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {MilestoneDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -76,4 +76,4 @@ class Milestone extends PlanItemView {
         return criterionType == EntryCriterion.name;
     }
 }
-CMMNElement.registerType(Milestone, 'Milestone', 'images/svg/milestone.svg');
+CMMNElementView.registerType(Milestone, 'Milestone', 'images/svg/milestone.svg');

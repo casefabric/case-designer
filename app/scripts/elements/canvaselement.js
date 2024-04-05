@@ -1,6 +1,9 @@
 class CanvasElement {
-    constructor(cs) {
-        this.case = cs;
+    /**
+     * @param {CMMNElementView | Case} element 
+     */
+    constructor(element) {
+        this.case = element instanceof Case ? element : element.case;
     }
 
     set xyz_joint(jointElement) {

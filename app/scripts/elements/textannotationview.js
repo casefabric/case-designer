@@ -1,4 +1,4 @@
-﻿class TextAnnotation extends CMMNElement {
+﻿class TextAnnotation extends CMMNElementView {
     /**
      * 
      * @param {Stage} stage 
@@ -53,4 +53,4 @@
         };
     }
 }
-CMMNElement.registerType(TextAnnotation, 'Text Annotation', 'images/svg/textannotation.svg');
+CMMNElementView.registerType(TextAnnotation, 'Text Annotation', 'images/svg/textannotation.svg');

@@ -194,7 +194,7 @@ class CaseModelEditor extends ModelEditor {
      * Handles pressing an arrow key. Moves either top editor or selected element around.
      * @param {Number} keyCode 
      * @param {MovableEditor} visibleMovableEditor 
-     * @param {CMMNElement} selectedElement 
+     * @param {CMMNElementView} selectedElement 
      * @returns {Boolean} false if the event must be canceled, true if the arrow press was not handled.
      */
     handleArrowPress(keyCode, visibleMovableEditor, selectedElement) {

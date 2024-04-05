@@ -35,7 +35,7 @@ class ShapeDefinition extends DiagramElement {
 
     /**
      * removeDefinition is an "override" implementation of CMMNElementDefinition.removeDefinition.
-     * Within CMMNElement, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
+     * Within CMMNElementView, the __delete() method invokes this.definition.removeDefinition(), which in fact removes the CMMNElementDefinition
      * from the CaseDefinition. However, for TextAnnotation and CaseFileItem, this.definition refers to the custom shape, instead of to a CMMNElementDefinition.
      * Therefore we "override" this method here and update the internal registration.
      */

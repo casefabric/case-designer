@@ -120,4 +120,4 @@ class CasePlanModel extends Stage {
         }
     }
 }
-CMMNElement.registerType(CasePlanModel, 'Case Plan', 'images/svg/caseplanmodel.svg');
+CMMNElementView.registerType(CasePlanModel, 'Case Plan', 'images/svg/caseplanmodel.svg');

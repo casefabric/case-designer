@@ -10,7 +10,7 @@ class ExpressionEditor {
     /**
      * 
      * @param {*} textarea 
-     * @param {CMMNElement} element 
+     * @param {CMMNElementView} element 
      */
     static init(textarea, element) {
         g_element = element;

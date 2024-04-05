@@ -1,7 +1,7 @@
 class TaskStage extends PlanItemView {
     /**
      * Simple class to share some logic from Task and Stage.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition 
      * @param {TaskStageDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 

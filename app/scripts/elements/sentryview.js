@@ -1,6 +1,6 @@
 ﻿
 
-class Sentry extends CMMNElement {
+class Sentry extends CMMNElementView {
     /**
      * Creates a new Sentry element.
      * Is an abstract sub class for EntryCriterion and ExitCriterion.
@@ -81,7 +81,7 @@ class Sentry extends CMMNElement {
      * When the dataNode does not exist (no entry for the element yet)-> create
      * Return the dataNode
      * 
-     * @param {CMMNElement} source 
+     * @param {CMMNElementView} source 
      * @param {String} defaultEvent 
      * @param {ExitCriterion} exitCriterion 
      */
@@ -460,6 +460,6 @@ class ExitCriterion extends Sentry {
     }
 }
 
-CMMNElement.registerType(EntryCriterion, 'Entry Criterion', 'images/svg/entrycriterion.svg');
-CMMNElement.registerType(ReactivateCriterion, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
-CMMNElement.registerType(ExitCriterion, 'Exit Criterion', 'images/svg/exitcriterion.svg');
+CMMNElementView.registerType(EntryCriterion, 'Entry Criterion', 'images/svg/entrycriterion.svg');
+CMMNElementView.registerType(ReactivateCriterion, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
+CMMNElementView.registerType(ExitCriterion, 'Exit Criterion', 'images/svg/exitcriterion.svg');

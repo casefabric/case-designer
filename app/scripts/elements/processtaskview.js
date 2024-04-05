@@ -16,7 +16,7 @@ class ProcessTask extends Task {
 
     /**
      * Creates a new ProcessTask element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ProcessTaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -41,4 +41,4 @@ class ProcessTask extends Task {
         return 'process';
     }
 }
-CMMNElement.registerType(ProcessTask, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');
+CMMNElementView.registerType(ProcessTask, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');

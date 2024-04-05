@@ -57,7 +57,7 @@ class Validator {
 
     /**
      * adds a problem (with problem type number that is not valid according to the CMMN schema) to the problem list
-     * ContextId is the unique identifier for the problem's location in the CMMN schema (e.g., typically CMMNElement.id)
+     * ContextId is the unique identifier for the problem's location in the CMMN schema (e.g., typically CMMNElementView.id)
      * @param {String} contextId
      * @param {Number} problemTypeNumber
      * @param {Array<String>} parameters

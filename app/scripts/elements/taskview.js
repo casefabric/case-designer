@@ -2,7 +2,7 @@
 
     /**
      * Creates a new Task element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {TaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 

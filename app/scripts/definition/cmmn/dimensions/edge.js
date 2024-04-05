@@ -1,8 +1,8 @@
 class Edge extends DiagramElement {
     /**
      * Create a new Edge shape that binds the two CMMNElements.
-     * @param {CMMNElement} source 
-     * @param {CMMNElement} target
+     * @param {CMMNElementView} source 
+     * @param {CMMNElementView} target
      * @returns {Edge}
      */
     static create(source, target) {

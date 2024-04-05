@@ -16,7 +16,7 @@
 
     /**
      * Creates a new HumanTask element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {StageDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -81,7 +81,7 @@
 
     /**
      * Determines whether this stage visually surrounds the cmmn element.
-     * @param {CMMNElement} other 
+     * @param {CMMNElementView} other 
      */
     surrounds(other) {
         // Note: this method is added here instead of directly invoking shape.surrounds because logic is different at caseplan level, so caseplan can override.
@@ -155,7 +155,7 @@
 
     /**
      * Method invoked when a child is moved into this element from a different parent.
-     * @param {CMMNElement} childElement 
+     * @param {CMMNElementView} childElement 
      */
     adoptItem(childElement) {
         const previousParent = childElement.parent;
@@ -322,4 +322,4 @@
         return false;
     }
 }
-CMMNElement.registerType(Stage, 'Stage', 'images/svg/collapsedstage.svg');
+CMMNElementView.registerType(Stage, 'Stage', 'images/svg/collapsedstage.svg');

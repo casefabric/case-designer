@@ -52,7 +52,7 @@
         this.shapeBox = new ShapeBox(this, this.divShapeBox);
         this.splitter = new RightSplitter(this.divCaseModel, '60%', 5);
 
-        /** @type {Array<CMMNElement>} */
+        /** @type {Array<CMMNElementView>} */
         this.items = [];
         this.connectors = [];
 
@@ -221,7 +221,7 @@
     /**
      * 
      * @param {*} jointElementView 
-     * @returns {CMMNElement}
+     * @returns {CMMNElementView}
      */
     getCMMNElement(jointElementView) {
         return jointElementView.model.xyz_cmmn;
@@ -306,7 +306,7 @@
     /**
      * Sets/gets the element currently (to be) selected.
      * Upon setting a new selection, the previously selected element is de-selected
-     * @param {CMMNElement} element
+     * @param {CMMNElementView} element
      */
     set selectedElement(element) {
         const previousSelection = this._selectedElement;
@@ -367,12 +367,12 @@
      * Returns the deepest cmmn element under cursor. If that is equal to self, then
      * parent of self is returned.
      * @param {*} e 
-     * @param {CMMNElement} self 
-     * @returns {CMMNElement}
+     * @param {CMMNElementView} self 
+     * @returns {CMMNElementView}
      */
     getItemUnderMouse(e, self = undefined) {
         const itemsUnderMouse = this.items.filter(item => item.nearElement(e, 10));
-        const parentsUnderMouse = itemsUnderMouse.filter(item => item.parent instanceof CMMNElement).map(item => item.parent);
+        const parentsUnderMouse = itemsUnderMouse.filter(item => item.parent instanceof CMMNElementView).map(item => item.parent);
 
         // If self is passed, then the collections need to filter it out.
         if (self) {
@@ -489,7 +489,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElement|CaseFileItem|TextAnnotation} cmmnElement 
+     * @param {CMMNElementView|CaseFileItem|TextAnnotation} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.
@@ -535,7 +535,7 @@
 
     /**
      * Remove an element from the canvas, including it's children.
-     * @param {CMMNElement} cmmnElement 
+     * @param {CMMNElementView} cmmnElement 
      */
     __removeElement(cmmnElement) {
         // if (cmmnElement instanceof PlanningTable) return; // Cannot delete planning table images.
@@ -554,9 +554,9 @@
     }
 
     /**
-     * Finds the CMMNElement with the specified ID or undefined.
+     * Finds the CMMNElementView with the specified ID or undefined.
      * @param {String} id 
-     * @returns {CMMNElement}
+     * @returns {CMMNElementView}
      */
     getItem(id) {
         return this.items.find(item => id && item.id == id);

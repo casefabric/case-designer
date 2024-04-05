@@ -18,7 +18,7 @@ class HumanTask extends Task {
 
     /**
      * Creates a new HumanTask element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {HumanTaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -98,4 +98,4 @@ class HumanTask extends Task {
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElement.registerType(HumanTask, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');
+CMMNElementView.registerType(HumanTask, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');

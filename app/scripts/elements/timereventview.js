@@ -16,7 +16,7 @@ class TimerEvent extends EventListener {
 
     /**
      * Creates a new UserEvent element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {TimerEventDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -42,4 +42,4 @@ class TimerEvent extends EventListener {
         return super.referencesDefinitionElement(definitionId);
     }    
 }
-CMMNElement.registerType(TimerEvent, 'Timer Event', 'images/svg/timerevent.svg');
+CMMNElementView.registerType(TimerEvent, 'Timer Event', 'images/svg/timerevent.svg');

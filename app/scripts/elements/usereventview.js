@@ -16,7 +16,7 @@ class UserEvent extends EventListener {
 
     /**
      * Creates a new UserEvent element.
-     * @param {CMMNElement} parent 
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {UserEventDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -51,4 +51,4 @@ class UserEvent extends EventListener {
         return super.referencesDefinitionElement(definitionId);
     }
 }
-CMMNElement.registerType(UserEvent, 'User Event', 'images/svg/userevent.svg');
+CMMNElementView.registerType(UserEvent, 'User Event', 'images/svg/userevent.svg');

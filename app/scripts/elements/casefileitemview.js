@@ -1,4 +1,4 @@
-﻿class CaseFileItem extends CMMNElement {
+﻿class CaseFileItem extends CMMNElementView {
     /**
      * 
      * @param {Stage} stage 
@@ -109,4 +109,4 @@
         return this.definition && this.definition.id === definitionId;
     }
 }
-CMMNElement.registerType(CaseFileItem, 'Case File Item', 'images/svg/casefileitem.svg');
+CMMNElementView.registerType(CaseFileItem, 'Case File Item', 'images/svg/casefileitem.svg');

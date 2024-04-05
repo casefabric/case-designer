@@ -3,7 +3,7 @@
 class Resizer {
     /**
      * implements the resizer object for the element
-     * @param {CMMNElement} element
+     * @param {CMMNElementView} element
      */
     constructor(element) {
         this.element = element;
@@ -13,7 +13,7 @@ class Resizer {
         this.scrollListener = e => this.setPosition();
 
         // Note: we create the HTML directly, which in general is not good for performance.
-        //  However, resizer object is only created once a CMMNElement is clicked on. 
+        //  However, resizer object is only created once a CMMNElementView is clicked on. 
         //  So, in practice it is a OK to create it here and now.
         this.html = $(`<div class="resizebox" element="${this.element.toString()}">
     <div class="fence"></div>
