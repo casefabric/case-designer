@@ -1,17 +1,17 @@
 /**
- * This file contains basic functions that are available on every CMMNElement in the graph.
+ * This file contains basic functions that are available on every CMMNElementView in the graph.
  */
-class CMMNElement extends CanvasElement {
+class CMMNElementView extends CanvasElement {
     /**
-     * Creates a new CMMNElement within the case having the corresponding definition and x, y coordinates
-     * @param {CMMNElement} parent
+     * Creates a new CMMNElementView within the case having the corresponding definition and x, y coordinates
+     * @param {CMMNElementView} parent
      * @param {CMMNElementDefinition} definition
      * @param {ShapeDefinition} shape 
      */
     constructor(parent, definition, shape) {
-        super(parent.case || parent);
+        super(parent);
         if (!parent || !definition) {
-            throw new Error('Cannot create a CMMNElement without a parent and definition.');
+            throw new Error(`Cannot create a ${this.constructor.name} without a parent and definition.`);
         }
         if (! shape) {
             console.warn(`${this.constructor.name}[${definition.id}] does not have a shape`);
@@ -20,13 +20,13 @@ class CMMNElement extends CanvasElement {
         this.parent = parent;
         this.definition = definition;
         this.shape = shape;
-        /** @type{Case} */
-        this.case = parent instanceof Case ? parent : parent.case;
+        /** @type{CaseView} */
+        this.case = parent instanceof CaseView ? parent : parent.case;
         this.case.items.push(this);
         this.editor = this.case.editor;
         /** @type{Array<Connector>} */
         this.__connectors = []; // An array of the connectors this element has with other elements (both incoming and outgoing)
-        /** @type{Array<CMMNElement>} */
+        /** @type{Array<CMMNElementView>} */
         this.__childElements = []; // Create an array to keep track of our children, such that we can render them later on. 
         if (this.parent.__childElements) { // Register with parent.
             this.parent.__childElements.push(this);
@@ -98,9 +98,9 @@ class CMMNElement extends CanvasElement {
     }
 
     /**
-     * Properties show the documentation. For CaseFileItem shape we also have
+     * Properties show the documentation. For CaseFileItemView shape we also have
      * to render documentation, but there the "definition" refers to the shape instead
-     * of the actual case file item; through this method CaseFileItem shape can override the getter.
+     * of the actual case file item; through this method CaseFileItemView shape can override the getter.
      * @returns {CMMNDocumentationDefinition}
      */
     get documentation() {
@@ -121,7 +121,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * Determines whether or not the cmmn element is our parent or another ancestor of us.
-     * @param {CMMNElement} potentialAncestor 
+     * @param {CMMNElementView} potentialAncestor 
      */
     hasAncestor(potentialAncestor) {
         if (!potentialAncestor) return false;
@@ -168,10 +168,10 @@ class CMMNElement extends CanvasElement {
     nearElement(e, distance) {
         const offset = this.html.offset();
 
-        // EventListener somehow have an unclear and weird positioning with jointjs. Hence we need to do some correction for that.
+        // EventListenerView somehow have an unclear and weird positioning with jointjs. Hence we need to do some correction for that.
         //  Note that this is still not a flawless improvement :(
-        const left = this instanceof EventListener ? offset.left - 0.5 * distance : offset.left - distance;
-        const right = this instanceof EventListener ? offset.left + this.shape.width + 1.5 * distance : offset.left + this.shape.width + distance;
+        const left = this instanceof EventListenerView ? offset.left - 0.5 * distance : offset.left - distance;
+        const right = this instanceof EventListenerView ? offset.left + this.shape.width + 1.5 * distance : offset.left + this.shape.width + distance;
         const top = offset.top - distance;
         const bottom = offset.top + this.shape.height + distance;
         const x = e.clientX;
@@ -209,7 +209,7 @@ class CMMNElement extends CanvasElement {
      */
     addElementView(shapeType, e) {
         const coor = this.case.getCursorCoordinates(e);
-        const cmmnType = CMMNElement.constructors[shapeType];
+        const cmmnType = CMMNElementView.constructors[shapeType];
         const cmmnElement = this.createCMMNChild(cmmnType, Grid.snap(coor.x), Grid.snap(coor.y));
         // Now select the newly added element
         this.case.clearSelection();
@@ -223,7 +223,7 @@ class CMMNElement extends CanvasElement {
      * @param {Function} cmmnType 
      * @param {Number} x 
      * @param {Number} y 
-     * @returns {CMMNElement} the newly created CMMN child
+     * @returns {CMMNElementView} the newly created CMMN child
      */
     createCMMNChild(cmmnType, x, y) {
         throw new Error('Cannot create an element of type' + cmmnType.name);
@@ -300,7 +300,7 @@ class CMMNElement extends CanvasElement {
     }
 
     /**
-     * BELOW METHODS ARE 'REAL' CMMNElement methods
+     * BELOW METHODS ARE 'REAL' CMMNElementView methods
      */
 
     /**
@@ -403,7 +403,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * Adds an element to another element, implements element.__addElement
-     * @param {CMMNElement} cmmnChildElement
+     * @param {CMMNElementView} cmmnChildElement
      */
     __addCMMNChild(cmmnChildElement) {
         return this.case.__addElement(cmmnChildElement);
@@ -411,7 +411,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * When a item is moved from one stage to another, this method is invoked
-     * @param {CMMNElement} newParent 
+     * @param {CMMNElementView} newParent 
      */
     changeParent(newParent) {
         const currentParent = this.parent;
@@ -422,7 +422,7 @@ class CMMNElement extends CanvasElement {
     /**
      * Adds the item to our list of children, and embeds it in the joint structure of this element.
      * It is an existing item in the case.
-     * @param {CMMNElement} childElement 
+     * @param {CMMNElementView} childElement 
      */
     adoptItem(childElement) {
         childElement.parent = this;
@@ -438,7 +438,7 @@ class CMMNElement extends CanvasElement {
     /**
      * Removes the imte from our list of children, and also unembeds it from the joint structure.
      * Does not delete the item.
-     * @param {CMMNElement} childElement 
+     * @param {CMMNElementView} childElement 
      */
     releaseItem(childElement) {
         this.xyz_joint.unembed(childElement.xyz_joint);
@@ -448,7 +448,7 @@ class CMMNElement extends CanvasElement {
     /**
      * Method invoked on all case elements upon removal of an element.
      * If there are references to the element to be removed, it can be handled here.
-     * @param {CMMNElement} cmmnElement 
+     * @param {CMMNElementView} cmmnElement 
      */
     __removeReferences(cmmnElement) {
         if (cmmnElement.parent == this) {
@@ -482,7 +482,7 @@ class CMMNElement extends CanvasElement {
         // Remove the shape from the definitions
         this.shape.removeShape();
 
-        // Now remove our definition element from the case (overridden in CaseFileItem, since that only needs to remove the shape)
+        // Now remove our definition element from the case (overridden in CaseFileItemView, since that only needs to remove the shape)
         this.__removeElementDefinition();
 
         // Delete us from the case
@@ -507,7 +507,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * creates a connector between the element and the target.
-     * @param {CMMNElement} target
+     * @param {CMMNElementView} target
      * @returns {Connector}
      */
     __connect(target) {
@@ -525,14 +525,14 @@ class CMMNElement extends CanvasElement {
     }
 
     /**
-     * This method is invoked on the element if it created a connection to the target CMMNElement
-     * @param {CMMNElement} target 
+     * This method is invoked on the element if it created a connection to the target CMMNElementView
+     * @param {CMMNElementView} target 
      */
     __connectTo(target) { }
 
     /**
-     * This method is invoked on the element if a connection to it was made from the source CMMNElement
-     * @param {CMMNElement} source 
+     * This method is invoked on the element if a connection to it was made from the source CMMNElementView
+     * @param {CMMNElementView} source 
      */
     __connectFrom(source) { }
 
@@ -546,7 +546,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * returns an array of elements that are connected (through a link/connector) with this element
-     * @returns {Array<CMMNElement>}
+     * @returns {Array<CMMNElementView>}
      */
     __getConnectedElements() {
         const connectedCMMNElements = [];
@@ -591,7 +591,7 @@ class CMMNElement extends CanvasElement {
      * Add a criterion to this element sourcing the incoming element.
      * Default implementation is empty, task, stage, caseplan and milestone can override it.
      * @param {string} criterionType 
-     * @param {CMMNElement} sourceElement 
+     * @param {CMMNElementView} sourceElement 
      * @param {JQuery<Event>} e event indicating x and y position of cursor
      */
     createCriterionAndConnect(criterionType, sourceElement, e) {
@@ -601,7 +601,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * Hook for sentries to override.
-     * @param {CMMNElement} sourceElement 
+     * @param {CMMNElementView} sourceElement 
      */
     adoptOnPart(sourceElement) {
     }
@@ -632,7 +632,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * returns an array with all the joint (!) descendants of the element
-     * @returns {Array<CMMNElement>}
+     * @returns {Array<CMMNElementView>}
      */
     __getDescendants() {
         const allDescendants = [];
@@ -643,7 +643,7 @@ class CMMNElement extends CanvasElement {
 
     /**
      * Adds the cmmnElement and all its descendants to the array
-     * @param {CMMNElement} cmmnElement 
+     * @param {CMMNElementView} cmmnElement 
      * @param {Array} allDescendents 
      */
     addDescendantChild(cmmnElement, allDescendents) {
@@ -696,17 +696,17 @@ class CMMNElement extends CanvasElement {
     __moveConstraint(x, y) { }
 
     /**
-     * Registers a class that extends CMMNElement by it's name.
+     * Registers a class that extends CMMNElementView by it's name.
      * @param {Function} cmmnElementType 
      * @param {String} typeDescription Friendly description of the type
      * @param {String} smallImageURL url of small image (for drag/drop, shapebox, etc.)
      * @param {String} menuImageURL optional url of image shown in repository browser
      */
     static registerType(cmmnElementType, typeDescription, smallImageURL = '', menuImageURL = smallImageURL) {
-        CMMNElement.constructors[cmmnElementType.name] = cmmnElementType;
+        CMMNElementView.constructors[cmmnElementType.name] = cmmnElementType;
         cmmnElementType.typeDescription = typeDescription;
         cmmnElementType.smallImage = smallImageURL;
         cmmnElementType.menuImage = menuImageURL;
     }
 }
-CMMNElement.constructors = {};
+CMMNElementView.constructors = {};

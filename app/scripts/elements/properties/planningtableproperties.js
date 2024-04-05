@@ -1,6 +1,6 @@
 class PlanningTableProperties extends Properties {
     /**
-     * @param {PlanningTable} planningTable 
+     * @param {PlanningTableView} planningTable 
      */
     constructor(planningTable) {
         super(planningTable);
@@ -11,7 +11,7 @@ class PlanningTableProperties extends Properties {
         const element = this.cmmnElement.definition;
         $(this.html).css('width', '495px');
         const html = $(`<div class="planning-table">
-                            <label>PlanningTable Applicability Rules</label>
+                            <label>PlanningTableView Applicability Rules</label>
                             <div>
                                 <table class="planning-table-rules">
                                     <colgroup>

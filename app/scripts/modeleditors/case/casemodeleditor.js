@@ -69,7 +69,7 @@ class CaseModelEditor extends ModelEditor {
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new Case(this, this.htmlContainer, caseDefinition, dimensions);
+        this.case = new CaseView(this, this.htmlContainer, caseDefinition, dimensions);
 
         if (this.__migrated) {
             this.saveModel();
@@ -194,7 +194,7 @@ class CaseModelEditor extends ModelEditor {
      * Handles pressing an arrow key. Moves either top editor or selected element around.
      * @param {Number} keyCode 
      * @param {MovableEditor} visibleMovableEditor 
-     * @param {CMMNElement} selectedElement 
+     * @param {CMMNElementView} selectedElement 
      * @returns {Boolean} false if the event must be canceled, true if the arrow press was not handled.
      */
     handleArrowPress(keyCode, visibleMovableEditor, selectedElement) {
@@ -268,7 +268,7 @@ class CaseModelEditorMetadata extends ModelEditorMetadata {
 
     /** @returns {Function} */
     get shapeType() {
-        return CaseTask;
+        return CaseTaskView;
     }
 
     get description() {

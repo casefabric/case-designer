@@ -1,6 +1,6 @@
 class StageProperties extends TaskStageProperties {
     /**
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      */
     constructor(stage) {
         super(stage);
@@ -17,7 +17,7 @@ class StageProperties extends TaskStageProperties {
         this.addManualActivationRuleBlock();
         this.addSeparator();
         this.addAutoComplete();
-        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary Stage');
+        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary StageView');
         this.addSeparator();
         this.addPlanningTableField();
         this.addSeparator();

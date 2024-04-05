@@ -3,7 +3,7 @@
 class CaseFileItemsEditor {
     /**
      * Renders the CaseFile definition through fancytree
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {JQuery<HTMLElement>} htmlParent 
      */
     constructor(cs, htmlParent) {
@@ -442,19 +442,19 @@ class CaseFileItemsEditor {
                 // TODO: this can be made more precise through navigating the definition structure instead of the visualization structure.
                 chars[7] = 'I';
                 chars[8] = 'O';
-            } else if (object instanceof Task) {
+            } else if (object instanceof TaskView) {
                 chars[1] = 'T'
-            } else if (object instanceof Stage) {
+            } else if (object instanceof StageView) {
                 chars[4] = 'S';
-            } else if (object instanceof Milestone) {
+            } else if (object instanceof MilestoneView) {
                 chars[3] = 'M';
-            } else if (object instanceof EventListener) {
+            } else if (object instanceof EventListenerView) {
                 chars[2] = 'E';
-            } else if (object instanceof Sentry) {
+            } else if (object instanceof SentryView) {
                 chars[0] = 's';
-            } else if (object instanceof PlanningTable) {
+            } else if (object instanceof PlanningTableView) {
                 chars[5] = 'P';
-            } else if (object instanceof CaseFileItem) {
+            } else if (object instanceof CaseFileItemView) {
                 chars[6] = 'C';
             }
         })

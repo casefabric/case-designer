@@ -1,7 +1,7 @@
 class WorkflowProperties extends TaskProperties {
     /**
      * 
-     * @param {HumanTask} task 
+     * @param {HumanTaskView} task 
      */
     constructor(task) {
         super(task);
@@ -229,7 +229,7 @@ class WorkflowProperties extends TaskProperties {
     done() {
         super.done();
         // Also refresh other workflow properties ...
-        this.case.items.filter(item => item instanceof HumanTask).map((/** @type{HumanTask} */ item) => item.workflowProperties && item.workflowProperties.visible && item.workflowProperties.refresh());
+        this.case.items.filter(item => item instanceof HumanTaskView).map((/** @type{HumanTaskView} */ item) => item.workflowProperties && item.workflowProperties.visible && item.workflowProperties.refresh());
     }
 
     /**

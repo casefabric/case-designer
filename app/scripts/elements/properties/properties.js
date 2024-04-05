@@ -1,7 +1,7 @@
 class Properties extends MovableEditor {
     /**
      * Renderer for the properties of the element
-     * @param {CMMNElement} cmmnElement 
+     * @param {CMMNElementView} cmmnElement 
      */
     constructor(cmmnElement) {
         // console.log("Creating properties for " + cmmnElement)
@@ -313,7 +313,7 @@ class Properties extends MovableEditor {
     }
 
     /**
-     * Complete a change. Refreshes the CMMNElement view and saves the case model.
+     * Complete a change. Refreshes the CMMNElementView and saves the case model.
      */
     done() {
         this.cmmnElement.refreshView();

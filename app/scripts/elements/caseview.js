@@ -1,6 +1,6 @@
-﻿class Case {
+﻿class CaseView {
     /**
-     * Creates a new Case object based on the definition and dimensions
+     * Creates a new CaseView object based on the definition and dimensions
      * @param {CaseModelEditor} editor
      * @param {JQuery<HTMLElement>} htmlParent
      * @param {CaseDefinition} caseDefinition 
@@ -52,7 +52,7 @@
         this.shapeBox = new ShapeBox(this, this.divShapeBox);
         this.splitter = new RightSplitter(this.divCaseModel, '60%', 5);
 
-        /** @type {Array<CMMNElement>} */
+        /** @type {Array<CMMNElementView>} */
         this.items = [];
         this.connectors = [];
 
@@ -68,7 +68,7 @@
         const casePlanDefinition = this.caseDefinition.casePlan;
         if (casePlanDefinition) {
             this.loading = true;
-            this.casePlanModel = new CasePlanModel(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
+            this.casePlanModel = new CasePlanView(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
 
 
             const getDefinition = shape => {
@@ -76,8 +76,8 @@
                 if (element) {
                     return element;
                 } else {
-                    // It may well be an empty, unreferenced CaseFileItem, as that is not resizable; let CaseFileItem figure that out
-                    const emptyCaseFileItem = CaseFileItem.createElementForShape(caseDefinition, shape);
+                    // It may well be an empty, unreferenced CaseFileItemView, as that is not resizable; let CaseFileItemView figure that out
+                    const emptyCaseFileItem = CaseFileItemView.createElementForShape(caseDefinition, shape);
                     if (! emptyCaseFileItem) {
                         // But if it is not, then we should print a warning
                         console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
@@ -86,17 +86,17 @@
                 }
             }
             // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
-            /** @type {Array<Stage>} */
-            const stages = this.items.filter(element => element instanceof Stage);
+            /** @type {Array<StageView>} */
+            const stages = this.items.filter(element => element instanceof StageView);
             this.diagram.shapes.forEach(shape => {
                 const definitionElement = getDefinition(shape);
                 // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
                 if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
                     const parent = this.getSurroundingStage(stages, shape);
                     if (definitionElement instanceof CaseFileItemDef) {
-                        parent.__addCMMNChild(new CaseFileItem(parent, definitionElement, shape));
+                        parent.__addCMMNChild(new CaseFileItemView(parent, definitionElement, shape));
                     } else if (definitionElement instanceof TextAnnotationDefinition) {
-                        parent.__addCMMNChild(new TextAnnotation(parent, definitionElement, shape)); 
+                        parent.__addCMMNChild(new TextAnnotationView(parent, definitionElement, shape)); 
                     } else {
                         // Quite weird :)
                     }
@@ -148,9 +148,9 @@
 
     /**
      * 
-     * @param {Array<Stage>} stages 
+     * @param {Array<StageView>} stages 
      * @param {ShapeDefinition} shape 
-     * @returns {Stage}
+     * @returns {StageView}
      */
     getSurroundingStage(stages, shape) {
         const surroundingStages = stages.filter(stage => stage.shape.surrounds(shape));
@@ -221,7 +221,7 @@
     /**
      * 
      * @param {*} jointElementView 
-     * @returns {CMMNElement}
+     * @returns {CMMNElementView}
      */
     getCMMNElement(jointElementView) {
         return jointElementView.model.xyz_cmmn;
@@ -306,7 +306,7 @@
     /**
      * Sets/gets the element currently (to be) selected.
      * Upon setting a new selection, the previously selected element is de-selected
-     * @param {CMMNElement} element
+     * @param {CMMNElementView} element
      */
     set selectedElement(element) {
         const previousSelection = this._selectedElement;
@@ -367,12 +367,12 @@
      * Returns the deepest cmmn element under cursor. If that is equal to self, then
      * parent of self is returned.
      * @param {*} e 
-     * @param {CMMNElement} self 
-     * @returns {CMMNElement}
+     * @param {CMMNElementView} self 
+     * @returns {CMMNElementView}
      */
     getItemUnderMouse(e, self = undefined) {
         const itemsUnderMouse = this.items.filter(item => item.nearElement(e, 10));
-        const parentsUnderMouse = itemsUnderMouse.filter(item => item.parent instanceof CMMNElement).map(item => item.parent);
+        const parentsUnderMouse = itemsUnderMouse.filter(item => item.parent instanceof CMMNElementView).map(item => item.parent);
 
         // If self is passed, then the collections need to filter it out.
         if (self) {
@@ -386,7 +386,7 @@
 
     setDropHandlers() {
         if (!this.casePlanModel) {
-            this.shapeBox.setDropHandler(dragData => this.createCasePlan(CasePlanModel, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
+            this.shapeBox.setDropHandler(dragData => this.createCasePlan(CasePlanView, dragData.event), dragData => this.__canHaveAsChild(dragData.shapeType));
         }
     }
 
@@ -415,7 +415,7 @@
      * @returns {String}
      */
     get typeDescription() {
-        return 'Case';
+        return 'CaseView';
     };
 
     /**
@@ -448,7 +448,7 @@
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {
-        return elementType == CasePlanModel.name && !this.casePlanModel;
+        return elementType == CasePlanView.name && !this.casePlanModel;
     }
 
     /**
@@ -476,9 +476,9 @@
      * @param {*} e 
      */
     createCasePlan(cmmnType, e) {
-        if (cmmnType == CasePlanModel) {
+        if (cmmnType == CasePlanView) {
             const coor = this.getCursorCoordinates(e);
-            this.casePlanModel = CasePlanModel.create(this, coor.x, coor.y);
+            this.casePlanModel = CasePlanView.create(this, coor.x, coor.y);
             this.__addElement(this.casePlanModel);
             this.casePlanModel.propertiesView.show(true);
             return this.casePlanModel;
@@ -489,7 +489,7 @@
 
     /**
      * Add an element to the drawing canvas.
-     * @param {CMMNElement|CaseFileItem|TextAnnotation} cmmnElement 
+     * @param {CMMNElementView|CaseFileItemView|TextAnnotationView} cmmnElement 
      */
     __addElement(cmmnElement) {
         // Only add the element if we're not loading the entire case. Because then all elements are presented to the joint graphs in one shot.
@@ -535,10 +535,10 @@
 
     /**
      * Remove an element from the canvas, including it's children.
-     * @param {CMMNElement} cmmnElement 
+     * @param {CMMNElementView} cmmnElement 
      */
     __removeElement(cmmnElement) {
-        // if (cmmnElement instanceof PlanningTable) return; // Cannot delete planning table images.
+        // if (cmmnElement instanceof PlanningTableView) return; // Cannot delete planning table images.
 
         // Remove it; which recursively also removes the children; only then save it.
         cmmnElement.__delete();
@@ -554,9 +554,9 @@
     }
 
     /**
-     * Finds the CMMNElement with the specified ID or undefined.
+     * Finds the CMMNElementView with the specified ID or undefined.
      * @param {String} id 
-     * @returns {CMMNElement}
+     * @returns {CMMNElementView}
      */
     getItem(id) {
         return this.items.find(item => id && item.id == id);
@@ -567,13 +567,13 @@
      * @param {String} caseFileItemID 
      */
     getCaseFileItemElement(caseFileItemID) {
-        return this.items.find(item => item instanceof CaseFileItem && item.definition.id == caseFileItemID);
+        return this.items.find(item => item instanceof CaseFileItemView && item.definition.id == caseFileItemID);
     }
 
     switchLabels() {
         this.diagram.connectorStyle.shiftRight();
         this.editor.ide.info(this.diagram.connectorStyle.infoMessage, 8000);
-        this.items.filter(item => item instanceof Sentry).forEach(sentry => sentry.updateConnectorLabels());
+        this.items.filter(item => item instanceof SentryView).forEach(sentry => sentry.updateConnectorLabels());
         this.editor.saveModel();
     }
 }

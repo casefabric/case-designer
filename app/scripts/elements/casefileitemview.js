@@ -1,7 +1,7 @@
-﻿class CaseFileItem extends CMMNElement {
+﻿class CaseFileItemView extends CMMNElementView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {Number} x 
      * @param {Number} y 
      * @param {CaseFileItemDef} y 
@@ -9,7 +9,7 @@
     static create(stage, x, y, definition = undefined) {
         definition = definition || CaseFileItemDef.createEmptyDefinition(stage.case.caseDefinition);
         const shape = stage.case.diagram.createShape(x, y, 25, 40, definition.id);
-        return new CaseFileItem(stage, definition, shape);
+        return new CaseFileItemView(stage, definition, shape);
     }
 
     /**
@@ -25,8 +25,8 @@
     }
 
     /**
-     * Creates a new CaseFileItem
-     * @param {Stage} parent 
+     * Creates a new CaseFileItemView
+     * @param {StageView} parent 
      * @param {CaseFileItemDef} definition 
      * @param {ShapeDefinition} shape 
      */
@@ -109,4 +109,4 @@
         return this.definition && this.definition.id === definitionId;
     }
 }
-CMMNElement.registerType(CaseFileItem, 'Case File Item', 'images/svg/casefileitem.svg');
+CMMNElementView.registerType(CaseFileItemView, 'Case File Item', 'images/svg/casefileitem.svg');

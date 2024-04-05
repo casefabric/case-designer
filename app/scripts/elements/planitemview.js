@@ -1,8 +1,8 @@
-class PlanItemView extends CMMNElement {
+class PlanItemView extends CMMNElementView {
     /**
      * This is a generic class for plan item rendering; it takes default properties of the definition
-     * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, Stage, Milestone).
-     * @param {CMMNElement} parent 
+     * It holds a reference both to the PlanItem definition AND to the PlanItemDefinition definition (e.g., HumanTask, StageView, Milestone).
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {ShapeDefinition} shape 
      */
@@ -11,9 +11,9 @@ class PlanItemView extends CMMNElement {
         this.definition = definition;
 
         // Add the sentries
-        this.definition.entryCriteria.forEach(criterion => this.addCriterion(criterion, EntryCriterion));
-        this.definition.reactivateCriteria.forEach(criterion => this.addCriterion(criterion, ReactivateCriterion));
-        this.definition.exitCriteria.forEach(criterion => this.addCriterion(criterion, ExitCriterion));
+        this.definition.entryCriteria.forEach(criterion => this.addCriterion(criterion, EntryCriterionView));
+        this.definition.reactivateCriteria.forEach(criterion => this.addCriterion(criterion, ReactivateCriterionView));
+        this.definition.exitCriteria.forEach(criterion => this.addCriterion(criterion, ExitCriterionView));
     }
 
     addCriterion(criterion, constructorFunction) {
@@ -51,7 +51,7 @@ class PlanItemView extends CMMNElement {
         super.__resize(w, h);
         this.decoratorBox.moveDecoratorsToMiddle();
         // reposition our sentries on the right and bottom
-        this.__childElements.filter(child => child instanceof Sentry).forEach(sentry => {
+        this.__childElements.filter(child => child instanceof SentryView).forEach(sentry => {
             //get the current position of sentry (the centre)
             const sentryX = sentry.shape.x + sentry.shape.width / 2;
             const sentryY = sentry.shape.y + sentry.shape.height / 2;
@@ -87,12 +87,12 @@ class PlanItemView extends CMMNElement {
     }
 
     createCMMNChild(cmmnType, x, y) {
-        if (cmmnType == EntryCriterion) {
-            return this.__addCMMNChild(EntryCriterion.create(this, x, y));
-        } else if (cmmnType == ReactivateCriterion) {
-            return this.__addCMMNChild(ReactivateCriterion.create(this, x, y));
-        } else if (cmmnType == ExitCriterion) {
-            return this.__addCMMNChild(ExitCriterion.create(this, x, y));
+        if (cmmnType == EntryCriterionView) {
+            return this.__addCMMNChild(EntryCriterionView.create(this, x, y));
+        } else if (cmmnType == ReactivateCriterionView) {
+            return this.__addCMMNChild(ReactivateCriterionView.create(this, x, y));
+        } else if (cmmnType == ExitCriterionView) {
+            return this.__addCMMNChild(ExitCriterionView.create(this, x, y));
         } else {
             return super.createCMMNChild(cmmnType, x, y);
         }
@@ -145,5 +145,4 @@ class PlanItemView extends CMMNElement {
             this.raiseValidationIssue(39, [this.name, this.case.name, ruleType, 'context (case file item)']);
         }
     }
-
 }

@@ -1,10 +1,10 @@
 ﻿
 
-class Sentry extends CMMNElement {
+class SentryView extends CMMNElementView {
     /**
-     * Creates a new Sentry element.
-     * Is an abstract sub class for EntryCriterion and ExitCriterion.
-     * @param {PlanItemView|CasePlanModel} planItem 
+     * Creates a new SentryView element.
+     * Is an abstract sub class for EntryCriterionView and ExitCriterionView.
+     * @param {PlanItemView|CasePlanView} planItem 
      * @param {CriterionDefinition} definition 
      * @param {ShapeDefinition} shape 
      */
@@ -81,9 +81,9 @@ class Sentry extends CMMNElement {
      * When the dataNode does not exist (no entry for the element yet)-> create
      * Return the dataNode
      * 
-     * @param {CMMNElement} source 
+     * @param {CMMNElementView} source 
      * @param {String} defaultEvent 
-     * @param {ExitCriterion} exitCriterion 
+     * @param {ExitCriterionView} exitCriterion 
      */
     setPlanItemOnPart(source, defaultEvent, exitCriterion = undefined) {
         const sourceRef = source.definition.id;
@@ -101,14 +101,14 @@ class Sentry extends CMMNElement {
     /**
      * sets the properties of the case file item onpart of a sentry,
      * when manually linking a case file item element with a sentry
-     * @param {CaseFileItem} source 
+     * @param {CaseFileItemView} source 
      */
     setCaseFileItemOnPart(source, defaultEvent) {
         if (source.definition.isEmpty) {
             // Do not create an onpart if the definition is not set.
             return;
         }
-        const sourceRef = source.definition.id; // CaseFileItem stores it's value in the contextRef property
+        const sourceRef = source.definition.id; // CaseFileItemView stores it's value in the contextRef property
         // If we cannot find the onpart in our definition, then we'll create a new one
         if (!this.definition.caseFileItemOnParts.find(onPart => onPart.sourceRef == sourceRef)) {
             const newOnPart = this.definition.createCaseFileItemOnPart();
@@ -219,7 +219,7 @@ class Sentry extends CMMNElement {
 
         //check if parent is discretionary
         const cmmnParentElement = this.parent;
-        if (cmmnParentElement instanceof TaskStage && !cmmnParentElement.definition.isDiscretionary) {
+        if (cmmnParentElement instanceof TaskStageView && !cmmnParentElement.definition.isDiscretionary) {
             return;
         }
 
@@ -301,10 +301,10 @@ class Sentry extends CMMNElement {
                 (thus in the onPart of an exit sentry, you cannot connect to an entrysentry)
             */
 
-            if (!(cmmnElement instanceof Sentry || cmmnElement instanceof PlanItemView)) {
+            if (!(cmmnElement instanceof SentryView || cmmnElement instanceof PlanItemView)) {
                 return false;
             }
-            if (cmmnElement instanceof CasePlanModel) {
+            if (cmmnElement instanceof CasePlanView) {
                 return false;
             }
             if (this.constructor == cmmnElement.constructor) {
@@ -313,7 +313,7 @@ class Sentry extends CMMNElement {
             if (this == cmmnElement) {
                 return false;
             }
-            if (this instanceof ExitCriterion && cmmnElement instanceof EntryCriterion) {
+            if (this instanceof ExitCriterionView && cmmnElement instanceof EntryCriterionView) {
                 return false;
             }
             if (cmmnElement.definition.isDiscretionary) {
@@ -322,7 +322,7 @@ class Sentry extends CMMNElement {
             if (this.parent == cmmnElement) {
                 return false;
             }
-            if (cmmnElement instanceof Sentry && this.parent == cmmnElement.parent) {
+            if (cmmnElement instanceof SentryView && this.parent == cmmnElement.parent) {
                 return false;
             }
             return true;
@@ -339,11 +339,11 @@ class Sentry extends CMMNElement {
     }
 
     __connectElement(target) {
-        if (target instanceof CaseFileItem) {
+        if (target instanceof CaseFileItemView) {
             this.setCaseFileItemOnPart(target, 'create');
         } else if (target instanceof PlanItemView) {
             this.setPlanItemOnPart(target, target.definition.defaultTransition);
-        } else if (target instanceof Sentry) {
+        } else if (target instanceof SentryView) {
             // Note: this means 2 sentries get connected, and, since we're invoking
             //  this method on both ends of the connection, we're invoking __connectSentry twice.
             //  One has an empty implementation.
@@ -388,20 +388,20 @@ class Sentry extends CMMNElement {
 }
 
 
-class EntryCriterion extends Sentry {
+class EntryCriterionView extends SentryView {
     static create(planItem, x, y) {
         const definition = planItem.definition.createEntryCriterion();
         const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
-        return new EntryCriterion(planItem, definition, shape);
+        return new EntryCriterionView(planItem, definition, shape);
     }
 
     __connectSentry(target) {
-        if (target instanceof ExitCriterion) {
+        if (target instanceof ExitCriterionView) {
             // Then we need to connect to the exit of the parent of the target;
             const targetParent = target.parent;
             // It does not make sense to listen and start a new plan item when the CasePlan goes exit,
             //  so skip that one.
-            if (!(targetParent instanceof CasePlanModel)) {
+            if (!(targetParent instanceof CasePlanView)) {
                 this.setPlanItemOnPart(targetParent, 'exit', target);
             }
         }
@@ -418,11 +418,11 @@ class EntryCriterion extends Sentry {
     }
 }
 
-class ReactivateCriterion extends Sentry {
+class ReactivateCriterionView extends SentryView {
     static create(planItem, x, y) {
         const definition = planItem.definition.createReactivateCriterion();
         const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
-        return new ReactivateCriterion(planItem, definition, shape);
+        return new ReactivateCriterionView(planItem, definition, shape);
     }
 
     get markup() {
@@ -438,7 +438,7 @@ class ReactivateCriterion extends Sentry {
     }
 }
 
-class ExitCriterion extends Sentry {
+class ExitCriterionView extends SentryView {
     /**
      * 
      * @param {PlanItemView} planItem 
@@ -448,7 +448,7 @@ class ExitCriterion extends Sentry {
     static create(planItem, x, y) {
         const definition = planItem.definition.createExitCriterion();
         const shape = planItem.case.diagram.createShape(x, y, 12, 20, definition.id);
-        return new ExitCriterion(planItem, definition, shape);
+        return new ExitCriterionView(planItem, definition, shape);
     }
 
     get purpose() {
@@ -460,6 +460,6 @@ class ExitCriterion extends Sentry {
     }
 }
 
-CMMNElement.registerType(EntryCriterion, 'Entry Criterion', 'images/svg/entrycriterion.svg');
-CMMNElement.registerType(ReactivateCriterion, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
-CMMNElement.registerType(ExitCriterion, 'Exit Criterion', 'images/svg/exitcriterion.svg');
+CMMNElementView.registerType(EntryCriterionView, 'Entry Criterion', 'images/svg/entrycriterion.svg');
+CMMNElementView.registerType(ReactivateCriterionView, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
+CMMNElementView.registerType(ExitCriterionView, 'Exit Criterion', 'images/svg/exitcriterion.svg');

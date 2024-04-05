@@ -1,7 +1,7 @@
 class HumanTaskProperties extends TaskProperties {
     /**
      * 
-     * @param {HumanTask} task 
+     * @param {HumanTaskView} task 
      */
     constructor(task) {
         super(task);

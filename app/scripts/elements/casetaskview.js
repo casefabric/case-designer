@@ -1,24 +1,24 @@
-class ProcessTask extends Task {
+class CaseTaskView extends TaskView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */
     static create(stage, x, y) {
-        const definition = stage.planItemDefinition.createPlanItem(ProcessTaskDefinition);
+        const definition = stage.planItemDefinition.createPlanItem(CaseTaskDefinition);
         const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
-        if (definition.definition instanceof ProcessTaskDefinition) {
-            return new ProcessTask(stage, definition, definition.definition, shape);
+        if (definition.definition instanceof CaseTaskDefinition) {
+            return new CaseTaskView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new ProcessTask element.
-     * @param {CMMNElement} parent 
+     * Creates a new CaseTaskView element.
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
-     * @param {ProcessTaskDefinition} planItemDefinition 
+     * @param {CaseTaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
      */
     constructor(parent, definition, planItemDefinition, shape) {
@@ -27,18 +27,18 @@ class ProcessTask extends Task {
     }
 
     getImplementationList() {
-        return ide.repository.getProcesses();
+        return this.editor.ide.repository.getCases();
     }
 
     /**
      * Returns the element type image for this task
      */
     get imageURL() {
-        return 'images/svg/processtask.svg';
+        return 'images/svg/casetask.svg';
     }
 
     get fileType() {
-        return 'process';
+        return 'case';
     }
 }
-CMMNElement.registerType(ProcessTask, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');
+CMMNElementView.registerType(CaseTaskView, 'Case TaskView', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');

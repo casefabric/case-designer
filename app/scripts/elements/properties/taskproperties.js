@@ -1,7 +1,7 @@
 class TaskProperties extends TaskStageProperties {
     /**
      * 
-     * @param {Task} task 
+     * @param {TaskView} task 
      */
     constructor(task) {
         super(task);

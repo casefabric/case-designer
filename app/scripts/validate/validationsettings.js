@@ -35,7 +35,7 @@ class ValidationSettings {
 
     /**
      * Returns the list of problems in this case instance that can be hidden
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @returns {Array<String>}
      */
     getHiddenProblems(cs) {
@@ -48,7 +48,7 @@ class ValidationSettings {
 
     /**
      * Sets the list of problems to hide for this case
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {Array<String>} hiddenProblems 
      */
     setHiddenProblems(cs, hiddenProblems) {

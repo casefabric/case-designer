@@ -56,7 +56,7 @@ class DecoratorBox {
 
 class StageDecoratorBox extends DecoratorBox {
     /**
-     * @param {Stage} view 
+     * @param {StageView} view 
      */
     constructor(view) {
         super(view);
@@ -73,7 +73,7 @@ class StageDecoratorBox extends DecoratorBox {
 
 class TaskDecoratorBox extends DecoratorBox {
     /**
-     * @param {Task} view 
+     * @param {TaskView} view 
      */
     constructor(view) {
         super(view);
@@ -88,7 +88,7 @@ class TaskDecoratorBox extends DecoratorBox {
 
 class MilestoneDecoratorBox extends DecoratorBox {
     /**
-     * @param {Milestone} view 
+     * @param {MilestoneView} view 
      */
     constructor(view) {
         super(view);
@@ -102,7 +102,7 @@ class MilestoneDecoratorBox extends DecoratorBox {
 
 class CasePlanDecoratorBox extends StageDecoratorBox {
     /**
-     * @param {CasePlanModel} view 
+     * @param {CasePlanView} view 
      */
     constructor(view) {
         super(view);

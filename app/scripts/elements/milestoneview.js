@@ -1,8 +1,8 @@
 ﻿
-class Milestone extends PlanItemView {
+class MilestoneView extends PlanItemView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */
@@ -10,14 +10,14 @@ class Milestone extends PlanItemView {
         const definition = stage.planItemDefinition.createPlanItem(MilestoneDefinition);
         const shape = stage.case.diagram.createShape(x, y, 100, 40, definition.id);
         if (definition.definition instanceof MilestoneDefinition) {
-            return new Milestone(stage, definition, definition.definition, shape);
+            return new MilestoneView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new HumanTask element.
-     * @param {CMMNElement} parent 
+     * Creates a new HumanTaskView element.
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {MilestoneDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -73,7 +73,7 @@ class Milestone extends PlanItemView {
      * @returns 
      */
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterion.name;
+        return criterionType == EntryCriterionView.name;
     }
 }
-CMMNElement.registerType(Milestone, 'Milestone', 'images/svg/milestone.svg');
+CMMNElementView.registerType(MilestoneView, 'MilestoneView', 'images/svg/milestone.svg');

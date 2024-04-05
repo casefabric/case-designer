@@ -3,22 +3,22 @@ const CPM_WIDTH = 800;
 const CPM_HEIGHT = 500;
 const CPM_TAB_HEIGHT = 22;
 
-class CasePlanModel extends Stage {
+class CasePlanView extends StageView {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {*} x 
      * @param {*} y 
      */
     static create(cs, x = 10, y = 10) {
         const definition = cs.caseDefinition.getCasePlan();
         const shape = cs.diagram.createShape(x, y, 800, 500, definition.id);
-        return new CasePlanModel(cs, definition, shape)
+        return new CasePlanView(cs, definition, shape)
     }
 
     /**
      * Creates a new CasePlan model
-     * @param {*} parent Must be the Case object itself.
+     * @param {*} parent Must be the CaseView object itself.
      * @param {CasePlanDefinition} definition 
      * @param {ShapeDefinition} shape 
      */
@@ -66,7 +66,7 @@ class CasePlanModel extends Stage {
     }
 
     surrounds(element) {
-        // Avoid the Stage.acquireChildren method to throw out elements outside the case plan (even though visually they can be dragged outside)
+        // Avoid the StageView.acquireChildren method to throw out elements outside the case plan (even though visually they can be dragged outside)
         return element != this;
     }
 
@@ -109,15 +109,15 @@ class CasePlanModel extends Stage {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == ExitCriterion.name;
+        return criterionType == ExitCriterionView.name;
     }
 
     createCMMNChild(cmmnType, x, y) {
-        if (cmmnType == ExitCriterion) {
-            return this.__addCMMNChild(ExitCriterion.create(this, x, y));
+        if (cmmnType == ExitCriterionView) {
+            return this.__addCMMNChild(ExitCriterionView.create(this, x, y));
         } else {
             return super.createCMMNChild(cmmnType, x, y);
         }
     }
 }
-CMMNElement.registerType(CasePlanModel, 'Case Plan', 'images/svg/caseplanmodel.svg');
+CMMNElementView.registerType(CasePlanView, 'Case Plan', 'images/svg/caseplanmodel.svg');

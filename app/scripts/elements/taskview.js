@@ -1,8 +1,8 @@
-﻿class Task extends TaskStage {
+﻿class TaskView extends TaskStageView {
 
     /**
-     * Creates a new Task element.
-     * @param {CMMNElement} parent 
+     * Creates a new TaskView element.
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {TaskDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -101,7 +101,7 @@
      * the specified callback function
      * @param {Boolean} saveChanges - Indicates whether any newly generated information must be stored immediately or not. 
      * @param {String} fileName The (relative) URL to the file to be loaded
-     * @param {Boolean} updateTaskName Indicates whether the Task name should be modified to match the information inside the implementation.
+     * @param {Boolean} updateTaskName Indicates whether the TaskView name should be modified to match the information inside the implementation.
      * @param {Boolean} showProperties Indicates to open the properties view after the new information is rendered and received.
      */
     fetchTaskImplementation(saveChanges = false, fileName = this.planItemDefinition.implementationRef, updateTaskName = false, showProperties = false) {
@@ -137,7 +137,7 @@
 
     /** @returns {String} */
     get fileType() {
-        throw new Error('Task of type ' + this.constructor.name + ' must implement file type');
+        throw new Error('TaskView of type ' + this.constructor.name + ' must implement file type');
     }
 
     refreshReferencingFields(definitionElement) {

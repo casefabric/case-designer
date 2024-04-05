@@ -118,7 +118,7 @@ class UndoManager {
 class UndoRedoBox {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {JQuery<HTMLElement>} html 
      */
     constructor(cs, html) {

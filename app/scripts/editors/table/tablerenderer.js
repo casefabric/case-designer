@@ -1,7 +1,7 @@
 class TableRenderer {
     /**
      * Defines a generic control for collections of CMMNElementDefinition, to select and edit data in a table
-     * @param {Case} cs
+     * @param {CaseView} cs
      * @param {JQuery<HTMLElement>} htmlParent
      */
     constructor(cs, htmlParent) {

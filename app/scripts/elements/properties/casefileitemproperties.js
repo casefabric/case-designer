@@ -1,7 +1,7 @@
 class CaseFileItemProperties extends Properties {
     /**
      * 
-     * @param {CaseFileItem} caseFileItem 
+     * @param {CaseFileItemView} caseFileItem 
      */
     constructor(caseFileItem) {
         super(caseFileItem);

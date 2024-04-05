@@ -89,7 +89,7 @@ class ConnectorHaloItem extends HaloDragItem {
      * @param {Halo} halo 
      */
     static defaultBar(halo) {
-        if (halo.element instanceof EventListener) {
+        if (halo.element instanceof EventListenerView) {
             return halo.topRightBar;
         }
         return halo.rightBar;
@@ -106,7 +106,7 @@ class ConnectorHaloItem extends HaloDragItem {
         // Connectors to the case plan are not created, because that looks silly.
         //  As a matter of fact, connecting to a parent stage also still looks silly. Need to find a better solution.
         const cmmnElement = this.element.case.getItemUnderMouse(e);
-        if (cmmnElement && !(cmmnElement instanceof CasePlanModel)) {
+        if (cmmnElement && !(cmmnElement instanceof CasePlanView)) {
             // Note, we should connect to the source of the tempConnector, not to this.element;
             //  The reason is, that in between some other logic may have selected a new object,
             //  resulting in a new this.element.
@@ -176,30 +176,30 @@ class SentryHaloItem extends HaloDragItem {
 
 class EntryCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, EntryCriterion.smallImage, EntryCriterion.typeDescription);
+        super(halo, EntryCriterionView.smallImage, EntryCriterionView.typeDescription);
     }
 
     get haloType() {
-        return EntryCriterion.name;
+        return EntryCriterionView.name;
     }
 }
 
 class ReactivateCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, ReactivateCriterion.smallImage, ReactivateCriterion.typeDescription);
+        super(halo, ReactivateCriterionView.smallImage, ReactivateCriterionView.typeDescription);
     }
 
     get haloType() {
-        return ReactivateCriterion.name;
+        return ReactivateCriterionView.name;
     }
 }
 
 class ExitCriterionHaloItem extends SentryHaloItem {
     constructor(halo) {
-        super(halo, ExitCriterion.smallImage, ExitCriterion.typeDescription);
+        super(halo, ExitCriterionView.smallImage, ExitCriterionView.typeDescription);
     }
 
     get haloType() {
-        return ExitCriterion.name;
+        return ExitCriterionView.name;
     }
 }

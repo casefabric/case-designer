@@ -1,6 +1,6 @@
 class TaskStageProperties extends PlanItemProperties {
     /**
-     * @param {TaskStage} taskStage 
+     * @param {TaskStageView} taskStage 
      */
     constructor(taskStage) {
         super(taskStage);

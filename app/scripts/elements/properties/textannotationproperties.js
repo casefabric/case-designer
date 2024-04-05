@@ -1,7 +1,7 @@
 class TextAnnotationProperties extends Properties {
     /**
      * 
-     * @param {TextAnnotation} textAnnotation 
+     * @param {TextAnnotationView} textAnnotation 
      */
     constructor(textAnnotation) {
         super(textAnnotation);

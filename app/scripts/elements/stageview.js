@@ -1,7 +1,7 @@
-﻿class Stage extends TaskStage {
+﻿class StageView extends TaskStageView {
     /**
      * 
-     * @param {Stage} stage 
+     * @param {StageView} stage 
      * @param {*} x 
      * @param {*} y 
      */
@@ -9,14 +9,14 @@
         const definition = stage.planItemDefinition.createPlanItem(StageDefinition);
         const shape = stage.case.diagram.createShape(x, y, 420, 140, definition.id);
         if (definition.definition instanceof StageDefinition) {
-            return new Stage(stage, definition, definition.definition, shape);
+            return new StageView(stage, definition, definition.definition, shape);
         }
         console.error('Not supposed to reach this code');
     }
 
     /**
-     * Creates a new HumanTask element.
-     * @param {CMMNElement} parent 
+     * Creates a new StageView element.
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition
      * @param {StageDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -47,7 +47,7 @@
      */
     addCaseFileItem(dragData) {
         const coor = this.case.getCursorCoordinates(dragData.event);
-        this.__addCMMNChild(CaseFileItem.create(this, coor.x, coor.y, dragData.item));
+        this.__addCMMNChild(CaseFileItemView.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
@@ -55,7 +55,7 @@
      * @param {DragData} dragData 
      */
     addTaskModel(dragData) {
-        /** @type {Task} */
+        /** @type {TaskView} */
         const element = super.addElementView(dragData.shapeType, dragData.event);
         element.changeTaskImplementation(dragData, true);
     }
@@ -68,7 +68,7 @@
     resetChildren() {
         const currentChildren = this.__childElements;
         // Only other plan items, case file items and textboxes can move in/out of us. Not planning tables or sentries.
-        const allCaseItems = this.case.items.filter(item => !(item instanceof PlanningTable) && !(item instanceof Sentry));
+        const allCaseItems = this.case.items.filter(item => !(item instanceof PlanningTableView) && !(item instanceof SentryView));
         // Create a collection of items we surround visually, but only the "top-level", not their children.
         const visuallySurroundedItems = allCaseItems.filter(item => this.surrounds(item) && !this.surrounds(item.parent));
         // Former children: those that are currently a descendant, but that we no longer surround visually.
@@ -81,7 +81,7 @@
 
     /**
      * Determines whether this stage visually surrounds the cmmn element.
-     * @param {CMMNElement} other 
+     * @param {CMMNElementView} other 
      */
     surrounds(other) {
         // Note: this method is added here instead of directly invoking shape.surrounds because logic is different at caseplan level, so caseplan can override.
@@ -122,7 +122,7 @@
     }
 
     /**
-     * Creates a new view (either HumanTask, CaseTask, ProcessTask, CasePlanModel, Milestone, Stage, UserEvent, TimerEvent),
+     * Creates a new view (either HumanTaskView, CaseTaskView, ProcessTaskView, CasePlanView, MilestoneView, StageView, UserEventView, TimerEventView),
      * based on the given plan item. It will look for the planItemDefinition inside the plan item and take it's type to determine the view.
      * @param {PlanItem} definition 
      */
@@ -135,19 +135,19 @@
         }
 
         if (planItemDefinition instanceof HumanTaskDefinition) {
-            return new HumanTask(this, definition, planItemDefinition, shape);
+            return new HumanTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof CaseTaskDefinition) {
-            return new CaseTask(this, definition, planItemDefinition, shape);
+            return new CaseTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof ProcessTaskDefinition) {
-            return new ProcessTask(this, definition, planItemDefinition, shape);
+            return new ProcessTaskView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof StageDefinition) {
-            return new Stage(this, definition, planItemDefinition, shape);
+            return new StageView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof MilestoneDefinition) {
-            return new Milestone(this, definition, planItemDefinition, shape);
+            return new MilestoneView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof UserEventDefinition) {
-            return new UserEvent(this, definition, planItemDefinition, shape);
+            return new UserEventView(this, definition, planItemDefinition, shape);
         } else if (planItemDefinition instanceof TimerEventDefinition) {
-            return new TimerEvent(this, definition, planItemDefinition, shape);
+            return new TimerEventView(this, definition, planItemDefinition, shape);
         } else {
             throw new Error('This type of plan item cannot be instantiated into a view' + definition.name);
         }
@@ -155,7 +155,7 @@
 
     /**
      * Method invoked when a child is moved into this element from a different parent.
-     * @param {CMMNElement} childElement 
+     * @param {CMMNElementView} childElement 
      */
     adoptItem(childElement) {
         const previousParent = childElement.parent;
@@ -164,7 +164,7 @@
             // then also move the definition
             childElement.definition.switchParent(this.planItemDefinition);
             // If the item is discretionary, we may also have to clean up the former planning table and refresh ours.
-            if (childElement.definition.isDiscretionary && previousParent && previousParent instanceof Stage) {
+            if (childElement.definition.isDiscretionary && previousParent && previousParent instanceof StageView) {
                 previousParent.cleanupPlanningTableIfPossible();
                 this.showPlanningTable();
             }
@@ -191,10 +191,10 @@
     createCMMNChild(cmmnType, x, y) {
         if (Util.isSubClassOf(PlanItemView, cmmnType)) {
             return this.__addCMMNChild(cmmnType.create(this, x, y));
-        } else if (cmmnType == CaseFileItem) {
-            return this.__addCMMNChild(CaseFileItem.create(this, x, y));
-        } else if (cmmnType == TextAnnotation) {
-            return this.__addCMMNChild(TextAnnotation.create(this, x, y));
+        } else if (cmmnType == CaseFileItemView) {
+            return this.__addCMMNChild(CaseFileItemView.create(this, x, y));
+        } else if (cmmnType == TextAnnotationView) {
+            return this.__addCMMNChild(TextAnnotationView.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createCMMNChild(cmmnType, x, y);
         }
@@ -308,18 +308,18 @@
      */
     __canHaveAsChild(elementType) {
         if (this.canHaveCriterion(elementType) ||
-            elementType == HumanTask.name ||
-            elementType == CaseTask.name ||
-            elementType == ProcessTask.name ||
-            elementType == Milestone.name ||
-            elementType == UserEvent.name ||
-            elementType == TimerEvent.name ||
-            elementType == CaseFileItem.name ||
-            elementType == Stage.name ||
-            elementType == TextAnnotation.name) {
+            elementType == HumanTaskView.name ||
+            elementType == CaseTaskView.name ||
+            elementType == ProcessTaskView.name ||
+            elementType == MilestoneView.name ||
+            elementType == UserEventView.name ||
+            elementType == TimerEventView.name ||
+            elementType == CaseFileItemView.name ||
+            elementType == StageView.name ||
+            elementType == TextAnnotationView.name) {
             return true;
         }
         return false;
     }
 }
-CMMNElement.registerType(Stage, 'Stage', 'images/svg/collapsedstage.svg');
+CMMNElementView.registerType(StageView, 'StageView', 'images/svg/collapsedstage.svg');

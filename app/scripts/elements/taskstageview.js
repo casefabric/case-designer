@@ -1,7 +1,7 @@
-class TaskStage extends PlanItemView {
+class TaskStageView extends PlanItemView {
     /**
-     * Simple class to share some logic from Task and Stage.
-     * @param {CMMNElement} parent 
+     * Simple class to share some logic from TaskView and StageView.
+     * @param {CMMNElementView} parent 
      * @param {PlanItem} definition 
      * @param {TaskStageDefinition} planItemDefinition 
      * @param {ShapeDefinition} shape 
@@ -62,25 +62,25 @@ class TaskStage extends PlanItemView {
             if (! this.planningTableView) {
                 const position = this.__planningTablePosition;
                 const shape = this.case.diagram.getShape(ptDefinition) || this.case.diagram.createShape(position.x, position.y, 24, 16, ptDefinition.id);
-                new PlanningTable(this, this.planItemDefinition.planningTable, shape);
+                new PlanningTableView(this, this.planItemDefinition.planningTable, shape);
             }
         }
     }
 
     /**
-     * @returns {PlanningTable}
+     * @returns {PlanningTableView}
      */
     get planningTableView() {
-        const table = this.__childElements.find(child => child instanceof PlanningTable);
-        if (table instanceof PlanningTable) return table; // Adds "typesafety"
+        const table = this.__childElements.find(child => child instanceof PlanningTableView);
+        if (table instanceof PlanningTableView) return table; // Adds "typesafety"
     }
 
     __addConnector(connector) {
         super.__addConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
-            if (target instanceof HumanTask) {
-                // We are discretionary, and need to be added to the discretionary items in the planning table of the HumanTask
+            if (target instanceof HumanTaskView) {
+                // We are discretionary, and need to be added to the discretionary items in the planning table of the HumanTaskView
                 this.definition.switchParent(target.planItemDefinition);
             }
             this.parent.refreshView();
@@ -91,7 +91,7 @@ class TaskStage extends PlanItemView {
         super.__removeConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
-            if (target instanceof HumanTask) { // If target is HumanTask, then we are the Stage containing that task.
+            if (target instanceof HumanTaskView) { // If target is HumanTaskView, then we are the StageView containing that task.
                 this.definition.switchParent(target.parent.planItemDefinition);
                 this.parent.refreshView();
             }
@@ -112,13 +112,13 @@ class TaskStage extends PlanItemView {
         // Check discretionary
         if (this.definition.isDiscretionary) {
             // ------- check if connected to a stage or task with a planning table first check connected to element with planningTable
-            const numberOfConnectionsToPlanningTable = this.__getConnectedElements().filter(item => item instanceof TaskStage && item.planItemDefinition.planningTable).length;
+            const numberOfConnectionsToPlanningTable = this.__getConnectedElements().filter(item => item instanceof TaskStageView && item.planItemDefinition.planningTable).length;
             //not connected check if inside stage/case plan model with plannnigTable
             if (numberOfConnectionsToPlanningTable == 0) {
                 // not connected to task with planningTable check if parent is stage or case plan
                 // model with planningTable
                 const cmmnParent = this.parent;
-                if (cmmnParent && cmmnParent instanceof TaskStage) {
+                if (cmmnParent && cmmnParent instanceof TaskStageView) {
                     if (!cmmnParent.planItemDefinition.planningTable) {
                         this.raiseValidationIssue(20);
                     }
@@ -137,6 +137,6 @@ class TaskStage extends PlanItemView {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterion.name || criterionType == ReactivateCriterion.name || criterionType == ExitCriterion.name;
+        return criterionType == EntryCriterionView.name || criterionType == ReactivateCriterionView.name || criterionType == ExitCriterionView.name;
     }
 }

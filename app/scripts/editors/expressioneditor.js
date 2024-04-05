@@ -10,7 +10,7 @@ class ExpressionEditor {
     /**
      * 
      * @param {*} textarea 
-     * @param {CMMNElement} element 
+     * @param {CMMNElementView} element 
      */
     static init(textarea, element) {
         g_element = element;
@@ -46,7 +46,7 @@ class ExpressionEditor {
         const simpleCaseFileBuilder = new SimpleCaseFileBuilder();
         const simpleCaseFile = simpleCaseFileBuilder.build(ide.caseModelEditor.case.cfiEditor.caseFileItemDefinitionEditor.getData(), ide.caseModelEditor.case.caseDefinition.getCaseFile());
 
-        const contextRefId = g_element instanceof Sentry && g_element.definition.ifPart ? g_element.definition.ifPart.contextRef : undefined;
+        const contextRefId = g_element instanceof SentryView && g_element.definition.ifPart ? g_element.definition.ifPart.contextRef : undefined;
 
         const intelliSense = new IntelliSenseSpel(simpleCaseFile);
         const result = intelliSense.suggestions(contextRefId, token);

@@ -1,7 +1,7 @@
 class ShapeBox {
     /**
      * 
-     * @param {Case} cs 
+     * @param {CaseView} cs 
      * @param {JQuery<HTMLElement>} htmlElement 
      */
     constructor(cs, htmlElement) {
@@ -27,19 +27,19 @@ class ShapeBox {
         this.htmlContainer = html.find('ul');
         // add following shapes
         const shapeTypes = [
-            HumanTask,
-            CaseTask,
-            ProcessTask,
-            Milestone,
-            TimerEvent,
-            UserEvent,
-            Stage,
-            EntryCriterion,
-            ReactivateCriterion,
-            ExitCriterion,
-            CasePlanModel,
-            CaseFileItem,
-            TextAnnotation
+            HumanTaskView,
+            CaseTaskView,
+            ProcessTaskView,
+            MilestoneView,
+            TimerEventView,
+            UserEventView,
+            StageView,
+            EntryCriterionView,
+            ReactivateCriterionView,
+            ExitCriterionView,
+            CasePlanView,
+            CaseFileItemView,
+            TextAnnotationView
         ];
         shapeTypes.forEach(shapeType => {
             const description = shapeType.typeDescription;

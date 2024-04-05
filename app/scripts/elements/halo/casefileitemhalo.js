@@ -1,7 +1,7 @@
 class CaseFileItemHalo extends Halo {
     /**
-     * Create the halo for a CaseFileItem.
-     * @param {CaseFileItem} element 
+     * Create the halo for a CaseFileItemView.
+     * @param {CaseFileItemView} element 
      */
     constructor(element) {
         super(element);
