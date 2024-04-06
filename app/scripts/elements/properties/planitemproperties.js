@@ -94,20 +94,16 @@ class PlanItemProperties extends Properties {
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
                 this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', cfi.id);
-                html.find('.valuelabel').html(cfi.name);
             });
         });
         html.find('.removeReferenceButton').on('click', e => {
             this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', undefined);
-            html.find('.valuelabel').html('');
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 const newContextRef = dragData.item.id;
                 this.change(this.cmmnElement.definition.itemControl.getRule(ruleName), 'contextRef', newContextRef);
-                const name = newContextRef ? this.cmmnElement.definition.caseDefinition.getElement(newContextRef).name : '';
-                html.find('.valuelabel').html(name);
             });
         });
         html.find('.zoomRow').on('pointerout', e => {

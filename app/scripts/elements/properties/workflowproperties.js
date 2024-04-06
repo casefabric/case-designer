@@ -78,20 +78,16 @@ class WorkflowProperties extends TaskProperties {
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
                 this.change(this.humanTaskDefinition.assignment, 'contextRef', cfi.id);
-                html.find('.valuelabel').html(cfi.name);
             });
         });
         html.find('.removeReferenceButton').on('click', e => {
             this.change(this.humanTaskDefinition.assignment, 'contextRef', undefined);
-            html.find('.valuelabel').html('');
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 const newContextRef = dragData.item.id;
                 this.change(this.humanTaskDefinition.assignment, 'contextRef', newContextRef);
-                const name = dragData.item ? dragData.item.name : '';
-                html.find('.valuelabel').html(name);
             });
         });
         html.find('.zoomRow').on('pointerout', e => {
@@ -145,20 +141,16 @@ class WorkflowProperties extends TaskProperties {
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
                 this.change(this.humanTaskDefinition.dueDate, 'contextRef', cfi.id);
-                html.find('.valuelabel').html(cfi.name);
             });
         });
         html.find('.removeReferenceButton').on('click', e => {
             this.change(this.humanTaskDefinition.dueDate, 'contextRef', undefined);
-            html.find('.valuelabel').html('');
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 const newContextRef = dragData.item.id;
                 this.change(this.humanTaskDefinition.dueDate, 'contextRef', newContextRef);
-                const name = dragData.item ? dragData.item.name : '';
-                html.find('.valuelabel').html(name);
             });
         });
         html.find('.zoomRow').on('pointerout', e => {

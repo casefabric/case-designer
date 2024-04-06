@@ -122,14 +122,12 @@ class ApplicabilityRuleProperties {
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
                 this.change(this.getRule(), 'contextRef', cfi.id);
-                html.find('.valuelabel').html(this.getRule().contextName);
             });
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 this.change(this.getRule(), 'contextRef', dragData.item.id);
-                html.find('.valuelabel').html(this.getRule().contextName);
             });
         });
         html.find('.zoomRow').on('pointerout', e => {

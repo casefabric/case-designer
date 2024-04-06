@@ -13,7 +13,6 @@ class CaseFileItemProperties extends Properties {
         const cfi = this.cmmnElement.case.caseDefinition.getElement(caseFileItemId);
         const contextName = cfi ? cfi.name : '';
 
-
         const html = $(`<div class="zoomRow zoomDoubleRow" title="Drag/drop a case file item from the editor to change the reference">
                             <label class="zoomlabel">Case File Item</label>
                             <label class="valuelabel">${contextName}</label>
@@ -21,7 +20,7 @@ class CaseFileItemProperties extends Properties {
                             <button class="removeReferenceButton" title="remove the reference to the case file item" />
                         </div>`);
         this.htmlContainer.append(html);
-                        
+
         html.find('.zoombt').on('click', e => this.cmmnElement.case.cfiEditor.open(cfi => this.changeContextRef(html, cfi)));
         html.find('.removeReferenceButton').on('click', e => this.changeContextRef(html));
         html.on('pointerover', e => {
@@ -33,9 +32,12 @@ class CaseFileItemProperties extends Properties {
         this.addIdField();
     }
 
+    /**
+     * @param {JQuery<HTMLElement>} html 
+     * @param {CaseFileItemDef} cfi 
+     */
     changeContextRef(html, cfi = undefined) {
         const cfiName = cfi ? cfi.name : '';
-        const cfiId = cfi ? cfi.id : undefined;
         this.cmmnElement.setDefinition(cfi);
         html.find('.valuelabel').html(cfiName);
     }

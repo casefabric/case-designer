@@ -100,25 +100,21 @@ class SentryProperties extends Properties {
         html.find('.zoombt').on('click', e => {
             this.cmmnElement.case.cfiEditor.open(cfi => {
                 this.change(this.cmmnElement.definition.getIfPart(), 'contextRef', cfi.id);
-                html.find('.valuelabel').html(cfi.name);
             });
         });
         html.find('.removeReferenceButton').on('click', e => {
             this.change(this.cmmnElement.definition.getIfPart(), 'contextRef', undefined);
-            html.find('.valuelabel').html('');
         });
         html.find('.zoomRow').on('pointerover', e => {
             e.stopPropagation();
             this.cmmnElement.case.cfiEditor.setDropHandler(dragData => {
                 const newContextRef = dragData.item.id;
                 this.change(this.cmmnElement.definition.getIfPart(), 'contextRef', newContextRef);
-                const name = newContextRef ? this.cmmnElement.definition.caseDefinition.getElement(newContextRef).name : '';
-                html.find('.valuelabel').html(name);
             });
         });
         html.find('.zoomRow').on('pointerout', e => {
             this.cmmnElement.case.cfiEditor.removeDropHandler();
-        })
+        });
         this.htmlContainer.append(html);
         return html;
     }
@@ -209,7 +205,7 @@ class SentryProperties extends Properties {
 
     /**
      * 
-     * @param {PlanItemOnPartDefinition} planItem 
+     * @param {PlanItemOnPartDefinition} onPart 
      */
     getPlanItemStandardEvents(onPart) {
         if (!onPart || !onPart.source) {
@@ -461,7 +457,6 @@ class SentryProperties extends Properties {
             connector.remove();
         }
         this.change(newOnPart, 'sourceRef', cfi.id);
-        html.find('.valuelabel').html(cfi.name);
 
         // Render again.
         this.show();
