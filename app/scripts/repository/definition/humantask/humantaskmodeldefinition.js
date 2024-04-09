@@ -1,10 +1,11 @@
 class HumanTaskModelDefinition extends ModelDefinition {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {Element} importNode
+     * @param {HumanTaskFile} file
      */
-    constructor(importNode) {
-        super(importNode);
+    constructor(file) {
+        super(file);
+        this.file = file;
     }
 
     parseDocument() {
