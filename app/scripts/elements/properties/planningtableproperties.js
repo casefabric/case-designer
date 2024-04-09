@@ -11,7 +11,7 @@ class PlanningTableProperties extends Properties {
         const element = this.cmmnElement.definition;
         $(this.html).css('width', '495px');
         const html = $(`<div class="planning-table">
-                            <label>PlanningTableView Applicability Rules</label>
+                            <label>PlanningTable Applicability Rules</label>
                             <div>
                                 <table class="planning-table-rules">
                                     <colgroup>
