@@ -12,6 +12,7 @@ class ServerFile {
         this.repository = repository;
         this.ide = this.repository.ide;
         this.fileName = fileName;
+        this.references = new ServerFileReferences(this);
         this.content = new Content(this);
         this.source = source;
     }
@@ -24,16 +25,36 @@ class ServerFile {
         return false;
     }
 
-    /** @returns {ModelDefinition} */
+    /**
+     * Note: this method is private/protected
+     *  @returns {ModelDefinition}
+     */
     createDefinition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
+     * Note: this method is private/protected
      * @returns {ModelEditor}
      */
     createEditor() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    loadEditor() {
+        this.loading = true;
+        this.load(() => {
+            this.editor = this.createEditor();
+            this.editor.loadModel();
+        });
+    }
+
+    reloadEditor() {
+        console.groupCollapsed(`Reloading editor of ${this.fileName}`);
+        this.reload(() => {
+            console.groupEnd();
+            this.editor.loadModel();
+        });
     }
 
     get fileName() {
@@ -109,10 +130,19 @@ class ServerFile {
      * Removes local content caches, in order to enforce reloading of the file when it's content is read.
      */
     clear() {
-        if (this.source) {
-            console.warn(`Clearing the contents of ${this.fileName}`);
+        if (this.clearing) {
+            return;
         }
+        if (this.source === undefined && !this.definition) {
+            // Nothing to clear here
+            return;
+        }
+        console.groupCollapsed(`Clearing the contents of ${this.fileName} and ${this.references.size} referenced files`);
+        this.clearing = true;
         this.source = undefined;
+        this.references.clear();
+        this.clearing = false;
+        console.groupEnd();
     }
 
     /**
@@ -141,7 +171,8 @@ class ServerFile {
                     this.ide.info(msg);
                 } else {
                     this.source = data;
-                    callback(this);
+                    console.log(`Parsing ${this.fileName} during fetch`)
+                    this.parse(() => callback(this));
                 }
             },
             error: (xhr, error, eThrown) => {
@@ -153,16 +184,44 @@ class ServerFile {
         });
     }
 
-    load(callback) {
+    parse(callback) {
         const file = this;
+        const definition = this.createDefinition();
+        this.content.definition = definition;
+        definition.parseDocument();
+        definition.validateDocument();
+        if (file.definition.hasMigrated()) {
+            console.log(`Definition of ${file.definition.constructor.name} '${file.fileName}' has migrated; uploading result`);
+            file.source = file.definition.toXML();
+            file.save();
+        }
+
+        definition.loadDependencies(() => callback());
+    }
+
+    /**
+     * Load the file and parse it.
+     * If the source of the file is not present, then it will be fetched from the server.
+     * @param {(file: ServerFile) => void} callback 
+     */
+    load(callback = () => {}) {
         this.fetch(_ => {
-            if (file.definition.hasMigrated()) {
-                console.log(`Definition of ${file.definition.constructor.name} '${file.fileName}' has migrated; uploading result`);
-                file.source = file.definition.toXML();
-                file.save();
+            if (!this.definition) {
+                // console.log(`Parsing ${this.fileName} upon loading`)
+                this.parse(() => callback(this))
+            } else {
+                callback(this);
             }
-            callback(file);
-        })
+        });
+    }
+
+    /**
+     * Clear the contents of the file and load it again from the server.
+     * @param {(file: ServerFile) => void} callback 
+     */
+    reload(callback = () => {}) {
+        this.clear();
+        this.load(callback);
     }
 
     /**
@@ -170,7 +229,7 @@ class ServerFile {
      * Uploading to server gives also a new file list back, which we use to update the repository contents.
      * @param {Function} callback 
      */
-    save(callback = undefined) {
+    save(callback = () => {}) {
         if (!this.repository.isExistingModel(this.fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
             this.repository.list.push(this);
         }
@@ -183,17 +242,18 @@ class ServerFile {
             headers: { 'content-type': 'application/xml' },
             success: (data, status, xhr) => {
                 this.hasBeenSavedJustNow = true;
-                this.repository.updateFileList(data);
-                this.hasBeenSavedJustNow = false;
-                // Also print a timestampe of the new last modified information
-                const lmDate = new Date(this.lastModified);
-                const HHmmss = lmDate.toTimeString().substring(0, 8);
-                const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
-                console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
-
-                if (typeof (callback) == 'function') {
-                    callback(data, status, xhr);
-                }
+                this.repository.updateFileList(data, () => {
+                    this.hasBeenSavedJustNow = false;
+                    // Also print a timestampe of the new last modified information
+                    const lmDate = new Date(this.lastModified);
+                    const HHmmss = lmDate.toTimeString().substring(0, 8);
+                    const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
+                    console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
+    
+                    if (typeof (callback) == 'function') {
+                        callback(data, status, xhr);
+                    }    
+                });
             },
             error: (xhr, error, eThrown) => {
                 this.ide.danger('We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running');
@@ -257,10 +317,60 @@ class ServerFile {
             }
         });
     }
+
+    /**
+     * 
+     * @param {String} fileName 
+     * @param {(file: ServerFile|undefined) => void} callback
+     */
+    loadReference(fileName, callback) {
+        this.references.load(fileName, callback);
+    }
 }
 
 class ServerFileWithEditor extends ServerFile {
     get hasModelEditor() {
         return true;
+    }
+}
+
+class ServerFileReferences {
+    /**
+     * 
+     * @param {ServerFile} file 
+     */
+    constructor(file) {
+        this.source = file;
+        /** @type {Array<ServerFile>} */
+        this.files = [];
+    }
+
+    get size() {
+        return this.files.length;
+    }
+
+    clear() {
+        this.files.forEach(file => file.clear());
+        Util.clearArray(this.files);
+    }
+
+    /**
+     * 
+     * @param {String} fileName 
+     * @param {(file: ServerFile|undefined) => void} callback
+     * @returns 
+     */
+    load(fileName, callback) {
+        const file = this.files.find(file => file.fileName === fileName);
+        if (file) {
+            callback(file);
+        } else {
+            this.source.repository.load(fileName, file => {
+                if (file) {
+                    this.files.push(file);
+                }
+                callback(file);
+            });
+        }
     }
 }

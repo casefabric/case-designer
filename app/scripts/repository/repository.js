@@ -49,7 +49,7 @@ class Repository {
      * @returns {CaseFile}
      */
     createCaseFile(fileName, source) {
-        return new CaseFile(this, fileName, source);        
+        return new CaseFile(this, fileName, source);
     }
 
     /**
@@ -67,7 +67,7 @@ class Repository {
      * @returns {DimensionsFile}
      */
     createDimensionsFile(fileName, source) {
-        return new DimensionsFile(this, fileName, source);        
+        return new DimensionsFile(this, fileName, source);
     }
 
     /**
@@ -85,7 +85,7 @@ class Repository {
      * @returns {ProcessFile}
      */
     createProcessFile(fileName, source) {
-        return new ProcessFile(this, fileName, source);        
+        return new ProcessFile(this, fileName, source);
     }
 
     /**
@@ -103,7 +103,7 @@ class Repository {
      * @returns {HumanTaskFile}
      */
     createHumanTaskFile(fileName, source) {
-        return new HumanTaskFile(this, fileName, source);        
+        return new HumanTaskFile(this, fileName, source);
     }
 
     /**
@@ -121,7 +121,7 @@ class Repository {
      * @returns {CFIDFile}
      */
     createCFIDFile(fileName, source) {
-        return new CFIDFile(this, fileName, source);        
+        return new CFIDFile(this, fileName, source);
     }
 
     /**
@@ -178,6 +178,7 @@ class Repository {
      * @param {Array<Metadata>} newServerFileList
      */
     updateFileList(newServerFileList) {
+        console.groupCollapsed("Updating file list");
         // Make a copy of the old list, to be able to clean up old models afterwards;
         const oldList = this.list;
         // Map the new server list into a list of structured objects. Also re-use existing objects as much as possible.
@@ -199,6 +200,7 @@ class Repository {
         oldList.forEach(serverFile => serverFile.deprecate());
         // Now invoke any repository listeners about the new list.
         this.listeners.forEach(listener => listener());
+        console.groupEnd();
     }
 
     /**
@@ -260,17 +262,19 @@ class Repository {
     }
 
     /**
-     * Loads the file from the repository and invokes the callback on successful completion
+     * Loads the file from the repository and invokes the callback on successful completion.
+     * If the file does not exist, it will invoke the callback with undefined.
+     * 
      * @param {String} fileName 
-     * @param {Function} callback 
+     * @param {(file: ServerFile|undefined) => void} callback 
      */
     load(fileName, callback) {
         const serverFile = this.get(fileName);
-        if (!serverFile) {
+        if (serverFile) {
+            serverFile.load(callback);
+        } else {
             console.warn(`File ${fileName} does not exist and cannot be loaded`);
-            this.ide.warning(`File ${fileName} does not exist and cannot be loaded`, 2000);
-            return;
+            callback(undefined);
         }
-        serverFile.load(callback);
     }
 }

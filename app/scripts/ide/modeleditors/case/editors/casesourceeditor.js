@@ -69,6 +69,8 @@ class CaseSourceEditor {
         // Now replace the content in the editor, and reload
         this.editor.caseFile.source = caseXML;
         this.editor.dimensionsFile.source = dimensionsXML;
+        this.editor.dimensionsFile.parse(() => {});
+        this.editor.caseFile.parse(() => {});
         this.editor.loadDefinition();
         // Completing the action will save the model and add a corresponding action to the undo/redo buffer
         this.editor.completeUserAction();
