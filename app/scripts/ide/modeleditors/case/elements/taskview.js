@@ -96,8 +96,8 @@
         }
 
         // Now, read the file, and update the information in the task parameters.
-        this.case.editor.ide.repository.load(fileName, file => {
-            const model = file.definition;
+        this.case.editor.ide.repository.load(fileName, andThen(file => {
+            const model = file !== undefined && file.definition;
             if (!model) {
                 this.case.editor.ide.warning('Could not read the model ' + fileName + ' which is referenced from the task ' + this.name);
                 return;
@@ -122,7 +122,7 @@
             // Now refresh the renderers and optionally the propertiesmenu.
             this.mappingsEditor.refresh();
             this.propertiesView.show(true);
-        });
+        }));
     }
 
     /** @returns {String} */

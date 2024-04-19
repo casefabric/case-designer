@@ -87,14 +87,16 @@ class ModelListPanel {
                     }
                 }
 
-                this.ide.repository.delete(file.fileName, () => {
+                this.ide.repository.delete(file.fileName, andThen(() => {
                     if (file.fileType === 'case') {
                         // When we delete a .case model we also need to delete the .dimensions
-                        this.ide.repository.delete(file.name + '.dimensions', editorCloser);
+                        this.ide.repository.delete(file.name + '.dimensions', andThen(editorCloser));
                     } else {
                         editorCloser();
                     }
-                });
+                }, msg => {
+                    this.ide.danger(msg);
+                }));
             }
         }
     }

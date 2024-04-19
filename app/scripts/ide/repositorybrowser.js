@@ -45,7 +45,7 @@ class RepositoryBrowser {
 
         //set refresh handle on click
         this.html.find('.btnRefresh').on('click', () => {
-            this.repository.listModels();
+            this.repository.listModels(onFail(msg => this.ide.danger(msg)));
             this.searchBox.val('');
         });
 
@@ -53,7 +53,7 @@ class RepositoryBrowser {
         $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
 
         // Now load the repository contents, and after that optionally load the first model
-        this.repository.listModels(() => this.loadModelFromBrowserLocation());
+        this.repository.listModels(andThen(() => this.loadModelFromBrowserLocation(), msg => this.ide.danger(msg)));
     }
 
     /**

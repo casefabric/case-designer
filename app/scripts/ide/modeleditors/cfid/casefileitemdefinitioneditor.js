@@ -145,10 +145,10 @@
             const newFile = this.ide.repository.createCFIDFile(definitionRef);
             newFile.source = XML.loadXMLString(`<caseFileItemDefinition name="${newFile.name}" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" />`);
             // Save and then render.
-            newFile.save(() => this.renderDefinition(newFile.definition));
+            newFile.save(andThen(() => this.renderDefinition(newFile.definition)));
         } else {
             // Read it from the repository, and only render upon callback.
-            this.ide.repository.load(definitionRef, file => this.renderDefinition(file.definition));
+            this.ide.repository.load(definitionRef, andThen(file => this.renderDefinition(file.definition)));
         }
     }
 

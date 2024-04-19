@@ -115,6 +115,22 @@
     }
 
     /**
+     * Remove duplicate elements from an array
+     * @param {Array} array 
+     * @returns {Array}
+     */
+    static removeDuplicates(array) {
+        const size = array.length;
+        const copy = [...array];
+        const set = new Set();
+        copy.forEach(object => set.add(object));
+        Util.clearArray(array);
+        array.push(...Array.from(set));
+        const newSize = array.length;
+        return array;
+    }
+
+    /**
      * Simple helper function that removes all elements from an array.
      * @param {Array} array 
      */

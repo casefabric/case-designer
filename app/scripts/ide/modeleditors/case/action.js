@@ -93,13 +93,13 @@ class Action {
         this.caseFile.clear();        
         this.caseFile.source = this.caseString;
         this.dimensionsFile.source = this.dimensionsString;
-        this.caseFile.parse(() => {
+        this.caseFile.parse(andThen(() => {
             this.undoManager.editor.loadDefinition(this.caseFile.definition);
             // Reset the "saved" flag.
             this.saved = false;
             this.save(caseChanged, dimensionsChanged);
             this.undoManager.performingBufferAction = false;
-        })
+        }))
 
         return this;
     }

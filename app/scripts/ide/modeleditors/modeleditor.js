@@ -237,9 +237,11 @@ class ModelEditor {
 
     refresh() {
         console.groupCollapsed(`Reloading editor of ${this.file.fileName}`);
-        this.file.reload(() => {
+        this.file.reload(andThen(() => {
             console.groupEnd();
             this.loadModel();
-        });
+        }, error => {
+            this.ide.warning(error)
+        }));
     }
 }

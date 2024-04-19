@@ -31,21 +31,20 @@ class ModelDefinition extends ReferableElementDefinition {
      */
     loadDependencies(callback) {
         const referencingElements = this.elements.filter(element => element.hasExternalReferences());
-        const referencesPending = [...referencingElements];
-        if (referencesPending.length === 0) {
-            console.log(`${this.file.fileName} has no external dependencies`);
+        Util.removeDuplicates(referencingElements);
+        if (referencingElements.length === 0) {
             callback();
-        } else {
-            console.log(`${this.file.fileName} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
-            referencingElements.forEach(element => {
-                element.loadExternalReferences(() => {
-                    Util.removeFromArray(referencesPending, element);
-                    if (referencesPending.length === 0) {
-                        callback();
-                    }
-                })
-            });                
+            return;
         }
+        console.groupCollapsed("Loading dependencies of " + this.file.fileName);
+        console.log(`${this.file.fileName} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
+        const todo = new FollowupList(andThen(() => {
+            console.log(`${this.file.fileName} completed dependencies`);
+            console.groupEnd();
+            callback();
+        }));
+        referencingElements.forEach(element => todo.add(callback => element.loadExternalReferences(callback)));
+        todo.run();
     }
 
     /**

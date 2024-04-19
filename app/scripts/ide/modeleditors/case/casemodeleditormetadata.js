@@ -78,7 +78,7 @@ class CaseModelEditorMetadata extends ModelEditorMetadata {
         // Upload models to server, and call back
         const caseFile = this.ide.repository.createCaseFile(caseFileName, caseString);
         const dimensionsFile = this.ide.repository.createDimensionsFile(dimensionsFileName, dimensionsString);
-        dimensionsFile.save(() => caseFile.save(() => callback(caseFileName)));
+        dimensionsFile.save(andThen(() => caseFile.save(andThen(() => callback(caseFileName)))));
         return caseFileName;
     }
 }

@@ -47,7 +47,7 @@ class ProcessModelEditorMetadata extends ModelEditorMetadata {
     </${EXTENSIONELEMENTS}>
 </process>`;
         const fileName = name + '.process';
-        ide.repository.createProcessFile(fileName, newModelContent).save(() => callback(fileName));
+        ide.repository.createProcessFile(fileName, newModelContent).save(andThen(() => callback(fileName)));
         return fileName;
     }
 }

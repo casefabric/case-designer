@@ -14,7 +14,7 @@ class IDE {
 
     init() {
         // Repository object handles the interaction with the server
-        this.repository = new Repository(this);
+        this.repository = new Repository();
 
         this.html = $('body');
 

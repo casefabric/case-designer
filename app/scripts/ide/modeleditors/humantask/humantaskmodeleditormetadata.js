@@ -41,7 +41,7 @@ class HumantaskModelEditorMetadata extends ModelEditorMetadata {
                 </${IMPLEMENTATION_TAG}>
             </humantask>`;
         const fileName = name + '.humantask';
-        ide.repository.createHumanTaskFile(fileName, newModelContent).save(() => callback(fileName));
+        ide.repository.createHumanTaskFile(fileName, newModelContent).save(andThen(() => callback(fileName)));
         return fileName;
     }
 }

@@ -15,7 +15,6 @@ class Content {
         // If we get a new source, flatten and parse it, and also remove the existing definition
         const serializedNewSource = this.serialize(source);
         if (serializedNewSource !== this.serialized) { // It's a real change
-            console.log("Clearing definition " + this.file.fileName)
             this._definition = undefined;
             this._serialized = serializedNewSource;
             this._deserialized = undefined;
