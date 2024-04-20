@@ -1,10 +1,10 @@
 class HumanTaskImplementationDefinition extends HumanTaskModelElementDefinition {
     constructor(importNode, modelDefinition, parent) {
         super(importNode, modelDefinition, parent);
-        /** @type {Array<ImplementationParameterDefinition>} */
-        this.input = this.parseElements('input', ImplementationParameterDefinition);
-        /** @type {Array<ImplementationParameterDefinition>} */
-        this.output = this.parseElements('output', ImplementationParameterDefinition);
+        /** @type {Array<ParameterDefinition>} */
+        this.input = this.parseElements('input', ParameterDefinition);
+        /** @type {Array<ParameterDefinition>} */
+        this.output = this.parseElements('output', ParameterDefinition);
         this.taskModel = this.parseElement('task-model', TaskModelDefinition);
     }
 

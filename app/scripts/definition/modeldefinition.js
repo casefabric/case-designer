@@ -24,7 +24,7 @@ class ModelDefinition extends ReferableElementDefinition {
 
     /**
      * A ModelDefinition must have input parameters.
-     * @returns {Array<ImplementationParameterDefinition>}
+     * @returns {Array<ParameterDefinition>}
      */
     get inputParameters() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
@@ -32,7 +32,7 @@ class ModelDefinition extends ReferableElementDefinition {
 
     /**
      * A ModelDefinition must have output parameters.
-     * @returns {Array<ImplementationParameterDefinition>}
+     * @returns {Array<ParameterDefinition>}
      */
     get outputParameters() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
@@ -41,7 +41,7 @@ class ModelDefinition extends ReferableElementDefinition {
     /**
      * 
      * @param {String} identifier 
-     * @returns {ImplementationParameterDefinition}
+     * @returns {ParameterDefinition}
      */
     findInputParameter(identifier) {
         return this.inputParameters.find(p => p.hasIdentifier(identifier));
@@ -50,7 +50,7 @@ class ModelDefinition extends ReferableElementDefinition {
     /**
      * 
      * @param {String} identifier 
-     * @returns {ImplementationParameterDefinition}
+     * @returns {ParameterDefinition}
      */
     findOutputParameter(identifier) {
         return this.outputParameters.find(p => p.hasIdentifier(identifier));

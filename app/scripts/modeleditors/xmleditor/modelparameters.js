@@ -39,7 +39,7 @@ class ModelParameters {
 
     /**
      * 
-     * @param {Array<ImplementationParameterDefinition>} parameters 
+     * @param {Array<ParameterDefinition>} parameters 
      */
     renderParameters(parameters) {
         // First clean the old content
@@ -73,12 +73,12 @@ class ModelParameters {
 
     /**
      * 
-     * @param {ImplementationParameterDefinition} parameter 
+     * @param {ParameterDefinition} parameter 
      */
     addParameter(parameter = undefined) {
         if (parameter === undefined) {
             // create a new, empty parameter at the end of the table
-            parameter = this.editor.model.createDefinition(ImplementationParameterDefinition);
+            parameter = this.editor.model.createDefinition(ParameterDefinition);
             parameter.id = parameter.name = '';
             parameter.isNew = true;
         }

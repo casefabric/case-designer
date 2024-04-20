@@ -148,7 +148,7 @@ class TaskDefinition extends TaskStageDefinition {
      * @param {String} sourceRef 
      * @param {String} targetRef 
      * @param {ParameterDefinition} taskParameter 
-     * @param {ImplementationParameterDefinition} implementationParameter 
+     * @param {ParameterDefinition} implementationParameter 
      * @returns {ParameterMappingDefinition}
      */
     createMapping(creator, sourceRef = undefined, targetRef = undefined, taskParameter = undefined, implementationParameter = undefined) {
@@ -165,7 +165,7 @@ class TaskDefinition extends TaskStageDefinition {
 
     /**
      * 
-     * @param {ImplementationParameterDefinition} implementationParameter 
+     * @param {ParameterDefinition} implementationParameter 
      */
     createInputMapping(implementationParameter) {
         const targetRef = implementationParameter.getIdentifier();
@@ -174,7 +174,7 @@ class TaskDefinition extends TaskStageDefinition {
 
     /**
      * 
-     * @param {ImplementationParameterDefinition} implementationParameter 
+     * @param {ParameterDefinition} implementationParameter 
      */
     createOutputMapping(implementationParameter) {
         const sourceRef = implementationParameter.getIdentifier();

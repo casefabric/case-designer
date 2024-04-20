@@ -103,7 +103,7 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
     }
 
     /**
-     * @param {ImplementationParameterDefinition} parameter
+     * @param {ParameterDefinition} parameter
      */
     set implementationParameter(parameter) {
         this._implementationParameter = parameter;
@@ -131,10 +131,10 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
 
     /**
      * Either source or target will be undefined, because one refers to the task-implementation's input/output parameter
-     * @returns {ParameterDefinition | ImplementationParameterDefinition}
+     * @returns {ParameterDefinition}
      */
     get source() {
-        return this.caseDefinition.getElement(this.sourceRef, ParameterDefinition);
+        return this.task.inputs.find(parameter => parameter.id === this.sourceRef);
     }
 
     set source(parameter) {
@@ -143,10 +143,10 @@ class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
 
     /**
      * Either source or target will be undefined, because one refers to the task-implementation's input/output parameter
-     * @returns {ParameterDefinition | ImplementationParameterDefinition}
+     * @returns {ParameterDefinition}
      */
     get target() {
-        return this.caseDefinition.getElement(this.targetRef, ParameterDefinition);
+        return this.task.outputs.find(parameter => parameter.id === this.targetRef);
     }
 
     set target(parameter) {

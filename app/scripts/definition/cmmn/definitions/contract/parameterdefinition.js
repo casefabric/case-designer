@@ -5,6 +5,7 @@ class ParameterDefinition extends CMMNElementDefinition {
         this.bindingRef = this.parseAttribute('bindingRef');
         this.bindingRefinement = this.parseElement('bindingRefinement', ExpressionDefinition);
         this.required = this.parseImplementation().parseBooleanAttribute('required', false);
+        this.isNew = false; // This property is used in the HumanTaskEditor and ProcessTaskEditor
     }
 
     get binding() {
@@ -62,12 +63,5 @@ class ParameterDefinition extends CMMNElementDefinition {
         if (this.required) { // Required is a customization to the spec, put in an extension element
             this.createImplementationNode().setAttribute('required', 'true');
         }
-    }
-}
-
-class ImplementationParameterDefinition extends ReferableElementDefinition {
-    constructor(importNode, modelDefinition, parent) {
-        super(importNode, modelDefinition, parent);
-        this.isNew = false; // This property is used in the HumanTaskEditor and ProcessTaskEditor
     }
 }
