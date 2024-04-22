@@ -1,8 +1,4 @@
-class ProcessFile extends ServerFileWithEditor {
-    createEditor() {
-        return new ProcessModelEditor(this);
-    }
-
+class ProcessFile extends ServerFile {
     createDefinition() {
         return new ProcessModelDefinition(this);
     }

@@ -224,11 +224,6 @@ class TaskDefinition extends TaskStageDefinition {
         //  for each of the input and output parameters of the contract
         this.implementationModel.inputParameters.forEach(parameter => this.createInputMapping(parameter));
         this.implementationModel.outputParameters.forEach(parameter => this.createOutputMapping(parameter));
-        // Show a message if we've generated new parameters
-        if (this.mappings.length > 0) {
-            this.modelDefinition.file.repository.ide.info('Generated task parameters for ' + this.name, 2000);
-
-        }
     }
 
     /**
@@ -240,7 +235,7 @@ class TaskDefinition extends TaskStageDefinition {
         this.hasImplementation = true;
         this.implementationModel = implementationModel;
 
-        if (this.implementationRef != implementationRef) {
+        if (this.implementationRef !== implementationRef) {
             this.changeTaskImplementation(implementationRef, implementationModel);
         } else {
             this.inputMappings.forEach(mapping => {
@@ -271,7 +266,7 @@ class TaskDefinition extends TaskStageDefinition {
                 const existingMapping = this.outputMappings.find(mapping => parameter && parameter.hasIdentifier(mapping.sourceRef));
                 if (!existingMapping) {
                     // console.log('Generating default output mapping for implementation parameter ' + parameter.name + ' in task "' + this.name + '"');
-                    const newMapping = this.createOutputMapping(parameter);
+                    this.createOutputMapping(parameter);
                 }
             });
         }

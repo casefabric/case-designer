@@ -3,10 +3,11 @@
 class ModelEditor {
     /**
      * Basic model editor
+     * @param {IDE} ide 
      * @param {ServerFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(file) {
-        this.ide = file.repository.ide;
+    constructor(ide, file) {
+        this.ide = ide;
         this.ide.register(this);
         this.file = file;
         this.modelType = file.fileType;
@@ -235,6 +236,10 @@ class ModelEditor {
     }
 
     refresh() {
-        this.file.reloadEditor();
+        console.groupCollapsed(`Reloading editor of ${this.file.fileName}`);
+        this.file.reload(() => {
+            console.groupEnd();
+            this.loadModel();
+        });
     }
 }

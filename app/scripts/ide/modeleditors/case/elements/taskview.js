@@ -113,7 +113,7 @@
                 }
             }
 
-            // Set the implementation. If it leads to new mappings, this method will return "true, and we wil"
+            // Set the implementation.
             this.planItemDefinition.setImplementation(fileName, model);
 
             // Make sure to save changes if any.

@@ -18,43 +18,11 @@ class ServerFile {
     }
 
     /**
-     * Returns true if this server file has a model editor that can render it
-     * @returns {boolean}
-     */
-    get hasModelEditor() {
-        return false;
-    }
-
-    /**
      * Note: this method is private/protected
      *  @returns {ModelDefinition}
      */
     createDefinition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    /**
-     * Note: this method is private/protected
-     * @returns {ModelEditor}
-     */
-    createEditor() {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    loadEditor() {
-        this.loading = true;
-        this.load(() => {
-            this.editor = this.createEditor();
-            this.editor.loadModel();
-        });
-    }
-
-    reloadEditor() {
-        console.groupCollapsed(`Reloading editor of ${this.fileName}`);
-        this.reload(() => {
-            console.groupEnd();
-            this.editor.loadModel();
-        });
     }
 
     get fileName() {
@@ -325,12 +293,6 @@ class ServerFile {
      */
     loadReference(fileName, callback) {
         this.references.load(fileName, callback);
-    }
-}
-
-class ServerFileWithEditor extends ServerFile {
-    get hasModelEditor() {
-        return true;
     }
 }
 

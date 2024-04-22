@@ -3,10 +3,11 @@
 class ProcessModelEditor extends ModelEditor {
     /** 
      * This editor handles process models; only validates the xml
+     * @param {IDE} ide 
      * @param {ProcessFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
-    constructor(file) {
-        super(file);
+    constructor(ide, file) {
+        super(ide, file);
         this.file = file;
         this.generateHTML();
     }
@@ -247,51 +248,3 @@ class ProcessModelEditor extends ModelEditor {
         this.saveModel();
     }
 }
-
-class ProcessModelEditorMetadata extends ModelEditorMetadata {
-    /** @returns {Array<ServerFile>} */
-    get modelList() {
-        return this.ide.repository.getProcesses();
-    }
-
-    get modelType() {
-        return 'process';
-    }
-
-    /** @returns {Function} */
-    get shapeType() {
-        return ProcessTaskView;
-    }
-
-    get description() {
-        return 'Processes';
-    }
-
-    toString() {
-        // Override base implementation, because that cuts off only the s, and we need to also cut off the e.
-        return 'process';
-    }
-
-    /**
-     * Create a new Process model with given name and description 
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @param {Function} callback
-     * @returns {String} fileName of the new model
-     */
-    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
-        const newModelContent =
-`<process name="${name}" description="${description}">
-    <${EXTENSIONELEMENTS}>
-        <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
-        </${IMPLEMENTATION_TAG}>
-    </${EXTENSIONELEMENTS}>
-</process>`;
-        const fileName = name + '.process';
-        ide.repository.createProcessFile(fileName, newModelContent).save(() => callback(fileName));
-        return fileName;
-    }
-}
-
-IDE.registerEditorType(new ProcessModelEditorMetadata());

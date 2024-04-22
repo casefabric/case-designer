@@ -13,6 +13,24 @@ class ModelEditorMetadata {
         });
     }
 
+    /**
+     * Whether the metadata is associated with this kind of file
+     * @param {ServerFile} file 
+     */
+    supportsFile(file) {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * Create an editor for this file
+     * @param {IDE} ide 
+     * @param {ServerFile} file 
+     * @returns {ModelEditor}
+     */
+    createEditor(ide, file) {
+        throw new Error('This method must be implemented in ' + this.constructor.name);        
+    }
+
     get supportsDeploy() {
         return false;
     }

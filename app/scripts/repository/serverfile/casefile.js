@@ -1,8 +1,4 @@
-class CaseFile extends ServerFileWithEditor {
-    createEditor() {
-        return new CaseModelEditor(this);
-    }
-
+class CaseFile extends ServerFile {
     createDefinition() {
         return new CaseDefinition(this);
     }

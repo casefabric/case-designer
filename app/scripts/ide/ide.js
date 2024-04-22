@@ -137,8 +137,10 @@ class IDE {
             return;
         }
 
+        const editorMetadata = IDE.editorTypes.find(type => type.supportsFile(serverFile));
+
         // Check if this file type has a model editor.
-        if (!serverFile.hasModelEditor) {
+        if (!editorMetadata) {
             this.danger(`File type ${serverFile.fileType} has no editor associated with it`, 3000);
             if (this.editors.length === 0) {
                 this.coverPanel.show('Please, open or create a model.');
@@ -173,7 +175,7 @@ class IDE {
         this.coverPanel.show('Opening ' + fileName);
 
         // Now create and load the new editor
-        serverFile.loadEditor();
+        editorMetadata.createEditor(this, serverFile).loadModel();
     }
 
     /**
