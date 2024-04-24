@@ -6,8 +6,12 @@ import TypeFile from "@repository/serverfile/typefile";
 import Util from "@util/util";
 import $ from "jquery";
 import LocalTypeDefinition from "./localtypedefinition";
+import PropertyUsage from "./propertyusage";
 import TypeEditor from "./typeeditor";
 import TypeSelector from "./typeselector";
+import TypeDefinition from "@repository/definition/type/typedefinition";
+import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import CaseFileDefinition from "@repository/definition/cmmn/casefile/casefiledefinition";
 
 export default class TypeRenderer {
 
@@ -77,6 +81,10 @@ export default class TypeRenderer {
         this.children = [];
         TypeRenderer.remove(this);
         this.parent = undefined;
+    }
+
+    getDescendents(): TypeRenderer[] {
+        return [this, ...this.children.map(child => child.getDescendents()).flat()];
     }
 
     /**
@@ -169,7 +177,16 @@ export class SchemaRenderer extends TypeRenderer {
     }
 
     addEmptyProperty() {
-        this.addProperty(this.schema.createChildProperty());
+        const newProperty = this.schema.createChildProperty();
+        this.addProperty(newProperty);
+
+        // Also add the new property to the case file definitions that have a reference us.
+        //  Note: "that reference us." ==> this means reference either to TypeDefinition or SchemaPropertyDefinition surrounding "us", "us" being the SchemaDefinition
+        this.schema.searchInboundReferences().forEach(reference => {
+            if (reference instanceof CaseFileItemTypeDefinition || reference instanceof CaseFileDefinition) {
+                reference.addChild(newProperty);
+            }
+        });
     }
 
     refresh() {
@@ -302,20 +319,28 @@ export class PropertyRenderer extends TypeRenderer {
         }
     }
 
+    /**
+     * Remove the property (including nested objects)
+     * But first check if the property is still in use. If so, then it cannot be removed.
+     */
     removeProperty() {
-        // remove the attribute (and all nested embedded attriute from the activeDefinition and the html table
-        if (this.property['isNew']) {
+        if (!PropertyUsage.checkPropertyDeletionAllowed(this)) {
             return;
         }
+
         // remove from the definition
         Util.removeFromArray(this.property.parent.properties, this.property);
+        // Also update the in-memory case definitions that a child is removed.
+        this.property.getCaseFileItemReferences().forEach(reference => reference.removeDefinition());
+
         // remove from the html
         Util.removeHTML(this.htmlContainer);
         this.localType.save(this);
     }
 
-    changeName(newName: string) {
-        this.changeProperty('name', newName);
+    async changeName(newName: string) {
+        await PropertyUsage.updateNameChangeInOtherModels(this, newName);
+        await this.localType.save(this);
     }
 
     changeType(newType: string) {
@@ -325,7 +350,6 @@ export class PropertyRenderer extends TypeRenderer {
 
     changeProperty(propertyName: string, propertyValue: string) {
         const wasNewProperty = this.property.isNew;
-        const oldPropertyValue = (this.property as any)[propertyName];
         (this.property as any)[propertyName] = propertyValue;
         if (wasNewProperty) {
             // No longer transient parameter
@@ -333,9 +357,7 @@ export class PropertyRenderer extends TypeRenderer {
             schema.properties.push(this.property);
             this.parent.addEmptyProperty();
         }
-        if (oldPropertyValue != propertyValue) {
-            this.localType.save(this);
-        }
+        this.localType.save(this);
     }
 
     /**

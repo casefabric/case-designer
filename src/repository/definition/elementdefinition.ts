@@ -81,6 +81,13 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         return [];
     }
 
+    /**
+     * Implement this method to update references this element has to the given element.
+     * The given element has changed its ID and NAME attribute to the new values.
+     */
+    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    }
+
     hasExternalReferences() {
         return false;
     }
