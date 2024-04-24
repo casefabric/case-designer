@@ -16,7 +16,7 @@ export default class CFISelector extends Dialog {
         this.selectedItem = undefined;
     }
 
-    renderDialog() {
+    renderDialog(dialogHTML: JQuery<HTMLElement>) {
         const htmlDialog = $(`
             <form class="cfi-selector">
                 <div class="cfi-tree"></div>
@@ -25,10 +25,10 @@ export default class CFISelector extends Dialog {
                 <button class='buttonCancel'>Cancel</button>
             </form>
         `);
-        this.dialogHTML?.append(htmlDialog);
-        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, this.dialogHTML?.find('.cfi-tree')));
-        this.dialogHTML?.find('.buttonOk').on('click', e => this.ok());
-        this.dialogHTML?.find('.buttonCancel').on('click', e => this.cancel());
+        dialogHTML.append(htmlDialog);
+        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.cfi-tree')));
+        dialogHTML.find('.buttonOk').on('click', e => this.ok());
+        dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
     }
 
     /**
@@ -36,7 +36,7 @@ export default class CFISelector extends Dialog {
      * @param {CaseFileItemDef} item 
      * @param {JQuery<HTMLElement>} container
      */
-    renderCaseFileItem(item: CaseFileItemDef, container?: JQuery<HTMLElement>) {
+    renderCaseFileItem(item: CaseFileItemDef, container: JQuery<HTMLElement>) {
         if (item instanceof CaseFileItemTypeDefinition) {
             // Only render complex properties, not the primitive children.
             if (item.property && !item.property.isComplexType) {
@@ -53,7 +53,7 @@ export default class CFISelector extends Dialog {
         </div>`);
         container?.append(html);
         html.find('.cfi-summary').on('click', e => {
-            this.dialogHTML?.find('.cfi-selected').removeClass('cfi-selected');
+            container.find('.cfi-selected').removeClass('cfi-selected');
             this.selectedItem = item;
             $(e.target).addClass('cfi-selected');
         });
