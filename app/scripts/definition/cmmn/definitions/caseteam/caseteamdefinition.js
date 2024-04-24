@@ -33,7 +33,7 @@ class CaseTeamDefinition extends UnnamedCMMNElementDefinition {
         const name = clearAttribute('name');
         const description = clearAttribute('description');
         const optionalDescription = name !== description ? `description="${description}"` : '';
-        return XML.parseXML(`<role id="${id}" name="${name}" ${optionalDescription}/>`).documentElement;
+        return XML.loadXMLString(`<role id="${id}" name="${name}" ${optionalDescription}/>`).documentElement;
     }
 
     createExportNode(parentNode) {

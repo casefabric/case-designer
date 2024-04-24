@@ -38,13 +38,13 @@ class CaseSourceEditor {
         const newDimensions = this.codeMirrorDimensionsXML.getValue();
 
         const caseXML = XML.loadXMLString(newSource);
-        if (! XML.isValidXMLImport(caseXML, true)) {
+        if (XML.hasParseErrors(caseXML)) {
             this.editor.ide.danger('Cannot import because definition does not contain proper XML', 3000);
             return;
         }
 
         const dimensionsXML = XML.loadXMLString(newDimensions);
-        if (! XML.isValidXMLImport(dimensionsXML, true)) {
+        if (XML.hasParseErrors(dimensionsXML)) {
             this.editor.ide.danger('Cannot import because dimensions does not contain proper XML', 3000);
             return;
         }

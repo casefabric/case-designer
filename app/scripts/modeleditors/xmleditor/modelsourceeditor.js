@@ -36,8 +36,8 @@ class ModelSourceEditor {
         if (this._changed == true) {
             const newSource = this._codeMirrorEditor.getValue();
             const data = XML.loadXMLString(newSource);
-            if (!XML.isValidXMLImport(data, true)) {
-                ide.warning('Source does not contain valid XML and will not be imported', 2000);
+            if (XML.hasParseErrors(data)) {
+                this.editor.ide.warning('Source does not contain valid XML and will not be imported', 2000);
                 //not valid xml in the source editor, source tab must remain open
                 // setTimeout(() => this.editor.html.find('.model-source-tabs').tabs('option', 'active', 1), 100);
                 return;

@@ -10,7 +10,7 @@ class Importer {
 
     load(pastedText) {
         const xmlDoc = XML.loadXMLString(pastedText);
-        if (XML.isValidXMLImport(xmlDoc, true) && xmlDoc.documentElement.tagName == 'definitions') {
+        if (XML.isValid(xmlDoc) && xmlDoc.documentElement.tagName == 'definitions') {
             console.log('Parsing and uploading definitions from copy/paste command ...');
             const newFiles = new Array();
             const allDimensionsXML = XML.getChildByTagName(xmlDoc.documentElement, 'CMMNDI');

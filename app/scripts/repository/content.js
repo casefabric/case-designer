@@ -39,7 +39,7 @@ class Content {
         const tree = this.deserialized;
         if (tree && tree instanceof Element) return tree;
         if (tree && tree instanceof Document) return tree.documentElement;
-        return tree;
+        return undefined;
     }
 
     /**

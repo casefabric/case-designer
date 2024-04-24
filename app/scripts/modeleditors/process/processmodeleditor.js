@@ -242,7 +242,7 @@ class ProcessModelEditor extends ModelEditor {
         const xmlData = XML.loadXMLString(value);
 
         // Must be valid xml - and contain a root tag
-        if (!XML.isValidXMLImport(xmlData) || xmlData.childNodes.length == 0) {
+        if (XML.hasParseErrors(xmlData) || xmlData.childNodes.length == 0) {
             this.ide.danger('XML is invalid or missing, model will not be saved');
             return;
         }

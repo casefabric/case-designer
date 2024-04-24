@@ -40,7 +40,7 @@ class CaseDefinition extends ModelDefinition {
                 this.migrated(`Converting ${rolesElements.length} CMMN1.0 roles`);
             }
             // Create a new element
-            const caseTeamElement = XML.parseXML('<caseRoles />').documentElement;
+            const caseTeamElement = XML.loadXMLString('<caseRoles />').documentElement;
             rolesElements.forEach(role => {
                 role.parentElement.removeChild(role);
                 caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
