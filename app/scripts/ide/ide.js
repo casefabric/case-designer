@@ -151,16 +151,20 @@ class IDE {
         console.group(fileName);
 
         // Show the editor with the fileName (if available), hide all the ones with a different fileName
-        const showableEditor = this.editors.find(editor => editor.fileName == fileName);
-        this.editors.forEach(editor => editor.visible = (editor === showableEditor));
-        if (showableEditor) showableEditor.visible = true;
+        const existingEditor = this.editors.find(editor => editor.fileName == fileName);
+        this.editors.forEach(editor => editor.visible = (editor === existingEditor));
+        if (existingEditor) existingEditor.visible = true;
 
         //show model name on browser tab
         document.title = 'Cafienne IDE - ' + serverFile.name;
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
-        const existingEditor = this.editors.find(editor => editor.fileName == fileName);
         if (existingEditor) {
+            return;
+        }
+
+        if (serverFile.metadata.error) {
+            this.coverPanel.show('Cannot open ' + fileName +'\nError: ' + serverFile.metadata.error);
             return;
         }
 
