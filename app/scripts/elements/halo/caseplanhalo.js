@@ -81,6 +81,6 @@ class DebuggerHaloItem extends HaloClickItem {
 
 class SeparatorHaloItem extends HaloItem {
     constructor(halo) {
-        super(halo, '', '');
+        super(halo, '', '', $('<div style="width:12px;height:21px" />'));
     }
 }
