@@ -176,8 +176,16 @@ class ServerFile {
 
         definition.loadDependencies(() => {
             console.log("File["+file.fileName+"].definition: " + file.definition);
+            this.validateDefinition();
             then.run(file);
         });
+    }
+
+    /**
+     * Hook to enable server files to check the actual definition for validity.
+     * Used specifically in CaseFile to verify that the dimensions exist.
+     */
+    validateDefinition() {        
     }
 
     /**
