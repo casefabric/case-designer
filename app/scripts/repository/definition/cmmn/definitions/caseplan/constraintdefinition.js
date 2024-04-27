@@ -10,6 +10,10 @@ class ConstraintDefinition extends UnnamedCMMNElementDefinition {
         return context ? context.name : '';
     }
 
+    referencesElement(element) {
+        return element.id === this.contextRef;
+    }
+
     createExportNode(parentNode, tagName) {
         super.createExportNode(parentNode, tagName, 'contextRef');
         if (this.expression) {

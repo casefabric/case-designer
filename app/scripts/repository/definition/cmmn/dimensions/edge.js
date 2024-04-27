@@ -29,6 +29,10 @@ class Edge extends DiagramElement {
         this.label = this.parseAttribute('label', '');
     }
 
+    referencesElement(element) {
+        return element.id === this.sourceId || element.id === this.targetId;
+    }
+
     get vertices() {
         return this._vertices;
     }

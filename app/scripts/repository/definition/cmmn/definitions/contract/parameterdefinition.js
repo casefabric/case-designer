@@ -8,6 +8,10 @@ class ParameterDefinition extends CMMNElementDefinition {
         this.isNew = false; // This property is used in the HumanTaskEditor and ProcessTaskEditor
     }
 
+    referencesElement(element) {
+        return element.id === this.bindingRef;
+    }
+
     get binding() {
         return /** @type {CaseFileItemDef} */ (this.caseDefinition.getElement(this.bindingRef, CaseFileItemDef));
     }

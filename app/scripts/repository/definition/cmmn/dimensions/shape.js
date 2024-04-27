@@ -19,6 +19,10 @@ class ShapeDefinition extends DiagramElement {
         }
     }
 
+    referencesElement(element) {
+        return element.id === this.cmmnElementRef;
+    }
+
     /**
      * @returns {Bounds}
      */

@@ -21,6 +21,10 @@ class OnPartDefinition extends UnnamedCMMNElementDefinition {
         return /** @type {PlanItem | CaseFileItemDef} */(this.caseDefinition.getElement(this.sourceRef, this.sourceConstructor));
     }
 
+    referencesElement(element) {
+        return element.id === this.sourceRef;
+    }
+
     /**
      * @returns {String}
      */

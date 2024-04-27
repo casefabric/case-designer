@@ -317,7 +317,7 @@ class XMLElementDefinition {
             // Convert all values to string
             const stringifiedValue = propertyValue.toString()
             // If the "toString" version of the property still has a value, then write it into the attribute
-            if (stringifiedValue) { 
+            if (stringifiedValue) {
                 this.exportNode.setAttribute(propertyName, propertyValue);
             }
         }
@@ -342,7 +342,7 @@ class XMLElementDefinition {
     createExtensionNode(parentNode, tagName = IMPLEMENTATION_TAG, ...propertyNames) {
         this.exportNode = XML.createChildElement(this.getExtensionsElement(parentNode), tagName);
         const prefixAndLocalName = tagName.split(':');
-        const prefix = `xmlns${prefixAndLocalName.length === 1 ? '' : ':'+prefixAndLocalName[0] }`;
+        const prefix = `xmlns${prefixAndLocalName.length === 1 ? '' : ':' + prefixAndLocalName[0]}`;
         this.exportNode.setAttribute(prefix, CAFIENNE_NAMESPACE);
         this.exportProperties(propertyNames);
         return this.exportNode;
@@ -350,7 +350,7 @@ class XMLElementDefinition {
 
     getExtensionsElement(parentNode = this.exportNode) {
         let element = XML.getChildByTagName(parentNode, EXTENSIONELEMENTS);
-        if (! element) {
+        if (!element) {
             element = XML.createChildElement(parentNode, EXTENSIONELEMENTS);
             element.setAttribute('mustUnderstand', 'false');
         }
@@ -370,6 +370,31 @@ class XMLElementDefinition {
      * Can be used to resolve string based references to other elements.
      */
     resolveReferences() { }
+
+    /**
+     * Returns all elements that have a reference to this element
+     * @returns {Array<XMLElementDefinition>}
+     */
+    searchInboundReferences() {
+        // console.group("Reading references of " + this.constructor.name + " " + this.id + "/" + this.name + " (in " + this.modelDefinition.file.fileName + ")");
+        const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
+        const elements = definitions.map(definition => definition.elements).flat();
+        // console.log("Found " + elements.length + " potential elements")
+        const references = elements.filter(element => element.referencesElement(this));
+        // console.groupEnd();
+        // console.log("Found " + references.length + " references to this element")
+        return references;
+    }
+
+    /**
+     * Returns true if this XMLElementDefinition has a reference to the element.
+     * This method by default returns false, but can be overwritten to define actual comparison.
+     * @param {XMLElementDefinition} element 
+     * @returns 
+     */
+    referencesElement(element) {
+        return false;
+    }
 
     hasExternalReferences() {
         return false;
