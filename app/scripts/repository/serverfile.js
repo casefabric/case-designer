@@ -137,7 +137,7 @@ class ServerFile {
                     console.warn(msg);
                 } else {
                     this.source = data;
-                    console.log(`Parsing ${this.fileName} during fetch`)
+                    // console.log(`Parsing ${this.fileName} during fetch`)
                     this.parse(then);
                 }
             },
@@ -156,7 +156,7 @@ class ServerFile {
      */
     parse(then) {
         // console.groupEnd();
-        console.log("Parsing " + this.fileName);
+        // console.log("Parsing " + this.fileName);
         const file = this;
         const definition = this.createDefinition();
         this.content.definition = definition;
@@ -175,7 +175,7 @@ class ServerFile {
         }
 
         definition.loadDependencies(() => {
-            console.log("File["+file.fileName+"].definition: " + file.definition);
+            // console.log("File["+file.fileName+"].definition: " + file.definition);
             this.validateDefinition();
             then.run(file);
         });
@@ -196,7 +196,7 @@ class ServerFile {
     load(then = Followup.None) {
         this.fetch(andThen(_ => {
             if (!this.definition) {
-                console.log(`Parsing ${this.fileName} upon loading`)
+                // console.log(`Parsing ${this.fileName} upon loading`)
                 this.parse(andThen(file => then.run(file)));
             } else {
                 then.run(this);

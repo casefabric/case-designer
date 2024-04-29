@@ -38,8 +38,8 @@ class ModelDefinition extends ReferableElementDefinition {
         }
         console.groupCollapsed("Loading dependencies of " + this.file.fileName);
         console.log(`${this.file.fileName} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
-        const todo = new FollowupList(andThen(() => {
-            console.log(`${this.file.fileName} completed dependencies`);
+        const todo = new SequentialFollowupList(andThen(() => {
+            // console.log(`${this.file.fileName} completed dependencies`);
             console.groupEnd();
             callback();
         }));

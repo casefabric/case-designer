@@ -184,10 +184,6 @@ class Repository {
 
         const todo = new FollowupList(andThen(() => {
             // After refreshing and parsing, invoke any repository listeners about the new list.
-            console.groupEnd();
-            console.groupEnd();
-            console.groupEnd();
-            console.log("Updating " + this.listeners.length + " listeners")
             this.listeners.forEach(listener => listener());
             console.groupEnd();
             then.run();
@@ -217,9 +213,9 @@ class Repository {
         todo.run(this.list.sort((f1, f2) => f2 instanceof CaseFile ? 1 : -1).map(file => (callback => {
             if (file.definition) callback();
             else {
-                console.log("Starting parse of " + file.fileName)
+                // console.log("Starting parse of " + file.fileName)
                 file.parse(andThen(() => {
-                    console.log("Completed parsing " + file.fileName)
+                    // console.log("Completed parsing " + file.fileName)
                     callback();
                 }));
             }
