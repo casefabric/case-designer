@@ -28,7 +28,10 @@ class Repository {
             case 'process': return this.createProcessFile(fileName, source);
             case 'humantask': return this.createHumanTaskFile(fileName, source);
             case 'cfid': return this.createCFIDFile(fileName, source);
-            default: throw new Error(`File type ${fileType} is not supported on the client`);
+            default: {
+                console.warn(`Extension '${fileType}' is not supported on the client for file ${fileName}`);
+                return undefined;
+            }
         }
     }
 
@@ -197,14 +200,16 @@ class Repository {
             const existingServerFile = oldList.find(file => file.fileName == fileName);
             if (!existingServerFile) {
                 const newFile = this.create(fileName);
-                newFile.refreshMetadata(fileMetadata);
-                return newFile;
+                if (newFile) {
+                    newFile.refreshMetadata(fileMetadata);
+                    return newFile;    
+                }
             } else {
                 Util.removeFromArray(oldList, existingServerFile);
                 existingServerFile.refreshMetadata(fileMetadata);
                 return existingServerFile;
             }
-        });
+        }).filter(file => file !== undefined);
         // Inform elements still in old list about their deletion.
         oldList.forEach(serverFile => serverFile.deprecate());
 
