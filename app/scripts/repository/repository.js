@@ -28,7 +28,10 @@ class Repository {
             case 'process': return this.createProcessFile(fileName, source);
             case 'humantask': return this.createHumanTaskFile(fileName, source);
             case 'cfid': return this.createCFIDFile(fileName, source);
-            default: throw new Error(`File type ${fileType} is not supported on the client`);
+            default: {
+                console.warn(`Extension '${fileType}' is not supported on the client for file ${fileName}`);
+                return undefined;
+            }
         }
     }
 
@@ -181,10 +184,6 @@ class Repository {
 
         const todo = new FollowupList(andThen(() => {
             // After refreshing and parsing, invoke any repository listeners about the new list.
-            console.groupEnd();
-            console.groupEnd();
-            console.groupEnd();
-            console.log("Updating " + this.listeners.length + " listeners")
             this.listeners.forEach(listener => listener());
             console.groupEnd();
             then.run();
@@ -197,14 +196,16 @@ class Repository {
             const existingServerFile = oldList.find(file => file.fileName == fileName);
             if (!existingServerFile) {
                 const newFile = this.create(fileName);
-                newFile.refreshMetadata(fileMetadata);
-                return newFile;
+                if (newFile) {
+                    newFile.refreshMetadata(fileMetadata);
+                    return newFile;    
+                }
             } else {
                 Util.removeFromArray(oldList, existingServerFile);
                 existingServerFile.refreshMetadata(fileMetadata);
                 return existingServerFile;
             }
-        });
+        }).filter(file => file !== undefined);
         // Inform elements still in old list about their deletion.
         oldList.forEach(serverFile => serverFile.deprecate());
 
@@ -212,9 +213,9 @@ class Repository {
         todo.run(this.list.sort((f1, f2) => f2 instanceof CaseFile ? 1 : -1).map(file => (callback => {
             if (file.definition) callback();
             else {
-                console.log("Starting parse of " + file.fileName)
+                // console.log("Starting parse of " + file.fileName)
                 file.parse(andThen(() => {
-                    console.log("Completed parsing " + file.fileName)
+                    // console.log("Completed parsing " + file.fileName)
                     callback();
                 }));
             }
