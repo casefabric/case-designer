@@ -11,10 +11,10 @@ class Content {
     }
 
     set source(source) {
+        this._source = source;
         // If we get a new source, flatten and parse it, and also remove the existing definition
         const serializedNewSource = this.serialize(source);
         if (serializedNewSource !== this.serialized) { // It's a real change
-            this._source = source;
             this._definition = undefined;
             this._serialized = serializedNewSource;
             this._deserialized = undefined;
@@ -39,7 +39,7 @@ class Content {
         const tree = this.deserialized;
         if (tree && tree instanceof Element) return tree;
         if (tree && tree instanceof Document) return tree.documentElement;
-        return tree;
+        return undefined;
     }
 
     /**
@@ -77,11 +77,6 @@ class Content {
 
     /** @type {ModelDefinition} */
     get definition() {
-        if (!this._definition) {
-            this._definition = this.file.createDefinition();
-            this._definition.parseDocument();
-            this._definition.validateDocument();
-        }
         return this._definition;
     }
 

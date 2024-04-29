@@ -4,10 +4,8 @@ class Repository {
      * It keeps a local copy of all models present in the server. This local copy is updated after each
      * save operation, since the save operation returns a list of all files in the server, along with
      * their last modified status.
-     * @param {IDE} ide 
      */
-    constructor(ide) {
-        this.ide = ide;
+    constructor() {
         /** @type {Array<ServerFile>} */
         this.list = [];
         /** @type {Array<Function>} */
@@ -49,7 +47,7 @@ class Repository {
      * @returns {CaseFile}
      */
     createCaseFile(fileName, source) {
-        return new CaseFile(this, fileName, source);        
+        return new CaseFile(this, fileName, source);
     }
 
     /**
@@ -67,7 +65,7 @@ class Repository {
      * @returns {DimensionsFile}
      */
     createDimensionsFile(fileName, source) {
-        return new DimensionsFile(this, fileName, source);        
+        return new DimensionsFile(this, fileName, source);
     }
 
     /**
@@ -85,7 +83,7 @@ class Repository {
      * @returns {ProcessFile}
      */
     createProcessFile(fileName, source) {
-        return new ProcessFile(this, fileName, source);        
+        return new ProcessFile(this, fileName, source);
     }
 
     /**
@@ -103,7 +101,7 @@ class Repository {
      * @returns {HumanTaskFile}
      */
     createHumanTaskFile(fileName, source) {
-        return new HumanTaskFile(this, fileName, source);        
+        return new HumanTaskFile(this, fileName, source);
     }
 
     /**
@@ -121,7 +119,7 @@ class Repository {
      * @returns {CFIDFile}
      */
     createCFIDFile(fileName, source) {
-        return new CFIDFile(this, fileName, source);        
+        return new CFIDFile(this, fileName, source);
     }
 
     /**
@@ -135,20 +133,18 @@ class Repository {
 
     /**
      * Invokes the backend to return a new copy of the list of models.
-     * @param {Function} callback Optional callback that will be invoked after model list has been retrieved
+     * @param {Followup} then Optional callback that will be invoked after model list has been retrieved
      */
-    listModels(callback = undefined) {
+    listModels(then = Followup.None) {
         $.ajax({
             url: '/repository/list',
             type: 'get',
             success: (data, status, xhr) => {
-                this.updateFileList(data.map(item => new Metadata(item)));
-                // Callback if there is a callback.
-                if (callback) callback();
+                this.updateFileList(data.map(item => new Metadata(item)), then);
             },
             error: (xhr, error, eThrown) => {
-                console.error('Could not list the repository contents', eThrown)
-                this.ide.danger('Could not fetch the list of models');
+                console.error('Could not list the repository contents', eThrown);
+                then.fail('Could not fetch the list of models: ' + error);
             }
         });
     }
@@ -176,10 +172,24 @@ class Repository {
      * This includes a full list of the filenames of all models in the server, as well as the lastModified timestamp
      * of each file in the server. Based on this, the locally cached contents is removed if it is stale.
      * @param {Array<Metadata>} newServerFileList
+     * @param {Followup} then
      */
-    updateFileList(newServerFileList) {
+    updateFileList(newServerFileList, then = Followup.None) {
+        console.groupCollapsed("Loading repository contents");
         // Make a copy of the old list, to be able to clean up old models afterwards;
         const oldList = this.list;
+
+        const todo = new FollowupList(andThen(() => {
+            // After refreshing and parsing, invoke any repository listeners about the new list.
+            console.groupEnd();
+            console.groupEnd();
+            console.groupEnd();
+            console.log("Updating " + this.listeners.length + " listeners")
+            this.listeners.forEach(listener => listener());
+            console.groupEnd();
+            then.run();
+        }));
+
         // Map the new server list into a list of structured objects. Also re-use existing objects as much as possible.
         /** @type {Array<ServerFile>} */
         this.list = newServerFileList.map(fileMetadata => {
@@ -197,33 +207,43 @@ class Repository {
         });
         // Inform elements still in old list about their deletion.
         oldList.forEach(serverFile => serverFile.deprecate());
-        // Now invoke any repository listeners about the new list.
-        this.listeners.forEach(listener => listener());
+
+        // Now parse all files in the list
+        todo.run(this.list.sort((f1, f2) => f2 instanceof CaseFile ? 1 : -1).map(file => (callback => {
+            if (file.definition) callback();
+            else {
+                console.log("Starting parse of " + file.fileName)
+                file.parse(andThen(() => {
+                    console.log("Completed parsing " + file.fileName)
+                    callback();
+                }));
+            }
+        })));
     }
 
     /**
      * Save xml file and upload to server
      * @param {String} fileName 
      * @param {Document | String} xml 
-     * @param {Function} callback 
+     * @param {Followup} then 
      */
-    saveXMLFile(fileName, xml, callback = undefined) {
+    saveXMLFile(fileName, xml, then = Followup.None) {
         if (!this.isExistingModel(fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
             this.list.push(this.create(fileName));
         }
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
         const data = xml instanceof String ? xml : XML.prettyPrint(xml);
         serverFile.source = data;
-        serverFile.save(callback);
+        serverFile.save(then);
     }
 
     /**
      * Rename file and update all references to file on server and invokes the callback on succesfull completion
      * @param {String} fileName
      * @param {String} newFileName
-     * @param {Function} callback 
+     * @param {Followup} then 
      */
-    rename(fileName, newFileName, callback = undefined) {
+    rename(fileName, newFileName, then = Followup.None) {
         newFileName = newFileName.split(' ').join('');
         const serverFile = this.get(fileName);
         if (!serverFile) {
@@ -234,16 +254,16 @@ class Repository {
             console.log(`Cannot rename ${fileName} to ${newFileName} as that name already exists`);
         } else {
             console.log(`Renaming '${fileName}' to '${newFileName}'`);
-            serverFile.rename(newFileName, callback);
+            serverFile.rename(newFileName, then);
         }
     }
 
     /**
      * Delete file and invokes the callback on succesfull completion
      * @param {String} fileName
-     * @param {Function} callback 
+     * @param {Followup} andThen 
      */
-    delete(fileName, callback = undefined) {
+    delete(fileName, andThen = Followup.None) {
         console.log(`Requesting to delete [${fileName}]`);
         const serverFile = this.get(fileName);
         if (!serverFile) {
@@ -251,7 +271,7 @@ class Repository {
         } else {
             //TODO: Check for usage in other models
             console.log(`Deleting ${fileName}`)
-            serverFile.delete(callback);
+            serverFile.delete(andThen);
         }
     }
 
@@ -260,17 +280,19 @@ class Repository {
     }
 
     /**
-     * Loads the file from the repository and invokes the callback on successful completion
+     * Loads the file from the repository and invokes the callback on successful completion.
+     * If the file does not exist, it will invoke the callback with undefined.
+     * 
      * @param {String} fileName 
-     * @param {Function} callback 
+     * @param {Followup} then 
      */
-    load(fileName, callback) {
+    load(fileName, then) {
         const serverFile = this.get(fileName);
-        if (!serverFile) {
+        if (serverFile) {
+            serverFile.load(then);
+        } else {
             console.warn(`File ${fileName} does not exist and cannot be loaded`);
-            this.ide.warning(`File ${fileName} does not exist and cannot be loaded`, 2000);
-            return;
+            then.run(undefined);
         }
-        serverFile.load(callback);
     }
 }

@@ -11,11 +11,46 @@ class XML {
             return xml.ownerDocument;
         }
         const xmlDocument = XML.loadXMLString(xml);
-        if (XML.isValidXMLImport(xmlDocument)) {
+        if (XML.getParseErrors(xmlDocument).length === 0) {
             return xmlDocument;
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns a list with parse errors, if any.
+     * If there are no parse errors, then the list is empty.
+     * @param {Document} xmlDocument 
+     * @returns {Array<String>}
+     */
+    static getParseErrors(xmlDocument) {
+        const errors = [];
+        if (DOMParser) { // code for all but IE
+            const parseErrors = xmlDocument.getElementsByTagName('parsererror');
+            for (let i = 0; i<parseErrors.length; i++) {
+                errors.push(parseErrors.item(i).textContent);
+            }
+        }
+        return errors;
+    }
+
+    /**
+     * returns true when the xmlDcoument has no errors, false when there are errors during parsing of XML
+     * @param {Document} xmlDocument 
+     * @returns {Boolean}
+     */
+    static isValid(xmlDocument) {
+        return this.getParseErrors(xmlDocument).length  === 0;
+    }
+
+    /**
+     * returns true when the xmlDcoument has errors, false when there are errors during parsing of XML
+     * @param {Document} xmlDocument 
+     * @returns {Boolean}
+     */
+    static hasParseErrors(xmlDocument) {
+        return !this.isValid(xmlDocument);
     }
 
     /**
@@ -33,26 +68,6 @@ class XML {
             xmlDoc.loadXML(txt);
             return xmlDoc;
         }
-    }
-
-    /**
-     * returns true when the xmlDef has no errors, false when there are errors during parsing of XML
-     * @param {Document} xmlDef 
-     * @param {Boolean} bSuppressErrorMessage 
-     * @returns {Boolean}
-     */
-    static isValidXMLImport(xmlDef, bSuppressErrorMessage = false) {
-        if (DOMParser) { // code for all but IE
-            const parseErrors = xmlDef.getElementsByTagName('parsererror');
-            if (parseErrors.length > 0) {
-                const fChild = parseErrors[0];
-                if (!bSuppressErrorMessage) {
-                    ide.warning(fChild.textContent);
-                }
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -74,8 +89,8 @@ class XML {
     static createTextChild(parentNode, text) {
         return parentNode.appendChild(parentNode.ownerDocument.createTextNode(text));
     }
-
     /**
+
      * Returns the first element child of xmlNode that has the corresponding tagName, or undefined. 
      * @param {Element | Document} xmlNode 
      * @param {String} tagName 

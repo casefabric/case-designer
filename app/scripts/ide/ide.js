@@ -14,7 +14,7 @@ class IDE {
 
     init() {
         // Repository object handles the interaction with the server
-        this.repository = new Repository(this);
+        this.repository = new Repository();
 
         this.html = $('body');
 
@@ -137,8 +137,10 @@ class IDE {
             return;
         }
 
+        const editorMetadata = IDE.editorTypes.find(type => type.supportsFile(serverFile));
+
         // Check if this file type has a model editor.
-        if (!serverFile.hasModelEditor) {
+        if (!editorMetadata) {
             this.danger(`File type ${serverFile.fileType} has no editor associated with it`, 3000);
             if (this.editors.length === 0) {
                 this.coverPanel.show('Please, open or create a model.');
@@ -151,16 +153,20 @@ class IDE {
         console.group(fileName);
 
         // Show the editor with the fileName (if available), hide all the ones with a different fileName
-        const showableEditor = this.editors.find(editor => editor.fileName == fileName);
-        this.editors.forEach(editor => editor.visible = (editor === showableEditor));
-        if (showableEditor) showableEditor.visible = true;
+        const existingEditor = this.editors.find(editor => editor.fileName == fileName);
+        this.editors.forEach(editor => editor.visible = (editor === existingEditor));
+        if (existingEditor) existingEditor.visible = true;
 
         //show model name on browser tab
         document.title = 'Cafienne IDE - ' + serverFile.name;
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
-        const existingEditor = this.editors.find(editor => editor.fileName == fileName);
         if (existingEditor) {
+            return;
+        }
+
+        if (serverFile.metadata.error) {
+            this.coverPanel.show('Cannot open ' + fileName +'\nError: ' + serverFile.metadata.error);
             return;
         }
 
@@ -168,8 +174,8 @@ class IDE {
         //  the cover panel will be closed.
         this.coverPanel.show('Opening ' + fileName);
 
-        const editor = serverFile.createEditor();
-        editor.loadModel();
+        // Now create and load the new editor
+        editorMetadata.createEditor(this, serverFile).loadModel();
     }
 
     /**
