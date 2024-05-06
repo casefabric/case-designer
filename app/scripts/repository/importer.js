@@ -114,7 +114,7 @@ class ImportElement {
 
     save() {
         const file = this.repository.get(this.fileName) || this.createFile();
-        file.source = file.definition.toXML();
+        file.source = this.content;
         file.save();
     }
 
