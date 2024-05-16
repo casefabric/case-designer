@@ -1,3 +1,162 @@
-.casefile-header {
+.cfi-editorform {
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    height: auto;
+    width: auto;
+}
+
+.cfi-editorform .formheader {
     border-top-right-radius: 0px !important;
+}
+
+.cfi-editorform .formheader label {
+    cursor: default;
+}
+
+.cfi-editorform .containerbox {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    overflow: hidden;
+}
+
+.cfi-editorform .cfi-container {
+    position: absolute;
+    top: 24px;
+    left: 4px;
+    right: 0px;
+    bottom: 0px;
+    overflow: auto;
+}
+
+.cfi-editorform .cfi-children-container {
+    border-left: 1px dotted #ccc;
+    margin-left: 9px;
+}
+
+.cfi-editorform .cfi-buttons button {
+    margin: 2px;
+}
+
+/* Header will not scroll with content container */
+.cfi-editorform .cfi-header {
+    position: sticky;
+    top: 0px;
+    background-color: #f5f5f5;
+    height: 21px;
+    padding-top: 5px;
+    z-index: 1;
+}
+
+.cfi-editorform .cfi-header div {
+    padding-left: 3px;
+}
+
+.cfi-editorform .cfi-details {
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: auto 50px 100px 70px;
+    border-bottom: 1px solid #eee;
+}
+
+.cfi-editorform .cfi-details .divUsedIn {
+    padding: 3px;
+    border-left: 1px solid #eee;
+}
+
+.cfi-editorform .selectContainer {
+    border-left: 1px solid #eee;
+}
+
+.cfi-editorform select {
+    height: 18px;
+    width: 100%;
+    margin-top: 1px;
+    background-color: inherit;
+    border: 0px;
+    outline: none;
+}
+
+.cfi-editorform .cfi-details .inputNameContainer {
+    position: relative;
+    overflow: hidden;
+    text-wrap: nowrap;
+}
+
+.cfi-editorform .cfi-details .inputName {
+    height: 18px;
+    width: calc(100% - 22px);
+    margin: 1px 0px 1px 0px;
+    text-overflow: ellipsis;
+    background-color: inherit;
+    border: 0px;
+    padding: 2px;
+    outline: none;
+}
+
+.cfi-editorform .cfi-icon {
+    margin-top: -1px;
+    height: 18px;
+    padding: 2px;
+}
+
+.cfi-editorform .cfi-details .action-icon {
+    display: none;
+}
+
+.cfi-editorform .action-icon-container {
+    padding: 1px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.cfi-editorform .cfi-details:hover .action-icon-container {
+    padding-left: 10px;
+    background-color: #f6f6f6;
+}
+
+.cfi-editorform .cfi-details.cfi-selected:hover .action-icon-container {
+    background-color: rgb(156, 175, 226);
+}
+
+.cfi-editorform .cfi-details.cfi-selected:hover .action-icon-container {
+    background-color: rgb(156, 175, 226);
+}
+
+/* When inputName has the input focus then hide the action-icon-container to save space for typing text */
+.cfi-editorform .cfi-details .inputName:not(:read-only):focus+.action-icon-container {
+    display: none;
+}
+
+/* When inputName or select has focus background should be white */
+.cfi-editorform .cfi-details .inputName:not(:read-only),
+.cfi-editorform .cfi-details select:focus {
+    background-color: white;
+    outline: auto;
+}
+
+.cfi-editorform .cfi-details:hover .action-icon {
+    display: block;
+    float: right;
+    width: 18px;
+    height: 18px;
+}
+
+.cfi-editorform .cfi-details:hover {
+    background-color: #f6f6f6;
+}
+
+.cfi-editorform .cfi-details.cfi-selected {
+    background-color: rgb(156, 175, 226);
+}
+
+.cfi-editorform .cfi-details img:hover {
+    background-color: #ddd;
 }
