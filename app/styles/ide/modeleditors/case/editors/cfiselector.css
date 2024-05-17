@@ -1,0 +1,29 @@
+.cfi-selector .cfi-tree {
+    overflow: auto;
+    max-height: 50vh;
+    border: 1px solid #bbb;
+    padding: 10px;
+}
+
+.cfi-selector .buttonOk {
+    background-color: steelblue;
+    color: #fff;
+}
+
+.cfi-selector .cfi-summary:hover {
+    background-color: #f6f6f6;
+}
+
+img.cfi-icon {
+    width: 14px;
+    margin: 2px;
+}
+
+.cfi-selector .cfi-summary.cfi-selected {
+    background-color: steelblue;
+    color: #fff;
+}
+
+div.cfi-children-tree {
+    padding-left: 16px;
+}

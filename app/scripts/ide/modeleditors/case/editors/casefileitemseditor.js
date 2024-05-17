@@ -40,7 +40,6 @@ class CaseFileItemsEditor {
             activeVisible: true,
             //focusOnSelect: true,
             extensions: ['edit', 'table', 'dnd'],
-            dblclick: e => this.clickOK(e), // Double clicking an element is same as clicking OK
             tables: {
                 nodeColumnIdx: 0,
                 indentation: 10
@@ -178,48 +177,11 @@ class CaseFileItemsEditor {
     }
 
     /**
-     * Opens the editor form.
-     * @param {Function} callback 
+     * Opens the editor as dialog.
+     * @param {(CaseFileItemDef) => void} callback 
      */
     open(callback = undefined) {
-        this.enterSelectionMode(callback);
-    }
-
-    /**
-     * Opens the editor in selection modus; This allows for selecting a case file item on dbl click or on OK click to be set on the object that invoked this function (through the callback method)
-     * @param {Function} callback 
-     */
-    enterSelectionMode(callback) {
-        //set the callback function for when a tree item has been selected
-        this.callback = callback;        
-        this.html.find('.dialogButtons').css('display', 'block');        
-    }
-
-    /**
-     * Both pressing OK and Cancel make us leave selection mode.
-     * @param {*} e 
-     */
-    leaveSelectionMode(e) {
-        e.stopPropagation();
-        delete this.callback;
-        this.html.find('.dialogButtons').css('display', 'none');
-    }
-
-    clickOK(e) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (this.callback) {
-            //get the row selected by the user
-            const activeNode = this.fancyTree.getActiveNode();
-            if (activeNode) {
-                const definitionElement = this.getDefinitionElement(activeNode);
-                this.callback(definitionElement);
-                this.leaveSelectionMode(e);
-            } else {
-                this.ide.warning('Please select an item', 1000);
-            }
-        }
+        new CFISelector(this.case).showModalDialog(cfi => cfi && callback(cfi));
     }
 
     /**
@@ -238,10 +200,6 @@ class CaseFileItemsEditor {
         this.html.find('.btnAddChild').on('click', e => this.clickAddButton('child'));
         this.html.find('.btnAddSibling').on('click', e => this.clickAddButton('after'));
         this.html.find('.btnRemoveItem').on('click', e => this.clickRemoveButton(e));
-
-        //add event for OK, cancel and close buttons (bottom)
-        this.html.find('.treeeditorokbt').on('click', e => this.clickOK(e));
-        this.html.find('.treeeditorcancelbt').on('click', e => this.leaveSelectionMode(e));
 
         //add event for mouse leaving the tree editor -> unmark elements
         this.html.on('pointerleave', (e, data) => {
@@ -580,10 +538,6 @@ class CaseFileItemsEditor {
                 </div>
             </div>
             <div class="treeeditorfooter">
-                <span class="dialogButtons">
-                    <button class="OkCancelButtons treeeditorokbt">OK</button>
-                    <button class="OkCancelButtons treeeditorcancelbt">Cancel</button>
-                </span>
                 <div class="treeeditorfootereditrow">
                     <button class="treeeditoreditrowbt">Edit Row</button>
                     <span> or [F2], Drag To Properties</span>
