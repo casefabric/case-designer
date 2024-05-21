@@ -144,16 +144,16 @@ class ModelListPanel {
                             }
                         }
                     };
-                    this.ide.repository.rename(file.fileName, newFileName, () => {
+                    this.ide.repository.rename(file.fileName, newFileName, andThen(() => {
                         if (file.fileType == 'case') {
                             // when a .case file is renamed also the .dimensions file will be renamed
                             const oldDimensionsFileName = oldName + '.dimensions';
                             const newDimensionsFileName = newName + '.dimensions';
-                            this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName, locationResetter);
+                            this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName, andThen(locationResetter));
                         } else {
                             locationResetter();
                         }
-                    });
+                    }));
                 }
             }
         }

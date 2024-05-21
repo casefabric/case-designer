@@ -5,7 +5,7 @@ class Importer {
      */
     constructor(ide) {
         this.ide = ide;
-        this.repository = ide.repository;
+        this.repository = this.ide.repository;
     }
 
     load(pastedText) {

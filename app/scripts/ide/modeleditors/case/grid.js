@@ -20,6 +20,7 @@ class Grid {
         grids.push(grid);
         if (!this.initialized) {
             this.initialized = true;
+            this.ide = grid.case.editor.ide;
             $('#inputGridSize').val(Grid.Size);
             $('#inputShowGrid').prop('checked', Grid.Visible);
 
@@ -50,7 +51,7 @@ class Grid {
     static set Size(newSize) {
         // Only set new grid size if it is a valid value.
         if (newSize <= 0 || !Number.isInteger(Number.parseFloat(newSize)) || isNaN(newSize)) {
-            ide.warning(`Grid size must be a whole number greater than zero instead of ${newSize}`, 1000);
+            this.ide.warning(`Grid size must be a whole number greater than zero instead of ${newSize}`, 1000);
             // Restore the previous value
             $('#inputGridSize').val(Grid.Size);
             return;
@@ -108,9 +109,11 @@ class Grid {
      * Helper class that adds grid structure to the jointjs paper element.
      * We can set the .size and the .visible property.
      * @param {*} paper effectively joint.dia.Paper
+     * @param {CaseView} cs effectively joint.dia.Paper
      */
-    constructor(paper) {
+    constructor(paper, cs) {
         this.paper = paper;
+        this.case = cs;
         // Register grid for changes to the settings
         Grid.register(this);
         // Do a first time render
