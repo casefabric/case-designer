@@ -169,7 +169,7 @@
             model: this.graph
         });
 
-        this.grid = new Grid(this.paper);
+        this.grid = new Grid(this.paper, this);
 
         this.paper.svg.setAttribute('case', this.id);
 

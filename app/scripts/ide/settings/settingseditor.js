@@ -1,20 +1,5 @@
 class SettingsEditor extends StandardForm {
-    static show() {
-        if (!this._editor) {
-            this._editor = new SettingsEditor();
-        }
-        this._editor.show();
-    }
-
-    static hide() {
-        if (this._editor) this._editor.hide();
-    }
-
-    static isOpen() {
-        return this._editor && this._editor.visible;
-    }
-
-    static get ModelEditor() {
+    static asModelEditor(ide) {
         return {
                 divMovableEditors: ide.html,
                 registerMovableEditor: () => {},
@@ -25,9 +10,11 @@ class SettingsEditor extends StandardForm {
 
     /**
      * Editor for the content of the settings of the case model editor
+     * @param {IDE} ide 
      */
-    constructor() {
-        super(SettingsEditor.ModelEditor, 'Settings (raw JSON)', 'jsoneditor settings-editor');
+    constructor(ide) {
+        super(SettingsEditor.asModelEditor(ide), 'Settings (raw JSON)', 'jsoneditor settings-editor');
+        this.ide = ide;
     }
 
     renderData() {

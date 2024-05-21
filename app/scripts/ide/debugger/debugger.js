@@ -593,7 +593,7 @@ class Debugger extends StandardForm {
                     localStorage.setItem('to', '' + to);
                 }
             })
-            .fail(data => ide.danger(data.responseText));
+            .fail(data => this.modelEditor.ide.danger(data.responseText));
     }
 }
 

@@ -27,7 +27,7 @@ class ProcessTaskView extends TaskView {
     }
 
     getImplementationList() {
-        return ide.repository.getProcesses();
+        return this.editor.ide.repository.getProcesses();
     }
 
     /**

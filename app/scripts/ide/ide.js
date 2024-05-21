@@ -22,12 +22,12 @@ class IDE {
         this.main = new IDEMain(this);
         this.footer = new IDEFooter(this);
         this.messageBox = new MessageBox(this);
-
         this.coverPanel = new CoverPanel(this); // Helper to show/hide status messages while loading models from the repository
+        this.settingsEditor = new SettingsEditor(this);
 
         this.html.on('keydown', e => {
             if (e.keyCode == 83 && e.altKey) {
-                SettingsEditor.show();
+                this.settingsEditor.show();
             }
         });
 

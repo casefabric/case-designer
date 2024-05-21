@@ -64,7 +64,7 @@ class RowRenderer {
         if (this.isEmpty()) return;
         // Ask whether our element is in use by someone else, before it can be deleted.
         if (this.case.items.find(item => item.referencesDefinitionElement(this.element.id))) {
-            ide.danger('The element is in use, it cannot be deleted');
+            this.control.case.editor.ide.danger('The element is in use, it cannot be deleted');
         } else {
             // delete the role
             Util.removeHTML(this.html);
