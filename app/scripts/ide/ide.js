@@ -34,7 +34,6 @@ class IDE {
         // Scan for pasted text. It can upload and re-engineer a deployed model into a set of files
         this.html.on('paste', e => this.handlePasteText(e))
 
-
         IDE.editorTypes.forEach(type => type.init(this));
     }
 
@@ -44,7 +43,14 @@ class IDE {
      */
     handlePasteText(e) {
         const pastedText = e.originalEvent.clipboardData.getData('text/plain');
-        new Importer(this).load(pastedText);
+        const importer = new Importer(this.repository, pastedText);
+        console.log("Found " + importer.files.length + " files to import")
+        if (importer.files.length > 0) {
+            const fileNames = importer.files.map(file => file.fileName);
+            if (confirm('Press OK to upload the following ' + fileNames.length + ' files\n\n- ' + (fileNames.join('\n- ')))) {
+                importer.uploadFiles();
+            }
+        }
     }
 
     /**
@@ -166,7 +172,7 @@ class IDE {
         }
 
         if (serverFile.metadata.error) {
-            this.coverPanel.show('Cannot open ' + fileName +'\nError: ' + serverFile.metadata.error);
+            this.coverPanel.show('Cannot open ' + fileName + '\nError: ' + serverFile.metadata.error);
             return;
         }
 
