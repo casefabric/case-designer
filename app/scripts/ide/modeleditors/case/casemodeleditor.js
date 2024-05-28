@@ -102,7 +102,7 @@ class CaseModelEditor extends ModelEditor {
 
     refresh() {
         // Overwrite to ensure that we also clear the dimensions file from the cache
-        this.ide.repository.clear(this.dimensionsFileName);
+        this.ide.repository.clear(this.dimensionsFile.fileName);
         super.refresh();
     }
 
