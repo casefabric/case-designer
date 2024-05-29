@@ -1,10 +1,10 @@
 ﻿import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
 import CaseFileItemDefinitionEditor from "@ide/modeleditor/cfid/casefileitemdefinitioneditor";
 import BottomSplitter from "@ide/splitter/bottomsplitter";
 import Util from "@util/util";
 import $ from "jquery";
 import CaseFileEditor from "../casefileeditor";
+import CFIDConverter from "./conversion/cfidconverter";
 import CFINode from "./cfinode";
 
 export const NEWDEF = '__new__';
@@ -46,6 +46,7 @@ export default class CaseFileItemsEditor {
                                 <button class="btnAddChild" type="addchild">Add Child</button>
                                 <button class="btnAddSibling" type="addsibling">Add Sibling</button>
                                 <button class="btnRemoveItem" type="remove">Remove</button>
+                                <button class="btnConvertToType">Convert to Type structure</button>
                             </div>
                             <div class="cfi-container">
                                 <div class="cfi-header cfi-details">
@@ -87,6 +88,7 @@ export default class CaseFileItemsEditor {
         this.html.find('.btnAddChild').on('click', e => this.addChild(e));
         this.html.find('.btnAddSibling').on('click', e => this.addSibling(e));
         this.html.find('.btnRemoveItem').on('click', e => this.removeNode(e));
+        this.html.find('.btnConvertToType').on('click', e => this.convertToType(e));
 
         // Create a splitter and put cfid editor at the bottom.
         this.splitter = new BottomSplitter(this.htmlParent, '70%', 175);
@@ -217,6 +219,20 @@ export default class CaseFileItemsEditor {
             }
         } else {
             this.ide.warning('Select a Case File Item to be removed', 3000);
+        }
+    }
+
+    async convertToType(e) {
+        try {
+            console.groupCollapsed(`Converting CaseFile structure of '${this.case.editor.fileName}'`)
+            await new CFIDConverter(this.case).convert();
+            console.groupEnd();
+            console.log("Completed conversion, refreshing editor");
+            this.case.editor.refresh();
+        } catch (error) {
+            console.error(error);
+            console.groupEnd();
+            this.ide.danger(`Failure during conversion:<p/>${error.message}`)
         }
     }
 
