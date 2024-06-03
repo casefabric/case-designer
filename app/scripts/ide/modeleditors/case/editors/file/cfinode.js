@@ -169,54 +169,30 @@ class CFINode {
     }
 
     /**
-     * Fills the usedIn column, shows which type of elements use this cfi
-     * Values can be: sTEMSPOCIO (sentry, Task, Event, Milestone, Stage, PlanningTable, input output CaseParameters, CFIElement
-     *
+     * Fills the usage counter of this cfi
     */
     renderUsedIn() {
-        const divUsedIn = this.divCFIDetails.find('.divUsedIn');
-        const references = this.definition.searchInboundReferences();
-        if (references.length > 0) {
-            divUsedIn.html(references.length + ' places')
+        if (this.case.items && this.definition.id) { // This means the case has been rendered
+            const references = this.case.items.filter(item => item.referencesDefinitionElement(this.definition.id));
+            if (references.length > 0) {
+                const divUsedIn = this.divCFIDetails.find('.divUsedIn');
+                divUsedIn.html(references.length + ' places');
+            }
         }
-    }
-
-    /**
-     * Gets all elements and editors that refer to the definition element
-     * @param {CaseFileItemDef} definitionElement 
-     * @returns {Array<*>}
-     */
-    getReferences(definitionElement) {
-        /** @type {Array<*>} */
-        const references = this.case.items.filter(item => item.referencesDefinitionElement(definitionElement.id));
-        // Also check whether the case parameters may be using the case file item
-        if (this.case.caseDefinition.input.find(p => p.bindingRef == definitionElement.id)) {
-            references.push(this.case.caseParametersEditor);
-        } else if (this.case.caseDefinition.output.find(p => p.bindingRef == definitionElement.id)) {
-            // else statement, since no need to add the same editor twice
-            references.push(this.case.caseParametersEditor);
-        }
-        return references;
     }
 
     select() {
         this.divCFIDetails.addClass('cfi-selected');
         // Show the right item in the definitions editor
         this.editor.caseFileItemDefinitionEditor.loadDefinition(this.definition.definitionRef);
-        this.setMarkers(true);
+        this.case.updateSelectedCaseFileItemDefinition(this.definition);
+        this.renderUsedIn(); // Refresh the usedIn count too when markers are refreshed
     }
 
     deselect() {
         this.divCFIDetails.removeClass('cfi-selected');
-        this.setMarkers(false);
-    }
-
-    /**
-     * 
-     * @param {boolean} mark 
-     */
-    setMarkers(mark) {
-        this.getReferences(this.definition).forEach(mObject => mObject.__mark(mark));
+        this.case.updateSelectedCaseFileItemDefinition(undefined);
+        this.renderUsedIn(); // Refresh the usedIn count too when markers are refreshed
     }
 
     /**

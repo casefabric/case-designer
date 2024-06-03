@@ -376,14 +376,13 @@ class XMLElementDefinition {
      * @returns {Array<XMLElementDefinition>}
      */
     searchInboundReferences() {
-        // console.group("Reading references of " + this.constructor.name + " " + this.id + "/" + this.name + " (in " + this.modelDefinition.file.fileName + ")");
-        const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
-        const elements = definitions.map(definition => definition.elements).flat();
-        // console.log("Found " + elements.length + " potential elements")
-        const references = elements.filter(element => element.referencesElement(this));
-        // console.groupEnd();
-        // console.log("Found " + references.length + " references to this element")
-        return references;
+        if (this.modelDefinition && this.modelDefinition.file) {
+            const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
+            const elements = definitions.map(definition => definition.elements).flat();
+            const references = elements.filter(element => element.referencesElement(this));
+            return references;
+        }
+        return [];
     }
 
     /**

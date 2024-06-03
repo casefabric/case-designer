@@ -28,6 +28,7 @@
                     <div class="paper-container" />
                     <div class="divResizers"></div>
                     <div class="divHalos"></div>
+                    <div class="divMarker"></div>
                     <img class="halodragimgid" />
                 </div>
             </div>
@@ -238,9 +239,17 @@
      * @returns {JQuery<HTMLElement>}
      */
     get resizeContainer() {
-        return this.html.find('.divResizers')
+        return this.html.find('.divResizers');
     }
 
+    /**
+     * Returns the container in which Marker can render their HTML element.
+     * @returns {JQuery<HTMLElement>}
+     */
+    get markerContainer() {
+        return this.html.find('.divMarker');
+    }
+    
     repositionSplitter() {
         /*When dragging this repository browser splitter, the splitter between the canvas and cfiEditor is not automatically updated
         Here recalculate the position of the splitter and the width of the canvas.
@@ -326,6 +335,16 @@
      */
     clearSelection() {
         this.selectedElement = undefined;
+    }
+
+    /**
+     * Trigger from CaseFileEditor to indicate that a certain definition is selected.
+     * This can be used to display markers of individual CMMNElementViews and their sub views.
+     * 
+     * @param {CaseFileItemDef|undefined} definition 
+     */
+    updateSelectedCaseFileItemDefinition(definition) {
+        this.items.forEach(item => item.marker.refresh(definition));
     }
 
     showHaloAndResizer(e) {

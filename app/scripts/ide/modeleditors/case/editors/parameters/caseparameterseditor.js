@@ -48,12 +48,6 @@ class CaseParametersEditor extends StandardForm {
             this.outputParameters.validate();    
         }
     }
-
-    __mark(bMark) {
-        if (this.case.casePlanModel) {
-            this.case.casePlanModel.__mark(bMark);            
-        }
-    }
 }
 
 class ParametersControl extends TableRenderer {
