@@ -6,6 +6,10 @@ class CaseFileItemDef extends CaseFileItemCollection {
         return ['', 'addChild', 'addReference', 'create', 'delete', 'removeChild', 'removeReference', 'replace', 'update'];
     }
 
+    static get prefix() {
+        return 'cfi';
+    }
+
     /**
      * 
      * @param {CaseDefinition} parent 
