@@ -332,6 +332,17 @@ class CMMNElementView extends CanvasElement {
         if (this._resizer) this.resizer.delete();
     }
 
+    get marker() {
+        if (!this._marker) {
+            this._marker = new Marker(this);
+        }
+        return this._marker;
+    }
+
+    deleteMarker() {
+        if (this._marker) this.marker.delete();
+    }
+
     createHalo() {
         return new Halo(this);
     }
@@ -494,6 +505,7 @@ class CMMNElementView extends CanvasElement {
 
     deleteSubViews() {
         this.deleteResizer();
+        this.deleteMarker();
         this.deleteHalo();
         this.deletePropertiesView();
     }
@@ -657,27 +669,6 @@ class CMMNElementView extends CanvasElement {
      */
     referencesDefinitionElement(definitionId) {
         return false;
-    }
-
-    /**
-     * Mark an element with an image
-     * bMark   : true marks the element (default), false removes mark
-     */
-    __mark(bMark) {
-        if (bMark != false) { //-> true is default
-            //mark element
-            //get relative coordinate element in paper
-
-            const markImage = $('<div class="markelementimage"></div>');
-
-            this.__markImage = markImage.appendTo(this.case.paperContainer);
-            this.__markImage.css('left', this.shape.x - markImage[0].clientWidth / 2);
-            this.__markImage.css('top', this.shape.y - markImage[0].clientHeight / 2);
-        } else {
-            if (this.__markImage) {
-                this.__markImage.remove();
-            }
-        }
     }
 
     get __type() {

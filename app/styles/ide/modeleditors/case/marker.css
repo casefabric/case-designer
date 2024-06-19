@@ -1,0 +1,8 @@
+﻿.markelementimage {
+    position: absolute;
+    background-image: url(/images/markelementcfi_red_16.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}

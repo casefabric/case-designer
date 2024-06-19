@@ -124,13 +124,6 @@ class TableEditor extends MovableEditor {
     }
 
     /**
-     * Indicates whether this TableEditor must be marked/unmarked because a case
-     * file item refers to it. Is implemented for ParametersEditor only.
-     * @param {Boolean} bMark 
-     */
-    __mark(bMark) {}
-
-    /**
      * 
      * @param {CMMNElementDefinition} element 
      * @param {String} field 

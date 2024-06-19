@@ -32,6 +32,17 @@ class CasePlanView extends StageView {
         this.planItemDefinition = definition;
     }
 
+    referencesDefinitionElement(definitionId) {
+        // Check whether the case parameters may be using the case file item
+        if (this.case.caseDefinition.input.find(p => p.bindingRef == definitionId)) {
+            return true;
+        }
+        if (this.case.caseDefinition.output.find(p => p.bindingRef == definitionId)) {
+            return true;
+        }
+        return super.referencesDefinitionElement(definitionId);
+    }
+
     createProperties() {
         return new CasePlanProperties(this);
     }
