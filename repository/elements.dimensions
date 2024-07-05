@@ -51,9 +51,6 @@
         <CMMNShape cmmnElementRef="pi__Z6eH1_37">
             <Bounds x="580" y="390" width="340" height="110"/>
         </CMMNShape>
-        <CMMNShape cmmnElementRef="crit__Z6eH1_1">
-            <Bounds width="12" height="20"/>
-        </CMMNShape>
         <CMMNShape cmmnElementRef="_Z6eH1_shape_10">
             <Bounds x="750" y="200" width="25" height="40"/>
         </CMMNShape>
