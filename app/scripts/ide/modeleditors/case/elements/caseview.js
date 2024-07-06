@@ -78,7 +78,9 @@
                 } else {
                     // It may well be an empty, unreferenced CaseFileItemView, as that is not resizable; let CaseFileItemView figure that out
                     const emptyCaseFileItem = CaseFileItemView.createElementForShape(caseDefinition, shape);
-                    if (! emptyCaseFileItem) {
+                    if (emptyCaseFileItem) {
+                        emptyCaseFileItem.id = shape.cmmnElementRef;
+                    } else {
                         // But if it is not, then we should print a warning
                         console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
                     }
@@ -99,6 +101,11 @@
                     } else {
                         // Quite weird :)
                     }
+                }
+                const view = this.items.find(view => view.shape === shape);
+                if (definitionElement && !view) {
+                    this.editor.migrated("Removing unused shape " + shape.cmmnElementRef +" from " + this.dimensions.file.fileName);
+                    shape.removeDefinition();
                 }
             });
 
