@@ -4,7 +4,7 @@
     "node": ">=0.12.0"
   },
   "dependencies": {
-    "@cafienne/repository": "^0.1.4",
+    "@cafienne/repository": "^0.1.5",
     "@xmldom/xmldom": "^0.8.10",
     "axios": "^0.27.2",
     "body-parser": "~1.19.2",
