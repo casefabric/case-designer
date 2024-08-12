@@ -1,20 +1,16 @@
 version: 2.1
 jobs:
   branch-build-to-snapshot:
+    resource_class: large
     working_directory: ~/cafienne-ide
     docker:
-      - image: cimg/node:8.17.0
+      - image: cimg/node:22.2.0
     steps:
       - checkout
       - run:
-          name: Giving permissions
-          command: sudo chmod -R 777 ./
-      - run:
           name: Installing dependencies
           command: |
-            npm install
-            sudo npm install bower -g
-            bower install
+            yarn install
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -23,50 +19,44 @@ jobs:
             echo "Building docker image cafienne/ide:snapshot"
             docker build -t cafienne/ide:snapshot .
       - run:
-          name: Push docker image
+          name: Push docker image 'cafienne/ide:snapshot'
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             echo "Publishing image 'cafienne/ide:snapshot' to docker hub"
             docker push cafienne/ide:snapshot
 
   main-build-to-latest:
+    resource_class: large
     working_directory: ~/cafienne-ide
     docker:
-      - image: cimg/node:8.17.0
+      - image: cimg/node:22.2.0
     steps:
       - checkout
       - run:
-          name: Giving permissions
-          command: sudo chmod -R 777 ./
-      - run:
           name: Installing dependencies
           command: |
-            npm install
-            sudo npm install bower -g
-            bower install
+            yarn install
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Build docker image
           command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            echo "Building docker image cafienne/ide:latest"
             docker build -t cafienne/ide:latest .
       - run:
-          name: Push docker image
+          name: Push docker image 'cafienne/ide:latest'
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             echo "Publishing image 'cafienne/ide:latest' to docker hub"
             docker push cafienne/ide:latest
 
   release-build:
+    resource_class: large
     working_directory: ~/cafienne-ide
     docker:
-      - image: cimg/node:8.17.0
+      - image: cimg/node:22.2.0
     steps:
       - checkout
-      - run:
-          name: Giving permissions
-          command: sudo chmod -R 777 ./
       - run:
           name: Check for version TAG
           command: |
@@ -77,11 +67,9 @@ jobs:
       - run:
           name: Installing dependencies
           command: |
-            npm install
-            sudo npm install bower -g
-            bower install
+            yarn install
       - setup_remote_docker:
-          docker_layer_caching: false
+          docker_layer_caching: true
       - run:
           name: Build docker image
           command: |
@@ -90,6 +78,7 @@ jobs:
           name: Push docker image
           command: |
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            echo "Publishing image 'cafienne/ide:$CIRCLE_TAG' to docker hub"
             docker push cafienne/ide:$CIRCLE_TAG
 
   deprecated-node-8-build:
