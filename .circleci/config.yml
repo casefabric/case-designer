@@ -92,6 +92,35 @@ jobs:
             echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
             docker push cafienne/ide:$CIRCLE_TAG
 
+  deprecated-node-8-build:
+    working_directory: ~/cafienne-ide
+    docker:
+      - image: cimg/node:8.17.0
+    steps:
+      - checkout
+      - run:
+          name: Giving permissions
+          command: sudo chmod -R 777 ./
+      - run:
+          name: Installing dependencies
+          command: |
+            npm install
+            sudo npm install bower -g
+            bower install
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build docker image
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            docker build -t cafienne/ide:deprecated-node-8 .
+      - run:
+          name: Push docker image
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            echo "Publishing image 'cafienne/ide:deprecated-node-8' to docker hub"
+            docker push cafienne/ide:deprecated-node-8
+
 workflows:
   version: 2
   ci:
@@ -99,6 +128,8 @@ workflows:
       - branch-build-to-snapshot:
           context: automation-context
           filters:
+            tags:
+              ignore: /.*/
             branches:
               ignore:
                 - main
@@ -112,6 +143,13 @@ workflows:
           context: automation-context
           filters:
             tags:
-              only: /.*/
+              ignore: deprecated-node8
+            branches:
+              ignore: /.*/
+      - deprecated-node-8-build:
+          context: automation-context
+          filters:
+            tags:
+              only: deprecated-node8
             branches:
               ignore: /.*/
