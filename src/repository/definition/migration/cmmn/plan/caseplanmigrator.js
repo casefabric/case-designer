@@ -1,69 +1,21 @@
 import XML from "@util/xml";
-import CaseDefinition from "./casedefinition";
-import CaseTeamDefinition from "./caseteam/caseteamdefinition";
+import Migrator from "../migrator";
 
-export default class Migrator {
-    static updateXMLElement(definition) {
-        new Migrator(definition);
-    }
-
+export default class CasePlanMigrator {
     /**
      * 
-     * @param {String} msg 
+     * @param {Migrator} migrator 
      */
-    migrated(msg) {
-        this.definition.migrated(msg);
+    constructor(migrator) {
+        this.migrator = migrator;
     }
 
-    /**
-     * 
-     * @param {CaseDefinition} definition 
-     */
-    constructor(definition) {
-        this.definition = definition;
-        if (this.needsMigration(definition.importNode)) {
-            console.group(`Migrating XML contents of ${this.definition.file.fileName} to the new format`)
-            this.migrate(definition.importNode);
-            console.groupEnd();
-        }
+    needsMigration() {
+        return XML.allElements(XML.getChildByTagName(this.migrator.definition.importNode, 'casePlanModel')).filter(element => element.tagName === 'planItem' || element.tagName === 'discretionaryItem').length > 0;
     }
 
-    migrate(importNode) {
-        const rolesElements = XML.getChildrenByTagName(importNode, 'caseRoles');
-        if (rolesElements.length == 0 || rolesElements.length > 1) {
-            // CMMN 1.0 format, we must migrate. Also, if roles.length == 0, then we should create an element to avoid nullpointers.
-            //  Note: if there is only 1 caseRoles tag it can be both CMMN1.0 or CMMN1.1;
-            //  CaseTeamDefinition class will do the check if additional migration is required.
-            if (rolesElements.length) {
-                this.migrated(`Converting ${rolesElements.length} CMMN1.0 roles`);
-            }
-            // Create a new element
-            const caseTeamElement = XML.loadXMLString('<caseRoles />').documentElement;
-            rolesElements.forEach(role => {
-                role.parentElement.removeChild(role);
-                caseTeamElement.appendChild(CaseTeamDefinition.convertRoleDefinition(role))
-            });
-            importNode.appendChild(caseTeamElement);
-        }
-
-        const sentries = XML.getElementsByTagName(importNode, 'sentry');
-        if (sentries.length > 0) {
-            console.groupCollapsed("Converting " + sentries.length + " sentries in case plan of " + this.definition.file.fileName);
-            const allElements = XML.allElements(importNode);
-            sentries.forEach(sentry => {
-                const id = sentry.getAttribute('id');
-                const criterion = allElements.find(element => !element.getAttribute('sourceRef') && element.getAttribute('sentryRef') === id);
-                if (criterion) {
-                    sentry.childNodes.forEach(node => criterion.appendChild(node.cloneNode(true)));
-                    sentry.parentElement.removeChild(sentry);
-                } else {
-                    console.error(`Skipping migration of sentry ${id} because there is no criterion referring to it`);
-                }
-            });
-            this.migrated(`Merged <sentry> elements with their corresponding definitions, so now we have only <entryCriterion>, <exitCriterion> and <reactivateCriterion>`);
-            console.groupEnd();
-        }
-
+    run() {
+        const importNode = this.migrator.definition.importNode;
         const casePlan = XML.getChildByTagName(importNode, 'casePlanModel');
         if (XML.allElements(casePlan).filter(element => element.tagName === 'planItem' || element.tagName === 'discretionaryItem').length > 0) {
             console.groupCollapsed(`Converting ${XML.getElementsByTagName(importNode, 'planItem').length} plan items and ${XML.getElementsByTagName(importNode, 'discretionaryItem').length} discretionary items in the case plan`);
@@ -90,18 +42,10 @@ export default class Migrator {
             definitionNodes.forEach(node => node.parentElement.removeChild(node));
 
             console.log(XML.prettyPrint(importNode));
-            this.migrated(`Merged <planItem> and <discretionaryItem> elements with their corresponding definitions, so now we have only <humanTask>, <stage>, <milestone>, etc.`);
+            this.migrator.migrated(`Merged <planItem> and <discretionaryItem> elements with their corresponding definitions, so now we have only <humanTask>, <stage>, <milestone>, etc.`);
 
             console.groupEnd();
         }
-    }
-
-    needsMigration(importNode) {
-        const classicRoles = XML.getChildrenByTagName(importNode, 'caseRoles'); // More than 1 means CMMN 1.0 style roles.
-        const classicSentries = XML.getElementsByTagName(importNode, 'sentry');
-        const classicPlanItems = XML.allElements(XML.getChildByTagName(importNode, 'casePlanModel')).filter(element => element.tagName === 'planItem' || element.tagName === 'discretionaryItem');
-
-        return (classicRoles.length > 1) || (classicSentries.length > 0) || (classicPlanItems.length > 0);
     }
 }
 

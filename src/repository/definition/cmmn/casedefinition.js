@@ -2,12 +2,12 @@ import CaseFile from "@repository/serverfile/casefile";
 import TextAnnotationDefinition from "../artifact/textannotation";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import Dimensions from "../dimensions/dimensions";
+import Migrator from "../migration/cmmn/migrator";
 import ModelDefinition from "../modeldefinition";
 import CaseFileDefinition from "./casefile/casefiledefinition";
 import CasePlanDefinition from "./caseplan/caseplandefinition";
 import CaseTeamDefinition from "./caseteam/caseteamdefinition";
 import CaseParameterDefinition from "./contract/caseparameterdefinition";
-import Migrator from "./migrator";
 import StartCaseSchemaDefinition from "./startcaseschemadefinition";
 
 export default class CaseDefinition extends ModelDefinition {
