@@ -275,7 +275,7 @@ export class TaskStageDefinition extends PlanItem {
     }
 
     get defaultTransition() {
-        return 'completes';
+        return 'complete';
     }
 
     get entryTransition() {
