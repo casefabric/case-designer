@@ -15,6 +15,9 @@ export default class CasePlanMigrator {
     }
 
     run() {
+        if (! this.needsMigration()) {
+            return;
+        }
         const importNode = this.migrator.definition.importNode;
         const casePlan = XML.getChildByTagName(importNode, 'casePlanModel');
         if (XML.allElements(casePlan).filter(element => element.tagName === 'planItem' || element.tagName === 'discretionaryItem').length > 0) {

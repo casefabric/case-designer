@@ -7,7 +7,7 @@ export default class CaseTeamMigrator {
     constructor(public migrator: Migrator) {
         const importNode = this.migrator.definition.importNode;
         this.roleElements = XML.getChildrenByTagName(importNode, 'caseRoles');
-        if (this.roleElements.length === 0) {            
+        if (this.roleElements.length === 0) {
             // Make sure we always have a CaseTeam element
             importNode.appendChild(importNode.ownerDocument.createElement('caseRoles'));
         }
@@ -20,8 +20,10 @@ export default class CaseTeamMigrator {
             return false;
         } else if (classicRoles.length === 1) {
             // We found 1 role tag. It can be both CMMN 1.0 and 1.1. If it is 1.0, it will have a name attribute...
+            //  ... but if it is CMMN 1.1, then there is a child tag <role> ...
+            const childRole = XML.getChildByTagName(classicRoles[0], 'role');
             const name = classicRoles[0].getAttribute('name');
-            return name !== null && name.trim().length > 0;
+            return !childRole && name !== null && name.trim().length > 0;    
         } else {
             // More than 1 role tag means we CMMN1.0 and need to migrate
             return true;
@@ -29,6 +31,9 @@ export default class CaseTeamMigrator {
     }
 
     run() {
+        if (!this.needsMigration()) {
+            return;
+        }
         const importNode = this.migrator.definition.importNode;
         // CMMN 1.0 format, we must migrate. Also, if roles.length == 0, then we should create an element to avoid nullpointers.
         //  Note: if there is only 1 caseRoles tag it can be both CMMN1.0 or CMMN1.1;

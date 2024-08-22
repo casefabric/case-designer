@@ -5,10 +5,13 @@ export default class SentryMigrator {
     constructor(public migrator: Migrator) {}
 
     needsMigration(): boolean {
-        return XML.allElements(XML.getChildByTagName(this.migrator.definition.importNode, 'sentry')).length > 0;
+        return XML.getElementsByTagName(this.migrator.definition.importNode, 'sentry').length > 0;
     }
 
     run() {
+        if (! this.needsMigration()) {
+            return;
+        }
         const importNode = this.migrator.definition.importNode;
         const sentries = XML.getElementsByTagName(importNode, 'sentry');
         if (sentries.length > 0) {
