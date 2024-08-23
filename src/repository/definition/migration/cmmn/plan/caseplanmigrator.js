@@ -15,7 +15,7 @@ export default class CasePlanMigrator {
     }
 
     run() {
-        if (! this.needsMigration()) {
+        if (!this.needsMigration()) {
             return;
         }
         const importNode = this.migrator.definition.importNode;
@@ -125,6 +125,7 @@ class ItemMigrator {
                 this.migrator.addError(`The element ${XML.prettyPrint(this.item.cloneNode(false))} refers to a definition with id "${this.definitionRef}", but that definition is not present in the case`);
             } else {
                 if (this.definitionNode.tagName === 'stage') {
+                    console.log(`Creating a stage migrator for ${this.definitionNode.getAttribute('name')}`)
                     this.stageMigrator = new StageMigrator(this.migrator.caseDefinition, this.definitionNode, this.migrator.casePlan, this.migrator.definitionNodes);
                 } else { // In a HumanTask we can also have a planning table, and then we have to migrate that one as well
                     const planningTable = XML.getChildByTagName(this.definitionNode, 'planningTable');
@@ -139,9 +140,9 @@ class ItemMigrator {
     }
 
     migrateItem() {
-        console.groupCollapsed(`Converting ${XML.prettyPrint(this.item.cloneNode(false))}`)
+        console.groupCollapsed(`Converting ${XML.prettyPrint(this.item.cloneNode(true))}`);
         if (this.stageMigrator) {
-            console.log("First migrating the stage")
+            console.log("First migrating stage contents");
             this.stageMigrator.migrateStage();
         }
         if (this.planningTableMigrator) {
@@ -154,7 +155,9 @@ class ItemMigrator {
             newChild.setAttribute('authorizedRoleRefs', this.item.getAttribute('authorizedRoleRefs'))
         }
         this.item.childNodes.forEach(node => newChild.appendChild(node.cloneNode(true)));
+        // NOTE: as of now we're keeping the plan item in tree, as that will anyway not be parsed no longer and therefore also not serialized.
         this.item.parentElement.insertBefore(newChild, this.item);
+        console.log("Conversion result: ", XML.prettyPrint(newChild));
         console.groupEnd();
     }
 }
