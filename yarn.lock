@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@cafienne/repository@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@cafienne/repository/-/repository-0.1.5.tgz#fb2b703f02d4aaa7f1c0b887ffb90db3064c36b1"
-  integrity sha512-J73mjKnUW982ej4fCcBeT3clDB9YJbPzqr6dwRfDgIHKjlPyG/TnyrX+MaENVWA1YQQXXoQzycCW8UQwP3X0ZQ==
+"@cafienne/repository@^0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@cafienne/repository/-/repository-0.1.7.tgz#3de0f9f623131faf2e9c2cabc83f5e7b07cc4c9d"
+  integrity sha512-oFvdC596lYP4z8COe3fK+Lv88CvVA1DS9Q9u9yhOub6AWMEwjl+iOh6kIXEo3DiKyrOdfZ9Rd7ld67djB2dyoA==
   dependencies:
+    "@xmldom/xmldom" "^0.8.10"
     axios "^0.27.2"
     isomorphic-fetch "^3.0.0"
     ts-node-dev "^1.1.8"
     typescript "^3.7.4"
     walk-sync "~0.3.1"
-    xmldom "^0.6.0"
 
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.7"
@@ -3151,11 +3151,6 @@ ws@^8.16.0:
   version "8.17.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.17.0.tgz#d145d18eca2ed25aaf791a183903f7be5e295fea"
   integrity sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==
-
-xmldom@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.6.0.tgz#43a96ecb8beece991cef382c08397d82d4d0c46f"
-  integrity sha512-iAcin401y58LckRZ0TkI4k0VSM1Qg0KGSc3i8rU+xrxe19A/BN1zHyVSJY7uoutVlaTSzYyk/v5AmkewAP7jtg==
 
 xtend@^4.0.0:
   version "4.0.2"

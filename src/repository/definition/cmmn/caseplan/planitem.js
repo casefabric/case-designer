@@ -213,8 +213,8 @@ export default class PlanItem extends CMMNElementDefinition {
     }
 
     createExportNode(parentNode, tagName, ...propertyNames) {
-        // Flatten discretionary properties; this ensures that if a element has switched from discretionary to planitem, it will NOT accidentally keep the role and rule refs.
-        this.authorizedRoleRefs = super.flattenListToString(this.isDiscretionary ? this.authorizedRoles : []);
+        this.authorizedRoleRefs = super.flattenListToString(this.authorizedRoles); // AuthorizedRoles can also have been defined on the UserEvent; therefore always flatten them.
+        // Flatten applicabilityRuleRefs only if the item is discretionary; this ensures that if a element has switched from discretionary to planitem, it will NOT accidentally keep the role and rule refs.
         this.applicabilityRuleRefs = super.flattenListToString(this.isDiscretionary ? this.filterExistingRules() : []);
         super.createExportNode(parentNode, tagName, 'entryCriteria', 'reactivateCriteria', 'exitCriteria', 'planItemControl', 'applicabilityRuleRefs', 'authorizedRoleRefs', 'fourEyes', 'rendezVous', propertyNames);
     }

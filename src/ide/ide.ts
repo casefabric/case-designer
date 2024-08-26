@@ -66,8 +66,8 @@ export default class IDE {
     handlePasteText(e: JQuery.TriggeredEvent) {
         const pastedText = (<any>e).originalEvent.clipboardData.getData('text/plain');
         const importer = new Importer(this.repository, pastedText);
-        console.log("Found " + importer.files.length + " files to import")
         if (importer.files.length > 0) {
+            console.log(`Found ${importer.files.length} files to import`)
             const fileNames = importer.files.map(file => file.fileName);
             if (confirm('Press OK to upload the following ' + fileNames.length + ' files\n\n- ' + (fileNames.join('\n- ')))) {
                 importer.uploadFiles();
