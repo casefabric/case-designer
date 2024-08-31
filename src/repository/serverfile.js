@@ -4,8 +4,7 @@ import XML from "@util/xml";
 import Followup, { andThen } from "@util/promise/followup";
 import ModelDefinition from "./definition/modeldefinition";
 import $ from "jquery";
-// import Repository from "./repository";
-// BIG TODO HERE
+import RepositoryBase from "./repositorybase";
 
 export default class ServerFile {
     /**
@@ -13,7 +12,7 @@ export default class ServerFile {
      * by the server (serverData).
      * When created the reference does not yet hold the content. This can be loaded on 
      * demand through the load method, which can be invoked with a callback.
-     * @param {Repository} repository 
+     * @param {RepositoryBase} repository 
      * @param {String} fileName 
      * @param {*} source
      */
@@ -85,6 +84,10 @@ export default class ServerFile {
     /** @returns {ModelDefinition} */
     get definition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    get xml() {
+        return this.content.xml;
     }
 
     /**

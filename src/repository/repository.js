@@ -10,8 +10,9 @@ import DimensionsFile from "./serverfile/dimensionsfile";
 import HumanTaskFile from "./serverfile/humantaskfile";
 import ProcessFile from "./serverfile/processfile";
 import $ from "jquery";
+import RepositoryBase from "./repositorybase";
 
-export default class Repository {
+export default class Repository extends RepositoryBase {
     /**
      * This object handles the interaction with the backend to load and save the various types of models.
      * It keeps a local copy of all models present in the server. This local copy is updated after each
@@ -19,8 +20,7 @@ export default class Repository {
      * their last modified status.
      */
     constructor() {
-        /** @type {Array<ServerFile>} */
-        this.list = [];
+        super();
         /** @type {Array<Function>} */
         this.listeners = [];
     }
