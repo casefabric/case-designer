@@ -67,7 +67,7 @@ export default class ModelEditor {
      * @param {MovableEditor} editor 
      */
     selectMovableEditor(editor) {
-        Util.removeFromArray(this.movableEditors, this);
+        Util.removeFromArray(this.movableEditors, editor);
         this.movableEditors.push(editor);
         // Now reset z-index of editors, oldest at bottom, newest (this) at top.
         this.movableEditors.forEach((editor, index) => $(editor.html).css('z-index', index + 1));

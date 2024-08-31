@@ -12,8 +12,7 @@
         <humanTask id="cm_csVQy_167" name="Receive Greeting and Send response" isBlocking="true">
             <documentation textFormat="text/plain">
                 <text>
-                    <![CDATA[Receive Greeting
-and Send response]]>
+                    <![CDATA[Receive Greeting and Send response]]>
                 </text>
             </documentation>
             <inputs id="inTP_cm_cs2F1_174_1" name="Greeting" bindingRef="cfi_csVQy_0"/>

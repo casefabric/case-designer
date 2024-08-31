@@ -29,7 +29,7 @@ export default class TaskProperties extends TaskStageProperties {
                                 <div>
                                     <select>
                                         <option value="">${implementation ? '... remove '+implementation : ''}</option>
-                                        <option value="__new__"><b>create new ...</b></option>
+                                        <option value="__new__">create new implementation ...</option>
                                         ${options}
                                     </select>
                                 </div>
