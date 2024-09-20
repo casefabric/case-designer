@@ -5,4 +5,4 @@ import IDE from './ide/ide';
 Compatibility.registerClasses();
 
 // Start initialization after the entire page is loaded
-window.addEventListener('load', e => IDE.createInstance());
+window.addEventListener('load', e => new IDE());

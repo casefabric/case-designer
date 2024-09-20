@@ -13,7 +13,7 @@ export default class ModelEditor {
      */
     constructor(ide, file) {
         this.ide = ide;
-        this.ide.register(this);
+        this.ide.editorRegistry.register(this);
         this.file = file;
         this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */
@@ -232,12 +232,12 @@ export default class ModelEditor {
     }
 
     destroy() {
-        Util.removeFromArray(this.ide.editors, this);
         if (this.visible) {
             this.visible = false;
             window.location.hash = '';
         }
         Util.removeHTML(this.html);
+        Util.removeFromArray(this.ide.editorRegistry.editors, this);
     }
 
     refresh() {

@@ -1,9 +1,8 @@
 'use strict';
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
-
-import ModelDefinition from "@repository/definition/modeldefinition";
 import Importer from "@repository/import/importer";
 import Repository from "@repository/repository";
+import $ from "jquery";
 import CoverPanel from "./coverpanel";
 import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
@@ -13,10 +12,10 @@ import ModelEditor from "./modeleditor/modeleditor";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
 import SettingsEditor from "./settings/settingseditor";
-import $ from "jquery";
 
 export default class IDE {
-    private _editors: Array<ModelEditor> = [];
+    editors: Array<ModelEditor> = [];
+    editorRegistry: ModelEditorRegistry;
     repository: Repository;
     html: JQuery<HTMLElement>;
     header: IDEHeader;
@@ -27,15 +26,8 @@ export default class IDE {
     settingsEditor: SettingsEditor;
     private _dragging: any;
 
-    static createInstance() {
-        ModelEditorRegistry.initialize();
-
-        const ide = new IDE();
-    }
-
-    static editorTypes: Array<ModelEditorMetadata> = []
-
     constructor() {
+        this.editorRegistry = new ModelEditorRegistry(this);
         this.repository = new Repository();
         this.html = $('body');
         this.header = new IDEHeader(this);
@@ -54,8 +46,6 @@ export default class IDE {
 
         // Scan for pasted text. It can upload and re-engineer a deployed model into a set of files
         this.html.on('paste', e => this.handlePasteText(e))
-
-        IDE.editorTypes.forEach(type => type.init(this));
     }
 
     back() {
@@ -84,15 +74,6 @@ export default class IDE {
         return this.main.divModelEditors;
     }
 
-    /** @returns {Array<ModelEditor>} */
-    get editors() {
-        return this._editors;
-    }
-
-    register(editor: ModelEditor) {
-        this.editors.push(editor);
-    }
-
     /**
      * @returns Determines if someone is drag/dropping an item across the IDE.
      */
@@ -109,7 +90,7 @@ export default class IDE {
      * @returns fileName of the new model
      */
     createNewModel(modelType: string, newModelName: string, newModelDescription: string, callback: Function): string | undefined {
-        const editorMetadata = IDE.editorTypes.find(type => type.modelType == modelType);
+        const editorMetadata = ModelEditorMetadata.types.find(type => type.modelType == modelType);
         if (!editorMetadata) {
             const msg = 'Cannot create new models of type ' + modelType;
             console.error(msg);
@@ -117,71 +98,6 @@ export default class IDE {
             return;
         }
         return editorMetadata.createNewModel(this, newModelName, newModelDescription, callback);
-    }
-
-    openModel(model: ModelDefinition) {
-        console.log("Opened model " + model.name)
-    }
-
-    /**
-     * Determines the type of the file name and opens the corresponding editor.
-     */
-    open(fileName: string) {
-        if (!fileName) {
-            // Simply no model to load; but hide all existing editors.
-            this.editors.forEach(editor => editor.visible = false);
-            this.coverPanel.show('Please, open or create a model.');
-            return;
-        }
-
-        const serverFile = this.repository.get(fileName);
-        if (!serverFile) {
-            this.danger(`File ${fileName} does not exist and cannot be opened`, 2000);
-            if (this.editors.length === 0) {
-                this.coverPanel.show('Please, open or create a model.');
-            }
-            return;
-        }
-
-        const editorMetadata = IDE.editorTypes.find(type => type.supportsFile(serverFile));
-
-        // Check if this file type has a model editor.
-        if (!editorMetadata) {
-            this.danger(`File type ${serverFile.fileType} has no editor associated with it`, 3000);
-            if (this.editors.length === 0) {
-                this.coverPanel.show('Please, open or create a model.');
-            }
-            return;
-        }
-
-        // In case of subsequent loadings, we have to close the console group of the previous one
-        console.groupEnd();
-        console.group(fileName);
-
-        // Show the editor with the fileName (if available), hide all the ones with a different fileName
-        const existingEditor = this.editors.find(editor => editor.fileName == fileName);
-        this.editors.forEach(editor => editor.visible = (editor === existingEditor));
-        if (existingEditor) existingEditor.visible = true;
-
-        //show model name on browser tab
-        document.title = 'Cafienne IDE - ' + serverFile.name;
-
-        // If we already have an editor for the fileName, no need to go further in the loading logic
-        if (existingEditor) {
-            return;
-        }
-
-        if (serverFile.metadata.error) {
-            this.coverPanel.show('Cannot open ' + fileName + '\nError: ' + serverFile.metadata.error);
-            return;
-        }
-
-        // By default open the cover panel. If the model is present and loads,
-        //  the cover panel will be closed.
-        this.coverPanel.show('Opening ' + fileName);
-
-        // Now create and load the new editor
-        editorMetadata.createEditor(this, serverFile).loadModel();
     }
 
     /**
@@ -218,12 +134,5 @@ export default class IDE {
      */
     danger(message: string, delay = 0) {
         this.messageBox.createMessage(message, 'danger', delay);
-    }
-
-    /**
-     * Registers a type of editor, e.g. HumanTaskEditor, CaseModelEditor, ProcessModelEditor
-     */
-    static registerEditorType(editorMetadata: ModelEditorMetadata) {
-        IDE.editorTypes.push(editorMetadata);
     }
 }

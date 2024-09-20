@@ -1,27 +1,37 @@
+import RepositoryBrowser from "@ide/repositorybrowser";
 import ServerFile from "@repository/serverfile";
 import IDE from "../ide";
 import ModelEditor from "./modeleditor";
 
 export default class ModelEditorMetadata {
+    public static types: Array<ModelEditorMetadata> = [];
+
+
+    /**
+     * Registers a type of editor, e.g. HumanTaskEditor, CaseModelEditor, ProcessModelEditor
+     */
+    public static registerEditorType(editorMetadata: ModelEditorMetadata) {
+        this.types.push(editorMetadata);
+    }
+
+
+    public ide?: IDE;
+
     /**
      * Initializes metadata for a type of ModelEditor within the IDE
      * @param {IDE} ide 
      */
-    init(ide) {
+    init(repositoryBrowser: RepositoryBrowser) {
+        const ide = repositoryBrowser.ide;
         this.ide = ide;
-        this.ide.repository.onListRefresh(() => {
-            if (! this.modelListPanel) {
-                this.modelListPanel = this.ide.repositoryBrowser.createModelListPanel(this);
-            }
-            this.modelListPanel.setModelList(this.modelList, this.shapeType);
-        });
+        repositoryBrowser.createModelListPanel(this);
     }
 
     /**
      * Whether the metadata is associated with this kind of file
      * @param {ServerFile} file 
      */
-    supportsFile(file) {
+    supportsFile(file: ServerFile) {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -31,8 +41,8 @@ export default class ModelEditorMetadata {
      * @param {ServerFile} file 
      * @returns {ModelEditor}
      */
-    createEditor(ide, file) {
-        throw new Error('This method must be implemented in ' + this.constructor.name);        
+    createEditor(ide: IDE, file: ServerFile): ModelEditor {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     get supportsDeploy() {
@@ -40,22 +50,20 @@ export default class ModelEditorMetadata {
     }
 
     /** @returns {Array<ServerFile>} */
-    get modelList() {
+    get modelList(): Array<ServerFile> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /** @returns {Function} */
-    get shapeType() {
+    get shapeType(): Function {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {String} */
-    get description() {
+    get description(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {String} */
-    get modelType() {
+    get modelType(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -71,7 +79,7 @@ export default class ModelEditorMetadata {
      * @param {Function} callback 
      * @returns {String} fileName of the new model
      */
-    createNewModel(ide, newModelName, newModelDescription, callback) {
+    createNewModel(ide: IDE, newModelName: string, newModelDescription: string, callback: Function): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }

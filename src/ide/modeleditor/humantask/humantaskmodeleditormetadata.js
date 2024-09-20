@@ -8,6 +8,10 @@ import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
 
 export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
+    static register() {
+        super.registerEditorType(new HumantaskModelEditorMetadata());
+    }
+
     /** @returns {Array<ServerFile>} */
     get modelList() {
         return this.ide.repository.getHumanTasks();

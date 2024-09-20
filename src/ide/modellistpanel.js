@@ -34,15 +34,17 @@ export default class ModelListPanel {
             e.stopPropagation();
             this.create(e)
         });
+
+        this.ide.repository.onListRefresh(() => this.setModelList());
     }
 
     /**
      * Re-creates the items in the accordion for this panel
      * 
-     * @param {Array<ServerFile>} files 
-     * @param {Function} shapeType 
      */
-    setModelList(files, shapeType) {
+    setModelList() {
+        const files = this.type.modelList;
+        const shapeType = this.type.shapeType;
         // First create a big HTML string with for each model an <a> element
         const urlPrefix = window.location.origin + '/#';
 
@@ -88,7 +90,7 @@ export default class ModelListPanel {
         if (file.usage.length) {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
         } else {
-            const text = `Are  you sure you want to delete '${file.fileName}'?`;
+            const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {
                 const editorCloser = () => {
                     const editor = this.ide.editors.find(editor => editor.fileName === file.fileName);

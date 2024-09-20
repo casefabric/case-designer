@@ -62,6 +62,8 @@ export default class RepositoryBrowser {
 
         // Now load the repository contents, and after that optionally load the first model
         this.repository.listModels(andThen(() => this.loadModelFromBrowserLocation(), msg => this.ide.danger(msg)));
+        
+        ModelEditorMetadata.types.forEach(type => type.init(this));
     }
 
     /**
@@ -104,7 +106,7 @@ export default class RepositoryBrowser {
         this.refreshAccordionStatus();
 
         // Ask the IDE to open the model.
-        this.ide.open(fileName);
+        this.ide.editorRegistry.open(fileName);
     }
 
     refreshAccordionStatus() {
