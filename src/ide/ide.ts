@@ -1,5 +1,5 @@
-'use strict';
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
+// BIG TODO HERE: ModelEditorRegistry must be imported BEFORE Repository, for some weird reason
 import Importer from "@repository/import/importer";
 import Repository from "@repository/repository";
 import $ from "jquery";
@@ -8,13 +8,11 @@ import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
 import IDEMain from "./idemain";
 import MessageBox from "./messagebox";
-import ModelEditor from "./modeleditor/modeleditor";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
 import SettingsEditor from "./settings/settingseditor";
 
 export default class IDE {
-    editors: Array<ModelEditor> = [];
     editorRegistry: ModelEditorRegistry;
     repository: Repository;
     html: JQuery<HTMLElement>;
@@ -24,7 +22,7 @@ export default class IDE {
     messageBox: MessageBox;
     coverPanel: CoverPanel;
     settingsEditor: SettingsEditor;
-    private _dragging: any;
+    dragging: boolean = false;
 
     constructor() {
         this.editorRegistry = new ModelEditorRegistry(this);
@@ -72,17 +70,6 @@ export default class IDE {
     /** @returns {JQuery<HTMLElement>} The element in which the editors can be added */
     get divModelEditors() {
         return this.main.divModelEditors;
-    }
-
-    /**
-     * @returns Determines if someone is drag/dropping an item across the IDE.
-     */
-    get dragging(): boolean {
-        return this._dragging;
-    }
-
-    set dragging(dragging) {
-        this._dragging = dragging;
     }
 
     /**

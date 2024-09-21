@@ -1,5 +1,4 @@
-import IDE from "./ide";
-import CaseFileItemView from "./modeleditor/case/elements/casefileitemview";
+import IDE from "../ide";
 import $ from "jquery";
 
 export default class DragData {
@@ -111,12 +110,5 @@ export default class DragData {
         $(document).off('pointermove', this.mouseMoveHandler);
         $(document).off('pointerup', this.mouseUpHandler);
         $(document).off('keydown', this.escapeKeyListener);
-    }
-}
-
-export class CaseFileItemDragData extends DragData {
-    constructor(editor, cfi) {
-        super(editor.ide, editor, cfi.name, CaseFileItemView.name, CaseFileItemView.smallImage, cfi.id);
-        this.item = cfi;
     }
 }

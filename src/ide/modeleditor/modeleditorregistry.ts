@@ -1,15 +1,16 @@
 // BIG TODO HERE - Apparently we must import ElementRegistry here, instead of only inside the CaseModelEditor - totally unclear why.
 //  ALSO the order or import (first ElementRegistry, then CaseModelEditorMetadata) is important for the code not to cause an issue.
 import ElementRegistry from "./case/elements/elementregistry";
+import IDE from "@ide/ide";
+import Util from "@util/util";
 import CaseModelEditorMetadata from "./case/casemodeleditormetadata";
 import HumantaskModelEditorMetadata from "./humantask/humantaskmodeleditormetadata";
-import ProcessModelEditorMetadata from "./process/processtaskmodeleditormetadata";
-import IDE from "@ide/ide";
 import ModelEditor from "./modeleditor";
 import ModelEditorMetadata from "./modeleditormetadata";
+import ProcessModelEditorMetadata from "./process/processtaskmodeleditormetadata";
 
 export default class ModelEditorRegistry {
-    editors: Array<ModelEditor> = [];
+    private editors: Array<ModelEditor> = [];
 
     /**
      * 
@@ -30,6 +31,12 @@ export default class ModelEditorRegistry {
         this.editors.push(editor);
     }
 
+    /** 
+     * Returns the editor that is currently active, if any
+     */
+    get currentEditor(): ModelEditor | undefined {
+        return this.editors.find(editor => editor.visible);
+    }
 
     /**
      * Determines the type of the file name and opens the corresponding editor.

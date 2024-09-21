@@ -92,19 +92,14 @@ export default class ModelListPanel {
         } else {
             const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {
-                const editorCloser = () => {
-                    const editor = this.ide.editors.find(editor => editor.fileName === file.fileName);
-                    if (editor) {
-                        editor.destroy();
-                    }
-                }
-
+                const editorCloser = () => this.ide.editorRegistry.remove(file.fileName);
                 this.ide.repository.delete(file.fileName, andThen(() => {
                     if (file.fileType === 'case') {
                         // When we delete a .case model we also need to delete the .dimensions
-                        this.ide.repository.delete(file.name + '.dimensions', andThen(editorCloser));
+                        this.ide.repository.delete(file.name + '.dimensions', andThen(() => this.ide.editorRegistry.remove(file.fileName)));
                     } else {
-                        editorCloser();
+                        // Tell editor registry to remove any editors for this file.
+                        this.ide.editorRegistry.remove(file.fileName);
                     }
                 }, msg => {
                     this.ide.danger(msg);
@@ -148,11 +143,11 @@ export default class ModelListPanel {
                     this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
                 } else {
                     const locationResetter = () => {
+                        // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
                         if (this.repositoryBrowser.currentFileName === oldFileName) {
                             window.location.hash = newFileName;
-                            const editor = this.ide.editors.find(editor => editor.visible);
-                            if (editor && editor instanceof ModelEditor) {
-                                editor.refresh();
+                            if (this.ide.editorRegistry.currentEditor) {
+                                this.ide.editorRegistry.currentEditor.refresh();
                             }
                         }
                     };

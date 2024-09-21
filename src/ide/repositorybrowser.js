@@ -1,10 +1,10 @@
 import { andThen, onFail } from "@util/promise/followup";
-import DragData from "./dragdata";
+import $ from "jquery";
+import "jquery-ui";
+import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
-import $ from "jquery";
-import "jquery-ui"
 
 export default class RepositoryBrowser {
     /**
@@ -75,7 +75,7 @@ export default class RepositoryBrowser {
     }
 
     startDrag(modelName, shapeType, shapeImg, fileName) {
-        this.dragData = new DragData(this.ide, this, modelName, shapeType, shapeImg, fileName);
+        this.dragData = new ServerFileDragData(this, modelName, shapeType, shapeImg, fileName);
     }
 
     /**
@@ -99,14 +99,16 @@ export default class RepositoryBrowser {
      * Checks the window.location hash and loads the corresponding model.
      */
     loadModelFromBrowserLocation() {
-        // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
-        //  Skip anything that is behind the optional question mark
-        const fileName = window.location.hash.slice(1).split('?')[0];
-        this.currentFileName = fileName;
         this.refreshAccordionStatus();
 
         // Ask the IDE to open the model.
-        this.ide.editorRegistry.open(fileName);
+        this.ide.editorRegistry.open(this.currentFileName);
+    }
+
+    get currentFileName() {
+        // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
+        //  Skip anything that is behind the optional question mark
+        return window.location.hash.slice(1).split('?')[0];
     }
 
     refreshAccordionStatus() {

@@ -3,7 +3,7 @@ import Util from "@util/util";
 import CFINode from "./file/cfinode";
 import CFISelector from "./file/cfiselector";
 import CaseFileItemDefinitionEditor from "@ide/modeleditor/cfid/casefileitemdefinitioneditor";
-import { CaseFileItemDragData } from "@ide/dragdata";
+import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
 import BottomSplitter from "@ide/splitter/bottomsplitter";
 import CaseView from "../elements/caseview";
 import $ from "jquery";

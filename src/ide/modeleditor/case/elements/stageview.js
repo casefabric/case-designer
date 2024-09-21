@@ -7,9 +7,12 @@ import ProcessTaskDefinition from "@definition/cmmn/caseplan/task/processtaskdef
 import TimerEventDefinition from "@definition/cmmn/caseplan/timereventdefinition";
 import UserEventDefinition from "@definition/cmmn/caseplan/usereventdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
-import DragData, { CaseFileItemDragData } from "@ide/dragdata";
+import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
+import DragData from "@ide/dragdrop/dragdata";
+import Util from "@util/util";
 import CaseFileItemView from "./casefileitemview";
 import CaseTaskView from "./casetaskview";
+import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
 import StageDecoratorBox from "./decorator/box/stagedecoratorbox";
 import HumanTaskView from "./humantaskview";
@@ -22,8 +25,6 @@ import TaskView from "./taskview";
 import TextAnnotationView from "./textannotationview";
 import TimerEventView from "./timereventview";
 import UserEventView from "./usereventview";
-import CaseView from "./caseview";
-import Util from "@util/util";
 
 export default class StageView extends TaskStageView {
     /**

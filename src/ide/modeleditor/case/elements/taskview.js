@@ -2,7 +2,7 @@
 import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
 import ServerFile from "@repository/serverfile";
-import DragData from "@ide/dragdata";
+import DragData from "@ide/dragdrop/dragdata";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";
 import TaskProperties from "./properties/taskproperties";
 import TaskStageView from "./taskstageview";

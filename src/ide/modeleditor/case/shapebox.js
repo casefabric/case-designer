@@ -1,7 +1,7 @@
-import DragData from "@ide/dragdata";
+import ShapeBoxDragData from "@ide/dragdrop/shapeboxdragdata";
+import $ from "jquery";
 import CaseView from "./elements/caseview";
 import ElementRegistry from "./elements/elementregistry";
-import $ from "jquery";
 
 export default class ShapeBox {
     /**
@@ -65,6 +65,6 @@ export default class ShapeBox {
      */
     handleMouseDown(e, shapeType, descr, imgURL) {
         this.case.clearSelection();
-        this.dragData = new DragData(this.case.editor.ide, this, descr, shapeType, imgURL, undefined);
+        this.dragData = new ShapeBoxDragData(this, descr, shapeType, imgURL, undefined);
     }
 }
