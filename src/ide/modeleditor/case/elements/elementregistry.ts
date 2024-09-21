@@ -1,4 +1,6 @@
 
+import Icons from "@util/images/icons";
+import Shapes from "@util/images/shapes";
 import CaseFileItemView from "./casefileitemview";
 import CasePlanView from "./caseplanview";
 import CaseTaskView from "./casetaskview";
@@ -16,19 +18,23 @@ export default class ElementRegistry {
     static viewMetadata: ElementMetadata[] = [];
 
     static initialize() {
-        this.registerType(HumanTaskView, 'Human Task', 'images/svg/blockinghumantaskmenu.svg', 'images/humantaskmenu_32.png');
-        this.registerType(CaseTaskView, 'Case Task', 'images/svg/casetaskmenu.svg', 'images/casetaskmenu_32.png');
-        this.registerType(ProcessTaskView, 'Process Task', 'images/svg/processtaskmenu.svg', 'images/processtaskmenu_32.png');
-        this.registerType(MilestoneView, 'Milestone', 'images/svg/milestone.svg');
-        this.registerType(TimerEventView, 'Timer Event', 'images/svg/timerevent.svg');
-        this.registerType(UserEventView, 'User Event', 'images/svg/userevent.svg');
-        this.registerType(StageView, 'Stage', 'images/svg/collapsedstage.svg');
-        this.registerType(EntryCriterionView, 'Entry Criterion', 'images/svg/entrycriterion.svg');
-        this.registerType(ReactivateCriterionView, 'Reactivate Criterion', 'images/svg/reactivatecriterion.svg');
-        this.registerType(ExitCriterionView, 'Exit Criterion', 'images/svg/exitcriterion.svg');
-        this.registerType(CasePlanView, 'Case Plan', 'images/svg/caseplanmodel.svg');
-        this.registerType(CaseFileItemView, 'Case File Item', 'images/svg/casefileitem.svg');
-        this.registerType(TextAnnotationView, 'Text Annotation', 'images/svg/textannotation.svg');
+        if (this.viewMetadata.length > 0) {
+            // Means we already initialized.
+            return;
+        }
+        this.registerType(HumanTaskView, 'Human Task', Shapes.HumanTask, Icons.HumanTask);
+        this.registerType(CaseTaskView, 'Case Task', Shapes.CaseTask, Icons.CaseTask);
+        this.registerType(ProcessTaskView, 'Process Task', Shapes.ProcessTask, Icons.ProcessTask);
+        this.registerType(MilestoneView, 'Milestone', Shapes.Milestone);
+        this.registerType(TimerEventView, 'Timer Event', Shapes.TimerEvent);
+        this.registerType(UserEventView, 'User Event', Shapes.UserEvent);
+        this.registerType(StageView, 'Stage', Shapes.Stage);
+        this.registerType(EntryCriterionView, 'Entry Criterion', Shapes.EntryCriterion);
+        this.registerType(ReactivateCriterionView, 'Reactivate Criterion', Shapes.ReactivateCriterion);
+        this.registerType(ExitCriterionView, 'Exit Criterion', Shapes.ExitCriterion);
+        this.registerType(CasePlanView, 'Case Plan', Shapes.CasePlan);
+        this.registerType(CaseFileItemView, 'Case File Item', Shapes.CaseFileItem);
+        this.registerType(TextAnnotationView, 'Text Annotation', Shapes.TextAnnotation);
         this.registerType(PlanningTableView, 'Planning Table');
     }
 

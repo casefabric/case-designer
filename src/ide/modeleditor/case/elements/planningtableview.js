@@ -1,12 +1,11 @@
 ﻿import PlanningTableDefinition from "@definition/cmmn/caseplan/planningtabledefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
+import Images from "@util/images/images";
+import { g } from "jointjs";
 import CMMNElementView from "./cmmnelementview";
+import PlanningTableHalo from "./halo/planningtablehalo";
 import PlanningTableProperties from "./properties/planningtableproperties";
 import TaskStageView from "./taskstageview";
-import { g } from "jointjs";
-import PlanningTableHalo from "./halo/planningtablehalo";
-
-export const EXPANDEDPLANNINGTABLE_IMG = 'images/expandedplanningtable_32.png';
 
 export default class PlanningTableView extends CMMNElementView {
 
@@ -50,7 +49,7 @@ export default class PlanningTableView extends CMMNElementView {
 
     get markup() {
         return `<rect class="cmmn-shape cmmn-planningtable-shape" />
-                <image xlink:href="${EXPANDEDPLANNINGTABLE_IMG}" x="1" y="-3" width="24" height="24" />`;
+                <image xlink:href="${Images.PlanningTable}" x="1" y="-3" width="24" height="24" />`;
     }
 
     /**

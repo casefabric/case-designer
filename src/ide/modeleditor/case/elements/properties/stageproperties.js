@@ -1,8 +1,8 @@
 import PlanItem from "@definition/cmmn/caseplan/planitem";
-import { AUTOCOMPLETE_IMG } from "../decorator/items/autocomplete";
-import StageView from "../stageview";
-import TaskStageProperties, { DISCRETIONARYTASK_IMG } from "./taskstageproperties";
+import Images from "@util/images/images";
 import $ from "jquery";
+import StageView from "../stageview";
+import TaskStageProperties from "./taskstageproperties";
 
 export default class StageProperties extends TaskStageProperties {
     /**
@@ -23,7 +23,7 @@ export default class StageProperties extends TaskStageProperties {
         this.addManualActivationRuleBlock();
         this.addSeparator();
         this.addAutoComplete();
-        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary Stage');
+        this.addDiscretionaryBlock(Images.DiscretionaryTask, 'Discretionary Stage');
         this.addSeparator();
         this.addPlanningTableField();
         this.addSeparator();
@@ -32,7 +32,7 @@ export default class StageProperties extends TaskStageProperties {
     }
 
     addAutoComplete() {
-        this.addCheckField('Auto Complete', 'Determines whether the stage should auto complete or not.', AUTOCOMPLETE_IMG, 'autoComplete', this.cmmnElement.definition);
+        this.addCheckField('Auto Complete', 'Determines whether the stage should auto complete or not.', Images.AutoComplete, 'autoComplete', this.cmmnElement.definition);
     }
 
     addPlanItemTable() {

@@ -1,8 +1,7 @@
+import Images from "@util/images/images";
 import StageView from "../../stageview";
 import Decorator from "../decorator";
 import DecoratorBox from "../decoratorbox";
-
-const MINUS_IMG = 'images/minus_32.png';
 
 export default class MinusDecorator extends Decorator {
     /**
@@ -10,7 +9,7 @@ export default class MinusDecorator extends Decorator {
      * @param {StageView} view 
      */
     constructor(box, view) {
-        super(box, view, MINUS_IMG);
+        super(box, view, Images.Minus);
     }
 
     get visibility() {

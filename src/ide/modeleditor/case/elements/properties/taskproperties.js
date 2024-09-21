@@ -1,8 +1,7 @@
-import TaskView from "../taskview";
-import TaskStageProperties, { DISCRETIONARYTASK_IMG } from "./taskstageproperties";
+import Images from "@util/images/images";
 import $ from "jquery";
-
-const ISBLOCKING_IMG = 'images/isblocking_32.png';
+import TaskView from "../taskview";
+import TaskStageProperties from "./taskstageproperties";
 
 export default class TaskProperties extends TaskStageProperties {
     /**
@@ -104,7 +103,7 @@ export default class TaskProperties extends TaskStageProperties {
     }
 
     addIsBlocking() {
-        this.addCheckField('Is Blocking', 'If the task is non-blocking, the case will continue without awaiting the task to complete', ISBLOCKING_IMG, 'isBlocking', this.task.definition);
+        this.addCheckField('Is Blocking', 'If the task is non-blocking, the case will continue without awaiting the task to complete', Images.Blocking, 'isBlocking', this.task.definition);
     }
 
     renderData() {
@@ -120,7 +119,7 @@ export default class TaskProperties extends TaskStageProperties {
         this.addManualActivationRuleBlock();
         this.addSeparator();
         this.addIsBlocking();
-        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary Task');
+        this.addDiscretionaryBlock(Images.DiscretionaryTask, 'Discretionary Task');
         this.addIdField();
     }
 }

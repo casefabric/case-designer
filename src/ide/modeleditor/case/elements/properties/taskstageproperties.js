@@ -1,10 +1,8 @@
+import Images from "@util/images/images";
 import Util from "@util/util";
-import { EXPANDEDPLANNINGTABLE_IMG } from "../planningtableview";
+import $ from "jquery";
 import TaskStageView from "../taskstageview";
 import PlanItemProperties from "./planitemproperties";
-import $ from "jquery";
-
-export const DISCRETIONARYTASK_IMG = 'images/discretionary_task_32.png';
 
 export default class TaskStageProperties extends PlanItemProperties {
     /**
@@ -105,7 +103,7 @@ export default class TaskStageProperties extends PlanItemProperties {
         const html = $(`<div class="propertyRule">
                             <div class="propertyRow">
                                 <input id="${checkId}" type="checkbox" ${checked} />
-                                <img src="${EXPANDEDPLANNINGTABLE_IMG}" />
+                                <img src="${Images.PlanningTable}" />
                                 <label for="${checkId}">Planning Table</label>
                             </div>
                         </div>`);
