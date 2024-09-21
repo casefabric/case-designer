@@ -9,7 +9,6 @@ import Resizer from "../resizer";
 import CanvasElement from "./canvaselement";
 import CaseView from "./caseview";
 import Connector from "./connector";
-import ElementRegistry from "./elementregistry";
 // import Halo from "./halo/halo";
 // BIG TODO HERE
 
@@ -209,13 +208,12 @@ export default class CMMNElementView extends CanvasElement {
 
     /**
      * Adds a new shape in this element with the specified shape type.
-     * @param {String} shapeType
+     * @param {() => CMMNElementView} viewType
      * @param {*} e
      */
-    addElementView(shapeType, e) {
+    addElementView(viewType, e) {
         const coor = this.case.getCursorCoordinates(e);
-        const cmmnType = ElementRegistry.getType(shapeType);
-        const cmmnElement = this.createCMMNChild(cmmnType, Grid.snap(coor.x), Grid.snap(coor.y));
+        const cmmnElement = this.createCMMNChild(viewType, Grid.snap(coor.x), Grid.snap(coor.y));
         // Now select the newly added element
         this.case.clearSelection();
         // Show properties of new element
@@ -225,13 +223,13 @@ export default class CMMNElementView extends CanvasElement {
 
     /**
      * Creates a cmmn child under this element with the specified type, and renders it at the given position.
-     * @param {Function} cmmnType 
+     * @param {() => CMMNElementView} viewType 
      * @param {Number} x 
      * @param {Number} y 
      * @returns {CMMNElementView} the newly created CMMN child
      */
-    createCMMNChild(cmmnType, x, y) {
-        throw new Error('Cannot create an element of type' + cmmnType.name);
+    createCMMNChild(viewType, x, y) {
+        throw new Error('Cannot create an element of type' + viewType.name);
     }
 
     /**
@@ -599,7 +597,7 @@ export default class CMMNElementView extends CanvasElement {
 
     /**
      * Determine whether this element can have a criterion added with the specified type.
-     * @param {String} criterionType 
+     * @param {Function} criterionType 
      * @returns {Boolean}
      */
     canHaveCriterion(criterionType) {
@@ -609,7 +607,7 @@ export default class CMMNElementView extends CanvasElement {
     /**
      * Add a criterion to this element sourcing the incoming element.
      * Default implementation is empty, task, stage, caseplan and milestone can override it.
-     * @param {string} criterionType 
+     * @param {Function} criterionType 
      * @param {CMMNElementView} sourceElement 
      * @param {JQuery<Event>} e event indicating x and y position of cursor
      */

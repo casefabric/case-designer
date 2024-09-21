@@ -1,3 +1,4 @@
+import CaseFile from "@repository/serverfile/casefile";
 import TaskDefinition from "./taskdefinition";
 
 export default class CaseTaskDefinition extends TaskDefinition {
@@ -12,6 +13,10 @@ export default class CaseTaskDefinition extends TaskDefinition {
 
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'caseTask', 'caseRef', 'mappings');
+    }
+
+    get implementationClass() {
+        return CaseFile;
     }
 
     get implementationRef() {

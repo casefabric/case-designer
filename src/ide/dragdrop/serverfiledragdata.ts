@@ -1,8 +1,9 @@
 import RepositoryBrowser from "@ide/repositorybrowser";
+import ServerFile from "@repository/serverfile";
 import DragData from "./dragdata";
 
 export default class ServerFileDragData extends DragData {
-    constructor(repositoryBrowser: RepositoryBrowser, model: string, shapeType: string, imgURL: string, fileName: string) {
-        super(repositoryBrowser.ide, repositoryBrowser, model, shapeType, imgURL, fileName);
+    constructor(repositoryBrowser: RepositoryBrowser, public file: ServerFile, imgURL: string) {
+        super(repositoryBrowser, file.name, imgURL);
     }
 }

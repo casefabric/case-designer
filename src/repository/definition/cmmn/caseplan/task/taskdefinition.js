@@ -16,6 +16,13 @@ export default class TaskDefinition extends TaskStageDefinition {
         this.parseElements('parameterMapping', ParameterMappingDefinition, this.mappings);
     }
 
+    /**
+     * @returns {Function}
+     */
+    get implementationClass() {
+        throw new Error('Method must be implemented in ' + this.constructor.name);
+    }
+
     get isTask() {
         return true;
     }

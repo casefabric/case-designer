@@ -19,6 +19,8 @@ export default class ServerFile {
      */
     constructor(repository, fileName, source) {
         this.repository = repository;
+        this.name = ''; // Will be filled when the file name is set - which is also done after succesful rename actions
+        this.fileType = ''; // Will be filled when the file name is set
         this.fileName = fileName;
         this.references = new ServerFileReferences(this);
         this.content = new Content(this);

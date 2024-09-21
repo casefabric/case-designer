@@ -1,5 +1,3 @@
-import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
-// BIG TODO HERE: ModelEditorRegistry must be imported BEFORE Repository, for some weird reason
 import Importer from "@repository/import/importer";
 import Repository from "@repository/repository";
 import $ from "jquery";
@@ -9,6 +7,7 @@ import IDEHeader from "./ideheader";
 import IDEMain from "./idemain";
 import MessageBox from "./messagebox";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
+import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
 import RepositoryBrowser from "./repositorybrowser";
 import SettingsEditor from "./settings/settingseditor";
 
@@ -22,7 +21,6 @@ export default class IDE {
     messageBox: MessageBox;
     coverPanel: CoverPanel;
     settingsEditor: SettingsEditor;
-    dragging: boolean = false;
 
     constructor() {
         this.editorRegistry = new ModelEditorRegistry(this);

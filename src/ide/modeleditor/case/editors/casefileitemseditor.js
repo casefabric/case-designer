@@ -335,11 +335,10 @@ export default class CaseFileItemsEditor {
     /**
      * Registers a function handler that is invoked upon dropping an element.
      * If an item from the editor is moved over the canvas, elements and form properties can register themselves as a drop handler
-     * @param {Function} dropHandler
-     * @param {Function} filter
+     * @param {(dragData: CaseFileItemDragData) => void} dropHandler
      */
-    setDropHandler(dropHandler, filter = undefined) {
-        if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
+    setDropHandler(dropHandler) {
+        if (this.dragData) this.dragData.setDropHandler(dropHandler);
     }
 
     /**

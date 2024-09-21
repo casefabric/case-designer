@@ -1,8 +1,12 @@
 import ShapeBox from "@ide/modeleditor/case/shapebox";
 import DragData from "./dragdata";
+import { ElementMetadata } from "@ide/modeleditor/case/elements/elementregistry";
 
 export default class ShapeBoxDragData extends DragData {
-    constructor(shapeBox: ShapeBox, model: string, shapeType: string, imgURL: string, fileName: string) {
-        super(shapeBox.case.editor.ide, shapeBox, model, shapeType, imgURL, fileName);
+    public shapeType: Function;
+
+    constructor(shapeBox: ShapeBox, public metadata: ElementMetadata) {
+        super(shapeBox, metadata.typeDescription, metadata.smallImage);
+        this.shapeType = metadata.cmmnElementType;
     }
 }

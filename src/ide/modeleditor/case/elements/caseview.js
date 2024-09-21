@@ -26,6 +26,7 @@ import Connector from "./connector";
 import StageView from "./stageview";
 import TextAnnotationView from "./textannotationview";
 import $ from "jquery";
+import DragData from "@ide/dragdrop/dragdata";
 
 export default class CaseView {
     /**
@@ -393,7 +394,7 @@ export default class CaseView {
         //     - When moving out of element, wider border around element is used (40px), so that halo doesn't disappear too fast.
         //     - When moving out of CasePlan, then CasePlan halo is no longer visible (so that print-screens and so do not show halo always)
 
-        if (this.editor.ide.dragging) return;
+        if (DragData.dragging) return;
         // If an element is selected, avoid on/off behavior when the mouse moves.
         if (this.selectedElement) {
             return;
@@ -500,7 +501,7 @@ export default class CaseView {
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {
-        return elementType == CasePlanView.name && !this.casePlanModel;
+        return elementType == CasePlanView && !this.casePlanModel;
     }
 
     /**

@@ -5,6 +5,8 @@ import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
+import ServerFile from "@repository/serverfile";
+import TaskDefinition from "@repository/definition/cmmn/caseplan/task/taskdefinition";
 
 export default class RepositoryBrowser {
     /**
@@ -15,6 +17,8 @@ export default class RepositoryBrowser {
     constructor(ide, html) {
         this.ide = ide;
         this.repository = this.ide.repository;
+
+        this.dragData = /** @type {ServerFileDragData | undefined} */ (undefined);
 
         this.html = html;
         this.html.append(
@@ -62,7 +66,7 @@ export default class RepositoryBrowser {
 
         // Now load the repository contents, and after that optionally load the first model
         this.repository.listModels(andThen(() => this.loadModelFromBrowserLocation(), msg => this.ide.danger(msg)));
-        
+
         ModelEditorMetadata.types.forEach(type => type.init(this));
     }
 
@@ -74,17 +78,23 @@ export default class RepositoryBrowser {
         return new ModelListPanel(this, this.accordion, type);
     }
 
-    startDrag(modelName, shapeType, shapeImg, fileName) {
-        this.dragData = new ServerFileDragData(this, modelName, shapeType, shapeImg, fileName);
+    /**
+     * 
+     * @param {ServerFile} file 
+     * @param {String} shapeType 
+     * @param {String} shapeImg 
+     */
+    startDrag(file, shapeImg) {
+        this.dragData = new ServerFileDragData(this, file, shapeImg);
     }
 
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-     * @param {Function} dropHandler
-     * @param {Function} filter
+     * @param {(dragData: ServerFileDragData) => void} dropHandler
+     * @param {((dragData: ServerFileDragData) => boolean) | undefined = undefined} expectedDefinition
      */
-    setDropHandler(dropHandler, filter = undefined) {
+    setDropHandler(dropHandler, filter) {
         if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
     }
 

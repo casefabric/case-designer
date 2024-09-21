@@ -54,8 +54,10 @@ export default class ModelEditorMetadata {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {Function} */
-    get shapeType(): Function {
+    /**
+     * Returns the image that can be used when rendering a server file that this editor can load
+     */
+    get icon(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 

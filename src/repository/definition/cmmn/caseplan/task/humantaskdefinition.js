@@ -1,3 +1,4 @@
+import HumanTaskFile from "@repository/serverfile/humantaskfile";
 import CaseRoleDefinition from "../../caseteam/caseroledefinition";
 import TaskDefinition from "./taskdefinition";
 import AssignmentDefinition from "./workflow/assignmentdefinition";
@@ -33,6 +34,10 @@ export default class HumanTaskDefinition extends TaskDefinition {
     get performerName() {
         const performer = this.caseDefinition.getElement(this.performerRef);
         return performer ? performer.name : '';
+    }
+
+    get implementationClass() {
+        return HumanTaskFile;
     }
 
     /**

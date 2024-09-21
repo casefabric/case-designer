@@ -1,13 +1,12 @@
-﻿import PlanItem from "@definition/cmmn/caseplan/planitem";
-import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
+﻿import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
 import ServerFile from "@repository/serverfile";
-import DragData from "@ide/dragdrop/dragdata";
+import { andThen } from "@util/promise/followup";
+import TaskMappingsEditor from "../editors/task/taskmappingseditor";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";
 import TaskProperties from "./properties/taskproperties";
 import TaskStageView from "./taskstageview";
-import TaskMappingsEditor from "../editors/task/taskmappingseditor";
-import { andThen } from "@util/promise/followup";
+import ServerFileDragData from "@ide/dragdrop/serverfiledragdata";
 // import TaskHalo from "./halo/taskhalo";
 // BIG TODO HERE
 
@@ -67,10 +66,18 @@ export default class TaskView extends TaskStageView {
         return new TaskDecoratorBox(this);
     }
 
+    /**
+     * 
+     * @param {ServerFileDragData} dragData 
+     */
+    supportsFileTypeAsImplementation(dragData) {
+        return dragData.file instanceof this.definition.implementationClass;
+    }
+
     setDropHandlers() {
         super.setDropHandlers();
         // Add drop handler with repository browser to handle changing task implementation when it is drag/dropped from there.
-        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.changeTaskImplementation(dragData), dragData => this.constructor.name == dragData.shapeType);
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.changeTaskImplementation(dragData.file), dragData => this.supportsFileTypeAsImplementation(dragData));
     }
 
     removeDropHandlers() {
@@ -97,10 +104,11 @@ export default class TaskView extends TaskStageView {
      * Changes the task implementation if the model's fileName differs from the current implementationRef.
      * If it is a newly added task, then the name maybe filled with the name of the task implementation.
      * This can be indicated by passing the "updateTaskDescription" flag to true.
-     * @param {DragData | ServerFile} model 
+     * @param {ServerFile} model 
      * @param {Boolean} updateTaskName 
      */
     changeTaskImplementation(model, updateTaskName = false) {
+        console.log("Changing task implementation to model :' " , model)
         const fileName = model.fileName;
         if (this.definition.implementationRef == fileName) {
             // no need to change. Perhaps re-generate parameters??? Better give a separate button for that ...

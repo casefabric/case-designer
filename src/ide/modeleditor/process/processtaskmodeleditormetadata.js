@@ -2,8 +2,8 @@ import IDE from "@ide/ide";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
 import ServerFile from "@repository/serverfile";
 import ProcessFile from "@repository/serverfile/processfile";
+import Icons from "@util/images/icons";
 import { andThen } from "@util/promise/followup";
-import ProcessTaskView from "../case/elements/processtaskview";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ProcessModelEditor from "./processmodeleditor";
 
@@ -29,9 +29,8 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
         return 'process';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return ProcessTaskView;
+    get icon() {
+        return Icons.ProcessTask;
     }
 
     get description() {

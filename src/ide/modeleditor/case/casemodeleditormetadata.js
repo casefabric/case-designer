@@ -1,11 +1,11 @@
 import IDE from "@ide/ide";
 import Tags from "@repository/definition/dimensions/tags";
 import CaseFile from "@repository/serverfile/casefile";
+import Icons from "@util/images/icons";
 import { andThen } from "@util/promise/followup";
 import Util from "@util/util";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
-import CaseTaskView from "./elements/casetaskview";
 import ElementRegistry from "./elements/elementregistry";
 import Grid from "./grid";
 
@@ -36,9 +36,8 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         return 'case';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return CaseTaskView;
+    get icon() {
+        return Icons.CaseTask;
     }
 
     get description() {

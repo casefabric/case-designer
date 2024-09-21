@@ -52,7 +52,6 @@ export default class ModelListPanel {
         Util.clearHTML(this.container);
 
         files.forEach(file => {
-            const shapeImg = shapeType.menuImage;
             const error = file.metadata && file.metadata.error;
             const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
@@ -60,7 +59,7 @@ export default class ModelListPanel {
             const modelURL = urlPrefix + file.fileName;
             const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="images/deploy_128.png" title="Deploy ${file.name} ..."/>` : '';
             const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
-                                <img class="menu-icon" src="${shapeImg}" />
+                                <img class="menu-icon" src="${this.type.icon}" />
                                 <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
                                 <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete model ..."/>
                                 <img class="action-icon rename-icon" src="images/svg/rename.svg" title="Rename model ..."/>
@@ -71,7 +70,7 @@ export default class ModelListPanel {
             html.on('pointerdown', e => {
                 e.preventDefault();
                 e.stopPropagation();
-                this.repositoryBrowser.startDrag(file.name, shapeType.name, shapeImg, file.fileName);
+                this.repositoryBrowser.startDrag(file, this.type.icon);
             });
             html.find('.delete-icon').on('click', e => this.delete(file));
             html.find('.rename-icon').on('click', e => this.rename(file));

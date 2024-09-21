@@ -4,8 +4,7 @@ import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemde
 import CaseFileItemView from "@ide/modeleditor/case/elements/casefileitemview";
 
 export default class CaseFileItemDragData extends DragData {
-    constructor(editor: CaseFileItemsEditor, cfi: CaseFileItemDef) {
-        super(editor.ide, editor, cfi.name, CaseFileItemView.name, (CaseFileItemView as any).smallImage, cfi.id);
-        (this as any).item = cfi;
+    constructor(editor: CaseFileItemsEditor, public item: CaseFileItemDef) {
+        super(editor, item.name, (CaseFileItemView as any).smallImage);
     }
 }

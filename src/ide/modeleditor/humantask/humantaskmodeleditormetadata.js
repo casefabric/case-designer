@@ -2,8 +2,8 @@ import IDE from "@ide/ide";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
 import ServerFile from "@repository/serverfile";
 import HumanTaskFile from "@repository/serverfile/humantaskfile";
+import Icons from "@util/images/icons";
 import { andThen } from "@util/promise/followup";
-import HumanTaskView from "../case/elements/humantaskview";
 import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
 
@@ -29,9 +29,8 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
         return 'humantask';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return HumanTaskView;
+    get icon() {
+        return Icons.HumanTask;
     }
 
     get description() {

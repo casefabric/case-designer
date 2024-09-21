@@ -1,8 +1,4 @@
-// BIG TODO HERE - Apparently we must import ElementRegistry here, instead of only inside the CaseModelEditor - totally unclear why.
-//  ALSO the order or import (first ElementRegistry, then CaseModelEditorMetadata) is important for the code not to cause an issue.
-import ElementRegistry from "./case/elements/elementregistry";
 import IDE from "@ide/ide";
-import Util from "@util/util";
 import CaseModelEditorMetadata from "./case/casemodeleditormetadata";
 import HumantaskModelEditorMetadata from "./humantask/humantaskmodeleditormetadata";
 import ModelEditor from "./modeleditor";
@@ -23,8 +19,6 @@ export default class ModelEditorRegistry {
         CaseModelEditorMetadata.register();
         HumantaskModelEditorMetadata.register();
         ProcessModelEditorMetadata.register();
-        // BIG TODO HERE: the below registration should take place inside CaseModelEditor only
-        ElementRegistry.initialize();
     }
 
     register(editor: ModelEditor) {

@@ -1,3 +1,4 @@
+import ProcessFile from "@repository/serverfile/processfile";
 import TaskDefinition from "./taskdefinition";
 
 export default class ProcessTaskDefinition extends TaskDefinition {
@@ -12,6 +13,10 @@ export default class ProcessTaskDefinition extends TaskDefinition {
 
     createExportNode(parentNode) {
         super.createExportNode(parentNode, 'processTask', 'processRef', 'mappings');
+    }
+
+    get implementationClass() {
+        return ProcessFile;
     }
 
     get implementationRef() {

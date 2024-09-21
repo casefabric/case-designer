@@ -121,14 +121,14 @@ export default class CasePlanView extends StageView {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == ExitCriterionView.name;
+        return criterionType == ExitCriterionView;
     }
 
-    createCMMNChild(cmmnType, x, y) {
-        if (cmmnType == ExitCriterionView) {
+    createCMMNChild(viewType, x, y) {
+        if (viewType == ExitCriterionView) {
             return this.__addCMMNChild(ExitCriterionView.create(this, x, y));
         } else {
-            return super.createCMMNChild(cmmnType, x, y);
+            return super.createCMMNChild(viewType, x, y);
         }
     }
 

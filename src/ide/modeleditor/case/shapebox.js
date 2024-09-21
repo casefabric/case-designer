@@ -14,8 +14,7 @@ export default class ShapeBox {
         //create the Shapes which are available for dragging to the canvas
         //these Shapes are the standard CMMN Shapes, shown in menu on left hand side
         this.html = htmlElement;
-        // Creating a reference to the dragData object of the repository browser; used to drag/drop shapes from the shapebox to the canvas.
-        this.dragData = this.case.editor.ide.repositoryBrowser.dragData;
+        this.dragData = /** @type {ShapeBoxDragData | undefined} */ (undefined);
 
         const html = $(
             `<div>
@@ -37,7 +36,7 @@ export default class ShapeBox {
             const html = $(`<li class="list-group-item" title="${description}">
                                 <img src="${imgURL}"/>
                             </li>`);
-            html.on('pointerdown', e => this.handleMouseDown(e, shapeType.name, description, imgURL));
+            html.on('pointerdown', e => this.handleMouseDown(e, shapeType));
             this.htmlContainer.append(html);
         });
     }
@@ -45,8 +44,8 @@ export default class ShapeBox {
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-     * @param {Function} dropHandler
-     * @param {Function} filter
+     * @param {(dragData: ShapeBoxDragData) => void} dropHandler
+     * @param {(dragData: ShapeBoxDragData) => boolean} filter
      */
     setDropHandler(dropHandler, filter = undefined) {
         if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
@@ -63,8 +62,8 @@ export default class ShapeBox {
      * Handles the onmousedown event on a shape in the repository
      * The shape can be dragged to the canvas to create an element
      */
-    handleMouseDown(e, shapeType, descr, imgURL) {
+    handleMouseDown(e, shapeType) {
         this.case.clearSelection();
-        this.dragData = new ShapeBoxDragData(this, descr, shapeType, imgURL, undefined);
+        this.dragData = new ShapeBoxDragData(this, shapeType);
     }
 }
