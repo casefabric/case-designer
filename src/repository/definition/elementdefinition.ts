@@ -1,20 +1,22 @@
 import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
-export default class ElementDefinition extends XMLSerializable {
+export default class ElementDefinition<M extends ModelDefinition> extends XMLSerializable {
+    childDefinitions: ElementDefinition<M>[] = [];
+    parent?: ElementDefinition<M>;
+
     /**
      * Creates a new ElementDefinition that belongs to the Definition object.
      * @param {Element} importNode 
      * @param {ModelDefinition} modelDefinition 
      * @param {ElementDefinition} parent 
      */
-    constructor(importNode, modelDefinition, parent = undefined) {
-        super(importNode, parent);
-        this.id = this.parseAttribute('id');
-        this.name = this.parseAttribute('name');
-        this.modelDefinition = modelDefinition;
-        if (modelDefinition) {
-            this.modelDefinition.elements.push(this);
+    constructor(importNode: Element, public modelDefinition: M, parent?: ElementDefinition<M>) {
+        super(importNode);
+        this.modelDefinition.elements.push(this);
+        if (parent && parent instanceof ElementDefinition) {
+            this.parent = parent;
+            this.parent.childDefinitions.push(this);
         }
     }
 
@@ -23,7 +25,7 @@ export default class ElementDefinition extends XMLSerializable {
      * @param {String} identifier 
      * @returns {Boolean}
      */
-    hasIdentifier(identifier) {
+    hasIdentifier(identifier: string) {
         return this.id === identifier || this.name === identifier;
     }
 
@@ -40,7 +42,7 @@ export default class ElementDefinition extends XMLSerializable {
      * @param {String} name 
      * @returns {*} an instance of the constructor that is expected to extend CMMNElementDefinition
      */
-    createDefinition(constructor, id = undefined, name = undefined) {
+    createDefinition<T extends ElementDefinition<M>>(constructor: Function, id?: string, name?: string): T {
         return this.modelDefinition.createDefinition(constructor, this, id, name);
     }
 
@@ -89,7 +91,7 @@ export default class ElementDefinition extends XMLSerializable {
      * @param {ElementDefinition} element 
      * @returns 
      */
-    referencesElement(element) {
+    referencesElement<X extends ModelDefinition>(element: ElementDefinition<X>) {
         return false;
     }
 
@@ -97,7 +99,7 @@ export default class ElementDefinition extends XMLSerializable {
         return false;
     }
 
-    loadExternalReferences(callback) {
+    loadExternalReferences(callback: Function) {
         callback();
     }
 
@@ -106,7 +108,7 @@ export default class ElementDefinition extends XMLSerializable {
      * @param {String} fileName 
      * @param {(definition: ModelDefinition|undefined) => void} callback
      */
-    resolveExternalDefinition(fileName, callback) {
+    resolveExternalDefinition(fileName: string, callback: (definition: ModelDefinition|undefined) => void) {
         console.groupCollapsed(`${this.constructor.name}${this.name ? '[' + this.name + ']' : ''} requires '${fileName}'`);
 
         this.modelDefinition.file.loadReference(fileName, file => {
