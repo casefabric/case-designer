@@ -1,6 +1,7 @@
 import Util from "@util/util";
 import XML from "@util/xml";
 import ElementDefinition from "./elementdefinition";
+import ModelDefinition from "./modeldefinition";
 
 // Some constants
 export const EXTENSIONELEMENTS = 'extensionElements';
@@ -9,32 +10,42 @@ export const CAFIENNE_PREFIX = 'xmlns:cafienne';
 export const IMPLEMENTATION_TAG = 'cafienne:implementation';
 
 export default class XMLSerializable {
+    private _name: string = '';
+    private _id: string = '';
+    extensionElement: Element;
+    exportNode: any;
+
     /**
      * Creates a new XMLSerializeable that belongs to an optional parent.
-     * @param {Element} importNode 
-     * @param {XMLSerializable} parent 
      */
-    constructor(importNode, parent) {
-        this.importNode = importNode;
+    constructor(public importNode: Element) {
         this.extensionElement = XML.getChildByTagName(this.importNode, EXTENSIONELEMENTS);
         this.name = this.parseAttribute('name');
         this.id = this.parseAttribute('id');
-        this.parent = parent;
-        this.childDefinitions = [];
-        if (this.parent) {
-            this.parent.childDefinitions.push(this);
-        }
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    set id(name) {
+        this._id = name;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    set name(name) {
+        this._name = name;
     }
 
     /**
      * Parses the attribute with the given name into a boolean value.
      * If the attribute does not exist, if will return the default value.
-     * @param {*} name
-     * @param {Boolean} defaultValue
-     * @returns {Boolean}
      */
-    parseBooleanAttribute(name, defaultValue) {
-        const value = this.parseAttribute(name, defaultValue);
+    parseBooleanAttribute(name: string, defaultValue: boolean): boolean {
+        const value = this.parseAttribute(name);
         if (typeof (value) == 'string') {
             if (value.toLowerCase() == 'false') return false;
             if (value.toLowerCase() == 'true') return true;
@@ -43,13 +54,10 @@ export default class XMLSerializable {
     }
 
     /**
-     * 
-     * @param {String} name 
-     * @param {Number} defaultValue 
-     * @returns {Number}
+     * Parse the attribute to a number, if available. Else returns default value or undefined if not given
      */
-    parseNumberAttribute(name, defaultValue = undefined) {
-        const value = this.parseAttribute(name, defaultValue);
+    parseNumberAttribute(name: string, defaultValue: number = NaN): number {
+        const value = this.parseAttribute(name);
         const number = parseInt(value);
         if (isNaN(number)) {
             return defaultValue;
@@ -59,12 +67,10 @@ export default class XMLSerializable {
     }
 
     /**
-     * Parses the attribute with the given name. If it does not exist, returns the defaultValue
-     * @param {String} name 
-     * @param {*} defaultValue 
-     * @returns {String}
+     * Parses the attribute with the given name. If it does not exist, returns the defaultValue,
+     * or otherwise an empty string
      */
-    parseAttribute(name, defaultValue = undefined) {
+    parseAttribute(name: string, defaultValue: string = ''): string {
         if (this.importNode) {
             const value = this.importNode.getAttribute(name);
             if (value != null) {
@@ -75,12 +81,9 @@ export default class XMLSerializable {
     }
 
     /**
-     * Parses the attribute with the given name. If it does not exist, returns the defaultValue
-     * @param {String} name 
-     * @param {*} defaultValue 
-     * @returns {String}
+     * Parses the attribute with the given name. If it does not exist, returns the defaultValue or empty string.
      */
-    parseCafienneAttribute(name, defaultValue = undefined) {
+    parseCafienneAttribute(name: string, defaultValue: string = ''): string {
         if (this.importNode) {
             const value = this.importNode.getAttributeNS(CAFIENNE_NAMESPACE, name);
             if (value != null) {
@@ -92,70 +95,51 @@ export default class XMLSerializable {
 
     /**
      * Searches for the first child element with the given tag name, and, if found, returns it's text content as string.
-     * @param {String} childName 
-     * @param {String} defaultValue
-     * @returns {String}
+     * Or, if text content gives null, then it returns an empty string.
      */
-    parseElementText(childName, defaultValue) {
+    parseElementText(childName: string, defaultValue: string): string {
         const childElement = XML.getChildByTagName(this.importNode, childName);
         if (childElement) {
-            return childElement.textContent;
+            return childElement.textContent || '';
         }
         return defaultValue;
     }
 
     /**
      * Searches for the first child element with the given tag name, and, if found, instantiates it with the constructor and returns it.
-     * @param {String} childName 
-     * @param {Function} constructor 
-     * @returns {*}
      */
-    parseElement(childName, constructor) {
+    parseElement<X extends XMLSerializable>(childName: string, constructor: Function): X | undefined {
         return this.instantiateChild(XML.getChildByTagName(this.importNode, childName), constructor);
     }
 
     /**
      * Searches for all child elements with the given name, instantiates them with the constructor and adds them to the collection.
-     * @param {String} childName 
-     * @param {Function} constructor 
-     * @param {*} collection 
-     * @returns {Array<*>}
      */
-    parseElements(childName, constructor, collection = [], node = this.importNode) {
+    parseElements<X extends XMLSerializable>(childName: string, constructor: Function, collection: X[] = [], node = this.importNode) {
         XML.getChildrenByTagName(node, childName).forEach(childNode => this.instantiateChild(childNode, constructor, collection));
         return collection;
     }
 
     /**
      * Searches for the node with the specified tagName inside the <extensionElements>. If present, then an instance of the constructor is returned for it.
-      * 
-      * @param {Function} constructor 
-      * @param {String} tagName
-      * @returns {*} an instance of the given constructor if the extension element is found.
       */
-    parseExtension(constructor, tagName = constructor.TAG) {
+    parseExtension<X extends XMLSerializable>(constructor: Function, tagName = (constructor as any).TAG): X {
         const node = XML.getChildByTagName(this.extensionElement, tagName);
         return this.createChild(node, constructor);
     }
 
     /**
      * Searches for nodes with the specified tagName inside the <extensionElements>. If present, then an instance of the constructor on the nodes and add them to the collection.
-      * 
-      * @param {Function} constructor 
-      * @param {String} tagName
-      * @returns {Array<*>} The collection of parsed nodes in the extension element.
       */
-    parseExtensions(constructor, collection = [], tagName = constructor.TAG) {
+    parseExtensions<X extends XMLSerializable>(constructor: Function, collection: X[] = [], tagName = (constructor as any).TAG) {
         XML.getChildrenByTagName(this.extensionElement, tagName).forEach(childNode => this.instantiateChild(childNode, constructor, collection));
         return collection;
     }
 
     /**
      * Searches for the cafienne:implementation tag and instantiates it with the given constructor.
-     * @param {Function} constructor 
-     * @returns {*}
      */
-    parseImplementation(constructor) {
+    parseImplementation<X extends XMLSerializable>(constructor: Function): X {
         return this.parseExtension(constructor, IMPLEMENTATION_TAG);
     }
 
@@ -163,16 +147,13 @@ export default class XMLSerializable {
      * Instantiates a new ElementDefinition based on the child node, or undefined if the childNode is undefined.
      * The new cmmn element will be optionally added to the collection, which can either be an Array or an Object.
      * In an Object it will be placed with the value of it's 'id' attribute.
-     * @param {Node} childNode 
-     * @param {Function} constructor 
-     * @param {*} collection 
      */
-    instantiateChild(childNode, constructor, collection = undefined) {
+    instantiateChild<X extends XMLSerializable>(childNode: Element, constructor: Function, collection?: any): X | undefined {
         if (!childNode) {
             return undefined;
         }
 
-        const newChild = this.createChild(childNode, constructor);
+        const newChild = this.createChild<X>(childNode, constructor);
         if (collection) {
             if (collection.constructor.name == 'Array') {
                 collection.push(newChild);
@@ -186,31 +167,25 @@ export default class XMLSerializable {
     /**
      * Instantiates the constructor as a child to this element, and leaves it to the constructor to parse the childNode.
      * This method has no check on the presence of the childNode. That way it can also be used in empty CMMNExtensionDefinitions.
-     * 
-     * @param {Node} childNode 
-     * @param {Function} constructor
-     * @returns {ElementDefinition} Returns an instance of ElementDefinition
      */
-    createChild(childNode, constructor) {
-        return new constructor(childNode, this.modelDefinition, this);
+    createChild<X extends XMLSerializable>(childNode: Element, constructor: Function): X {
+        const constructorCall = constructor as any;
+        return new constructorCall(childNode, (this as any).modelDefinition, this);
     }
 
     /**
      * Invoked right before the property is being deleted from this object
-     * @param {String} propertyName 
      */
-    removeProperty(propertyName) {
+    removeProperty(propertyName: string) {
     }
 
     /**
      * Method invoked after deletion of some other definition element
      * Can be used to remove references to that other definition element.
-     * @param {XMLSerializable} removedElement 
      */
-    removeDefinitionReference(removedElement) {
+    removeDefinitionReference(removedElement: XMLSerializable) {
         for (const key in this) {
-            /** @type {*} */
-            const value = this[key];
+            const value: any = this[key];
             if (value === removedElement) {
                 // console.log("Deleted value "+this.constructor.name+"["+this.name+"]"+".'"+key+"'");
                 delete this[key];
@@ -235,15 +210,14 @@ export default class XMLSerializable {
 
     /**
      * Introspects the properties by name and exports them to XML based on their type.
-     * @param {Array} propertyNames 
      */
-    exportProperties(...propertyNames) {
+    exportProperties(...propertyNames: any[]) {
         propertyNames.forEach(propertyName => {
             if (typeof (propertyName) == 'string') {
-                this.exportProperty(propertyName, this[propertyName]);
+                this.exportProperty(propertyName, (this as any)[propertyName]);
             } else { // Probably an array
                 if (propertyName.constructor.name == 'Array') { // It is actually an array of something (e.g. of string or even again of array)
-                    propertyName.forEach(name => this.exportProperties(name));
+                    propertyName.forEach((name: string) => this.exportProperties(name));
                 } else {
                     console.warn('Cannot recognize property name, because it is not of type string or array but ' + propertyName.constructor.name + '\n', propertyName);
                 }
@@ -258,10 +232,8 @@ export default class XMLSerializable {
      * If it is an instanceof CMMNElementDefinition (i.e., if it is a child property), then the createExportNode of that child is invoked with
      * this.exportNode as the parentNode.
      * If it is something else, then it is exported as an xml attribute.
-     * @param {String} propertyName 
-     * @param {*} propertyValue 
      */
-    exportProperty(propertyName, propertyValue) {
+    exportProperty(propertyName: string, propertyValue: any) {
         // Do not write '' or 'undefined' attributes.
         if (propertyValue === undefined) return;
         if (propertyValue === '') return;
@@ -269,7 +241,7 @@ export default class XMLSerializable {
         if (propertyValue === null) return;
         if (propertyValue.constructor.name == 'Array') {
             // Convert arrays into individual property-writes
-            propertyValue.forEach(singularPropertyValue => this.exportProperty(propertyName, singularPropertyValue));
+            propertyValue.forEach((singularPropertyValue: any) => this.exportProperty(propertyName, singularPropertyValue));
         } else if (propertyValue instanceof ElementDefinition) {
             // Write XML properties as-is, without converting them to string
             propertyValue.createExportNode(this.exportNode, propertyName);
@@ -282,7 +254,7 @@ export default class XMLSerializable {
             const stringifiedValue = propertyValue.toString()
             // If the "toString" version of the property still has a value, then write it into the attribute
             if (stringifiedValue) {
-                this.exportNode.setAttribute(propertyName, propertyValue);
+                this.exportNode?.setAttribute(propertyName, propertyValue);
             }
         }
     }
@@ -290,20 +262,16 @@ export default class XMLSerializable {
     /**
      * Exports this element with its properties to an XML element and appends it to the parentNode.
      * If first creates the .exportNode XML element, then introspects each of the given property names and invokes the appropriate export logic on it.
-     * @param {Node} parentNode 
-     * @param {String} tagName 
-     * @param {Array} propertyNames
      */
-    createExportNode(parentNode, tagName, ...propertyNames) {
+    createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         this.exportNode = XML.createChildElement(parentNode, tagName);
         this.exportProperties('id', 'name', propertyNames);
     }
 
     /**
      * Creates and returns an extension element with a custom tag inside having the given tagName (it defaults to <cafienne:implementation xmlns:cafienne="org.cafienne">).
-     * @param {String} tagName 
      */
-    createExtensionNode(parentNode, tagName = IMPLEMENTATION_TAG, ...propertyNames) {
+    createExtensionNode(parentNode: Element, tagName = IMPLEMENTATION_TAG, ...propertyNames: any[]) {
         this.exportNode = XML.createChildElement(this.getExtensionsElement(parentNode), tagName);
         const prefixAndLocalName = tagName.split(':');
         const prefix = `xmlns${prefixAndLocalName.length === 1 ? '' : ':' + prefixAndLocalName[0]}`;
@@ -335,47 +303,17 @@ export default class XMLSerializable {
      */
     resolveReferences() { }
 
-    /**
-     * Returns all elements that have a reference to this element
-     * @returns {Array<ElementDefinition>}
-     */
-    searchInboundReferences() {
-        if (this.modelDefinition && this.modelDefinition.file) {
-            const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
-            const elements = definitions.map(definition => definition.elements).flat();
-            const references = elements.filter(element => element.referencesElement(this));
-            return references;
-        }
-        return [];
-    }
-
-    /**
-     * Returns true if this ElementDefinition has a reference to the element.
-     * This method by default returns false, but can be overwritten to define actual comparison.
-     * @param {ElementDefinition} element 
-     * @returns 
-     */
-    referencesElement(element) {
-        return false;
-    }
-
     hasExternalReferences() {
         return false;
     }
 
-    loadExternalReferences(callback) {
-        callback();
-    }
-
     /**
      * Asynchronously load a ModelDefinition
-     * @param {String} fileName 
-     * @param {(definition: ModelDefinition|undefined) => void} callback
      */
-    resolveExternalDefinition(fileName, callback) {
+    resolveExternalDefinition(fileName: string, callback: (definition: ModelDefinition|undefined) => void) {
         console.groupCollapsed(`${this.constructor.name}${this.name ? '[' + this.name + ']' : ''} requires '${fileName}'`);
 
-        this.modelDefinition.file.loadReference(fileName, file => {
+        (this as any).modelDefinition.file.loadReference(fileName, (file: any) => {
             console.groupEnd();
             callback(file ? file.definition : undefined)
         });
@@ -383,10 +321,9 @@ export default class XMLSerializable {
 
     /**
      * Exports the IDs of all elements in the list (that have an id) into a space-separated string
-     * @param {Array} list 
      */
-    flattenListToString(list) {
-        return list && list.length > 0 ? list.filter(item => item.id).map(item => item.id).join(' ') : undefined;
+    flattenListToString(list: any[]): string {
+        return list && list.length > 0 ? list.filter(item => item.id).map(item => item.id).join(' ') : '';
     }
 
     toString() {

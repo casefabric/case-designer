@@ -59,7 +59,7 @@ export default class CaseTeamMigrator {
      */
     convertRoleDefinition(element: Element) {
         const clearAttribute = (name: string) => {
-            const value = element.getAttribute(name) || ''; // Avoid reading null values from attributes
+            const value = element.getAttribute(name);
             element.removeAttribute(name); // And clear the attribute
             return value;
         }
