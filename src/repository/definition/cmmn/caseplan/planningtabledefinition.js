@@ -12,6 +12,7 @@ export default class PlanningTableDefinition extends UnnamedCMMNElementDefinitio
      */
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
+        this.parent = parent;
         const parentStage = parent.isTask ? parent.parent : parent;
         /** @type{Array<PlanItem>} */
         this.tableItems = parentStage.parseChildren(this);

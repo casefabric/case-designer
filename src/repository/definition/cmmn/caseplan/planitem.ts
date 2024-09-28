@@ -11,53 +11,56 @@ import PlanningTableDefinition, { ApplicabilityRuleDefinition } from "./planning
 import FourEyesDefinition from "./task/workflow/foureyesdefinition";
 import RendezVousDefinition from "./task/workflow/rendezvousdefinition";
 import CaseDefinition from "../casedefinition";
+import StageDefinition from "./stagedefinition";
 
 export default class PlanItem extends CMMNElementDefinition {
-    static get infix() {
+    private applicabilityRuleRefs: string;
+    private authorizedRoleRefs: string;
+
+    planItemControl?: ItemControlDefinition;
+    entryCriteria: EntryCriterionDefinition[];
+    reactivateCriteria: ReactivateCriterionDefinition[];
+    exitCriteria: ExitCriterionDefinition[];
+    applicabilityRules: ApplicabilityRuleDefinition[] = [];
+    authorizedRoles: CaseRoleReference[] = [];
+    fourEyes?: FourEyesDefinition;
+    rendezVous?: RendezVousDefinition;
+
+    /**
+     * @returns {String}
+     */
+    static get infix(): string {
         throw new Error('This method must be implemented in ' + this.name);
     }
 
-    static get prefix() {
+    static get prefix(): string {
         return 'pi_' + this.infix;
     }
 
-    /**
-     * 
-     * @param {Element} importNode 
-     * @param {CaseDefinition} caseDefinition 
-     * @param {TaskStageDefinition} parent 
-     */
-    constructor(importNode, caseDefinition, parent) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
         super(importNode, caseDefinition, parent);
         // this.definitionRef = this.parseAttribute('definitionRef');
         // this.definition = this;
-        /** @type{ItemControlDefinition} */
         this.planItemControl = this.parseElement('itemControl', ItemControlDefinition);
-        /** @type{Array<EntryCriterionDefinition>} */
         this.entryCriteria = this.parseElements('entryCriterion', EntryCriterionDefinition, []);
-        /** @type{Array<ReactivateCriterionDefinition>} */
         this.reactivateCriteria = this.parseExtensions(ReactivateCriterionDefinition, []);
-        /** @type{Array<ExitCriterionDefinition>} */
         this.exitCriteria = this.parseElements('exitCriterion', ExitCriterionDefinition, []);
+
         // Properties below are special for discretionary items
         this.applicabilityRuleRefs = this.parseAttribute('applicabilityRuleRefs');
         this.authorizedRoleRefs = this.parseAttribute('authorizedRoleRefs');
-        /** @type{Array<ApplicabilityRuleDefinition>} */
-        this.applicabilityRules = [];
-        /** @type{Array<CaseRoleReference>} */
-        this.authorizedRoles = [];
         this.fourEyes = this.parseExtension(FourEyesDefinition);
         this.rendezVous = this.parseExtension(RendezVousDefinition);
     }
 
-    get isDiscretionary() {
+    get isDiscretionary(): boolean {
         return this.parent instanceof PlanningTableDefinition;
     }
 
     /**
      * @returns {String}
      */
-    get defaultTransition() {
+    get defaultTransition(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -72,35 +75,13 @@ export default class PlanItem extends CMMNElementDefinition {
     }
 
     /**
-     * @returns {FourEyesDefinition}
-     */
-    get fourEyes() {
-        return this._4eyes;
-    }
-
-    set fourEyes(value) {
-        this._4eyes = value;
-    }
-
-    /**
-     * @returns {RendezVousDefinition}
-     */
-    get rendezVous() {
-        return this._rendezVous;
-    }
-
-    set rendezVous(value) {
-        this._rendezVous = value;
-    }
-
-    /**
      * 
      * @param {Function} criterionConstructor 
      * @param {Array<CriterionDefinition>} criterionCollection 
      * @returns {CriterionDefinition}
      */
-    createSentry(criterionConstructor, criterionCollection) {
-        const criterion = super.createDefinition(criterionConstructor);
+    createSentry(criterionConstructor: Function, criterionCollection: CriterionDefinition[]) {
+        const criterion: CriterionDefinition = super.createDefinition(criterionConstructor);
         criterionCollection.push(criterion);
         return criterion;
     }
@@ -121,12 +102,11 @@ export default class PlanItem extends CMMNElementDefinition {
      * Method invoked when this plan item is getting a new parent (typically a stage or, if it is discretionary it can also be a human task).
      * @param {TaskStageDefinition} newParent 
      */
-    switchParent(newParent) {
+    switchParent(newParent: TaskStageDefinition) {
         if (this.isDiscretionary) {
             // Remove from current planning table, add to new parent's planning table
             // Remove ourselves from the planning table.
-            const currentParent = this.parent;
-            const formerPlanningTable = currentParent;
+            const currentParent = <PlanningTableDefinition>this.parent;
             Util.removeFromArray(currentParent.tableItems, this);
             Util.removeFromArray(currentParent.childDefinitions, this);
             const currentParentStage = currentParent.parent.isTask ? currentParent.parent.parent : currentParent.parent;
@@ -142,11 +122,11 @@ export default class PlanItem extends CMMNElementDefinition {
             if (!(newParent.isStage)) {
                 throw new Error('Cannot change the parent of ' + this + ', since the new parent is not of type stage definition; instead it is ' + newParent);
             }
-            const currentParentStage = this.parent;
-            Util.removeFromArray(currentParentStage.planItems, this);
+            const currentParentStage = <TaskStageDefinition>this.parent;
+            if (currentParentStage instanceof StageDefinition) Util.removeFromArray(currentParentStage.planItems, this);
             Util.removeFromArray(currentParentStage.childDefinitions, this);
             this.parent = newParent;
-            newParent.planItems.push(this);
+            (<StageDefinition>newParent).planItems.push(this);
             newParent.childDefinitions.push(this);
         }
     }
@@ -160,11 +140,11 @@ export default class PlanItem extends CMMNElementDefinition {
         if (this.isDiscretionary) {
             // Make it a regular plan item, and give it a new parent
             // Remove ourselves from the planning table.
-            const planningTableDefinition = this.parent;
+            const planningTableDefinition = <PlanningTableDefinition>this.parent;
             Util.removeFromArray(planningTableDefinition.tableItems, this);
             Util.removeFromArray(planningTableDefinition.childDefinitions, this);
             // Check whether the new parent is a task or a stage. If this item was discretionary to a task, then we need to add the new plan item to the stage that task belongs to
-            const stageDefinition = planningTableDefinition.parent.isTask ? planningTableDefinition.parent.parent : planningTableDefinition.parent;
+            const stageDefinition = <StageDefinition>(planningTableDefinition.parent.isTask ? planningTableDefinition.parent.parent : planningTableDefinition.parent);
             this.parent = stageDefinition;
             // And make ourselves known to the stage definition
             stageDefinition.planItems.push(this);
@@ -172,7 +152,7 @@ export default class PlanItem extends CMMNElementDefinition {
         } else {
             // Make it a discretionary item, and give it a new parent
             // Remove ourselves from our stage
-            const stageDefinition = this.parent;
+            const stageDefinition = <StageDefinition>this.parent;
             Util.removeFromArray(stageDefinition.planItems, this);
             // Get the stage planning table and make that our new parent, and add us as a table item.
             this.parent = stageDefinition.getPlanningTable();
@@ -188,8 +168,7 @@ export default class PlanItem extends CMMNElementDefinition {
         if (entryCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(entryCriteriaRefs, []);
             sentries.forEach(sentry => {
-                const ec = super.createDefinition(EntryCriterionDefinition);
-                ec.sentryRef = sentry.id;
+                const ec: EntryCriterionDefinition = super.createDefinition(EntryCriterionDefinition);
                 this.entryCriteria.push(ec);
                 this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
             });
@@ -198,8 +177,7 @@ export default class PlanItem extends CMMNElementDefinition {
         if (exitCriteriaRefs) {
             const sentries = this.caseDefinition.findElements(exitCriteriaRefs, []);
             sentries.forEach(sentry => {
-                const ec = super.createDefinition(ExitCriterionDefinition);
-                ec.sentryRef = sentry.id;
+                const ec: ExitCriterionDefinition = super.createDefinition(ExitCriterionDefinition);
                 this.exitCriteria.push(ec);
                 this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
             });
@@ -212,7 +190,7 @@ export default class PlanItem extends CMMNElementDefinition {
         this.applicabilityRules = this.caseDefinition.findElements(this.applicabilityRuleRefs, [], ApplicabilityRuleDefinition);
     }
 
-    createExportNode(parentNode, tagName, ...propertyNames) {
+    createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         this.authorizedRoleRefs = super.flattenListToString(this.authorizedRoles); // AuthorizedRoles can also have been defined on the UserEvent; therefore always flatten them.
         // Flatten applicabilityRuleRefs only if the item is discretionary; this ensures that if a element has switched from discretionary to planitem, it will NOT accidentally keep the role and rule refs.
         this.applicabilityRuleRefs = super.flattenListToString(this.isDiscretionary ? this.filterExistingRules() : []);
@@ -231,7 +209,7 @@ export default class PlanItem extends CMMNElementDefinition {
      * Returns a list of transitions valid for this type of plan item definition.
      * @returns {Array<String>}
      */
-    get transitions() {
+    get transitions(): string[] {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -239,7 +217,7 @@ export default class PlanItem extends CMMNElementDefinition {
      * Returns the entry transition for this type of plan item definition (Task/Stage => Start, Event/Milestone => Occur)
      * @returns {String}
      */
-    get entryTransition() {
+    get entryTransition(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }
@@ -248,16 +226,15 @@ export default class PlanItem extends CMMNElementDefinition {
  * Simple helper class to re-use logic across stages and tasks
  */
 export class TaskStageDefinition extends PlanItem {
-    constructor(importNode, caseDefinition, parent) {
+    planningTable?: PlanningTableDefinition;
+    constructor(importNode: Element, caseDefinition: CaseDefinition, parent: TaskStageDefinition) {
         super(importNode, caseDefinition, parent);
-        /** @type{PlanningTableDefinition} */
         this.planningTable = this.parseElement('planningTable', PlanningTableDefinition);
     }
 
     getPlanningTable() {
         if (!this.planningTable) {
-            /** @type{PlanningTableDefinition} */
-            this.planningTable = super.createDefinition(PlanningTableDefinition); 
+            this.planningTable = super.createDefinition(PlanningTableDefinition);
         }
         return this.planningTable;
     }
@@ -287,11 +264,7 @@ export class TaskStageDefinition extends PlanItem {
  * Simple helper class to re-use logic across milestones and event listeners
  */
 export class MilestoneEventListenerDefinition extends PlanItem {
-    constructor(importNode, caseDefinition, parent) {
-        super(importNode, caseDefinition, parent);
-    }
-
-    get transitions() {
+    get transitions(): string[] {
         return ['occur', 'create', 'reactivate', 'resume', 'suspend', 'terminate'];
     }
 
