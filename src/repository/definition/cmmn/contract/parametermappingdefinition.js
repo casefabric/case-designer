@@ -111,7 +111,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
     }
 
     /**
-     * @param {ParameterDefinition} parameter
+     * @param {ParameterDefinition|undefined} parameter
      */
     set implementationParameter(parameter) {
         this._implementationParameter = parameter;
@@ -208,7 +208,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
                 }
                 return false;
             }
-        } else if (! task.implementationRef) {
+        } else if (!task.implementationRef) {
             if (this.sourceRef && this.targetRef) {
                 console.log(`Cannot find sourceRef ${this.sourceRef} and targetRef ${this.targetRef} in the input and output parameters of ${task.type} '${task.name}'.`)
             } else if (this.sourceRef) {
@@ -227,11 +227,11 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
     set body(expression) {
         if (expression) {
             this.getTransformation().body = expression;
-            if (this.isInputMapping) { 
+            if (this.isInputMapping) {
                 // If it is an input mapping, we need to make sure there is an actual corresponding task input parameter as well.
-                if (! this.sourceRef) {
+                if (!this.sourceRef) {
                     if (this.targetRef) { // Actually, a target ref always exists, otherwise there would not be a mapping option
-                        this.sourceRef = this.task.createInputParameterWithName(this.implementationParameterName||this.implementationParameterId).id;
+                        this.sourceRef = this.task.createInputParameterWithName(this.implementationParameterName || this.implementationParameterId).id;
                     }
                 }
             }

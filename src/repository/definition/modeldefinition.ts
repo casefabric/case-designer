@@ -13,20 +13,30 @@ import ParameterDefinition from "./cmmn/contract/parameterdefinition";
  * A ModelDefinition is the base class of a model, such as CaseDefinition, ProcessDefinition, HumanTaskDefinition, CaseFileDefinitionDefinition 
  */
 export default class ModelDefinition extends XMLSerializable {
+    modelDefinition: this;
+    private __documentation?: CMMNDocumentationDefinition<this>;
+    private __migrated: boolean = false;
+    private static getImportNode(file: ServerFile<ModelDefinition>): Element {
+        if (!file.xml) {
+            throw new Error('Expected an XML element')
+        }
+        return file.xml;
+    }
+
+    typeCounters = new TypeCounter(this);
+    elements: ElementDefinition<ModelDefinition>[] = [];
+        
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      * @param {ServerFile} file
      * @param {Element} importNode 
      */
-    constructor(file, importNode = file.xml) {
+    constructor(public file: ServerFile<ModelDefinition>, importNode = ModelDefinition.getImportNode(file)) {
         // Need to pass undefined in the super, and then set the modelDefinition manually.
-        super(importNode, undefined, undefined);
+        super(importNode);
         this.modelDefinition = this;
-        this.file = file;
-        this.typeCounters = new TypeCounter(this);
-        /** @type {Array<ElementDefinition<ModelDefinition>>} */
-        this.elements = [];
-        this.elements.push(this);
+        /** @type {Array<ElementDefinition>} */
+        (this.elements as any).push(this);
     }
 
     validateDocument() {
@@ -35,7 +45,7 @@ export default class ModelDefinition extends XMLSerializable {
     parseDocumentationElement() {
         const documentationElement = XML.getChildByTagName(this.importNode, 'documentation');
         if (documentationElement) {
-            this.__documentation = new CMMNDocumentationDefinition(documentationElement, this.modelDefinition, this);
+            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(documentationElement, this, undefined);
         }
         // Now check whether or not to convert the deprecated 'description' attribute
         const description = this.parseAttribute('description');
@@ -50,7 +60,7 @@ export default class ModelDefinition extends XMLSerializable {
      */
     get documentation() {
         if (!this.__documentation) {
-            this.__documentation = new CMMNDocumentationDefinition(undefined, this.modelDefinition, this);
+            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(undefined, this, undefined);
         }
         return this.__documentation;
     }
@@ -65,8 +75,8 @@ export default class ModelDefinition extends XMLSerializable {
      * @param {String} name 
      * @returns {*} an instance of the constructor that is expected to extend CMMNElementDefinition
      */
-    createDefinition(constructor, parent = undefined, id = undefined, name = undefined) {
-        const element = new constructor(undefined, this.modelDefinition, parent);
+    createDefinition<M extends ModelDefinition, T extends ElementDefinition<M>>(constructor: Function, parent?: ElementDefinition<M>, id?: string, name?: string): T {
+        const element = new (constructor as any)(undefined, this.modelDefinition, parent);
         element.id = id ? id : this.getNextIdOfType(constructor);
         if (name !== undefined || element.isNamedElement()) {
             element.name = name !== undefined ? name : this.getNextNameOfType(constructor);
@@ -78,7 +88,7 @@ export default class ModelDefinition extends XMLSerializable {
      * Asynchronously load all external references that this definition has.
      * @param {() => void} callback 
      */
-    loadDependencies(callback) {
+    loadDependencies(callback: () => void) {
         const referencingElements = this.elements.filter(element => element.hasExternalReferences());
         Util.removeDuplicates(referencingElements);
         if (referencingElements.length === 0) {
@@ -100,7 +110,7 @@ export default class ModelDefinition extends XMLSerializable {
      * A ModelDefinition must have input parameters.
      * @returns {Array<ParameterDefinition>}
      */
-    get inputParameters() {
+    get inputParameters(): ParameterDefinition[] {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -108,7 +118,7 @@ export default class ModelDefinition extends XMLSerializable {
      * A ModelDefinition must have output parameters.
      * @returns {Array<ParameterDefinition>}
      */
-    get outputParameters() {
+    get outputParameters(): ParameterDefinition[] {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -117,7 +127,7 @@ export default class ModelDefinition extends XMLSerializable {
      * @param {String} identifier 
      * @returns {ParameterDefinition}
      */
-    findInputParameter(identifier) {
+    findInputParameter(identifier: string) {
         return this.inputParameters.find(p => p.hasIdentifier(identifier));
     }
 
@@ -126,7 +136,7 @@ export default class ModelDefinition extends XMLSerializable {
      * @param {String} identifier 
      * @returns {ParameterDefinition}
      */
-    findOutputParameter(identifier) {
+    findOutputParameter(identifier: string) {
         return this.outputParameters.find(p => p.hasIdentifier(identifier));
     }
 
@@ -134,7 +144,7 @@ export default class ModelDefinition extends XMLSerializable {
      * Informs all elements in the case definition about the removal of the element
      * @param {ElementDefinition} removedElement 
      */
-    removeDefinitionElement(removedElement) {
+    removeDefinitionElement<M extends ModelDefinition>(removedElement: ElementDefinition<M>) {
         // Go through other elements and tell them to say goodbye to removedElement;
         //  we do this in reverse order, to have removal from CaseDefinition as last.
         this.elements.slice().reverse().filter(e => e != removedElement).forEach(element => element.removeDefinitionReference(removedElement));
@@ -147,7 +157,7 @@ export default class ModelDefinition extends XMLSerializable {
      * @param {Function} constructor
      * @returns {ElementDefinition}
      */
-    getElement(id, constructor = undefined) {
+    getElement(id: string, constructor?: Function): ElementDefinition<ModelDefinition> | undefined {
         const element = this.elements.find(element => id && element.id == id); // Filter first checks whether id is undefined;
         if (constructor && element) {
             if (element instanceof constructor) {
@@ -161,11 +171,11 @@ export default class ModelDefinition extends XMLSerializable {
         }
     }
 
-    getNextIdOfType(constructor) {
+    getNextIdOfType(constructor: Function) {
         return this.typeCounters.getNextIdOfType(constructor);
     }
 
-    getNextNameOfType(constructor) {
+    getNextNameOfType(constructor: Function) {
         return this.typeCounters.getNextNameOfType(constructor);
     }
 
@@ -173,11 +183,8 @@ export default class ModelDefinition extends XMLSerializable {
      * In CMMN some of the references are string based, and sometimes there are multiple references within the same
      * string, limited by space. This function analyzes such a string, and adds all references that could be found into the array.
      * If constructor is specified, the found elements must match (element instanceof constructor).
-     * @param {String} idString 
-     * @param {Array} collection 
-     * @param {*} constructor
      */
-    findElements(idString, collection, constructor) {
+    findElements(idString: string, collection: any[], constructor?: Function) {
         idString = idString || '';
         idString.split(' ').forEach(reference => {
             const element = reference && this.getElement(reference, constructor);
@@ -186,36 +193,22 @@ export default class ModelDefinition extends XMLSerializable {
         return collection;
     }
 
-    /**
-     * 
-     * @param {String} tagName 
-     * @param  {...String} propertyNames 
-     */
-    exportModel(tagName, ...propertyNames) {
+    exportModel(tagName: string, ...propertyNames: any[]) {
         const xmlDocument = XML.loadXMLString(`<${tagName} />`); // TODO: add proper namespace and so.
         this.exportNode = xmlDocument.documentElement;
         this.exportProperties('id', 'name', 'documentation', propertyNames);
         return xmlDocument;
     }
 
-    /**
-     * @returns {Document}
-     */
-    toXML() {
+    toXML(): Document {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /**
-     * @returns {Boolean}
-     */
-    hasMigrated() {
+    hasMigrated(): boolean {
         return this.__migrated === true;
     }
 
-    /**
-     * @param {String} msg
-     */
-    migrated(msg) {
+    migrated(msg: string) {
         console.log(msg);
         // console.warn(`Setting migrated to ${migrated} for ${this.modelDocument.fileName}`);
         this.__migrated = true;
