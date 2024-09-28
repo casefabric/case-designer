@@ -8,7 +8,7 @@ export default class DueDateDefinition extends UnnamedCMMNElementDefinition {
 
     private _expression?: ExpressionDefinition;
     contextRef: string;
-    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent?: CMMNElementDefinition) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
         this._expression = this.parseElement('condition', ExpressionDefinition);
         this.contextRef = this.parseAttribute('contextRef');

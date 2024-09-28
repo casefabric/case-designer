@@ -15,8 +15,8 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
      */
     constructor(importNode, caseDefinition, parent) {
         super(importNode, caseDefinition, parent);
-        this.sourceRef = this.parseAttribute('sourceRef');
-        this.targetRef = this.parseAttribute('targetRef');
+        this.sourceRef = this.parseAttribute('sourceRef') || '';
+        this.targetRef = this.parseAttribute('targetRef') || '';
         this.transformation = this.parseElement('transformation', ExpressionDefinition);
     }
 

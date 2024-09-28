@@ -1,31 +1,30 @@
 import HumanTaskFile from "@repository/serverfile/humantaskfile";
+import CaseDefinition from "../../casedefinition";
 import CaseRoleDefinition from "../../caseteam/caseroledefinition";
+import StageDefinition from "../stagedefinition";
 import TaskDefinition from "./taskdefinition";
-import AssignmentDefinition from "./workflow/assignmentdefinition";
 import CafienneWorkflowDefinition from "./workflow/cafienneworkflowdefinition";
-import DueDateDefinition from "./workflow/duedatedefinition";
 
 export default class HumanTaskDefinition extends TaskDefinition {
+    performerRef: string;
+    workflow: CafienneWorkflowDefinition;
     static get infix() {
         return 'ht';
     }
 
-    constructor(importNode, caseDefinition, parent) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: StageDefinition) {
         super(importNode, caseDefinition, parent);
         this.performerRef = this.parseAttribute('performerRef');
         /** @type {CafienneWorkflowDefinition} */
         this.workflow = this.parseImplementation(CafienneWorkflowDefinition);
     }
 
-    createExportNode(parentNode) {
+    createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'humanTask', 'planningTable', 'performerRef', 'workflow');
     }
 
-    /**
-     * @returns {CaseRoleDefinition}
-     */
-    get performer() {
-        return this.caseDefinition.getElement(this.performerRef);
+    get performer(): CaseRoleDefinition | undefined {
+        return <CaseRoleDefinition> this.caseDefinition.getElement(this.performerRef);
     }
 
     /**
@@ -40,9 +39,6 @@ export default class HumanTaskDefinition extends TaskDefinition {
         return HumanTaskFile;
     }
 
-    /**
-     * @returns {String}
-     */
     get implementationRef() {
         return this.workflow.humanTaskRef;
     }
@@ -58,9 +54,6 @@ export default class HumanTaskDefinition extends TaskDefinition {
         return this.workflow.mappings;
     }
 
-    /**
-     * @returns {DueDateDefinition}
-     */
     get dueDate() {
         return this.workflow.dueDate;
     }
@@ -69,9 +62,6 @@ export default class HumanTaskDefinition extends TaskDefinition {
         this.workflow.dueDate = duedate;
     }
 
-    /**
-     * @returns {AssignmentDefinition}
-     */
     get assignment() {
         return this.workflow.assignment;
     }
@@ -80,9 +70,6 @@ export default class HumanTaskDefinition extends TaskDefinition {
         this.workflow.assignment = assignment;
     }
 
-    /**
-     * @returns {String}
-     */
     get validatorRef() {
         return this.workflow.validatorRef;
     }

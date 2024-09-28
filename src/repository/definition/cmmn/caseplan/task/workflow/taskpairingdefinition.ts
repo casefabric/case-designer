@@ -56,7 +56,7 @@ export default class TaskPairingDefinition extends CMMNExtensionDefinition<CaseD
 
     add(item: PlanItem) {
         this.adoptReference(item);
-        this.counterPartOf(item).adoptReference(this.parent)
+        this.counterPartOf(item).adoptReference(this.parent);
     }
 
     remove(item: PlanItem) {

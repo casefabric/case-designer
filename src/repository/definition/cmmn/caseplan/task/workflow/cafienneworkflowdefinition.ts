@@ -6,8 +6,8 @@ import AssignmentDefinition from "./assignmentdefinition";
 import DueDateDefinition from "./duedatedefinition";
 
 export default class CafienneWorkflowDefinition extends CafienneImplementationDefinition<CaseDefinition> {
-    humanTaskRef: string | undefined;
-    validatorRef: string | undefined;
+    humanTaskRef: string;
+    validatorRef: string;
     mappings: ParameterMappingDefinition[];
     assignment?: AssignmentDefinition;
     dueDate?: DueDateDefinition;

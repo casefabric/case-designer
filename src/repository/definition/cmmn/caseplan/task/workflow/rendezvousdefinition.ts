@@ -5,21 +5,14 @@ import TaskPairingDefinition from "./taskpairingdefinition";
 export default class RendezVousDefinition extends TaskPairingDefinition {
     static TAG = 'rendez_vous';
 
-    /**
-     * 
-     * @param {*} importNode 
-     * @param {*} caseDefinition 
-     * @param {PlanItem} parent 
-     */
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: PlanItem) {
         super(importNode, caseDefinition, parent);
     }
 
-    /**
-     * @param {PlanItem} item 
-     * @returns {TaskPairingDefinition}
-     */
-    counterPartOf(item: PlanItem) {
+    counterPartOf(item: PlanItem): TaskPairingDefinition {
+        if (!item.rendezVous) {
+            throw new Error("We should always have a counter part");
+        }
         return item.rendezVous;
     }
 

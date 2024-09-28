@@ -1,6 +1,5 @@
 import CaseDefinition from "@repository/definition/cmmn/casedefinition";
 import PlanItem from "../../planitem";
-import RendezVousDefinition from "./rendezvousdefinition";
 import TaskPairingDefinition from "./taskpairingdefinition";
 
 export default class FourEyesDefinition extends TaskPairingDefinition {
@@ -10,7 +9,10 @@ export default class FourEyesDefinition extends TaskPairingDefinition {
         super(importNode, caseDefinition, parent);
     }
 
-    counterPartOf(item: PlanItem): RendezVousDefinition {
+    counterPartOf(item: PlanItem): FourEyesDefinition {
+        if (!item.fourEyes) {
+            throw new Error("We should always have a counter part");
+        }
         return item.fourEyes;
     }
 
