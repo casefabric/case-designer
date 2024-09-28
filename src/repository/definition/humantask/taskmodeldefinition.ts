@@ -1,7 +1,9 @@
+import HumanTaskModelDefinition from "./humantaskmodeldefinition";
 import HumanTaskModelElementDefinition from "./humantaskmodelelementdefinition";
 
 export default class TaskModelDefinition extends HumanTaskModelElementDefinition {
-    constructor(importNode, modelDefinition, parent) {
+    taskModel: string | null;
+    constructor(importNode: Element, modelDefinition: HumanTaskModelDefinition, parent?: HumanTaskModelElementDefinition) {
         super(importNode, modelDefinition, parent);
         this.taskModel = this.importNode ? this.importNode.textContent : '';
     }
@@ -17,7 +19,7 @@ export default class TaskModelDefinition extends HumanTaskModelElementDefinition
         this.taskModel = value;
     }
 
-    createExportNode(parentNode) {
+    createExportNode(parentNode: Element) {
         if (this.value) {
             super.createExportNode(parentNode, 'task-model');
             this.exportNode.textContent = this.taskModel || '';

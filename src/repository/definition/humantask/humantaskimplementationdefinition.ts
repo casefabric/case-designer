@@ -1,33 +1,34 @@
 import ParameterDefinition from "../cmmn/contract/parameterdefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../xmlserializable";
+import HumanTaskModelDefinition from "./humantaskmodeldefinition";
 import HumanTaskModelElementDefinition from "./humantaskmodelelementdefinition";
 import TaskModelDefinition from "./taskmodeldefinition";
 
 export default class HumanTaskImplementationDefinition extends HumanTaskModelElementDefinition {
-    constructor(importNode, modelDefinition, parent) {
+    input: ParameterDefinition[];
+    output: ParameterDefinition[];
+    private _taskModel?: TaskModelDefinition;
+    constructor(importNode: Element, modelDefinition: HumanTaskModelDefinition, parent?: HumanTaskModelElementDefinition) {
         super(importNode, modelDefinition, parent);
-        /** @type {Array<ParameterDefinition>} */
         this.input = this.parseElements('input', ParameterDefinition);
-        /** @type {Array<ParameterDefinition>} */
         this.output = this.parseElements('output', ParameterDefinition);
         this.taskModel = this.parseElement('task-model', TaskModelDefinition);
     }
 
-    /** @returns {TaskModelDefinition} */
-    get taskModel() {
+    get taskModel(): TaskModelDefinition {
         if (! this._taskModel) {
             this._taskModel = super.createDefinition(TaskModelDefinition);
-            this._taskModel.id = undefined;
-            this._taskModel.name = undefined;
+            this._taskModel.id = '';
+            this._taskModel.name = '';
         }
         return this._taskModel;
     }
 
-    set taskModel(taskModel) {
+    set taskModel(taskModel: TaskModelDefinition | undefined) {
         this._taskModel = taskModel;
     }
 
-    createExportNode(parentNode) {
+    createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, IMPLEMENTATION_TAG, 'input', 'output', 'taskModel');
         this.exportNode.setAttribute(CAFIENNE_PREFIX, CAFIENNE_NAMESPACE);
         this.exportNode.setAttribute('class', 'org.cafienne.cmmn.definition.task.WorkflowTaskDefinition');
