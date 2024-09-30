@@ -37,6 +37,7 @@ export default class ModelDefinition extends XMLSerializable {
         this.modelDefinition = this;
         /** @type {Array<ElementDefinition>} */
         (this.elements as any).push(this);
+        this.parseDocumentationElement();
     }
 
     validateDocument() {

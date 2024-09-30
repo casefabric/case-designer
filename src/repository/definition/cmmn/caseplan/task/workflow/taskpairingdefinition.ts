@@ -1,51 +1,38 @@
+import CaseDefinition from "@repository/definition/cmmn/casedefinition";
 import Util from "@util/util";
 import CMMNExtensionDefinition from "../../../../extensions/cmmnextensiondefinition";
 import PlanItem from "../../planitem";
 import PlanItemReference from "../planitemreference";
 
-export default class TaskPairingDefinition extends CMMNExtensionDefinition {
-    /**
-     * 
-     * @param {*} importNode 
-     * @param {*} caseDefinition 
-     * @param {PlanItem} parent 
-     */
-    constructor(importNode, caseDefinition, parent) {
+export default class TaskPairingDefinition extends CMMNExtensionDefinition<CaseDefinition> {
+    references: PlanItemReference[];
+    private _present: boolean = false;
+
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: PlanItem) {
         super(importNode, caseDefinition, parent);
-        this.parent = parent;
         this.present = importNode instanceof Element;
         this.references = this.parseElements('task', PlanItemReference);
     }
 
-    get present() {
+    get present(): boolean {
         return this._present || this.references.length > 0;
     }
 
-    /**
-     * @param {Boolean} value 
-     */
-    set present(value) {
+    set present(value: boolean) {
         this._present = value;
     }
 
-    createExportNode(parentNode, tagName) {
+    createExportNode(parentNode: Element, tagName: string) {
         if (this.present || this.references.length > 0) {
             super.createExportNode(parentNode, tagName, 'references');
         }
     }
 
-    /**
-     * @returns {Array<PlanItem>}
-     */
-    get tasks() {
+    get tasks(): PlanItem[] {
         return this.references.map(ref => ref.task);
     }
 
-    /**
-     * @param {PlanItem} item 
-     * @returns {TaskPairingDefinition}
-     */
-    counterPartOf(item) {
+    counterPartOf(item: PlanItem): TaskPairingDefinition {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -63,49 +50,31 @@ export default class TaskPairingDefinition extends CMMNExtensionDefinition {
         this.present = false;
     }
 
-    /**
-     * 
-     * @param {PlanItem} task 
-     * @returns {Boolean}
-     */
-    has(task) {
-        return this.references.find(ref => ref.is(task));
+    has(task: PlanItem): boolean {
+        return this.references.find(ref => ref.is(task)) !== undefined;
     }
 
-    /**
-     * 
-     * @param {PlanItem} item 
-     */
-    add(item) {
+    add(item: PlanItem) {
         this.adoptReference(item);
         this.counterPartOf(item).adoptReference(this.parent)
     }
 
-    /**
-     * 
-     * @param {PlanItem} item 
-     */
-    remove(item) {
+    remove(item: PlanItem) {
         this.removeReference(item);
         this.counterPartOf(item).removeReference(this.parent);
     }
 
-    /**
-     * 
-     * @param {PlanItem} item 
-     * @returns {PlanItemReference}
-     */
-    adoptReference(item) {
+    adoptReference(item: PlanItem): PlanItemReference {
         const existing = this.references.find(ref => ref.is(item))
         if (existing) return existing;
 
-        const ref = this.createDefinition(PlanItemReference);
+        const ref: PlanItemReference = this.createDefinition(PlanItemReference);
         ref.adopt(item);
         this.references.push(ref);
         return ref;
     }
 
-    removeReference(item) {
+    removeReference(item: PlanItem | undefined) {
         Util.removeFromArray(this.references, this.references.find(ref => ref.is(item)));
     }
 }

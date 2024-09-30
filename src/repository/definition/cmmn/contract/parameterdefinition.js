@@ -1,4 +1,3 @@
-import ElementDefinition from "@repository/definition/elementdefinition";
 import CafienneImplementationDefinition from "@repository/definition/extensions/cafienneimplementationdefinition";
 import ReferableElementDefinition from "@repository/definition/referableelementdefinition";
 

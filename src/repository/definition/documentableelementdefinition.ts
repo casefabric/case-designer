@@ -4,7 +4,8 @@ import ModelDefinition from "./modeldefinition";
 import ElementDefinition from "./elementdefinition";
 import ReferableElementDefinition from "./referableelementdefinition";
 
-export default class DocumentableElementDefinition extends ReferableElementDefinition {
+export default class DocumentableElementDefinition<M extends ModelDefinition> extends ReferableElementDefinition<M> {
+    private __documentation?: CMMNDocumentationDefinition<M>;
     /**
      * Creates an XML element that can be referred to by the value of the name or id attribute of the underlying XML element.
      * 
@@ -12,11 +13,11 @@ export default class DocumentableElementDefinition extends ReferableElementDefin
      * @param {ModelDefinition} modelDefinition 
      * @param {ElementDefinition} parent 
      */
-    constructor(importNode, modelDefinition, parent) {
+    constructor(importNode: Element, modelDefinition: M, parent?: ElementDefinition<M>) {
         super(importNode, modelDefinition, parent);
         const documentationElement = XML.getChildByTagName(this.importNode, 'documentation');
         if (documentationElement) {
-            this.__documentation = new CMMNDocumentationDefinition(documentationElement, this.modelDefinition, this);
+            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(documentationElement, this.modelDefinition, this);
         }
         // Now check whether or not to convert the deprecated 'description' attribute
         const description = this.parseAttribute('description');
@@ -31,12 +32,12 @@ export default class DocumentableElementDefinition extends ReferableElementDefin
      */
     get documentation() {
         if (!this.__documentation) {
-            this.__documentation = new CMMNDocumentationDefinition(undefined, this.modelDefinition, this);
+            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(undefined, this.modelDefinition, this);
         }
         return this.__documentation;
     }
 
-    createExportNode(parentNode, tagName, ...propertyNames) {
+    createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         super.createExportNode(parentNode, tagName, 'documentation', propertyNames);
     }
 }

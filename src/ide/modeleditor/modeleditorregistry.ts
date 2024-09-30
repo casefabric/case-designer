@@ -1,4 +1,6 @@
 import IDE from "@ide/ide";
+import ModelDefinition from "@repository/definition/modeldefinition";
+import ServerFile from "@repository/serverfile/serverfile";
 import CaseModelEditor from "./case/casemodeleditor";
 import HumantaskModelEditor from "./humantask/humantaskmodeleditor";
 import ModelEditor from "./modeleditor";
@@ -23,6 +25,16 @@ export default class ModelEditorRegistry {
 
     add(editor: ModelEditor) {
         this.editors.push(editor);
+    }
+
+    /**
+     * Return the editor that renders the file, or undefined if that editor is not found.
+     * Casts the return value to the given type for ease of use
+     * @param file 
+     * @returns 
+     */
+    get<M extends ModelEditor>(file: ServerFile<ModelDefinition>): M | undefined {
+        return <M> this.editors.find(editor => editor.file.fileName === file.fileName);
     }
 
     /** 
@@ -80,7 +92,7 @@ export default class ModelEditorRegistry {
             return;
         }
 
-        if (serverFile.metadata.error) {
+        if (serverFile.metadata?.error) {
             this.ide.coverPanel.show('Cannot open ' + fileName + '\nError: ' + serverFile.metadata.error);
             return;
         }

@@ -1,10 +1,16 @@
+import CaseDefinition from "@repository/definition/cmmn/casedefinition";
+import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
 import UnnamedCMMNElementDefinition from "../../../../unnamedcmmnelementdefinition";
 import ExpressionDefinition from "../../../expression/expressiondefinition";
 
 export default class AssignmentDefinition extends UnnamedCMMNElementDefinition {
-    constructor(importNode, caseDefinition, parent) {
+    static TAG = 'assignment';
+    private _expression?: ExpressionDefinition;
+    contextRef: string;
+
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent?: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
-        this.expression = this.parseElement('condition', ExpressionDefinition);
+        this._expression = this.parseElement('condition', ExpressionDefinition);
         this.contextRef = this.parseAttribute('contextRef');
     }
 
@@ -13,8 +19,8 @@ export default class AssignmentDefinition extends UnnamedCMMNElementDefinition {
         return context ? context.name : '';
     }
 
-    createExportNode(parentNode) {
-        super.createExportNode(parentNode, AssignmentDefinition.TAG, 'contextRef');
+    createExportNode(parentNode: Element) {
+        super.createExportNode(parentNode, AssignmentDefinition.TAG, this.contextRef);
         if (this.expression) {
             // Hmmm... perhaps we should rename 'expression' to 'condition' ...
             this.expression.createExportNode(this.exportNode, 'condition');
@@ -24,16 +30,16 @@ export default class AssignmentDefinition extends UnnamedCMMNElementDefinition {
     /**
      * @returns {ExpressionDefinition}
      */
-    getExpression() {
-        if (! this.expression) {
-            this.expression = super.createDefinition(ExpressionDefinition);
+    get expression() {
+        if (! this._expression) {
+            this._expression = super.createDefinition(ExpressionDefinition);
         }
-        return this.expression;
+        return this._expression;
     }
 
     set language(newLanguage) {
         if (newLanguage) {
-            this.getExpression().language = newLanguage;
+            this.expression.language = newLanguage;
         }
     }
 
@@ -42,11 +48,10 @@ export default class AssignmentDefinition extends UnnamedCMMNElementDefinition {
     }
 
     set body(newBody) {
-        this.getExpression().body = newBody;
+        this.expression.body = newBody;
     }
 
     get body() {
-        return this.expression ? this.expression.body : '';
+        return this._expression ? this.expression.body : '';
     }
 }
-AssignmentDefinition.TAG = 'assignment';

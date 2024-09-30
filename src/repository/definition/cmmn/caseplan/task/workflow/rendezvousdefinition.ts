@@ -1,14 +1,17 @@
+import CaseDefinition from "@repository/definition/cmmn/casedefinition";
 import PlanItem from "../../planitem";
 import TaskPairingDefinition from "./taskpairingdefinition";
 
 export default class RendezVousDefinition extends TaskPairingDefinition {
+    static TAG = 'rendez_vous';
+
     /**
      * 
      * @param {*} importNode 
      * @param {*} caseDefinition 
      * @param {PlanItem} parent 
      */
-    constructor(importNode, caseDefinition, parent) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: PlanItem) {
         super(importNode, caseDefinition, parent);
     }
 
@@ -16,17 +19,17 @@ export default class RendezVousDefinition extends TaskPairingDefinition {
      * @param {PlanItem} item 
      * @returns {TaskPairingDefinition}
      */
-    counterPartOf(item) {
+    counterPartOf(item: PlanItem) {
         return item.rendezVous;
     }
 
-    createExportNode(parentNode) {
+    createExportNode(parentNode: Element) {
         if (this.present) {
             super.createExportNode(parentNode, RendezVousDefinition.TAG);
         }
     }
 
-    add(item) {
+    add(item: PlanItem) {
         super.add(item);
         const rendezVousOfItem = this.counterPartOf(item);
         // Also adopt all existing rendezVous colleagues of the item
@@ -39,7 +42,7 @@ export default class RendezVousDefinition extends TaskPairingDefinition {
         });
     }
 
-    remove(item) {
+    remove(item: PlanItem) {
         super.remove(item);
         const rendezVousOfItem = this.counterPartOf(item);
         // Also remove our colleagues from the item's rendezVous
@@ -50,5 +53,3 @@ export default class RendezVousDefinition extends TaskPairingDefinition {
         });
     }
 }
-
-RendezVousDefinition.TAG = 'rendez_vous';

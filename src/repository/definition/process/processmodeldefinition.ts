@@ -4,13 +4,15 @@ import ProcessImplementationDefinition from "./processimplementationdefinition";
 import ParameterDefinition from "../cmmn/contract/parameterdefinition";
 
 export default class ProcessModelDefinition extends ModelDefinition {
+    input: ParameterDefinition[] = [];
+    output: ParameterDefinition[] = [];
+    implementation?: ProcessImplementationDefinition;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      * @param {ProcessFile} file
      */
-    constructor(file) {
+    constructor(public file: ProcessFile) {
         super(file);
-        this.file = file;
         /** @type {Array<ParameterDefinition>} */
         this.input = this.parseElements('input', ParameterDefinition);
         /** @type {Array<ParameterDefinition>} */
