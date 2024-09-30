@@ -2,6 +2,7 @@ import RepositoryBrowser from "@ide/repositorybrowser";
 import ServerFile from "@repository/serverfile";
 import IDE from "../ide";
 import ModelEditor from "./modeleditor";
+import ModelDefinition from "@repository/definition/modeldefinition";
 
 export default class ModelEditorMetadata {
     public static types: Array<ModelEditorMetadata> = [];
@@ -18,7 +19,6 @@ export default class ModelEditorMetadata {
 
     /**
      * Initializes metadata for a type of ModelEditor within the IDE
-     * @param {IDE} ide 
      */
     init(repositoryBrowser: RepositoryBrowser) {
         const ide = repositoryBrowser.ide;
@@ -28,28 +28,23 @@ export default class ModelEditorMetadata {
 
     /**
      * Whether the metadata is associated with this kind of file
-     * @param {ServerFile} file 
      */
-    supportsFile(file: ServerFile) {
+    supportsFile(file: ServerFile<ModelDefinition>) {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Create an editor for this file
-     * @param {IDE} ide 
-     * @param {ServerFile} file 
-     * @returns {ModelEditor}
      */
-    createEditor(ide: IDE, file: ServerFile): ModelEditor {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
+    createEditor(ide: IDE, file: ServerFile<ModelDefinition>): ModelEditor {
+        throw new Error('This method must be implemented in ' + this.constructor.name);        
     }
 
     get supportsDeploy() {
         return false;
     }
 
-    /** @returns {Array<ServerFile>} */
-    get modelList(): Array<ServerFile> {
+    get modelList(): Array<ServerFile<ModelDefinition>> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 

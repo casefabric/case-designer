@@ -23,11 +23,11 @@ export default class ProcessModelDefinition extends ModelDefinition {
     }
 
     get inputParameters() {
-        return this.input;
+        return this.input || [];
     }
 
     get outputParameters() {
-        return this.output;
+        return this.output || [];
     }
 
     toXML() {

@@ -24,13 +24,12 @@ export default class ModelDefinition extends XMLSerializable {
         this.modelDefinition = this;
         this.file = file;
         this.typeCounters = new TypeCounter(this);
-        /** @type {Array<ElementDefinition>} */
+        /** @type {Array<ElementDefinition<ModelDefinition>>} */
         this.elements = [];
         this.elements.push(this);
     }
 
     parseDocument() {
-        this.parseDocumentationElement();
     }
 
     validateDocument() {

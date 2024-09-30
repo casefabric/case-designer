@@ -1,14 +1,9 @@
 import CaseDefinition from "../definition/cmmn/casedefinition";
 import ServerFile from "../serverfile";
 
-export default class CaseFile extends ServerFile {
+export default class CaseFile extends ServerFile<CaseDefinition> {
     createModelDefinition() {
         return new CaseDefinition(this);
-    }
-
-    /** @returns {CaseDefinition} */
-    get definition() {
-        return /** @type {CaseDefinition} */ (this.content.definition);
     }
 
     validateDefinition() {

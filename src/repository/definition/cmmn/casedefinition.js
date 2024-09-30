@@ -9,6 +9,7 @@ import CasePlanDefinition from "./caseplan/caseplandefinition";
 import CaseTeamDefinition from "./caseteam/caseteamdefinition";
 import CaseParameterDefinition from "./contract/caseparameterdefinition";
 import StartCaseSchemaDefinition from "./startcaseschemadefinition";
+import ParameterDefinition from "./contract/parameterdefinition";
 
 export default class CaseDefinition extends ModelDefinition {
     /**
@@ -67,11 +68,11 @@ export default class CaseDefinition extends ModelDefinition {
     }
 
     get inputParameters() {
-        return this.input;
+        return this.input.map(p => /** @type {ParameterDefinition} */ (p));
     }
 
     get outputParameters() {
-        return this.output;
+        return this.output.map(p => /** @type {ParameterDefinition} */ (p));
     }
 
     /**

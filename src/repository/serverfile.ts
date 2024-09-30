@@ -1,12 +1,23 @@
-import Util from "@util/util";
-import Content from "./content";
-import XML from "@util/xml";
 import Followup, { andThen } from "@util/promise/followup";
-import ModelDefinition from "./definition/modeldefinition";
+import Util from "@util/util";
+import XML from "@util/xml";
 import $ from "jquery";
 import RepositoryBase from "./repositorybase";
+import Content from "./content";
+import ModelDefinition from "./definition/modeldefinition";
+import Metadata from "./metadata";
 
-export default class ServerFile {
+export default class ServerFile<M extends ModelDefinition> {
+    private _fileName: any;
+    fileType: string;
+    name: string;
+    references: ServerFileReferences<M> = new ServerFileReferences(this);
+    content = new Content(this);
+    metadata: Metadata;
+    lastModified: string = '';
+    hasBeenSavedJustNow: boolean = false;
+    clearing: boolean = false;
+
     /**
      * Creates a new local reference of the server file, based on the json structure given
      * by the server (serverData).
@@ -16,21 +27,19 @@ export default class ServerFile {
      * @param {String} fileName 
      * @param {*} source
      */
-    constructor(repository, fileName, source) {
+    constructor(public repository: RepositoryBase, fileName: string, source: any) {
         this.repository = repository;
         this.name = ''; // Will be filled when the file name is set - which is also done after succesful rename actions
         this.fileType = ''; // Will be filled when the file name is set
         this.fileName = fileName;
-        this.references = new ServerFileReferences(this);
-        this.content = new Content(this);
         this.source = source;
+        this.metadata = new Metadata({});
     }
 
     /**
      * Note: this method is private/protected
-     *  @returns {ModelDefinition}
      */
-    createModelDefinition() {
+    createModelDefinition(): M {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -55,7 +64,7 @@ export default class ServerFile {
      * Refreshes the metadata of the model, based on the server side content.
      * @param {Metadata} serverMetadata 
      */
-    refreshMetadata(serverMetadata) {
+    refreshMetadata(serverMetadata: Metadata) {
         this.metadata = serverMetadata;
         if (this.lastModified === serverMetadata.lastModified || this.hasBeenSavedJustNow) {
             // still the same contents, but potentially a new lastmodified timestamp
@@ -81,9 +90,8 @@ export default class ServerFile {
         this.content.source = source;
     }
 
-    /** @returns {ModelDefinition} */
-    get definition() {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
+    get definition(): M | undefined {
+        return this.content.definition;
     }
 
     get xml() {
@@ -91,11 +99,17 @@ export default class ServerFile {
     }
 
     /**
-     * Simple method that logs in the console where all this file is used according to the server side repository.
-     * 
-     */
+      *  Returns an array with id/name of the files where this file is used in 
+      */
     get usage() {
-        return this.metadata.usage;
+        return this.metadata?.usage;
+    }
+
+    /**
+     *  @returns {Array<ServerFile>} Array with ServerFile's of the files where this file is used in 
+     */
+    get usageFiles() {
+        return this.usage?.map(usage => usage.id).map(fileName => this.repository.list.find(file => file.fileName === fileName))
     }
 
     /**
@@ -128,9 +142,8 @@ export default class ServerFile {
 
     /**
      * Loads the data of file, and invokes the callback there-after.
-     * @param {Followup} then
      */
-    fetch(then) {
+    fetch(then: Followup) {
         if (this.source) {
             then.next(this);
             return;
@@ -165,24 +178,29 @@ export default class ServerFile {
     }
 
     /**
-     * 
-     * @param {Followup} then 
+     * Parse the document and "then" callback
+     * @param {Followup} then The next action that will be triggered after parsing completed
      */
-    parse(then) {
+    parse(then: Followup) {
         // console.groupEnd();
         // console.log("Parsing " + this.fileName);
         const file = this;
-        const definition = this.createModelDefinition();
-        this.content.definition = definition;
+
+        // if (! file.content.source) {
+        //      console.warn("No source contentn to parse")
+        //      return;
+        // }
         if (!file.content.xml) {
             // There is no xml definition available to parse ...
-            this.metadata.error = 'This file does not contain a valid XML document to parse';
+            if (this.metadata) this.metadata.error = 'This file does not contain a valid XML document to parse';
             then.run(file);
             return;
         }
+        const definition = this.createModelDefinition();
+        this.content.definition = definition;
         definition.parseDocument();
         definition.validateDocument();
-        if (file.definition.hasMigrated()) {
+        if (file.definition && file.definition.hasMigrated()) {
             console.log(`${file.definition.constructor.name} of '${file.fileName}' has migrated; uploading result`);
             file.source = file.definition.toXML();
             file.save(andThen(() => {
@@ -190,14 +208,14 @@ export default class ServerFile {
                     // console.log("File["+file.fileName+"].definition: " + file.definition);
                     this.validateDefinition();
                     then.run(file);
-                });        
+                });
             }));
         } else {
             definition.loadDependencies(() => {
                 // console.log("File["+file.fileName+"].definition: " + file.definition);
                 this.validateDefinition();
                 then.run(file);
-            });    
+            });
         }
     }
 
@@ -205,13 +223,13 @@ export default class ServerFile {
      * Hook to enable server files to check the actual definition for validity.
      * Used specifically in CaseFile to verify that the dimensions exist.
      */
-    validateDefinition() {        
+    validateDefinition() {
     }
 
     /**
      * Load the file and parse it.
      * If the source of the file is not present, then it will be fetched from the server.
-     * @param {Followup} then 
+     * @param {Followup} then The next action that will be triggered after the file loaded (and optionally was parsed)
      */
     load(then = Followup.None) {
         this.fetch(andThen(_ => {
@@ -226,7 +244,7 @@ export default class ServerFile {
 
     /**
      * Clear the contents of the file and load it again from the server.
-     * @param {Followup} then
+     * @param {Followup} then The next action that will be triggered after the file reloaded
      */
     reload(then = Followup.None) {
         this.clear();
@@ -236,7 +254,7 @@ export default class ServerFile {
     /**
      * Uploads the XML content to the server, and invokes the callback after it.
      * Uploading to server gives also a new file list back, which we use to update the repository contents.
-     * @param {Followup} then 
+     * @param {Followup} then The next action that will be triggered after the file got saved
      */
     save(then = Followup.None) {
         if (!this.repository.isExistingModel(this.fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
@@ -273,9 +291,9 @@ export default class ServerFile {
     /**
      * Gives this file a new name
      * @param {String} newName the new name for the file
-     * @param {Followup} then 
+     * @param {Followup} then The next action that will be triggered after the file was renamed
      */
-    rename(newName, then = Followup.None) {
+    rename(newName: string, then = Followup.None) {
         const oldName = this.fileName;
         const url = `/repository/rename/${oldName}?newName=${newName}`;
         const type = 'put';
@@ -303,7 +321,7 @@ export default class ServerFile {
 
     /**
      * Delete the file
-     * @param {Followup} then 
+     * @param {Followup} then The next action that will be triggered after the file was deleted
      */
     delete(then = Followup.None) {
         const url = '/repository/delete/' + this.fileName;
@@ -328,7 +346,7 @@ export default class ServerFile {
      * @param {String} fileName 
      * @param {(file: ServerFile|undefined) => void} callback
      */
-    loadReference(fileName, callback) {
+    loadReference<X extends ModelDefinition>(fileName: string, callback: (file: ServerFile<X> | undefined) => void) {
         this.references.load(fileName, callback);
     }
 
@@ -340,15 +358,13 @@ export default class ServerFile {
     }
 }
 
-class ServerFileReferences {
+class ServerFileReferences<M extends ModelDefinition> {
+    files: ServerFile<ModelDefinition>[] = [];
     /**
      * 
      * @param {ServerFile} file 
      */
-    constructor(file) {
-        this.source = file;
-        /** @type {Array<ServerFile>} */
-        this.files = [];
+    constructor(public source: ServerFile<M>) {
     }
 
     get size() {
@@ -367,12 +383,12 @@ class ServerFileReferences {
         const set = new Array();
         this.files.forEach(file => {
             set.push(file);
-            file.references.all.forEach(reference => set.push(reference))
+            file.references.all.forEach((reference: ServerFile<ModelDefinition>) => set.push(reference));
         });
         return Util.removeDuplicates(set);
     }
 
-    contains(file) {
+    contains(file: ServerFile<ModelDefinition>) {
         return this.all.find(reference => reference === file) !== undefined;
     }
 
@@ -382,10 +398,11 @@ class ServerFileReferences {
      * @param {(file: ServerFile|undefined) => void} callback
      * @returns 
      */
-    load(fileName, callback) {
+    load<X extends ModelDefinition>(fileName: string, callback: (file: ServerFile<X> | undefined) => void) {
         const file = this.files.find(file => file.fileName === fileName);
         if (file) {
             // console.log(this.source.fileName + " requested " + fileName + " and it is already in our list, with definition: " + file.definition)
+            // @ts-ignore ==> if you cast to the wrong type, that's really your problem ;)
             callback(file);
         } else {
             // console.log(this.source.fileName + " requested " + fileName + " and need to load it")

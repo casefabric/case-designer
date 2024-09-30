@@ -11,8 +11,10 @@ import HumanTaskFile from "./serverfile/humantaskfile";
 import ProcessFile from "./serverfile/processfile";
 import $ from "jquery";
 import RepositoryBase from "./repositorybase";
+import ModelDefinition from "./definition/modeldefinition";
 
 export default class Repository extends RepositoryBase {
+    listeners: (() => void)[] = [];
     /**
      * This object handles the interaction with the backend to load and save the various types of models.
      * It keeps a local copy of all models present in the server. This local copy is updated after each
@@ -21,18 +23,13 @@ export default class Repository extends RepositoryBase {
      */
     constructor() {
         super();
-        /** @type {Array<Function>} */
-        this.listeners = [];
     }
 
     /**
-     * Create a client side represenatation for the file on the server with the specified name.
+     * Create a client side representation for the file on the server with the specified name.
      * Parses the extension of the file and uses that to create a client side object that can also parse the source of the file.
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns 
      */
-    create(fileName, source) {
+    create(fileName: string, source?: any) {
         // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
         const fileType = fileName.split('.').pop();
         switch (fileType) {
@@ -50,113 +47,92 @@ export default class Repository extends RepositoryBase {
 
     /**
      * Returns the list of case models in the repository
-     * @returns {Array<CaseFile>}
      */
     getCases() {
-        return /** @type {Array<CaseFile>} */ (this.list.filter(serverFile => serverFile instanceof CaseFile));
+        return <CaseFile[]>this.list.filter(serverFile => serverFile instanceof CaseFile);
     }
 
     /**
      * Create a new CaseFile that can parse and write server side .case files
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns {CaseFile}
      */
-    createCaseFile(fileName, source) {
+    createCaseFile(fileName: string, source: any) {
         return new CaseFile(this, fileName, source);
     }
 
     /**
      * Returns the list of case models in the repository
-     * @returns {Array<DimensionsFile>}
      */
     getDimensions() {
-        return /** @type {Array<DimensionsFile>} */ (this.list.filter(serverFile => serverFile instanceof DimensionsFile));
+        return <DimensionsFile[]>this.list.filter(serverFile => serverFile instanceof DimensionsFile);
     }
 
     /**
      * Create a new DimensionsFile that can parse and write server side .dimension files
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns {DimensionsFile}
      */
-    createDimensionsFile(fileName, source) {
+    createDimensionsFile(fileName: string, source: any) {
         return new DimensionsFile(this, fileName, source);
     }
 
     /**
      * Returns the list of process implementations in the repository
-     * @returns {Array<ProcessFile>}
      */
     getProcesses() {
-        return /** @type {Array<ProcessFile>} */ (this.list.filter(serverFile => serverFile instanceof ProcessFile));
+        return <ProcessFile[]>this.list.filter(serverFile => serverFile instanceof ProcessFile);
     }
 
     /**
      * Create a new ProcessFile that can parse and write server side .process files
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns {ProcessFile}
      */
-    createProcessFile(fileName, source) {
+    createProcessFile(fileName: string, source: any) {
         return new ProcessFile(this, fileName, source);
     }
 
     /**
      * Returns the list of human task implementations in the repository
-     * @returns {Array<HumanTaskFile>}
      */
     getHumanTasks() {
-        return /** @type {Array<HumanTaskFile>} */ (this.list.filter(serverFile => serverFile instanceof HumanTaskFile));
+        return this.list.filter(serverFile => serverFile instanceof HumanTaskFile);
     }
 
     /**
      * Create a new HumanTaskFile that can parse and write server side .humantask files
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns {HumanTaskFile}
      */
-    createHumanTaskFile(fileName, source) {
+    createHumanTaskFile(fileName: string, source: any) {
         return new HumanTaskFile(this, fileName, source);
     }
 
     /**
      * Returns the list of case file item definitions in the repository
-     * @returns {Array<CFIDFile>}
      */
     getCaseFileItemDefinitions() {
-        return /** @type {Array<CFIDFile>} */ (this.list.filter(serverFile => serverFile instanceof CFIDFile));
+        return <CFIDFile[]>this.list.filter(serverFile => serverFile instanceof CFIDFile);
     }
 
     /**
      * Create a new CFIDFile that can parse and write server side .cfid files
-     * @param {String} fileName 
-     * @param {*} source 
-     * @returns {CFIDFile}
      */
-    createCFIDFile(fileName, source) {
+    createCFIDFile(fileName: string, source: any) {
         return new CFIDFile(this, fileName, source);
     }
 
     /**
      * Registers a listener that is invoked each time
      * the list of models in the repository is updated.
-     * @param {Function} listener 
      */
-    onListRefresh(listener) {
+    onListRefresh(listener: () => void) {
         this.listeners.push(listener);
     }
 
     /**
      * Invokes the backend to return a new copy of the list of models.
-     * @param {Followup} then Optional callback that will be invoked after model list has been retrieved
+     * Optional callback that will be invoked after model list has been retrieved
      */
     listModels(then = Followup.None) {
         $.ajax({
             url: '/repository/list',
             type: 'get',
             success: (data, status, xhr) => {
-                this.updateFileList(data.map(item => new Metadata(item)), then);
+                this.updateFileList(data.map(Metadata.from), then);
             },
             error: (xhr, error, eThrown) => {
                 console.error('Could not list the repository contents', eThrown);
@@ -167,19 +143,17 @@ export default class Repository extends RepositoryBase {
 
     /**
      * Returns true if a model with the given name exists in the repository.
-     * @param {String} fileName 
      */
-    isExistingModel(fileName) {
+    isExistingModel(fileName: string) {
         return this.list.find(model => model.fileName === fileName) !== undefined;
     }
 
     /**
      * Clears content for the model
-     * @param {String} fileName 
      */
-    clear(fileName) {
+    clear(fileName: string) {
         if (this.isExistingModel(fileName)) {
-            this.list.find(model => model.fileName === fileName).clear();
+            this.list.find(model => model.fileName === fileName)?.clear();
         }
     }
 
@@ -187,10 +161,8 @@ export default class Repository extends RepositoryBase {
      * Updates the cache with the most recent 'lastModified' information from the server.
      * This includes a full list of the filenames of all models in the server, as well as the lastModified timestamp
      * of each file in the server. Based on this, the locally cached contents is removed if it is stale.
-     * @param {Array<Metadata>} newServerFileList
-     * @param {Followup} then
      */
-    updateFileList(newServerFileList, then = Followup.None) {
+    updateFileList(newServerFileList: Metadata[], then = Followup.None) {
         console.groupCollapsed("Loading repository contents");
         // Make a copy of the old list, to be able to clean up old models afterwards;
         const oldList = this.list;
@@ -203,7 +175,6 @@ export default class Repository extends RepositoryBase {
         }));
 
         // Map the new server list into a list of structured objects. Also re-use existing objects as much as possible.
-        /** @type {Array<ServerFile>} */
         this.list = newServerFileList.map(fileMetadata => {
             const fileName = fileMetadata.fileName;
             const existingServerFile = oldList.find(file => file.fileName == fileName);
@@ -211,14 +182,14 @@ export default class Repository extends RepositoryBase {
                 const newFile = this.create(fileName);
                 if (newFile) {
                     newFile.refreshMetadata(fileMetadata);
-                    return newFile;    
+                    return newFile;
                 }
             } else {
                 Util.removeFromArray(oldList, existingServerFile);
                 existingServerFile.refreshMetadata(fileMetadata);
                 return existingServerFile;
             }
-        }).filter(file => file !== undefined);
+        }).filter(file => file !== undefined) as ServerFile<ModelDefinition>[];
         // Inform elements still in old list about their deletion.
         oldList.forEach(serverFile => serverFile.deprecate());
 
@@ -237,27 +208,24 @@ export default class Repository extends RepositoryBase {
 
     /**
      * Save xml file and upload to server
-     * @param {String} fileName 
-     * @param {Document | String} xml 
-     * @param {Followup} then 
      */
-    saveXMLFile(fileName, xml, then = Followup.None) {
+    saveXMLFile(fileName: string, xml: Document | string, then = Followup.None) {
         if (!this.isExistingModel(fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
-            this.list.push(this.create(fileName));
+            const file = this.create(fileName);
+            if (file) this.list.push(file);
         }
         const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
-        const data = xml instanceof String ? xml : XML.prettyPrint(xml);
-        serverFile.source = data;
-        serverFile.save(then);
+        if (serverFile) {
+            const data = xml instanceof String ? xml : XML.prettyPrint(xml);
+            serverFile.source = data;
+            serverFile.save(then);    
+        }
     }
 
     /**
-     * Rename file and update all references to file on server and invokes the callback on succesfull completion
-     * @param {String} fileName
-     * @param {String} newFileName
-     * @param {Followup} then 
+     * Rename file and update all references to file on server and invoke the callback upon successful completion
      */
-    rename(fileName, newFileName, then = Followup.None) {
+    rename(fileName: string, newFileName: string, then = Followup.None) {
         newFileName = newFileName.split(' ').join('');
         const serverFile = this.get(fileName);
         if (!serverFile) {
@@ -273,11 +241,9 @@ export default class Repository extends RepositoryBase {
     }
 
     /**
-     * Delete file and invokes the callback on succesfull completion
-     * @param {String} fileName
-     * @param {Followup} andThen 
+     * Delete file and invoke the callback upon successful completion
      */
-    delete(fileName, andThen = Followup.None) {
+    delete(fileName: string, andThen = Followup.None) {
         console.log(`Requesting to delete [${fileName}]`);
         const serverFile = this.get(fileName);
         if (!serverFile) {
@@ -289,18 +255,15 @@ export default class Repository extends RepositoryBase {
         }
     }
 
-    get(fileName) {
+    get(fileName: string) {
         return this.list.find(serverFile => serverFile.fileName === fileName);
     }
 
     /**
-     * Loads the file from the repository and invokes the callback on successful completion.
+     * Loads the file from the repository and invoke the callback upon successful completion.
      * If the file does not exist, it will invoke the callback with undefined.
-     * 
-     * @param {String} fileName 
-     * @param {Followup} then 
      */
-    load(fileName, then) {
+    load(fileName: string, then: Followup) {
         const serverFile = this.get(fileName);
         if (serverFile) {
             serverFile.load(then);

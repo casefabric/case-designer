@@ -78,7 +78,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     searchInboundReferences() {
         if (this.modelDefinition && this.modelDefinition.file) {
             const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
-            const elements = definitions.map(definition => definition.elements).flat();
+            const elements = definitions.map(definition => definition ? definition.elements : []).flat();
             const references = elements.filter(element => element.referencesElement(this));
             return references;
         }

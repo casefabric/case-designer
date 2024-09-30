@@ -52,7 +52,7 @@ export default class ModelListPanel {
         Util.clearHTML(this.container);
 
         files.forEach(file => {
-            const error = file.metadata && file.metadata.error;
+            const error = file.metadata?.error;
             const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
