@@ -1,4 +1,4 @@
-import ServerFile from "../serverfile";
+import ServerFile from "../serverfile/serverfile";
 import Importer from "./importer";
 
 export default class ImportElement {

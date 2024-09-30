@@ -11,10 +11,6 @@ export default class CaseFileDefinitionDefinition extends ModelDefinition {
     constructor(file) {
         super(file);
         this.file = file;
-    }
-
-    parseDocument() {
-        super.parseDocument();
         this.definitionType = this.parseAttribute('definitionType', UNSPECIFIED_URI);
         this.structureRef = this.parseAttribute('structureRef', '');
         this.importRef = this.parseAttribute('importRef', '');

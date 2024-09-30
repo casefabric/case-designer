@@ -19,12 +19,8 @@ export default class CaseDefinition extends ModelDefinition {
     constructor(file) {
         super(file);
         this.file = file;
-    }
-
-    parseDocument() {
         // First run migrations if necessary.
         Migrator.updateXMLElement(this);
-        super.parseDocument();
         /** @type {CaseFileDefinition} */
         this.caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
         /** @type {CasePlanDefinition} */

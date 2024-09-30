@@ -2,7 +2,7 @@ import { andThen } from "@util/promise/followup";
 import SequentialFollowupList from "@util/promise/sequentialfollowuplist";
 import Util from "@util/util";
 import XML from "@util/xml";
-import ServerFile from "../serverfile";
+import ServerFile from "../serverfile/serverfile";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
 import TypeCounter from "./typecounter";
 import ElementDefinition from "./elementdefinition";
@@ -18,7 +18,7 @@ export default class ModelDefinition extends XMLSerializable {
      * @param {ServerFile} file
      * @param {Element} importNode 
      */
-    constructor(file, importNode = file.content.xml) {
+    constructor(file, importNode = file.xml) {
         // Need to pass undefined in the super, and then set the modelDefinition manually.
         super(importNode, undefined, undefined);
         this.modelDefinition = this;
@@ -27,9 +27,6 @@ export default class ModelDefinition extends XMLSerializable {
         /** @type {Array<ElementDefinition<ModelDefinition>>} */
         this.elements = [];
         this.elements.push(this);
-    }
-
-    parseDocument() {
     }
 
     validateDocument() {

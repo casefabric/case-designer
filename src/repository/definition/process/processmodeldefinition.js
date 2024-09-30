@@ -11,10 +11,6 @@ export default class ProcessModelDefinition extends ModelDefinition {
     constructor(file) {
         super(file);
         this.file = file;
-    }
-
-    parseDocument() {
-        super.parseDocument();
         /** @type {Array<ParameterDefinition>} */
         this.input = this.parseElements('input', ParameterDefinition);
         /** @type {Array<ParameterDefinition>} */

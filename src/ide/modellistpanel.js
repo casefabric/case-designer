@@ -1,4 +1,4 @@
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import Util from "@util/util";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";

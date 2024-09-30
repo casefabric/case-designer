@@ -1,6 +1,6 @@
 import Followup from "@util/promise/followup";
-import ServerFile from "./serverfile";
-import Metadata from "./metadata";
+import ServerFile from "./serverfile/serverfile";
+import Metadata from "./serverfile/metadata";
 import ModelDefinition from "./definition/modeldefinition";
 
 export default class RepositoryBase {

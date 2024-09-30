@@ -2,17 +2,20 @@ import Followup, { andThen } from "@util/promise/followup";
 import Util from "@util/util";
 import XML from "@util/xml";
 import $ from "jquery";
-import RepositoryBase from "./repositorybase";
-import Content from "./content";
-import ModelDefinition from "./definition/modeldefinition";
+import ModelDefinition from "../definition/modeldefinition";
+import RepositoryBase from "../repositorybase";
 import Metadata from "./metadata";
+import ServerFileReferences from "./serverfilereferences";
 
 export default class ServerFile<M extends ModelDefinition> {
     private _fileName: any;
+    private _source: any;
+    private _definition?: M;
+    private _xml?: Element;
+
     fileType: string;
     name: string;
     references: ServerFileReferences<M> = new ServerFileReferences(this);
-    content = new Content(this);
     metadata: Metadata;
     lastModified: string = '';
     hasBeenSavedJustNow: boolean = false;
@@ -23,9 +26,6 @@ export default class ServerFile<M extends ModelDefinition> {
      * by the server (serverData).
      * When created the reference does not yet hold the content. This can be loaded on 
      * demand through the load method, which can be invoked with a callback.
-     * @param {RepositoryBase} repository 
-     * @param {String} fileName 
-     * @param {*} source
      */
     constructor(public repository: RepositoryBase, fileName: string, source: any) {
         this.repository = repository;
@@ -62,7 +62,6 @@ export default class ServerFile<M extends ModelDefinition> {
 
     /**
      * Refreshes the metadata of the model, based on the server side content.
-     * @param {Metadata} serverMetadata 
      */
     refreshMetadata(serverMetadata: Metadata) {
         this.metadata = serverMetadata;
@@ -83,19 +82,24 @@ export default class ServerFile<M extends ModelDefinition> {
     }
 
     get source() {
-        return this.content.source;
+        return this._source;
     }
 
     set source(source) {
-        this.content.source = source;
+        if (this._source !== source) {
+            this._definition = undefined;
+            this._source = source;
+            const xml = XML.parseXML(source);
+            this._xml = xml ? xml.documentElement : xml;
+        }
     }
 
     get definition(): M | undefined {
-        return this.content.definition;
+        return this._definition;
     }
 
     get xml() {
-        return this.content.xml;
+        return this._xml;
     }
 
     /**
@@ -184,37 +188,35 @@ export default class ServerFile<M extends ModelDefinition> {
     parse(then: Followup) {
         // console.groupEnd();
         // console.log("Parsing " + this.fileName);
-        const file = this;
 
-        // if (! file.content.source) {
-        //      console.warn("No source contentn to parse")
-        //      return;
-        // }
-        if (!file.content.xml) {
+        if (!this.source) {
+            console.warn("No source content to parse")
+            return;
+        }
+        if (!this.xml) {
             // There is no xml definition available to parse ...
             if (this.metadata) this.metadata.error = 'This file does not contain a valid XML document to parse';
-            then.run(file);
+            then.run(this);
             return;
         }
         const definition = this.createModelDefinition();
-        this.content.definition = definition;
-        definition.parseDocument();
+        this._definition = definition;
         definition.validateDocument();
-        if (file.definition && file.definition.hasMigrated()) {
-            console.log(`${file.definition.constructor.name} of '${file.fileName}' has migrated; uploading result`);
-            file.source = file.definition.toXML();
-            file.save(andThen(() => {
+        if (this.definition && this.definition.hasMigrated()) {
+            console.log(`${this.definition.constructor.name} of '${this.fileName}' has migrated; uploading result`);
+            this.source = this.definition.toXML();
+            this.save(andThen(() => {
                 definition.loadDependencies(() => {
                     // console.log("File["+file.fileName+"].definition: " + file.definition);
                     this.validateDefinition();
-                    then.run(file);
+                    then.run(this);
                 });
             }));
         } else {
             definition.loadDependencies(() => {
                 // console.log("File["+file.fileName+"].definition: " + file.definition);
                 this.validateDefinition();
-                then.run(file);
+                then.run(this);
             });
         }
     }
@@ -342,77 +344,16 @@ export default class ServerFile<M extends ModelDefinition> {
     }
 
     /**
-     * 
-     * @param {String} fileName 
-     * @param {(file: ServerFile|undefined) => void} callback
+     * Loads the references and calls back with the reference, to the type the caller of this function expects
      */
     loadReference<X extends ModelDefinition>(fileName: string, callback: (file: ServerFile<X> | undefined) => void) {
         this.references.load(fileName, callback);
     }
 
     /**
-     * @returns {Array<ServerFile>}
+     * Return a list of files that use this file.
      */
     usedBy() {
         return Util.removeDuplicates(this.repository.list.filter(file => file.references.contains(this)));
-    }
-}
-
-class ServerFileReferences<M extends ModelDefinition> {
-    files: ServerFile<ModelDefinition>[] = [];
-    /**
-     * 
-     * @param {ServerFile} file 
-     */
-    constructor(public source: ServerFile<M>) {
-    }
-
-    get size() {
-        return this.files.length;
-    }
-
-    clear() {
-        this.files.forEach(file => file.clear());
-        Util.clearArray(this.files);
-    }
-
-    /**
-     * @returns {Array<ServerFile>}
-     */
-    get all() {
-        const set = new Array();
-        this.files.forEach(file => {
-            set.push(file);
-            file.references.all.forEach((reference: ServerFile<ModelDefinition>) => set.push(reference));
-        });
-        return Util.removeDuplicates(set);
-    }
-
-    contains(file: ServerFile<ModelDefinition>) {
-        return this.all.find(reference => reference === file) !== undefined;
-    }
-
-    /**
-     * 
-     * @param {String} fileName 
-     * @param {(file: ServerFile|undefined) => void} callback
-     * @returns 
-     */
-    load<X extends ModelDefinition>(fileName: string, callback: (file: ServerFile<X> | undefined) => void) {
-        const file = this.files.find(file => file.fileName === fileName);
-        if (file) {
-            // console.log(this.source.fileName + " requested " + fileName + " and it is already in our list, with definition: " + file.definition)
-            // @ts-ignore ==> if you cast to the wrong type, that's really your problem ;)
-            callback(file);
-        } else {
-            // console.log(this.source.fileName + " requested " + fileName + " and need to load it")
-            this.source.repository.load(fileName, andThen(file => {
-                if (file) {
-                    // console.log(this.source.fileName + " requested " + fileName + " and loaded it, with definition " + file.definition)
-                    this.files.push(file);
-                }
-                callback(file);
-            }));
-        }
     }
 }

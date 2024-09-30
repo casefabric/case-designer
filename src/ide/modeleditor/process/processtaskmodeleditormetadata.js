@@ -1,6 +1,6 @@
 import IDE from "@ide/ide";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import ProcessFile from "@repository/serverfile/processfile";
 import Icons from "@util/images/icons";
 import { andThen } from "@util/promise/followup";

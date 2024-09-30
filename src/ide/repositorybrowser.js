@@ -5,7 +5,7 @@ import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import TaskDefinition from "@repository/definition/cmmn/caseplan/task/taskdefinition";
 
 export default class RepositoryBrowser {

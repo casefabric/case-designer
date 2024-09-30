@@ -12,17 +12,13 @@ export default class Dimensions extends ModelDefinition {
         super(file);
         this.file = file;
         this.errors = [];
+        this.diagram = this.parseElement(Tags.CMMNDIAGRAM, Diagram);
     }
 
     createShape(x, y, width, height, cmmnElementRef = undefined) {
         return this.diagram.createShape(x, y, width, height, cmmnElementRef);
     }
 
-    parseDocument() {
-        super.parseDocument();
-        this.diagram = this.parseElement(Tags.CMMNDIAGRAM, Diagram);
-    }
-    
     /**
      * While parsing the XML, an error may occur. This is stored in the overall list of parse errors.
      * @param {String} msg 

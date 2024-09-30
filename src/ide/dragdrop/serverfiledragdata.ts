@@ -1,5 +1,5 @@
 import RepositoryBrowser from "@ide/repositorybrowser";
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import DragData from "./dragdata";
 import ModelDefinition from "@repository/definition/modeldefinition";
 

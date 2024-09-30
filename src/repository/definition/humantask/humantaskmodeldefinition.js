@@ -11,10 +11,6 @@ export default class HumanTaskModelDefinition extends ModelDefinition {
     constructor(file) {
         super(file);
         this.file = file;
-    }
-
-    parseDocument() {
-        super.parseDocument();
         /** @type {HumanTaskImplementationDefinition} */
         this.implementation = this.parseElement(IMPLEMENTATION_TAG, HumanTaskImplementationDefinition);
     }

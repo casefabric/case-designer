@@ -1,6 +1,6 @@
 ﻿import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import { andThen } from "@util/promise/followup";
 import TaskMappingsEditor from "../editors/task/taskmappingseditor";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";

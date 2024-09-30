@@ -1,5 +1,5 @@
 import CaseDefinition from "../definition/cmmn/casedefinition";
-import ServerFile from "../serverfile";
+import ServerFile from "./serverfile";
 
 export default class CaseFile extends ServerFile<CaseDefinition> {
     createModelDefinition() {

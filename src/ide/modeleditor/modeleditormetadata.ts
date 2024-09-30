@@ -1,5 +1,5 @@
 import RepositoryBrowser from "@ide/repositorybrowser";
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import IDE from "../ide";
 import ModelEditor from "./modeleditor";
 import ModelDefinition from "@repository/definition/modeldefinition";
