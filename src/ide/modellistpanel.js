@@ -1,12 +1,10 @@
 import ServerFile from "@repository/serverfile/serverfile";
 import Util from "@util/util";
-import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
-import RepositoryBrowser from "./repositorybrowser";
-import ModelEditor from "./modeleditor/modeleditor";
-import CreateNewModelDialog from "./createnewmodeldialog";
-import { andThen } from "@util/promise/followup";
 import $ from "jquery";
 import "jquery-ui";
+import CreateNewModelDialog from "./createnewmodeldialog";
+import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
+import RepositoryBrowser from "./repositorybrowser";
 
 export default class ModelListPanel {
     /**
@@ -85,24 +83,19 @@ export default class ModelListPanel {
      * 
      * @param {ServerFile} file 
      */
-    delete(file) {
+    async delete(file) {
         if (file.usage.length) {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
         } else {
             const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {
-                const editorCloser = () => this.ide.editorRegistry.remove(file.fileName);
-                this.ide.repository.delete(file.fileName, andThen(() => {
-                    if (file.fileType === 'case') {
-                        // When we delete a .case model we also need to delete the .dimensions
-                        this.ide.repository.delete(file.name + '.dimensions', andThen(() => this.ide.editorRegistry.remove(file.fileName)));
-                    } else {
-                        // Tell editor registry to remove any editors for this file.
-                        this.ide.editorRegistry.remove(file.fileName);
-                    }
-                }, msg => {
-                    this.ide.danger(msg);
-                }));
+                await this.ide.repository.delete(file.fileName);
+                if (file.fileType === 'case') {
+                    // When we delete a .case model we also need to delete the .dimensions
+                    await this.ide.repository.delete(file.name + '.dimensions');
+                }
+                // Tell editor registry to remove any editors for this file.
+                this.ide.editorRegistry.remove(file.fileName);
             }
         }
     }
@@ -113,7 +106,7 @@ export default class ModelListPanel {
      * 
      * @param {ServerFile} file
      */
-    rename(file) {
+    async rename(file) {
         const prompter = (/** @type {String} */ previousProposal = '') => {
             const warningMsg = previousProposal !== file.name ? `\n   ${this.type} '${previousProposal}' already exists` : '';
             const text = `Specify a new name for ${this.type} '${file.name}'${warningMsg}`;
@@ -140,26 +133,21 @@ export default class ModelListPanel {
                 const newFileName = newName + '.' + file.fileType;
                 if (this.ide.repository.get(newFileName)) {
                     this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
-                } else {
-                    const locationResetter = () => {
-                        // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
-                        if (this.repositoryBrowser.currentFileName === oldFileName) {
-                            window.location.hash = newFileName;
-                            if (this.ide.editorRegistry.currentEditor) {
-                                this.ide.editorRegistry.currentEditor.refresh();
-                            }
-                        }
-                    };
-                    this.ide.repository.rename(file.fileName, newFileName, andThen(() => {
-                        if (file.fileType == 'case') {
-                            // when a .case file is renamed also the .dimensions file will be renamed
-                            const oldDimensionsFileName = oldName + '.dimensions';
-                            const newDimensionsFileName = newName + '.dimensions';
-                            this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName, andThen(locationResetter));
-                        } else {
-                            locationResetter();
-                        }
-                    }));
+                    return;
+                }
+                await this.ide.repository.rename(file.fileName, newFileName);
+                if (file.fileType == 'case') {
+                    // when a .case file is renamed also the .dimensions file must be renamed
+                    const oldDimensionsFileName = oldName + '.dimensions';
+                    const newDimensionsFileName = newName + '.dimensions';
+                    await this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName);
+                }
+                // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
+                if (this.repositoryBrowser.currentFileName === oldFileName) {
+                    window.location.hash = newFileName;
+                    if (this.ide.editorRegistry.currentEditor) {
+                        this.ide.editorRegistry.currentEditor.refresh();
+                    }
                 }
             }
         }
@@ -173,12 +161,12 @@ export default class ModelListPanel {
      * Creates a new model based on name
      * @param {*} e The click event
      */
-    create(e) {
+    async create(e) {
         e.stopPropagation();
         const filetype = this.type.modelType;
         const text = `Create a new ${this.type}`;
         const dialog = new CreateNewModelDialog(this.ide, text);
-        dialog.showModalDialog((newModelInfo) => {
+        dialog.showModalDialog(async (newModelInfo) => {
             if (newModelInfo) {
                 const newModelName = newModelInfo.name;
                 const newModelDescription = newModelInfo.description;
@@ -195,9 +183,8 @@ export default class ModelListPanel {
                     return;
                 }
 
-                this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
-                    window.location.hash = fileName;
-                });
+                await this.ide.createNewModel(filetype, newModelName, newModelDescription);
+                window.location.hash = fileName;
             };
         });
     }

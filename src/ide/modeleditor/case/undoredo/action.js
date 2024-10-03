@@ -1,7 +1,6 @@
 import CaseDefinition from "@definition/cmmn/casedefinition";
-import UndoManager from "./undoredo";
 import XML from "@util/xml";
-import { andThen } from "@util/promise/followup";
+import UndoManager from "./undoredo";
 
 export default class Action {
     /**
@@ -72,7 +71,7 @@ export default class Action {
             return this.previousAction.perform('undo', this.caseChanged, this.dimensionsChanged);
         } else {
             console.log('No undo available');
-            return this;
+            return Promise.resolve(this);
         }
     }
 
@@ -91,21 +90,21 @@ export default class Action {
      * @param {Boolean} caseChanged 
      * @param {Boolean} dimensionsChanged 
      */
-    perform(direction, caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
-        // console.log("Performing "+direction+" on action "+this.undoCount )
+    async perform(direction, caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
+        console.groupCollapsed("Performing "+direction+" on action "+this.undoCount )
         this.undoManager.performingBufferAction = true;
         // Parse the sources again into a definition and load that in the editor.
         this.caseFile.clear();        
         this.caseFile.source = this.caseString;
         this.dimensionsFile.source = this.dimensionsString;
-        this.caseFile.parse(andThen(() => {
-            this.undoManager.editor.loadDefinition(this.caseFile.definition);
-            // Reset the "saved" flag.
-            this.saved = false;
-            this.save(caseChanged, dimensionsChanged);
-            this.undoManager.performingBufferAction = false;
-        }))
-
+        await this.dimensionsFile.parse();
+        await this.caseFile.parse();
+        this.undoManager.editor.loadDefinition(this.caseFile.definition);
+        // Reset the "saved" flag.
+        this.saved = false;
+        await this.save(caseChanged, dimensionsChanged);
+        this.undoManager.performingBufferAction = false;
+        console.groupEnd();
         return this;
     }
 
@@ -116,7 +115,7 @@ export default class Action {
      * @param {Boolean} caseChanged 
      * @param {Boolean} dimensionsChanged 
      */
-    save(caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
+    async save(caseChanged = this.caseChanged, dimensionsChanged = this.dimensionsChanged) {
         if (this.saved) {
             // We keep track of a "saved" flag. This is required, because the constructor call
             //  may return the previous action, and hence, if there is a change, the save logic is invoked again.
@@ -124,11 +123,11 @@ export default class Action {
         }
         if (caseChanged) {
             this.caseFile.source = this.caseString;
-            this.caseFile.save();
+            await this.caseFile.save();
         }
         if (dimensionsChanged) {
             this.dimensionsFile.source = this.dimensionsString;
-            this.dimensionsFile.save();
+            await this.dimensionsFile.save();
         }
         this.saved = true;
     }

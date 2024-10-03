@@ -84,11 +84,11 @@ export default class UndoManager {
         }
     }
 
-    undo() {
+    async undo() {
         if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
 
         if (this.currentAction) {
-            this.currentAction = this.currentAction.undo();
+            this.currentAction = await this.currentAction.undo();
         } else {
             console.log('No undo available');
         }
@@ -103,11 +103,11 @@ export default class UndoManager {
         }
     }
 
-    redo() {
+    async redo() {
         if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
 
         if (this.currentAction && this.currentAction.nextAction) {
-            this.currentAction = this.currentAction.nextAction.redo();
+            this.currentAction = await this.currentAction.nextAction.redo();
         } else {
             console.log('No redo availalbe');
         }

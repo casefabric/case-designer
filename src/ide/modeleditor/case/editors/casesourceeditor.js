@@ -1,10 +1,9 @@
+import Tags from "@repository/definition/dimensions/tags";
 import CodeMirrorConfig from "@util/codemirrorconfig";
 import Util from "@util/util";
 import XML from "@util/xml";
-import CaseModelEditor from "../casemodeleditor";
-import { andThen } from "@util/promise/followup";
-import Tags from "@repository/definition/dimensions/tags";
 import $ from "jquery";
+import CaseModelEditor from "../casemodeleditor";
 
 export default class CaseSourceEditor {
     /**
@@ -41,7 +40,7 @@ export default class CaseSourceEditor {
         this.codeMirrorDimensionsXML = CodeMirrorConfig.createXMLEditor(this.html.find('.right .codemirrorsource'));
     }
 
-    import() {
+    async import() {
         const newSource = this.codeMirrorCaseXML.getValue();
         const newDimensions = this.codeMirrorDimensionsXML.getValue();
 
@@ -77,14 +76,13 @@ export default class CaseSourceEditor {
         // Now replace the content in the editor, and reload
         this.editor.caseFile.source = caseXML;
         this.editor.dimensionsFile.source = dimensionsXML;
-        this.editor.dimensionsFile.parse(andThen(() => {
-            this.editor.caseFile.parse(andThen(() => {
-                this.editor.loadDefinition();
-                // Completing the action will save the model and add a corresponding action to the undo/redo buffer
-                this.editor.completeUserAction();
-                this.close();
-            }));
-        }));
+        await this.editor.dimensionsFile.parse();
+        await this.editor.caseFile.parse();
+        // Load the new model in the editor, and save it.
+        this.editor.loadDefinition();
+        // Completing the action will save the model and add a corresponding action to the undo/redo buffer
+        this.editor.completeUserAction();
+        this.close();
     }
 
     close() {
