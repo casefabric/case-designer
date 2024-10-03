@@ -2,9 +2,8 @@
 export default class Util {
     /**
      * Copies the text to clipboard
-     * @param {string} text 
      */
-    static copyText(text) {
+    static copyText(text: string) {
         if (!text) {
             console.warn('No text to copy to clipboard');
             return;
@@ -19,10 +18,8 @@ export default class Util {
 
     /**
      * 
-     * @param {JQuery<HTMLElement>} html 
-     * @param  {...string} classNames 
      */
-    static addClassOverride(html, ...classNames) {
+    static addClassOverride(html: JQuery<HTMLElement>, ...classNames: string[]) {
         // For some reason alpaca seems to kill the jquery-ui addClass override in some places in the editor. No clue why.
         //  It seems to be that case only on svg elements???
         //  This code gives a quick hack ( grrr.... ) around it.
@@ -36,7 +33,7 @@ export default class Util {
         html.attr('class', existingClasses.join(' '));
     }
 
-    static removeClassOverride(html, ...classNames) {
+    static removeClassOverride(html: JQuery<HTMLElement>, ...classNames: string[]) {
         const currentClassNames = html.attr('class');
         const existingClasses = currentClassNames ? currentClassNames.split(' ') : [];
         classNames.forEach(name => Util.removeFromArray(existingClasses, name));
@@ -45,38 +42,35 @@ export default class Util {
 
     /**
      * Detaches all event handlers from a JQuery selected HTML element.
-     * @param {JQuery<HTMLElement>} html 
      */
-    static detachEventHandlers(html) {
+    static detachEventHandlers(html: JQuery<HTMLElement>) {
         // First clear all javascript listeners to avoid memory leakings because of cross-references between js and rendering engine
         $(html).off();
         // Note: for large set of debug events (like 60000) there is 350,000 children to "off" the event listeners, and good old jquery.find('*') runs into maximum stack trace stuff
         // For speed we're iterating native html elements
-        const childTraverser = html => {
+        const childTraverser = (html: ChildNode) => {
             $(html).off(); // Take off any event listeners through the JQuery wrapper
             let child = html.firstChild;
             while (child) {
                 childTraverser(child);
                 child = child.nextSibling;
-            }                
+            }
         }
         html.get().forEach(childTraverser);
     }
 
     /**
      * Clears the html content of the element and detaches all underlying event handlers
-     * @param {JQuery<HTMLElement>} html 
      */
-    static clearHTML(html) {
+    static clearHTML(html: JQuery<HTMLElement>) {
         Util.detachEventHandlers(html);
         $(html).empty();
     }
 
     /**
      * Deletes the html content of the element and detaches all underlying event handlers
-     * @param {JQuery<HTMLElement>} html 
      */
-    static removeHTML(html) {
+    static removeHTML(html: JQuery<HTMLElement>) {
         Util.detachEventHandlers(html);
         $(html).remove();
     }
@@ -84,7 +78,7 @@ export default class Util {
     /**
      * returns a random character set of length n
      */
-    static getRandomSet(n) {
+    static getRandomSet(n: number) {
         const s = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         const str = Array(n).join().split(',').map(
             function () {
@@ -107,7 +101,7 @@ export default class Util {
      * @param {Array} array 
      * @param {*} element 
      */
-    static removeFromArray(array, element) {
+    static removeFromArray(array: any[], element: any) {
         const arrayIndex = array.indexOf(element);
         if (arrayIndex > -1) {
             array.splice(arrayIndex, 1);
@@ -121,7 +115,7 @@ export default class Util {
      * @param {*} element 
      * @param {*} after 
      */
-    static insertInArray(array, element, after = undefined) {
+    static insertInArray(array: any[], element: any, after?: any) {
         Util.removeFromArray(array, element);
         const index = array.indexOf(after);
         if (index >= 0 && index < array.length - 1) {
@@ -136,7 +130,7 @@ export default class Util {
      * @param {Array} array 
      * @returns {Array}
      */
-    static removeDuplicates(array) {
+    static removeDuplicates(array: any[]) {
         const size = array.length;
         const copy = [...array];
         const set = new Set();
@@ -151,7 +145,7 @@ export default class Util {
      * Simple helper function that removes all elements from an array.
      * @param {Array} array 
      */
-    static clearArray(array) {
+    static clearArray(array: any[]) {
         array.splice(0, array.length);
         return array;
     }
@@ -160,7 +154,7 @@ export default class Util {
      * 
      * @param {String} str 
      */
-    static withoutNewlinesAndTabs(str) {
+    static withoutNewlinesAndTabs(str: string) {
         if (typeof (str) !== 'string') return str;
         return str ? str.replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ') : str;
     }
@@ -170,7 +164,7 @@ export default class Util {
      * @param {Function} superClass 
      * @param {Function} subClass 
      */
-    static isSubClassOf(superClass, subClass) {
+    static isSubClassOf(superClass: Function, subClass: Function): boolean {
         if (!subClass) {
             return false;
         } else if (subClass == superClass) {
@@ -185,20 +179,23 @@ export default class Util {
      * @returns {ParseResult}
      * @param {*} source 
      */
-    static parseJSON(source) {
+    static parseJSON(source: any): ParseResult {
         return new ParseResult(source);
     }
 }
 
 class ParseResult {
-    constructor(source) {
-        this.source = source;
+    lineNumber: number = -1;
+    column: number = -1;
+    description: string = '';
+    error: any;
+    constructor(public source: any) {
     }
 
     get object() {
         try {
             return JSON.parse(this.source);
-        } catch (error) {
+        } catch (error: any) {
             const lines = this.source.split('\n');
             const message = error.message;
             const brokenMessage = message.split('at position');
