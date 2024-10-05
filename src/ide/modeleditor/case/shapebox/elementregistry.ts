@@ -1,18 +1,18 @@
 
 import Icons from "@util/images/icons";
 import Shapes from "@util/images/shapes";
-import CaseFileItemView from "./casefileitemview";
-import CasePlanView from "./caseplanview";
-import CaseTaskView from "./casetaskview";
-import HumanTaskView from "./humantaskview";
-import MilestoneView from "./milestoneview";
-import PlanningTableView from "./planningtableview";
-import ProcessTaskView from "./processtaskview";
-import { EntryCriterionView, ExitCriterionView, ReactivateCriterionView } from "./sentryview";
-import StageView from "./stageview";
-import TextAnnotationView from "./textannotationview";
-import TimerEventView from "./timereventview";
-import UserEventView from "./usereventview";
+import CaseFileItemView from "../elements/casefileitemview";
+import CasePlanView from "../elements/caseplanview";
+import CaseTaskView from "../elements/casetaskview";
+import HumanTaskView from "../elements/humantaskview";
+import MilestoneView from "../elements/milestoneview";
+import PlanningTableView from "../elements/planningtableview";
+import ProcessTaskView from "../elements/processtaskview";
+import { EntryCriterionView, ExitCriterionView, ReactivateCriterionView } from "../elements/sentryview";
+import StageView from "../elements/stageview";
+import TextAnnotationView from "../elements/textannotationview";
+import TimerEventView from "../elements/timereventview";
+import UserEventView from "../elements/usereventview";
 
 export default class ElementRegistry {
     static viewMetadata: ElementMetadata[] = [];

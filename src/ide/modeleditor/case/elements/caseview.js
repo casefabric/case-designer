@@ -14,7 +14,7 @@ import Deploy from "../editors/deploy";
 import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
 import RolesEditor from "../editors/roleseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
-import ShapeBox from "../shapebox";
+import ShapeBox from "../shapebox/shapebox";
 import UndoRedoBox from "../undoredo/undoredobox";
 import CMMNElementView from "./cmmnelementview";
 import Grid from "../grid";

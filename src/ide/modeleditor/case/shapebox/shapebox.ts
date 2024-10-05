@@ -1,20 +1,22 @@
-import ShapeBoxDragData from "@ide/dragdrop/shapeboxdragdata";
+import ShapeBoxDragData from "@ide/modeleditor/case/shapebox/shapeboxdragdata";
 import $ from "jquery";
-import CaseView from "./elements/caseview";
-import ElementRegistry from "./elements/elementregistry";
+import CaseView from "../elements/caseview";
+import ElementRegistry, { ElementMetadata } from "./elementregistry";
+import DragData from "@ide/dragdrop/dragdata";
 
 export default class ShapeBox {
+    case: CaseView;
+    html: JQuery<HTMLElement>;
+    dragData?: ShapeBoxDragData;
+    htmlContainer: JQuery<HTMLUListElement>;
+
     /**
-     * 
-     * @param {CaseView} cs 
-     * @param {JQuery<HTMLElement>} htmlElement 
+     * Box that has the CMMN shapes that are available for dragging to the canvas
      */
-    constructor(cs, htmlElement) {
+    constructor(cs: CaseView, htmlElement: JQuery<HTMLElement>) {
+        ElementRegistry.initialize();
         this.case = cs;
-        //create the Shapes which are available for dragging to the canvas
-        //these Shapes are the standard CMMN Shapes, shown in menu on left hand side
         this.html = htmlElement;
-        this.dragData = /** @type {ShapeBoxDragData | undefined} */ (undefined);
 
         const html = $(
             `<div>
@@ -44,11 +46,9 @@ export default class ShapeBox {
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-     * @param {(dragData: ShapeBoxDragData) => void} dropHandler
-     * @param {(dragData: ShapeBoxDragData) => boolean} filter
      */
-    setDropHandler(dropHandler, filter = undefined) {
-        if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
+    setDropHandler(dropHandler:(dragData: ShapeBoxDragData) => void, filter?: (dragData: ShapeBoxDragData) => boolean) {
+        if (this.dragData) this.dragData.setDropHandler(<(dragData: DragData) => void>dropHandler, <(dragData: DragData) => boolean>filter);
     }
 
     /**
@@ -61,9 +61,10 @@ export default class ShapeBox {
     /**
      * Handles the onmousedown event on a shape in the repository
      * The shape can be dragged to the canvas to create an element
+     * 
      */
-    handleMouseDown(e, shapeType) {
+    handleMouseDown(e: any, shapeType: ElementMetadata) {
         this.case.clearSelection();
-        this.dragData = new ShapeBoxDragData(this, shapeType);
+        this.dragData = new ShapeBoxDragData(this, shapeType.cmmnElementType, shapeType.typeDescription, shapeType.smallImage);
     }
 }

@@ -6,13 +6,11 @@ import { andThen } from "@util/promise/followup";
 import Util from "@util/util";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
-import ElementRegistry from "./elements/elementregistry";
 import Grid from "./grid";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
     static register() {
         super.registerEditorType(new CaseModelEditorMetadata());
-        ElementRegistry.initialize();
     }
 
     /** @returns {Array<CaseFile>} */
