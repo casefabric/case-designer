@@ -13,7 +13,7 @@ export default class ModelEditor {
      */
     constructor(ide, file) {
         this.ide = ide;
-        this.ide.editorRegistry.register(this);
+        this.ide.editorRegistry.add(this);
         this.file = file;
         this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */

@@ -2,14 +2,16 @@
 
 import ElementDefinition from "@definition/elementdefinition";
 import ProcessModelDefinition from "@definition/process/processmodeldefinition";
-import CodeMirrorConfig from "@util/codemirrorconfig";
-import XML from "@util/xml";
-import ModelEditor from "../modeleditor";
-import ModelParameters from "../xmleditor/modelparameters";
-import ModelSourceEditor from "../xmleditor/modelsourceeditor";
 import IDE from "@ide/ide";
 import ProcessFile from "@repository/serverfile/processfile";
+import CodeMirrorConfig from "@util/codemirrorconfig";
+import XML from "@util/xml";
 import $ from "jquery";
+import ModelEditor from "../modeleditor";
+import ModelEditorMetadata from "../modeleditormetadata";
+import ModelParameters from "../xmleditor/modelparameters";
+import ModelSourceEditor from "../xmleditor/modelsourceeditor";
+import ProcessModelEditorMetadata from "./processtaskmodeleditormetadata";
 
 const HTTP_CALL_DEFINITION = 'HTTPCallDefinition';
 const HTTP_CALL_DEFINITION_IMPLEMENTATION_CLASS = 'org.cafienne.processtask.implementation.http.HTTPCallDefinition';
@@ -27,6 +29,10 @@ const CUSTOM_IMPLEMENTATION_DEFINITION = ' ';
 const CUSTOM_IMPLEMENTATION_DEFINITION_IMPLEMENTATION_CLASS = 'SPECIFY_IMPLEMENTATION_CLASS_HERE';
 
 export default class ProcessModelEditor extends ModelEditor {
+    static register() {
+        ModelEditorMetadata.registerEditorType(new ProcessModelEditorMetadata());
+    }
+
     /** 
      * This editor handles process models; only validates the xml
      * @param {IDE} ide 

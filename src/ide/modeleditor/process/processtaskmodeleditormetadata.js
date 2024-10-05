@@ -8,10 +8,6 @@ import ModelEditorMetadata from "../modeleditormetadata";
 import ProcessModelEditor from "./processmodeleditor";
 
 export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
-    static register() {
-        super.registerEditorType(new ProcessModelEditorMetadata());
-    }
-
     /** @returns {Array<ServerFile>} */
     get modelList() {
         return this.ide.repository.getProcesses();

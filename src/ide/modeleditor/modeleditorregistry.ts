@@ -1,9 +1,9 @@
 import IDE from "@ide/ide";
-import CaseModelEditorMetadata from "./case/casemodeleditormetadata";
-import HumantaskModelEditorMetadata from "./humantask/humantaskmodeleditormetadata";
+import CaseModelEditor from "./case/casemodeleditor";
+import HumantaskModelEditor from "./humantask/humantaskmodeleditor";
 import ModelEditor from "./modeleditor";
 import ModelEditorMetadata from "./modeleditormetadata";
-import ProcessModelEditorMetadata from "./process/processtaskmodeleditormetadata";
+import ProcessModelEditor from "./process/processmodeleditor";
 
 export default class ModelEditorRegistry {
     private editors: Array<ModelEditor> = [];
@@ -16,12 +16,12 @@ export default class ModelEditorRegistry {
         this.ide = ide;
 
         // Register the known editors, e.g. HumanTaskEditor, CaseModelEditor, ProcessModelEditor
-        CaseModelEditorMetadata.register();
-        HumantaskModelEditorMetadata.register();
-        ProcessModelEditorMetadata.register();
+        CaseModelEditor.register();
+        HumantaskModelEditor.register();
+        ProcessModelEditor.register();
     }
 
-    register(editor: ModelEditor) {
+    add(editor: ModelEditor) {
         this.editors.push(editor);
     }
 

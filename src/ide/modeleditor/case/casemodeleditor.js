@@ -7,8 +7,14 @@ import CaseView from "./elements/caseview";
 import Grid from "./grid";
 import UndoManager from "./undoredo/undoredo";
 import $ from "jquery";
+import ModelEditorMetadata from "../modeleditormetadata";
+import CaseModelEditorMetadata from "./casemodeleditormetadata";
 
 export default class CaseModelEditor extends ModelEditor {
+    static register() {
+        ModelEditorMetadata.registerEditorType(new CaseModelEditorMetadata());
+    }
+
     /**
      * This editor handles Case models
      * @param {IDE} ide 

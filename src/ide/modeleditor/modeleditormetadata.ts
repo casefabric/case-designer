@@ -6,7 +6,6 @@ import ModelEditor from "./modeleditor";
 export default class ModelEditorMetadata {
     public static types: Array<ModelEditorMetadata> = [];
 
-
     /**
      * Registers a type of editor, e.g. HumanTaskEditor, CaseModelEditor, ProcessModelEditor
      */

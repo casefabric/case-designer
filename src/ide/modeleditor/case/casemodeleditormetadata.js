@@ -9,10 +9,6 @@ import CaseModelEditor from "./casemodeleditor";
 import Grid from "./grid";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
-    static register() {
-        super.registerEditorType(new CaseModelEditorMetadata());
-    }
-
     /** @returns {Array<CaseFile>} */
     get modelList() {
         return this.ide.repository.getCases();
