@@ -4,23 +4,32 @@ import Settings from "@ide/settings/settings";
 import $ from "jquery";
 
 export default class Splitter {
+    private static _settings?: SplitterSettings;
+    private static splitters: Splitter[] = [];
+    startSize: number = 0;
+    minimumSize: number;
+    settings: SplitterSettings;
+    div1: JQuery<HTMLElement>;
+    div2: JQuery<HTMLElement>;
+    bar: JQuery<HTMLElement>;
+    splitterMover: (e: any) => void;
+    splitterMoved: (e: any) => void;
+    private _parentSplitter?: Splitter;
+    private _child?: Splitter;
+
     /** @returns {SplitterSettings} */
-    static get Settings() {
+    static get Settings(): SplitterSettings {
         if (!Splitter._settings) {
             Splitter._settings = Object.assign(new SplitterSettings, Settings.splitters);
         }
-        return Splitter._settings;
+        return Splitter._settings as SplitterSettings;
     }
 
     /**
      * Creates a new Splitter object for the container.
-     * @param {JQuery<HTMLElement>} container 
-     * @param {String|Number} defaultPosition 
-     * @param {Number} minimumSize
      */
-    constructor(container, defaultPosition, minimumSize = 0) {
+    constructor(public container: JQuery<HTMLElement>, defaultPosition: string | number, minimumSize = 0) {
         Splitter.splitters.push(this);
-        this.container = container;
         this.settings = Splitter.Settings.get(container);
         if (! this.settings.savedPosition) {
             this.settings.savedPosition = defaultPosition;
@@ -31,25 +40,8 @@ export default class Splitter {
         this.minimumSize = minimumSize;
         
         this.connectParent();
-        this.createBar();
-        this.startSize = this.getSize();
-        this.repositionSplitter(this.position);
-    }
 
-    getSize() {
-        const size = this.container[this.sizeAttribute]();
-        if (! size) {
-            // If there is no size on the container available, then we'll just add the sizes of the content with each other.
-            const div1Size = this.div1[this.sizeAttribute]();
-            const div2Size = this.div2[this.sizeAttribute]();
-            if (div1Size || div2Size) {
-                return div1Size + div2Size;
-            }
-        }
-        return size;
-    }
-
-    createBar() {
+        // Create the bar object
         const children = this.container.children();
         if (children.length != 2) {
             throw new Error('Splitter can only work on a container with 2 children. Container has ' + children.length + ' children instead');
@@ -63,6 +55,27 @@ export default class Splitter {
         this.bar.insertAfter(this.div1);
         this.div1.css('position', 'absolute');
         this.div2.css('position', 'absolute');
+
+        this.afterCreateBar();
+
+        this.startSize = this.getSize();
+        if (this.position) this.repositionSplitter(this.position);
+    }
+    
+    afterCreateBar() {
+    }
+
+    getSize() {
+        const size = (this.container as any)[this.sizeAttribute]();
+        if (! size) {
+            // If there is no size on the container available, then we'll just add the sizes of the content with each other.
+            const div1Size = (this.div1 as any)[this.sizeAttribute]();
+            const div2Size = (this.div2 as any)[this.sizeAttribute]();
+            if (div1Size || div2Size) {
+                return div1Size + div2Size;
+            }
+        }
+        return size;
     }
 
     /**
@@ -94,7 +107,6 @@ export default class Splitter {
         });
     }
 
-    /** @param {Splitter} newParent */
     set parent(newParent) {
         if (this._parentSplitter) {
             // New parent; remove ourselves from the old one.
@@ -108,7 +120,6 @@ export default class Splitter {
         return this._parentSplitter;
     }
 
-    /** @param {Splitter} c */
     set child(c) {
         this._child = c;
     }
@@ -117,22 +128,22 @@ export default class Splitter {
         return this._child;
     }
 
-    handlePointerDown(e) {
+    handlePointerDown(e: any) {
         this.savedPosition = this.position;
         // Start listening to mouse move - but only inside the container
         this.container.on('pointermove', this.splitterMover);
         this.container.on('pointerup', this.splitterMoved);
     }
 
-    handlePointerMove(e) {
+    handlePointerMove(e: any) {
         e.stopPropagation();
         e.preventDefault();
-        const currentBarPosition = this.bar.offset()[this.positionAttribute];
+        const currentBarPosition = (this.bar.offset() as any)[this.positionAttribute];
         const pixelsMoved = currentBarPosition - e[this.clientPosition];
         this.moveSplitter(pixelsMoved);
     }
 
-    handlePointerUp(e) {
+    handlePointerUp(e: any) {
         e.stopPropagation();
         e.preventDefault();
         // this.bar.css('background-color', '')
@@ -149,34 +160,30 @@ export default class Splitter {
 
     /**
      * Returns whether this is a 'horizontal' or 'vertical' splitter
-     * @returns {String}
      */
-    get orientation() {
+    get orientation(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Returns the direction of the splitter, i.e., which part is "stable" and which part is "dynamic" upon resizing of a parent element.
      * Should be either top, bottom, left or right.
-     * @returns {String}
      */
-    get direction() {
+    get direction(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Returns the name of the event's client attribute relevant for repositioning (either 'clientX' or 'clientY')
-     * @returns {String}
      */
-    get clientPosition() {
+    get clientPosition(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Returns the relative bar position (either 'left' or 'top') depending on the orientation.
-     * @returns {Number}
      */
-    getBarPixels() {
+    getBarPixels(): number {
         return parseInt(this.bar.css(this.positionAttribute));
     }
 
@@ -191,17 +198,17 @@ export default class Splitter {
     }
 
     /** @returns {String} The name of the css attribute through which the position can be set (either 'top' or 'left') */
-    get positionAttribute() {
+    get positionAttribute(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /** @returns {String} The name of the css attribute through which the position can be set (either 'top' or 'left') */
-    get oppositePositionAttribute() {
+    get oppositePositionAttribute(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /** @returns {String} The name of the css attribute through which the element's size can be measured (either 'height' or 'width') */
-    get sizeAttribute() {
+    get sizeAttribute(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -210,17 +217,16 @@ export default class Splitter {
      * Also validates against the minimum size setting.
      * @param {Number} numPixels 
      */
-    moveSplitter(numPixels) {
+    moveSplitter(numPixels: number) {
         const currentPosition = this.getBarPixels();
         const newPosition = currentPosition - numPixels;
         this.repositionSplitter(newPosition);
     }
 
-    validateNewPosition(proposedPosition) {
+    validateNewPosition(proposedPosition: number | string): number | string {
         if (typeof(proposedPosition)==='string') {
             return proposedPosition;
         }
-
         const maximumPosition = this.getSize() - this.minimumSize;
         const newPosition = Math.min(proposedPosition, maximumPosition);
         return newPosition;
@@ -230,7 +236,7 @@ export default class Splitter {
      * Moves the splitter to the absolute location.
      * @param {Number} proposedPosition 
      */
-    repositionSplitter(proposedPosition) {
+    repositionSplitter(proposedPosition: number | string) {
         const newPosition = this.validateNewPosition(proposedPosition);
 
         // Place the splitter bar into the right position
@@ -263,12 +269,12 @@ export default class Splitter {
         this.startSize = this.getSize();
     }
 
-    get position() {
+    get position(): number | string | undefined{
         return this.settings.position;
     }
 
-    set position(p) {
-        if (p < 0) {
+    set position(p: number | string) {
+        if (Number(p) < 0) {
             console.warn("Cannot set position to negative number "+p)
             return;
         }
@@ -276,15 +282,12 @@ export default class Splitter {
         this.settings.save();
     }
 
-    get savedPosition() {
+    get savedPosition(): number | string | undefined {
         return this.settings.savedPosition;
     }
 
-    set savedPosition(p) {
+    set savedPosition(p: number | string | undefined) {
         this.settings.savedPosition = p;
         this.settings.save();
     }
 }
-
-/** @type {Array<Splitter>} */
-Splitter.splitters = [];

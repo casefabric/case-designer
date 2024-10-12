@@ -4,11 +4,8 @@ export default class LeftSplitter extends HorizontalSplitter {
     /**
      * Creates a splitter that by default aligns to the right 
      * (i.e., keeps the right div static, and resize left part upon parent resize)
-     * @param {JQuery<HTMLElement>} container 
-     * @param {String} offset Initial offset at which the splitter should be positioned
-     * @param {Number} minimumSize
      */
-    constructor(container, offset, minimumSize = 0) {
+    constructor(public container: JQuery<HTMLElement>, offset: string | number, minimumSize = 0) {
         super(container, offset, minimumSize);
     }
 
@@ -33,9 +30,9 @@ export default class LeftSplitter extends HorizontalSplitter {
         return this.minimumSize;
     }
 
-    repositionSplitter(newPosition) {
+    repositionSplitter(newPosition: number) {
         super.repositionSplitter(newPosition);
         // If the splitter moved all the way to the farEnd, then we should show the restore image
-        this.restoreImg.css('display', newPosition <= this.farEnd + 5 ? 'block' : 'none');
+        this.restoreImg?.css('display', newPosition <= this.farEnd + 5 ? 'block' : 'none');
     }     
 }

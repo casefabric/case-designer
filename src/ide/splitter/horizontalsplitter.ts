@@ -2,13 +2,9 @@ import Splitter from "./splitter";
 import $ from "jquery";
 
 export default class HorizontalSplitter extends Splitter {
-    /**
-     * 
-     * @param {JQuery<HTMLElement>} container 
-     * @param {String|Number} offset 
-     * @param {Number} minimumSize Indicates to how far the splitter can be moved into the direction (whether all the way or there must always remain space)
-     */
-    constructor(container, offset, minimumSize = 0) {
+    minimizeImg?: JQuery<HTMLElement>;
+    restoreImg?: JQuery<HTMLElement>;
+    constructor(public container: JQuery<HTMLElement>, offset: string | number, minimumSize = 0) {
         super(container, offset, minimumSize);
     }
 
@@ -23,9 +19,8 @@ export default class HorizontalSplitter extends Splitter {
     get sizeAttribute() {
         return 'width';
     }
-
-    createBar() {
-        super.createBar();
+    
+    afterCreateBar() {
         this.attachMinimizer();
     }
 
@@ -61,66 +56,63 @@ export default class HorizontalSplitter extends Splitter {
             e.stopPropagation();
         });
 
-        const near = (a, b) => a >= b - 10 && a <= b + 10;
+        const near = (a: number, b: number) => a >= b - 10 && a <= b + 10;
 
-        this.container.on('pointermove', e => {
+        this.container.on('pointermove', (e: any) => {
             const offset = this.bar.offset();
+            if (! offset) return;
             if (near(e.clientX, offset.left)) {
-                if (this.restoreImg.css('display') == 'block') {
+                if (this.restoreImg?.css('display') == 'block') {
                     // not showing the collapse img, because we're already in collapsed state
                 } else {
-                    this.minimizeImg.css('display', 'block');
+                    this.minimizeImg?.css('display', 'block');
                 }
             } else {
-                this.minimizeImg.css('display', 'none');
+                this.minimizeImg?.css('display', 'none');
             }
         });
     }
 
-    /** @returns {String} */
-    get minimizeImgURL() {
+    get minimizeImgURL(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {String} */
-    get restoreImgURL() {
+    get restoreImgURL(): string {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /** @returns {Number} */
-    get restoreImgLocation() {
+    get restoreImgLocation(): number {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    get orientation() {
+    get orientation(): string {
         return 'horizontal';
     }
 
-    /** @returns {Number} */
-    get farEnd() {
+    get farEnd(): number {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    get clientPosition() {
+    get clientPosition(): string {
         return 'clientX';
     }
 
     minimize() {
         this.savedPosition = this.position;
         this.repositionSplitter(this.farEnd);
-        this.restoreImg.css('display', 'block');
-        this.minimizeImg.css('display', 'none');
+        this.restoreImg?.css('display', 'block');
+        this.minimizeImg?.css('display', 'none');
     }
 
     restore() {
-        this.restoreImg.css('display', 'none');
-        this.repositionSplitter(this.savedPosition);
+        this.restoreImg?.css('display', 'none');
+        if (this.savedPosition) this.repositionSplitter(this.savedPosition);
     }
 
     /**
      * @returns {Boolean} true if the splitter has been minimized by clicking the minimize button
      */
     get minimized() {
-        return this.restoreImg.css('display') == 'block';
+        return this.restoreImg?.css('display') == 'block';
     }
 }
