@@ -2,12 +2,12 @@ import IDE from "./ide";
 import $ from "jquery";
 
 export default class IDEFooter {
+    html: JQuery<HTMLElement>;
+    divGlobalWarning: JQuery<HTMLElement>;
     /**
      * Constructs the footer of the IDE element.
-     * @param {IDE} ide 
      */
-    constructor(ide) {
-        this.ide = ide;
+    constructor(public ide: IDE) {
         this.html = $(
 `<div class="ide-footer basicbox idefooter">
     <div class="globalWarning"></div>
@@ -37,9 +37,9 @@ export default class IDEFooter {
      */
     checkBrowser() {
         // Code inspired by https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
-        var isChromium = !!window.chrome;
+        var isChromium = !!(window as any).chrome;
         var vendorName = window.navigator.vendor;
-        var isOpera = typeof window.opr !== "undefined";
+        var isOpera = typeof (window as any).opr !== "undefined";
         var isIEedge = window.navigator.userAgent.indexOf("Edge") > -1;
         var isIOSChrome = window.navigator.userAgent.match("CriOS");
 
@@ -56,18 +56,12 @@ export default class IDEFooter {
 
         // Sometimes we cause script errors without users seeing it. Make it more clear to them...
         $(window).on('error', e => this.setGlobalWarning('The browser ran into an error; we suggest you refresh it in order to avoid any further loss of work'));
-
-        // required for bug in chrome 48: Chrome has removed a feature that is core to jointjs
-        SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(toElement) {
-            return toElement.getScreenCTM().inverse().multiply(this.getScreenCTM());
-        };
     }
 
     /**
      * Sets a global warning message in the footer
-     * @param {String} msg 
      */
-    setGlobalWarning(msg) {
+    setGlobalWarning(msg: string) {
         this.divGlobalWarning.html(msg);
     }
 }
