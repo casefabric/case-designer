@@ -25,14 +25,14 @@ export default class ModelListPanel {
         this.type = type;
 
         this.htmlPanel = $(
-            `<h3 filetype="${type.modelType}">${type.description}
+            `<h3 filetype="${type.fileType}">${type.description}
                 <img class="plus-icon" src="images/plus_32.png" title="Create new ${type} ..."/>
             </h3>
-            <div class="file-container file-list-${type.modelType}"></div>`);
+            <div class="file-container file-list-${type.fileType}"></div>`);
 
         this.accordion.append(this.htmlPanel);
         this.accordion.accordion('refresh');
-        this.container = this.accordion.find('.file-list-' + type.modelType);
+        this.container = this.accordion.find('.file-list-' + type.fileType);
         this.htmlPanel.find('.plus-icon').on('click', e => this.create(e));
 
         this.ide.repository.onListRefresh(() => this.setModelList());
@@ -45,7 +45,7 @@ export default class ModelListPanel {
     setModelList() {
         const files = this.type.modelList;
         // First create a big HTML string with for each model an <a> element
-        const urlPrefix = window.location.origin + '/#';
+        const urlPrefix = window.location.origin + window.location.pathname + '#';
 
         // Clean current file list
         Util.clearHTML(this.container);
@@ -159,7 +159,7 @@ export default class ModelListPanel {
      */
     async create(e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) {
         e.stopPropagation();
-        const filetype = this.type.modelType;
+        const filetype = this.type.fileType;
         const text = `Create a new ${this.type}`;
         const dialog = new CreateNewModelDialog(this.ide, text);
         dialog.showModalDialog(async (newModelInfo: {name: string, description: string}) => {
