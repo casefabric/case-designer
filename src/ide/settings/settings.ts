@@ -2,7 +2,6 @@
 
 import SettingsStorage from "./settingsstorage";
 
-const FILEPANEL_STATE = 'filepanel_state';
 const GRID_SIZE = 'grid_size';
 const GRID_VISIBILITY = 'grid_visible';
 const VALIDATION_SETTINGS = 'validation_settings';
@@ -13,28 +12,20 @@ export default class Settings {
     constructor() {
     }
 
-    static getFilePanelState () {
-        return SettingsStorage.getItem(FILEPANEL_STATE);
-    };
-
-    static setFilePanelState (state) {
-        SettingsStorage.setItem(FILEPANEL_STATE, state);
-    };
-
-    static get gridSize () {
+    static get gridSize() {
         const DEFAULT_GRID_SIZE = 10;
         return SettingsStorage.getItem(GRID_SIZE) || DEFAULT_GRID_SIZE;
     }
 
-    static set gridSize (size) {
+    static set gridSize(size) {
         SettingsStorage.setItem(GRID_SIZE, size);
     }
 
-    static get gridVisibility () {
+    static get gridVisibility() {
         return SettingsStorage.getItem(GRID_VISIBILITY) == true;
     }
 
-    static set gridVisibility (visibility) {
+    static set gridVisibility(visibility) {
         SettingsStorage.setItem(GRID_VISIBILITY, visibility);
     }
 
