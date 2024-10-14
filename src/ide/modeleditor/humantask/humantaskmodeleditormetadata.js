@@ -1,13 +1,16 @@
 import IDE from "@ide/ide";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
-import ServerFile from "@repository/serverfile";
 import HumanTaskFile from "@repository/serverfile/humantaskfile";
-import { andThen } from "@util/promise/followup";
-import HumanTaskView from "../case/elements/humantaskview";
+import ServerFile from "@repository/serverfile/serverfile";
+import Icons from "@util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
 
 export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
+    static register() {
+        super.registerEditorType(new HumantaskModelEditorMetadata());
+    }
+
     /** @returns {Array<ServerFile>} */
     get modelList() {
         return this.ide.repository.getHumanTasks();
@@ -25,9 +28,8 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
         return 'humantask';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return HumanTaskView;
+    get icon() {
+        return Icons.HumanTask;
     }
 
     get description() {
@@ -39,10 +41,9 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
      * @param {IDE} ide 
      * @param {String} name 
      * @param {String} description 
-     * @param {Function} callback
-     * @returns {String} fileName of the new model
+     * @returns {Promise<String>} fileName of the new model
      */
-    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
+    async createNewModel(ide, name, description) {
         const newModelContent =
             `<humantask>
                 <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
@@ -50,7 +51,9 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
                 </${IMPLEMENTATION_TAG}>
             </humantask>`;
         const fileName = name + '.humantask';
-        ide.repository.createHumanTaskFile(fileName, newModelContent).save(andThen(() => callback(fileName)));
+        const file = ide.repository.createHumanTaskFile(fileName, newModelContent);
+        await file.save();
+        await file.parse();
         return fileName;
     }
 }

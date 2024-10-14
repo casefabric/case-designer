@@ -187,7 +187,7 @@ export class EntryCriterionHaloItem extends SentryHaloItem {
     }
 
     get haloType() {
-        return EntryCriterionView.name;
+        return EntryCriterionView;
     }
 }
 
@@ -197,7 +197,7 @@ export class ReactivateCriterionHaloItem extends SentryHaloItem {
     }
 
     get haloType() {
-        return ReactivateCriterionView.name;
+        return ReactivateCriterionView;
     }
 }
 
@@ -207,6 +207,6 @@ export class ExitCriterionHaloItem extends SentryHaloItem {
     }
 
     get haloType() {
-        return ExitCriterionView.name;
+        return ExitCriterionView;
     }
 }

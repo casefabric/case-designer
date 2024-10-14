@@ -1,8 +1,7 @@
-import TaskView from "../taskview";
-import TaskStageProperties, { DISCRETIONARYTASK_IMG } from "./taskstageproperties";
+import Images from "@util/images/images";
 import $ from "jquery";
-
-const ISBLOCKING_IMG = 'images/isblocking_32.png';
+import TaskView from "../taskview";
+import TaskStageProperties from "./taskstageproperties";
 
 export default class TaskProperties extends TaskStageProperties {
     /**
@@ -29,7 +28,7 @@ export default class TaskProperties extends TaskStageProperties {
                                 <div>
                                     <select>
                                         <option value="">${implementation ? '... remove '+implementation : ''}</option>
-                                        <option value="__new__"><b>create new ...</b></option>
+                                        <option value="__new__">create new implementation ...</option>
                                         ${options}
                                     </select>
                                 </div>
@@ -52,7 +51,7 @@ export default class TaskProperties extends TaskStageProperties {
             }
         });
         // Also make the html a drop target for drag/dropping elements from the repository browser
-        html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData), dragData => dragData.shapeType == this.cmmnElement.constructor.name));
+        html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData), dragData => this.task.supportsFileTypeAsImplementation(dragData)));
         html.on('pointerout', e => repositoryBrowser.removeDropHandler());
         this.htmlContainer.append(html);
         return html;
@@ -104,7 +103,7 @@ export default class TaskProperties extends TaskStageProperties {
     }
 
     addIsBlocking() {
-        this.addCheckField('Is Blocking', 'If the task is non-blocking, the case will continue without awaiting the task to complete', ISBLOCKING_IMG, 'isBlocking', this.task.definition);
+        this.addCheckField('Is Blocking', 'If the task is non-blocking, the case will continue without awaiting the task to complete', Images.Blocking, 'isBlocking', this.task.definition);
     }
 
     renderData() {
@@ -120,7 +119,7 @@ export default class TaskProperties extends TaskStageProperties {
         this.addManualActivationRuleBlock();
         this.addSeparator();
         this.addIsBlocking();
-        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary Task');
+        this.addDiscretionaryBlock(Images.DiscretionaryTask, 'Discretionary Task');
         this.addIdField();
     }
 }

@@ -1,12 +1,10 @@
-import ServerFile from "@repository/serverfile";
+import ServerFile from "@repository/serverfile/serverfile";
 import Util from "@util/util";
-import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
-import RepositoryBrowser from "./repositorybrowser";
-import ModelEditor from "./modeleditor/modeleditor";
-import CreateNewModelDialog from "./createnewmodeldialog";
-import { andThen } from "@util/promise/followup";
 import $ from "jquery";
 import "jquery-ui";
+import CreateNewModelDialog from "./createnewmodeldialog";
+import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
+import RepositoryBrowser from "./repositorybrowser";
 
 export default class ModelListPanel {
     /**
@@ -34,15 +32,17 @@ export default class ModelListPanel {
             e.stopPropagation();
             this.create(e)
         });
+
+        this.ide.repository.onListRefresh(() => this.setModelList());
     }
 
     /**
      * Re-creates the items in the accordion for this panel
      * 
-     * @param {Array<ServerFile>} files 
-     * @param {Function} shapeType 
      */
-    setModelList(files, shapeType) {
+    setModelList() {
+        const files = this.type.modelList;
+        const shapeType = this.type.shapeType;
         // First create a big HTML string with for each model an <a> element
         const urlPrefix = window.location.origin + '/#';
 
@@ -50,15 +50,14 @@ export default class ModelListPanel {
         Util.clearHTML(this.container);
 
         files.forEach(file => {
-            const shapeImg = shapeType.menuImage;
-            const error = file.metadata && file.metadata.error;
+            const error = file.metadata?.error;
             const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
             const modelURL = urlPrefix + file.fileName;
             const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="images/deploy_128.png" title="Deploy ${file.name} ..."/>` : '';
             const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
-                                <img class="menu-icon" src="${shapeImg}" />
+                                <img class="menu-icon" src="${this.type.icon}" />
                                 <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
                                 <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete model ..."/>
                                 <img class="action-icon rename-icon" src="images/svg/rename.svg" title="Rename model ..."/>
@@ -69,7 +68,7 @@ export default class ModelListPanel {
             html.on('pointerdown', e => {
                 e.preventDefault();
                 e.stopPropagation();
-                this.repositoryBrowser.startDrag(file.name, shapeType.name, shapeImg, file.fileName);
+                this.repositoryBrowser.startDrag(file, this.type.icon);
             });
             html.find('.delete-icon').on('click', e => this.delete(file));
             html.find('.rename-icon').on('click', e => this.rename(file));
@@ -84,29 +83,19 @@ export default class ModelListPanel {
      * 
      * @param {ServerFile} file 
      */
-    delete(file) {
+    async delete(file) {
         if (file.usage.length) {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
         } else {
-            const text = `Are  you sure you want to delete '${file.fileName}'?`;
+            const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {
-                const editorCloser = () => {
-                    const editor = this.ide.editors.find(editor => editor.fileName === file.fileName);
-                    if (editor) {
-                        editor.destroy();
-                    }
+                await this.ide.repository.delete(file.fileName);
+                if (file.fileType === 'case') {
+                    // When we delete a .case model we also need to delete the .dimensions
+                    await this.ide.repository.delete(file.name + '.dimensions');
                 }
-
-                this.ide.repository.delete(file.fileName, andThen(() => {
-                    if (file.fileType === 'case') {
-                        // When we delete a .case model we also need to delete the .dimensions
-                        this.ide.repository.delete(file.name + '.dimensions', andThen(editorCloser));
-                    } else {
-                        editorCloser();
-                    }
-                }, msg => {
-                    this.ide.danger(msg);
-                }));
+                // Tell editor registry to remove any editors for this file.
+                this.ide.editorRegistry.remove(file.fileName);
             }
         }
     }
@@ -117,7 +106,7 @@ export default class ModelListPanel {
      * 
      * @param {ServerFile} file
      */
-    rename(file) {
+    async rename(file) {
         const prompter = (/** @type {String} */ previousProposal = '') => {
             const warningMsg = previousProposal !== file.name ? `\n   ${this.type} '${previousProposal}' already exists` : '';
             const text = `Specify a new name for ${this.type} '${file.name}'${warningMsg}`;
@@ -144,26 +133,21 @@ export default class ModelListPanel {
                 const newFileName = newName + '.' + file.fileType;
                 if (this.ide.repository.get(newFileName)) {
                     this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
-                } else {
-                    const locationResetter = () => {
-                        if (this.repositoryBrowser.currentFileName === oldFileName) {
-                            window.location.hash = newFileName;
-                            const editor = this.ide.editors.find(editor => editor.visible);
-                            if (editor && editor instanceof ModelEditor) {
-                                editor.refresh();
-                            }
-                        }
-                    };
-                    this.ide.repository.rename(file.fileName, newFileName, andThen(() => {
-                        if (file.fileType == 'case') {
-                            // when a .case file is renamed also the .dimensions file will be renamed
-                            const oldDimensionsFileName = oldName + '.dimensions';
-                            const newDimensionsFileName = newName + '.dimensions';
-                            this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName, andThen(locationResetter));
-                        } else {
-                            locationResetter();
-                        }
-                    }));
+                    return;
+                }
+                await this.ide.repository.rename(file.fileName, newFileName);
+                if (file.fileType == 'case') {
+                    // when a .case file is renamed also the .dimensions file must be renamed
+                    const oldDimensionsFileName = oldName + '.dimensions';
+                    const newDimensionsFileName = newName + '.dimensions';
+                    await this.ide.repository.rename(oldDimensionsFileName, newDimensionsFileName);
+                }
+                // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
+                if (this.repositoryBrowser.currentFileName === oldFileName) {
+                    window.location.hash = newFileName;
+                    if (this.ide.editorRegistry.currentEditor) {
+                        this.ide.editorRegistry.currentEditor.refresh();
+                    }
                 }
             }
         }
@@ -177,12 +161,12 @@ export default class ModelListPanel {
      * Creates a new model based on name
      * @param {*} e The click event
      */
-    create(e) {
+    async create(e) {
         e.stopPropagation();
         const filetype = this.type.modelType;
         const text = `Create a new ${this.type}`;
         const dialog = new CreateNewModelDialog(this.ide, text);
-        dialog.showModalDialog((newModelInfo) => {
+        dialog.showModalDialog(async (newModelInfo) => {
             if (newModelInfo) {
                 const newModelName = newModelInfo.name;
                 const newModelDescription = newModelInfo.description;
@@ -199,9 +183,8 @@ export default class ModelListPanel {
                     return;
                 }
 
-                this.ide.createNewModel(filetype, newModelName, newModelDescription, fileName => {
-                    window.location.hash = fileName;
-                });
+                await this.ide.createNewModel(filetype, newModelName, newModelDescription);
+                window.location.hash = fileName;
             };
         });
     }

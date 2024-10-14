@@ -1,10 +1,10 @@
-import { andThen, onFail } from "@util/promise/followup";
-import DragData from "./dragdata";
+import ServerFile from "@repository/serverfile/serverfile";
+import $ from "jquery";
+import "jquery-ui";
+import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
-import $ from "jquery";
-import "jquery-ui"
 
 export default class RepositoryBrowser {
     /**
@@ -15,6 +15,8 @@ export default class RepositoryBrowser {
     constructor(ide, html) {
         this.ide = ide;
         this.repository = this.ide.repository;
+
+        this.dragData = /** @type {ServerFileDragData | undefined} */ (undefined);
 
         this.html = html;
         this.html.append(
@@ -53,15 +55,16 @@ export default class RepositoryBrowser {
 
         //set refresh handle on click
         this.html.find('.btnRefresh').on('click', () => {
-            this.repository.listModels(onFail(msg => this.ide.danger(msg)));
-            this.searchBox.val('');
+            this.repository.listModels().then(() => this.searchBox.val('')).catch(message => this.ide.danger(message));
         });
 
         // Add handler for hash changes, that should load the new model
         $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
 
         // Now load the repository contents, and after that optionally load the first model
-        this.repository.listModels(andThen(() => this.loadModelFromBrowserLocation(), msg => this.ide.danger(msg)));
+        this.repository.listModels().then(() => this.loadModelFromBrowserLocation()).catch(msg => this.ide.danger(msg));
+
+        ModelEditorMetadata.types.forEach(type => type.init(this));
     }
 
     /**
@@ -72,17 +75,23 @@ export default class RepositoryBrowser {
         return new ModelListPanel(this, this.accordion, type);
     }
 
-    startDrag(modelName, shapeType, shapeImg, fileName) {
-        this.dragData = new DragData(this.ide, this, modelName, shapeType, shapeImg, fileName);
+    /**
+     * 
+     * @param {ServerFile} file 
+     * @param {String} shapeType 
+     * @param {String} shapeImg 
+     */
+    startDrag(file, shapeImg) {
+        this.dragData = new ServerFileDragData(this, file, shapeImg);
     }
 
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-     * @param {Function} dropHandler
-     * @param {Function} filter
+     * @param {(dragData: ServerFileDragData) => void} dropHandler
+     * @param {((dragData: ServerFileDragData) => boolean) | undefined = undefined} expectedDefinition
      */
-    setDropHandler(dropHandler, filter = undefined) {
+    setDropHandler(dropHandler, filter) {
         if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
     }
 
@@ -97,14 +106,16 @@ export default class RepositoryBrowser {
      * Checks the window.location hash and loads the corresponding model.
      */
     loadModelFromBrowserLocation() {
-        // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
-        //  Skip anything that is behind the optional question mark
-        const fileName = window.location.hash.slice(1).split('?')[0];
-        this.currentFileName = fileName;
         this.refreshAccordionStatus();
 
         // Ask the IDE to open the model.
-        this.ide.open(fileName);
+        this.ide.editorRegistry.open(this.currentFileName);
+    }
+
+    get currentFileName() {
+        // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
+        //  Skip anything that is behind the optional question mark
+        return window.location.hash.slice(1).split('?')[0];
     }
 
     refreshAccordionStatus() {

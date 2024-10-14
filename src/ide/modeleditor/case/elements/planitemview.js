@@ -87,15 +87,15 @@ export default class PlanItemView extends CMMNElementView {
         return this._decoratorBox;
     }
 
-    createCMMNChild(cmmnType, x, y) {
-        if (cmmnType == EntryCriterionView) {
+    createCMMNChild(viewType, x, y) {
+        if (viewType == EntryCriterionView) {
             return this.__addCMMNChild(EntryCriterionView.create(this, x, y));
-        } else if (cmmnType == ReactivateCriterionView) {
+        } else if (viewType == ReactivateCriterionView) {
             return this.__addCMMNChild(ReactivateCriterionView.create(this, x, y));
-        } else if (cmmnType == ExitCriterionView) {
+        } else if (viewType == ExitCriterionView) {
             return this.__addCMMNChild(ExitCriterionView.create(this, x, y));
         } else {
-            return super.createCMMNChild(cmmnType, x, y);
+            return super.createCMMNChild(viewType, x, y);
         }
     }
 

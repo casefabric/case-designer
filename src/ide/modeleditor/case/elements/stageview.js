@@ -7,9 +7,12 @@ import ProcessTaskDefinition from "@definition/cmmn/caseplan/task/processtaskdef
 import TimerEventDefinition from "@definition/cmmn/caseplan/timereventdefinition";
 import UserEventDefinition from "@definition/cmmn/caseplan/usereventdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
-import DragData, { CaseFileItemDragData } from "@ide/dragdata";
+import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
+import ServerFileDragData from "@ide/dragdrop/serverfiledragdata";
+import Util from "@util/util";
 import CaseFileItemView from "./casefileitemview";
 import CaseTaskView from "./casetaskview";
+import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
 import StageDecoratorBox from "./decorator/box/stagedecoratorbox";
 import HumanTaskView from "./humantaskview";
@@ -22,8 +25,9 @@ import TaskView from "./taskview";
 import TextAnnotationView from "./textannotationview";
 import TimerEventView from "./timereventview";
 import UserEventView from "./usereventview";
-import CaseView from "./caseview";
-import Util from "@util/util";
+import HumanTaskFile from "@repository/serverfile/humantaskfile";
+import ProcessFile from "@repository/serverfile/processfile";
+import CaseFile from "@repository/serverfile/casefile";
 
 export default class StageView extends TaskStageView {
     /**
@@ -54,7 +58,7 @@ export default class StageView extends TaskStageView {
     setDropHandlers() {
         super.setDropHandlers();
         // allow for dropping tasks directly from repository browser ...
-        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData));
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData), dragData => dragData.file instanceof CaseFile || dragData.file instanceof HumanTaskFile || dragData.file instanceof ProcessFile);
         // ... and case file items to be dropped from the cfiEditor
         this.case.cfiEditor.setDropHandler(dragData => this.addCaseFileItem(dragData));
     }
@@ -76,12 +80,20 @@ export default class StageView extends TaskStageView {
 
     /**
      * Add a 'drag-dropped' task implementation
-     * @param {DragData} dragData 
+     * @param {ServerFileDragData} dragData 
      */
     addTaskModel(dragData) {
-        /** @type {TaskView} */
-        const element = super.addElementView(dragData.shapeType, dragData.event);
-        element.changeTaskImplementation(dragData, true);
+        const shapeType = () => {
+            if (dragData.file instanceof CaseFile) return CaseTaskView;
+            if (dragData.file instanceof HumanTaskFile) return HumanTaskView;
+            if (dragData.file instanceof ProcessFile) return ProcessTaskView;
+        }
+        const viewType = shapeType();
+        if (viewType) {
+            /** @type {TaskView} */
+            const element = super.addElementView(viewType, dragData.event);
+            element.changeTaskImplementation(dragData.file, true);
+        }
     }
 
     /**
@@ -210,15 +222,15 @@ export default class StageView extends TaskStageView {
         this.addPlanItem(definition);
     }
 
-    createCMMNChild(cmmnType, x, y) {
-        if (Util.isSubClassOf(PlanItemView, cmmnType)) {
-            return this.__addCMMNChild(cmmnType.create(this, x, y));
-        } else if (cmmnType == CaseFileItemView) {
+    createCMMNChild(viewType, x, y) {
+        if (Util.isSubClassOf(PlanItemView, viewType)) {
+            return this.__addCMMNChild(viewType.create(this, x, y));
+        } else if (viewType == CaseFileItemView) {
             return this.__addCMMNChild(CaseFileItemView.create(this, x, y));
-        } else if (cmmnType == TextAnnotationView) {
+        } else if (viewType == TextAnnotationView) {
             return this.__addCMMNChild(TextAnnotationView.create(this, x, y));
         } else { // Could (should?) be sentry
-            return super.createCMMNChild(cmmnType, x, y);
+            return super.createCMMNChild(viewType, x, y);
         }
     }
 
@@ -330,15 +342,15 @@ export default class StageView extends TaskStageView {
      */
     __canHaveAsChild(elementType) {
         if (this.canHaveCriterion(elementType) ||
-            elementType == HumanTaskView.name ||
-            elementType == CaseTaskView.name ||
-            elementType == ProcessTaskView.name ||
-            elementType == MilestoneView.name ||
-            elementType == UserEventView.name ||
-            elementType == TimerEventView.name ||
-            elementType == CaseFileItemView.name ||
-            elementType == StageView.name ||
-            elementType == TextAnnotationView.name) {
+            elementType == HumanTaskView ||
+            elementType == CaseTaskView ||
+            elementType == ProcessTaskView ||
+            elementType == MilestoneView ||
+            elementType == UserEventView ||
+            elementType == TimerEventView ||
+            elementType == CaseFileItemView ||
+            elementType == StageView ||
+            elementType == TextAnnotationView) {
             return true;
         }
         return false;

@@ -11,8 +11,14 @@ import ModelParameters from "../xmleditor/modelparameters";
 import ModelSourceEditor from "../xmleditor/modelsourceeditor";
 import RightSplitter from "@ide/splitter/rightsplitter";
 import $ from "jquery";
+import ModelEditorMetadata from "../modeleditormetadata";
+import HumantaskModelEditorMetadata from "./humantaskmodeleditormetadata";
 
 export default class HumantaskModelEditor extends ModelEditor {
+    static register() {
+        ModelEditorMetadata.registerEditorType(new HumantaskModelEditorMetadata());
+    }
+
     /**
      * This object handles human task models, includes ui-editor and source editor
      * @param {IDE} ide 

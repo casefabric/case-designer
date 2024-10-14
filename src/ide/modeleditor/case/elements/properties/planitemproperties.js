@@ -1,12 +1,10 @@
 import ConstraintDefinition from "@definition/cmmn/caseplan/constraintdefinition";
 import CaseRoleReference from "@definition/cmmn/caseteam/caserolereference";
-import { MANUALACTIVATION_IMG } from "../decorator/items/manualactivationrule";
-import { REPETITION_IMG } from "../decorator/items/repetitionrule";
-import { REQUIRED_IMG } from "../decorator/items/requiredrule";
 import PlanItemView from "../planitemview";
 import Properties from "./properties";
 import Util from "@util/util";
 import $ from "jquery";
+import Images from "@util/images/images";
 
 export default class PlanItemProperties extends Properties {
     /**
@@ -124,15 +122,15 @@ export default class PlanItemProperties extends Properties {
     }
 
     addRepeatRuleBlock() {
-        this.addRuleBlock('repetitionRule', 'Provide a condition under which the item repeats.\nBy default items do not repeat.', REPETITION_IMG, 'Repeat', 'Repetition');
+        this.addRuleBlock('repetitionRule', 'Provide a condition under which the item repeats.\nBy default items do not repeat.', Images.Repetition, 'Repeat', 'Repetition');
     }
 
     addRequiredRuleBlock() {
-        this.addRuleBlock('requiredRule', 'Provide an expression determining whether or not the item is required.\nIf an item is required, the parent stage will not complete if the item is not completed.', REQUIRED_IMG, 'Required');
+        this.addRuleBlock('requiredRule', 'Provide an expression determining whether or not the item is required.\nIf an item is required, the parent stage will not complete if the item is not completed.', Images.Required, 'Required');
     }
 
     addManualActivationRuleBlock() {
-        this.addRuleBlock('manualActivationRule', MANUALACTIVATION_IMG, '', 'Manual Activation', 'Manual Activation', 'false');
+        this.addRuleBlock('manualActivationRule', Images.ManualActivation, '', 'Manual Activation', 'Manual Activation', 'false');
     }
 
     /**

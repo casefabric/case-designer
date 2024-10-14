@@ -7,8 +7,14 @@ import CaseView from "./elements/caseview";
 import Grid from "./grid";
 import UndoManager from "./undoredo/undoredo";
 import $ from "jquery";
+import ModelEditorMetadata from "../modeleditormetadata";
+import CaseModelEditorMetadata from "./casemodeleditormetadata";
 
 export default class CaseModelEditor extends ModelEditor {
+    static register() {
+        ModelEditorMetadata.registerEditorType(new CaseModelEditorMetadata());
+    }
+
     /**
      * This editor handles Case models
      * @param {IDE} ide 
@@ -86,17 +92,6 @@ export default class CaseModelEditor extends ModelEditor {
      */
     migrateDefinitions(caseDefinition) {
         this.__migrated = false;
-        const dimensions = caseDefinition.dimensions;
-        dimensions.diagram.deprecatedCaseFileItems.forEach(casefileshape => {
-            casefileshape.migrate();
-            this.migrated(`Migrating casefileshape ${casefileshape.cmmnElementRef}`);
-        })
-
-        dimensions.diagram.deprecatedTextBoxes.forEach(textbox => {
-            const textAnnotationDefinition = caseDefinition.createTextAnnotation(textbox.migrate().cmmnElementRef);
-            textAnnotationDefinition.text = textbox.content;
-            this.migrated(`Migrating textbox ${textbox.cmmnElementRef}`);
-        });
     }
 
     /**
@@ -106,12 +101,6 @@ export default class CaseModelEditor extends ModelEditor {
     migrated(msg) {
         console.log(msg);
         this.__migrated = true;
-    }
-
-    refresh() {
-        // Overwrite to ensure that we also clear the dimensions file from the cache
-        this.ide.repository.clear(this.dimensionsFile.fileName);
-        super.refresh();
     }
 
     /**

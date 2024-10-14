@@ -3,7 +3,7 @@ import Util from "@util/util";
 import CFINode from "./file/cfinode";
 import CFISelector from "./file/cfiselector";
 import CaseFileItemDefinitionEditor from "@ide/modeleditor/cfid/casefileitemdefinitioneditor";
-import { CaseFileItemDragData } from "@ide/dragdata";
+import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
 import BottomSplitter from "@ide/splitter/bottomsplitter";
 import CaseView from "../elements/caseview";
 import $ from "jquery";
@@ -187,7 +187,7 @@ export default class CaseFileItemsEditor {
                     newNode = from.parentNode.createChild(from);
                 } else {
                     // Insert a node at root level
-                    const parentDefinition = this.case.caseDefinition.getCaseFile();
+                    const parentDefinition = this.case.caseDefinition.caseFile;
                     newNode = this.createNode(parentDefinition.createChildDefinition());
                     parentDefinition.insert(newNode.definition, from.definition);
                     newNode.html.insertAfter(from.html);
@@ -196,7 +196,7 @@ export default class CaseFileItemsEditor {
                 newNode = from.createChild();
             }
         } else {
-            newNode = this.createNode(this.case.caseDefinition.getCaseFile().createChildDefinition());
+            newNode = this.createNode(this.case.caseDefinition.caseFile.createChildDefinition());
         }
         this.case.editor.completeUserAction();
         this.selectCFINode(newNode);
@@ -335,11 +335,10 @@ export default class CaseFileItemsEditor {
     /**
      * Registers a function handler that is invoked upon dropping an element.
      * If an item from the editor is moved over the canvas, elements and form properties can register themselves as a drop handler
-     * @param {Function} dropHandler
-     * @param {Function} filter
+     * @param {(dragData: CaseFileItemDragData) => void} dropHandler
      */
-    setDropHandler(dropHandler, filter = undefined) {
-        if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
+    setDropHandler(dropHandler) {
+        if (this.dragData) this.dragData.setDropHandler(dropHandler);
     }
 
     /**
@@ -364,7 +363,7 @@ export default class CaseFileItemsEditor {
      * validates this
      */
     validate() {
-        const allCaseFileItems = this.case.caseDefinition.getCaseFile().getDescendants();
+        const allCaseFileItems = this.case.caseDefinition.caseFile.getDescendants();
         if (!allCaseFileItems || allCaseFileItems.length <= 0) {
             this.raiseEditorIssue(this.case, 38, [this.case.name]);
         }

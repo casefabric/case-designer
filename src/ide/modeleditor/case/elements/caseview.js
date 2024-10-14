@@ -14,7 +14,7 @@ import Deploy from "../editors/deploy";
 import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
 import RolesEditor from "../editors/roleseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
-import ShapeBox from "../shapebox";
+import ShapeBox from "../shapebox/shapebox";
 import UndoRedoBox from "../undoredo/undoredobox";
 import CMMNElementView from "./cmmnelementview";
 import Grid from "../grid";
@@ -26,6 +26,7 @@ import Connector from "./connector";
 import StageView from "./stageview";
 import TextAnnotationView from "./textannotationview";
 import $ from "jquery";
+import DragData from "@ide/dragdrop/dragdata";
 
 export default class CaseView {
     /**
@@ -93,11 +94,9 @@ export default class CaseView {
         this.startCaseEditor = new StartCaseEditor(this);
         this.debugEditor = new Debugger(this);
 
-        const casePlanDefinition = this.caseDefinition.casePlan;
-        if (casePlanDefinition) {
+        if (this.caseDefinition.hasCasePlan()) {
             this.loading = true;
-            this.casePlanModel = new CasePlanView(this, casePlanDefinition, this.diagram.getShape(casePlanDefinition));
-
+            this.casePlanModel = new CasePlanView(this, this.caseDefinition.casePlan, this.diagram.getShape(this.caseDefinition.casePlan));
 
             const getDefinition = shape => {
                 const element = caseDefinition.getElement(shape.cmmnElementRef);
@@ -393,7 +392,7 @@ export default class CaseView {
         //     - When moving out of element, wider border around element is used (40px), so that halo doesn't disappear too fast.
         //     - When moving out of CasePlan, then CasePlan halo is no longer visible (so that print-screens and so do not show halo always)
 
-        if (this.editor.ide.dragging) return;
+        if (DragData.dragging) return;
         // If an element is selected, avoid on/off behavior when the mouse moves.
         if (this.selectedElement) {
             return;
@@ -500,7 +499,7 @@ export default class CaseView {
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {
-        return elementType == CasePlanView.name && !this.casePlanModel;
+        return elementType == CasePlanView && !this.casePlanModel;
     }
 
     /**

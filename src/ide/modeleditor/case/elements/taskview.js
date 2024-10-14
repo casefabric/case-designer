@@ -1,13 +1,11 @@
-﻿import PlanItem from "@definition/cmmn/caseplan/planitem";
-import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
+﻿import TaskDefinition from "@definition/cmmn/caseplan/task/taskdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
-import ServerFile from "@repository/serverfile";
-import DragData from "@ide/dragdata";
+import ServerFileDragData from "@ide/dragdrop/serverfiledragdata";
+import ServerFile from "@repository/serverfile/serverfile";
+import TaskMappingsEditor from "../editors/task/taskmappingseditor";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";
 import TaskProperties from "./properties/taskproperties";
 import TaskStageView from "./taskstageview";
-import TaskMappingsEditor from "../editors/task/taskmappingseditor";
-import { andThen } from "@util/promise/followup";
 // import TaskHalo from "./halo/taskhalo";
 // BIG TODO HERE
 
@@ -67,10 +65,18 @@ export default class TaskView extends TaskStageView {
         return new TaskDecoratorBox(this);
     }
 
+    /**
+     * 
+     * @param {ServerFileDragData} dragData 
+     */
+    supportsFileTypeAsImplementation(dragData) {
+        return dragData.file instanceof this.definition.implementationClass;
+    }
+
     setDropHandlers() {
         super.setDropHandlers();
         // Add drop handler with repository browser to handle changing task implementation when it is drag/dropped from there.
-        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.changeTaskImplementation(dragData), dragData => this.constructor.name == dragData.shapeType);
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.changeTaskImplementation(dragData.file), dragData => this.supportsFileTypeAsImplementation(dragData));
     }
 
     removeDropHandlers() {
@@ -78,16 +84,16 @@ export default class TaskView extends TaskStageView {
         this.case.editor.ide.repositoryBrowser.removeDropHandler();
     }
 
-    generateNewTaskImplementation() {
+    async generateNewTaskImplementation() {
         const potentialImplementationName = this.definition.name.split(' ').join('');
         const existingModel = this.getImplementationList().find(serverFile => serverFile.name === potentialImplementationName);
         if (existingModel) {
             this.definition.implementationRef = existingModel.fileName;
         } else {
-            const fileName = this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text, fileName => {
-                window.location.hash = fileName;
-            });
+            const fileName = await this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text);
             this.definition.implementationRef = fileName;
+            // Open the editor for the new task implementation file
+            window.location.hash = fileName;
         }
         this.case.editor.completeUserAction();
         this.refreshView();
@@ -97,10 +103,11 @@ export default class TaskView extends TaskStageView {
      * Changes the task implementation if the model's fileName differs from the current implementationRef.
      * If it is a newly added task, then the name maybe filled with the name of the task implementation.
      * This can be indicated by passing the "updateTaskDescription" flag to true.
-     * @param {DragData | ServerFile} model 
+     * @param {ServerFile} model 
      * @param {Boolean} updateTaskName 
      */
-    changeTaskImplementation(model, updateTaskName = false) {
+    async changeTaskImplementation(model, updateTaskName = false) {
+        console.log("Changing task implementation to model :' ", model)
         const fileName = model.fileName;
         if (this.definition.implementationRef == fileName) {
             // no need to change. Perhaps re-generate parameters??? Better give a separate button for that ...
@@ -108,33 +115,32 @@ export default class TaskView extends TaskStageView {
         }
 
         // Now, read the file, and update the information in the task parameters.
-        this.case.editor.ide.repository.load(fileName, andThen(file => {
-            const model = file !== undefined && file.definition;
-            if (!model) {
-                this.case.editor.ide.warning('Could not read the model ' + fileName + ' which is referenced from the task ' + this.name);
-                return;
+        const file = await this.case.editor.ide.repository.load(fileName);
+        const definition = file !== undefined && file.definition;
+        if (!definition) {
+            this.case.editor.ide.warning('Could not read the definition ' + fileName + ' which is referenced from the task ' + this.name);
+            return;
+        }
+
+        // Only update the name if we drag/drop into a new element; do not change for dropping on existing element
+        if (updateTaskName) {
+            console.warn(`Updating the task name to ${definition.name}`);
+            const name = definition.name;
+            if (name) {
+                this.definition.name = name;
+                this.refreshView();
             }
+        }
 
-            // Only update the name if we drag/drop into a new element; do not change for dropping on existing element
-            if (updateTaskName) {
-                console.warn(`Updating the task name to ${model.name}`);
-                const name = model.name;
-                if (name) {
-                    this.definition.name = name;
-                    this.refreshView();
-                }
-            }
+        // Set the implementation.
+        this.definition.setImplementation(fileName, definition);
 
-            // Set the implementation.
-            this.definition.setImplementation(fileName, model);
+        // Make sure to save changes if any.
+        this.case.editor.completeUserAction();
 
-            // Make sure to save changes if any.
-            this.case.editor.completeUserAction();
-
-            // Now refresh the renderers and optionally the propertiesmenu.
-            this.mappingsEditor.refresh();
-            this.propertiesView.show(true);
-        }));
+        // Now refresh the renderers and optionally the propertiesmenu.
+        this.mappingsEditor.refresh();
+        this.propertiesView.show(true);
     }
 
     /** @returns {String} */

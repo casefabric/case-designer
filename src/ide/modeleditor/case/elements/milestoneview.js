@@ -76,7 +76,7 @@ export default class MilestoneView extends PlanItemView {
      * @returns 
      */
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterionView.name;
+        return criterionType == EntryCriterionView;
     }
 
     get isMilestone() {

@@ -4,7 +4,7 @@ import $ from "jquery";
 
 export default class RolesEditor extends TableEditor {
     get label() {
-        return 'Roles';
+        return 'Case Team Roles';
     }
 
     /** @returns {Array<TableEditorColumn>} */

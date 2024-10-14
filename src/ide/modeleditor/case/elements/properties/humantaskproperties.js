@@ -1,7 +1,7 @@
 import HumanTaskDefinition from "@definition/cmmn/caseplan/task/humantaskdefinition";
+import Images from "@util/images/images";
 import HumanTaskView from "../humantaskview";
 import TaskProperties from "./taskproperties";
-import { DISCRETIONARYTASK_IMG } from "./taskstageproperties";
 
 export default class HumanTaskProperties extends TaskProperties {
     /**
@@ -29,7 +29,7 @@ export default class HumanTaskProperties extends TaskProperties {
         this.addManualActivationRuleBlock();
         this.addSeparator();
         this.addIsBlocking();
-        this.addDiscretionaryBlock(DISCRETIONARYTASK_IMG, 'Discretionary Task');
+        this.addDiscretionaryBlock(Images.DiscretionaryTask, 'Discretionary Task');
         this.addSeparator();
         this.addPlanningTableField();
         this.addIdField();

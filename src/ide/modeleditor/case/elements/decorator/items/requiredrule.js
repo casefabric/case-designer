@@ -1,8 +1,7 @@
+import Images from "@util/images/images";
 import PlanItemView from "../../planitemview";
 import DecoratorBox from "../decoratorbox";
 import RuleDecorator from "./rule";
-
-export const REQUIRED_IMG = 'images/requireddecorator_32.png';
 
 export default class RequiredRuleDecorator extends RuleDecorator {
     /**
@@ -10,6 +9,6 @@ export default class RequiredRuleDecorator extends RuleDecorator {
      * @param {PlanItemView} view 
      */
     constructor(box, view) {
-        super(box, view, REQUIRED_IMG, 'requiredRule');
+        super(box, view, Images.Required, 'requiredRule');
     }
 }

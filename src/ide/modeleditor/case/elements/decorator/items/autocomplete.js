@@ -1,8 +1,7 @@
+import Images from "@util/images/images";
 import StageView from "../../stageview";
 import StageDecoratorBox from "../box/stagedecoratorbox";
 import Decorator from "../decorator";
-
-export const AUTOCOMPLETE_IMG = 'images/autocompletedecorator_32.png';
 
 export default class AutoCompleteDecorator extends Decorator {
     /**
@@ -10,7 +9,7 @@ export default class AutoCompleteDecorator extends Decorator {
      * @param {StageView} view 
      */
     constructor(box, view) {
-        super(box, view, AUTOCOMPLETE_IMG);
+        super(box, view, Images.AutoComplete);
         this.view = view;
     }
     

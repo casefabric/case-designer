@@ -155,7 +155,7 @@ export default class TaskStageView extends PlanItemView {
     }
 
     canHaveCriterion(criterionType) {
-        return criterionType == EntryCriterionView.name || criterionType == ReactivateCriterionView.name || criterionType == ExitCriterionView.name;
+        return criterionType == EntryCriterionView || criterionType == ReactivateCriterionView || criterionType == ExitCriterionView;
     }
 
     get isTaskOrStage() {

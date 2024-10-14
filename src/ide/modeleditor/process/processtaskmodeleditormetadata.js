@@ -1,9 +1,8 @@
 import IDE from "@ide/ide";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
-import ServerFile from "@repository/serverfile";
 import ProcessFile from "@repository/serverfile/processfile";
-import { andThen } from "@util/promise/followup";
-import ProcessTaskView from "../case/elements/processtaskview";
+import ServerFile from "@repository/serverfile/serverfile";
+import Icons from "@util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ProcessModelEditor from "./processmodeleditor";
 
@@ -25,9 +24,8 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
         return 'process';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return ProcessTaskView;
+    get icon() {
+        return Icons.ProcessTask;
     }
 
     get description() {
@@ -44,10 +42,9 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
      * @param {IDE} ide 
      * @param {String} name 
      * @param {String} description 
-     * @param {Function} callback
-     * @returns {String} fileName of the new model
+     * @returns {Promise<String>} fileName of the new model
      */
-    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
+    async createNewModel(ide, name, description) {
         const newModelContent =
 `<process name="${name}" description="${description}">
     <${EXTENSIONELEMENTS}>
@@ -56,7 +53,9 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
     </${EXTENSIONELEMENTS}>
 </process>`;
         const fileName = name + '.process';
-        ide.repository.createProcessFile(fileName, newModelContent).save(andThen(() => callback(fileName)));
+        const file = ide.repository.createProcessFile(fileName, newModelContent);
+        await file.save();
+        await file.parse();
         return fileName;
     }
 }

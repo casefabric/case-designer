@@ -1,16 +1,14 @@
 import IDE from "@ide/ide";
 import Tags from "@repository/definition/dimensions/tags";
-import ServerFile from "@repository/serverfile";
 import CaseFile from "@repository/serverfile/casefile";
-import { andThen } from "@util/promise/followup";
+import Icons from "@util/images/icons";
 import Util from "@util/util";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
-import CaseTaskView from "./elements/casetaskview";
 import Grid from "./grid";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
-    /** @returns {Array<ServerFile>} */
+    /** @returns {Array<CaseFile>} */
     get modelList() {
         return this.ide.repository.getCases();
     }
@@ -31,9 +29,8 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         return 'case';
     }
 
-    /** @returns {Function} */
-    get shapeType() {
-        return CaseTaskView;
+    get icon() {
+        return Icons.CaseTask;
     }
 
     get description() {
@@ -45,10 +42,9 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
      * @param {IDE} ide
      * @param {String} name The user entered case name
      * @param {String} description The description given by the user (can be empty)
-     * @param {Function} callback 
-     * @returns {String} fileName of the new model
+     * @returns {Promise<String>} fileName of the new model
      */
-    createNewModel(ide, name, description, callback = (/** @type {String} */ fileName) => {}) {
+    async createNewModel(ide, name, description) {
         // By default we create a case plan that fills the whole canvas size;
         //  We position it left and top at 2 times the grid size, with a minimum of 10px;
         //  Width and height have to be adjusted for scrollbar size.
@@ -88,7 +84,11 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         // Upload models to server, and call back
         const caseFile = this.ide.repository.createCaseFile(caseFileName, caseString);
         const dimensionsFile = this.ide.repository.createDimensionsFile(dimensionsFileName, dimensionsString);
-        dimensionsFile.save(andThen(() => caseFile.save(andThen(() => callback(caseFileName)))));
+
+        // First save dimensions, then save the case, and then parse the case (which will load the dimensions)
+        await dimensionsFile.save();
+        await caseFile.save();
+        await caseFile.parse();
         return caseFileName;
     }
 }

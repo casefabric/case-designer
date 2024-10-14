@@ -1,9 +1,8 @@
-﻿import ServerFile from "@repository/serverfile";
+﻿import ServerFile from "@repository/serverfile/serverfile";
+import Util from "@util/util";
+import $ from "jquery";
 import MovableEditor from "../editors/movableeditor";
 import IDE from "../ide";
-import Util from "@util/util";
-import { andThen } from "@util/promise/followup";
-import $ from "jquery";
 
 export default class ModelEditor {
     /**
@@ -13,7 +12,7 @@ export default class ModelEditor {
      */
     constructor(ide, file) {
         this.ide = ide;
-        this.ide.register(this);
+        this.ide.editorRegistry.add(this);
         this.file = file;
         this.modelType = file.fileType;
         /** @type {Array<MovableEditor>} */
@@ -67,7 +66,7 @@ export default class ModelEditor {
      * @param {MovableEditor} editor 
      */
     selectMovableEditor(editor) {
-        Util.removeFromArray(this.movableEditors, this);
+        Util.removeFromArray(this.movableEditors, editor);
         this.movableEditors.push(editor);
         // Now reset z-index of editors, oldest at bottom, newest (this) at top.
         this.movableEditors.forEach((editor, index) => $(editor.html).css('z-index', index + 1));
@@ -232,21 +231,21 @@ export default class ModelEditor {
     }
 
     destroy() {
-        Util.removeFromArray(this.ide.editors, this);
         if (this.visible) {
             this.visible = false;
             window.location.hash = '';
         }
         Util.removeHTML(this.html);
+        Util.removeFromArray(this.ide.editorRegistry.editors, this);
     }
 
-    refresh() {
+    async refresh() {
         console.groupCollapsed(`Reloading editor of ${this.file.fileName}`);
-        this.file.reload(andThen(() => {
+        await this.file.reload().then(() => {
             console.groupEnd();
             this.loadModel();
-        }, error => {
-            this.ide.warning(error)
-        }));
+        }).catch(error => {
+            this.ide.warning(error);
+        });
     }
 }

@@ -1,8 +1,7 @@
+import Images from "@util/images/images";
 import PlanItemView from "../../planitemview";
 import DecoratorBox from "../decoratorbox";
 import RuleDecorator from "./rule";
-
-export const MANUALACTIVATION_IMG = 'images/manualactivationdecorator_32.png';
 
 export default class ManualActivationRuleDecorator extends RuleDecorator {
     /**
@@ -10,6 +9,6 @@ export default class ManualActivationRuleDecorator extends RuleDecorator {
      * @param {PlanItemView} view 
      */
     constructor(box, view) {
-        super(box, view, MANUALACTIVATION_IMG, 'manualActivationRule');
+        super(box, view, Images.ManualActivation, 'manualActivationRule');
     }
 }
