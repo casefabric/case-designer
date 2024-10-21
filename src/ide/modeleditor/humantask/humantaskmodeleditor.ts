@@ -1,4 +1,5 @@
 ﻿import $ from "jquery";
+import ParameterDefinition from "../../../repository/definition/contract/parameterdefinition";
 import HumanTaskModelDefinition from "../../../repository/definition/humantask/humantaskmodeldefinition";
 import HumanTaskFile from "../../../repository/serverfile/humantaskfile";
 import Util from "../../../util/util";
@@ -58,7 +59,8 @@ export default class HumantaskModelEditor extends ModelEditor {
                         </div>
                         <div class="task-model-source">
                             <label>Task Model (JSON)</label>
-                            <span class="json-error-description"></span>
+                            <button class="buttonGenerateSchema">Generate schema from type information</button>
+                            <div class="json-error-description"></div>
                             <div class="code-mirror-source"></div>
                         </div>
                     </div>
@@ -89,6 +91,8 @@ export default class HumantaskModelEditor extends ModelEditor {
         // Render input parameters
         this.inputParametersControl = new ModelParameters(this, this.html.find('.model-input-parameters'), 'Input Parameters');
         this.outputParametersControl = new ModelParameters(this, this.html.find('.model-output-parameters'), 'Output Parameters');
+
+        this.htmlContainer.find('.buttonGenerateSchema').on('click', (e: any) => this.generateSchema());
 
         //add the tab control
         this.htmlContainer.find('.model-source-tabs').tabs({
@@ -150,6 +154,40 @@ export default class HumantaskModelEditor extends ModelEditor {
             this.model.implementation.documentation.text = newDescription;
             this.saveModel();
         }
+    }
+
+    generateSchema() {
+        if (! this.file.definition) return;
+        if (! this.model) return;
+
+        const generator = (parameters: ParameterDefinition<any>[]) => parameters.
+            filter(parameter => parameter.typeRef).
+            map(parameter => this.ide.repository.getTypes().
+            find(type => type.fileName === parameter.typeRef)).
+            filter(file => file !== undefined).
+            map(file => file && file.definition);
+        const types = [...generator(this.file.definition.inputParameters), ...generator(this.file.definition.outputParameters)].filter(t => t !== undefined);
+        const properties: any = {};
+        const definitions: any = {};
+        const formSchema = {
+            schema: {
+                title: this.file.definition.implementation.documentation.text || this.file.definition.name,
+                type: "object",
+                properties,
+                definitions,
+            }
+        }
+        types.map(type => type && type.toJSONSchema().schema).forEach((schema: any) => {
+            properties[schema.title] = schema;
+            if (schema.definitions) {
+                Object.assign(definitions, { ...schema.definitions });
+                delete schema.definitions;
+            }
+        });
+
+        this.model.implementation.taskModel.value = JSON.stringify(formSchema, undefined, 2);
+        this.saveModel();
+        this.render();
     }
 
     render() {
