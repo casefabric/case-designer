@@ -305,6 +305,21 @@ export default class XMLSerializable {
      */
     resolveReferences() { }
 
+    /**
+     * Returns true if this object has a reference to the element.
+     * This method by default returns false, but can be overwritten to define actual comparison.
+     */
+    referencesElement(element: XMLSerializable): boolean {
+        return false;
+    }
+
+    /**
+     * Returns elements in models that reference this element
+     */
+    searchInboundReferences(): ElementDefinition<ModelDefinition>[] {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
     hasExternalReferences() {
         return false;
     }
