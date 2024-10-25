@@ -104,7 +104,7 @@ export default class Util {
      * Simple helper function that removes an element from an array, if it is in the array.
      * Returns the arrayIndex the element had in the array, or -1.
      */
-    static removeFromArray(array: any[], element: any) {
+    static removeFromArray<T extends any>(array: T[], element: any): number {
         const arrayIndex = array.indexOf(element);
         if (arrayIndex > -1) {
             array.splice(arrayIndex, 1);
@@ -112,7 +112,7 @@ export default class Util {
         return arrayIndex;
     }
 
-    static insertInArray(array: any[], element: any, after?: any) {
+    static insertInArray<T extends any>(array: T[], element: any, after?: any): T[] {
         Util.removeFromArray(array, element);
         const index = array.indexOf(after);
         if (index >= 0 && index < array.length - 1) {
@@ -120,15 +120,16 @@ export default class Util {
         } else {
             array.push(element);
         }
+        return array;
     }
 
     /**
      * Remove duplicate elements from an array
      */
-    static removeDuplicates(array: any[]) {
+    static removeDuplicates<T extends any> (array: T[]): T[] {
         const size = array.length;
         const copy = [...array];
-        const set = new Set();
+        const set = new Set<T>();
         copy.forEach(object => set.add(object));
         Util.clearArray(array);
         array.push(...Array.from(set));
@@ -139,7 +140,7 @@ export default class Util {
     /**
      * Simple helper function that removes all elements from an array.
      */
-    static clearArray(array: any[]) {
+    static clearArray<T extends any>(array: T[]): T[] {
         array.splice(0, array.length);
         return array;
     }
