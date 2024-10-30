@@ -4,12 +4,12 @@ import $ from "jquery";
 import "jquery-ui";
 
 export default class MessageBox {
+    html: JQuery<HTMLElement>;
+    messageBoxBody: JQuery<HTMLElement>;
     /**
      * handles showing of alerts, confirms etc to user
-     * @param {IDE} ide
      */
-    constructor(ide) {
-        this.ide = ide;
+    constructor(public ide: IDE) {
         this.html = $(
 `<div class="messagebox panel panel-default">
     <div class="panel-heading">
@@ -55,17 +55,18 @@ export default class MessageBox {
     }
 
     resize() {
+        // @ts-ignore
         const boxHeight = $(document).outerHeight() - this.html.offset().top - 20;
         this.html.css('max-height', boxHeight);
     }
 
     /**
      * Creates a message and add to message box
-     * @param {String} message    : the message
-     * @param {String} messageType: success, info, warning, danger
-     * @param {Number} delay      : remove message after 'delay' millisec
+     * @param message    : the message
+     * @param messageType: success, info, warning, danger
+     * @param delay      : remove message after 'delay' millisec
      */
-    createMessage(message, messageType, delay) {
+    createMessage(message: string, messageType: string, delay: number) {
         this.show();
 
         const htmlString =

@@ -1,6 +1,7 @@
 const STORAGE = 'cmmn-modeler-settings';
 
 export default class SettingsStorage {
+    static store: any;
     /**
      * SettingsStorage is a global static class that holds a "plain" javascript object
      * and stores changes to it in localStorage.
@@ -9,7 +10,7 @@ export default class SettingsStorage {
     constructor() {
     }
 
-    static save(store) {
+    static save(store: any) {
         SettingsStorage.store = store;
         const newStore = JSON.stringify(store);
         if (localStorage.getItem(STORAGE) != newStore) {
@@ -35,11 +36,11 @@ export default class SettingsStorage {
         return SettingsStorage.store;
     }
 
-    static getItem(key) {
+    static getItem(key: string) {
         return SettingsStorage.getStorage()[key];
     }
 
-    static setItem(key, value) {
+    static setItem(key: string, value: any) {
         const store = SettingsStorage.getStorage();
         store[key] = value;
         SettingsStorage.save(store);

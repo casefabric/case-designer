@@ -5,20 +5,20 @@ import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
+import ModelDefinition from "@repository/definition/modeldefinition";
+import DragData from "./dragdrop/dragdata";
+import Repository from "@repository/repository";
 
 export default class RepositoryBrowser {
+    repository: Repository;
+    dragData?: ServerFileDragData;
+    accordion: JQuery<HTMLElement>;
+    searchBox: JQuery<HTMLElement>;
     /**
      * This object handles the model browser pane on the left
-     * @param {IDE} ide 
-     * @param {JQuery<HTMLElement>} html 
      */
-    constructor(ide, html) {
-        this.ide = ide;
+    constructor(public ide: IDE, public html: JQuery<HTMLElement>) {
         this.repository = this.ide.repository;
-
-        this.dragData = /** @type {ServerFileDragData | undefined} */ (undefined);
-
-        this.html = html;
         this.html.append(
             `<div class="divModelList basicform">
                 <div class="formheader">
@@ -55,44 +55,32 @@ export default class RepositoryBrowser {
 
         //set refresh handle on click
         this.html.find('.btnRefresh').on('click', () => {
-            this.repository.listModels().then(() => this.searchBox.val('')).catch(message => this.ide.danger(message));
+            this.repository.listModels().then(() => this.searchBox.val('')).catch(message => this.ide.danger(message, 5000));
         });
 
         // Add handler for hash changes, that should load the new model
         $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
 
         // Now load the repository contents, and after that optionally load the first model
-        this.repository.listModels().then(() => this.loadModelFromBrowserLocation()).catch(msg => this.ide.danger(msg));
+        this.repository.listModels().then(() => this.loadModelFromBrowserLocation()).catch(msg => this.ide.danger(msg, 5000));
 
         ModelEditorMetadata.types.forEach(type => type.init(this));
     }
 
-    /**
-     * 
-     * @param {ModelEditorMetadata} type 
-     */
-    createModelListPanel(type) {
+    createModelListPanel(type: ModelEditorMetadata) {
         return new ModelListPanel(this, this.accordion, type);
     }
 
-    /**
-     * 
-     * @param {ServerFile} file 
-     * @param {String} shapeType 
-     * @param {String} shapeImg 
-     */
-    startDrag(file, shapeImg) {
+    startDrag(file: ServerFile<ModelDefinition>, shapeImg: string) {
         this.dragData = new ServerFileDragData(this, file, shapeImg);
     }
 
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-     * @param {(dragData: ServerFileDragData) => void} dropHandler
-     * @param {((dragData: ServerFileDragData) => boolean) | undefined = undefined} expectedDefinition
      */
-    setDropHandler(dropHandler, filter) {
-        if (this.dragData) this.dragData.setDropHandler(dropHandler, filter);
+    setDropHandler(dropHandler: (dragData: ServerFileDragData) => void, filter?: ((dragData: ServerFileDragData) => boolean)) {
+        if (this.dragData) this.dragData.setDropHandler(<(dragData: DragData) => void>dropHandler, <(dragData: DragData) => boolean>filter);
     }
 
     /**
@@ -131,7 +119,7 @@ export default class RepositoryBrowser {
     /**
      * returns true when the modelName is valid
      */
-    isValidEntryName(entryName) {
+    isValidEntryName(entryName: string) {
         if (!entryName || entryName == '') {
             this.ide.danger('Please enter a name for the model.');
         } else if (/\s/.test(entryName)) {
@@ -150,13 +138,13 @@ export default class RepositoryBrowser {
      * Runs the search text agains the models currently rendered, and hides them if not matching the search criteria
      * @param {JQuery.KeyUpEvent} e
      */
-    applySearchFilter(e) {
-        const searchText = this.searchBox.val().toString().toLowerCase();
+    applySearchFilter(e: any) {
+        const searchText = this.searchBox.val()?.toString().toLowerCase();
         // Loop through all elements, and search for the text. The elements look like <a filetype="case" name="hcmtest" href="...">hcmtest</a>
         this.accordion.find('a').toArray().forEach(htmlElement => {
-            const modelName = htmlElement.textContent.toLowerCase();
+            const modelName = htmlElement.textContent?.toLowerCase();
             const containsSearchText = this.hasSearchText(searchText, modelName);
-            htmlElement.parentElement.style.display = containsSearchText ? 'block' : 'none';
+            if (htmlElement.parentElement) htmlElement.parentElement.style.display = containsSearchText ? 'block' : 'none';
         });
     }
 
@@ -165,7 +153,7 @@ export default class RepositoryBrowser {
      * @param {String} searchFor 
      * @param {String} searchIn 
      */
-    hasSearchText(searchFor, searchIn) {
+    hasSearchText(searchFor?: string, searchIn?: string): boolean {
         if (!searchFor) { // Nothing left to search for, so found a hit
             return true;
         }
@@ -187,9 +175,8 @@ export default class RepositoryBrowser {
      * On tab, select the first model.
      * On enter, open the first model.
      * On escape, remove the search filter.
-     * @param {JQuery.KeyDownEvent} e 
      */
-    executeSearchFilter(e) {
+    executeSearchFilter(e: JQuery.KeyDownEvent) {
         const first = this.accordion.find('a').toArray().find(element => $(element).parent().css('display') == 'block')
         if (e.keyCode == 9) { // Pressed Tab key, let's focus on first search result
             if (first) {

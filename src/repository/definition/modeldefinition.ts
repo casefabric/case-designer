@@ -107,7 +107,6 @@ export default class ModelDefinition extends XMLSerializable {
 
     /**
      * A ModelDefinition must have input parameters.
-     * @returns {Array<ParameterDefinition>}
      */
     get inputParameters(): ParameterDefinition<ModelDefinition>[] {
         throw new Error('This method must be implemented in ' + this.constructor.name);
@@ -115,33 +114,21 @@ export default class ModelDefinition extends XMLSerializable {
 
     /**
      * A ModelDefinition must have output parameters.
-     * @returns {Array<ParameterDefinition>}
      */
     get outputParameters(): ParameterDefinition<ModelDefinition>[] {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    /**
-     * 
-     * @param {String} identifier 
-     * @returns {ParameterDefinition}
-     */
     findInputParameter(identifier: string) {
         return this.inputParameters.find(p => p.hasIdentifier(identifier));
     }
 
-    /**
-     * 
-     * @param {String} identifier 
-     * @returns {ParameterDefinition}
-     */
     findOutputParameter(identifier: string) {
         return this.outputParameters.find(p => p.hasIdentifier(identifier));
     }
 
     /**
      * Informs all elements in the model definition about the removal of the element
-     * @param {ElementDefinition} removedElement 
      */
     removeDefinitionElementReferences<M extends ModelDefinition>(removedElement: ElementDefinition<M>) {
         // Go through other elements and tell them to say goodbye to removedElement;
@@ -152,9 +139,6 @@ export default class ModelDefinition extends XMLSerializable {
     /**
      * Returns the element that has the specified identifier, or undefined.
      * If the constructor argument is specified, the element is checked against the constructor with 'instanceof'
-     * @param {String} id 
-     * @param {Function} constructor
-     * @returns {ElementDefinition}
      */
     getElement(id: string, constructor?: Function): ElementDefinition<ModelDefinition> | undefined {
         const element = this.elements.find(element => id && element.id == id); // Filter first checks whether id is undefined;
@@ -190,6 +174,20 @@ export default class ModelDefinition extends XMLSerializable {
             element && collection.push(element);
         });
         return collection;
+    }
+
+    /**
+     * Returns all elements that have a reference to this element
+     */
+    searchInboundReferences(): ElementDefinition<ModelDefinition>[] {
+        if (this.file) {
+            const definitions = this.file.repository.list.map(file => file.definition);
+            const elements = definitions.map(definition => definition ? definition.elements : []).flat();
+            const references = elements.filter(element => element.referencesElement(this));
+            console.log(this.file.fileName + ": Returning " + references.length +" inbound referneces")
+            return references;
+        }
+        return [];
     }
 
     exportModel(tagName: string, ...propertyNames: any[]) {

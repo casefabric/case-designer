@@ -1,11 +1,14 @@
 import Settings from "@ide/settings/settings";
 
 export default class SplitterSettings {
+    splitters: any = {};
+    savedPosition?: number | string;
+    position?: number | string;
+
     constructor() {
-        this.splitters = {};
     }
 
-    get(html) {
+    get(html: JQuery<HTMLElement>): SplitterSettings {
         const splitterId = html.attr('id');
         if (!splitterId) {
             return new AnonymousSplitterSettings();
@@ -22,10 +25,7 @@ export default class SplitterSettings {
     }
 }
 
-class AnonymousSplitterSettings {
-    constructor() {
-        // console.log("Creating anonymous splitter")
-    }
+class AnonymousSplitterSettings extends SplitterSettings {
     save() {
         // console.log("Saving into anonmymous splitter")
     }

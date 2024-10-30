@@ -5,11 +5,14 @@ import $ from "jquery";
  * Showing/hiding status messages on top of the fixed editors.
  */
 export default class CoverPanel {
+    html: JQuery<HTMLElement>;
+    msgElement: JQuery<HTMLElement>;
+    visible: boolean = false;
+
     /**
      * This editor handles Case models
-     * @param {IDE} ide 
      */
-    constructor(ide) {
+    constructor(public ide: IDE) {
         this.ide = ide;
         this.html = $(
 `<div class="divCoverPanel">
@@ -24,9 +27,8 @@ export default class CoverPanel {
 
     /**
      * Show a message on the cover panel and make it visible
-     * @param {String} msg 
      */
-    show(msg) {
+    show(msg: string) {
         this.visible = true;
         this.msgElement.html(msg);
     }
