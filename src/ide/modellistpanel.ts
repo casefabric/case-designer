@@ -174,7 +174,7 @@ export default class ModelListPanel {
 
                 const fileName = newModelName + '.' + filetype;
 
-                if (this.ide.repository.isExistingModel(fileName)) {
+                if (this.ide.repository.hasFile(fileName)) {
                     this.ide.danger('A ' + filetype + ' with this name already exists and cannot be overwritten', 5000);
                     return;
                 }

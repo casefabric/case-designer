@@ -202,7 +202,9 @@ export default class CaseFileItemDefinitionEditor {
 
     saveModel() {
         if (this.activeDefinition) {
-            this.ide.repository.saveXMLFile(this.definitionRef, this.activeDefinition.toXML());
+            const cfidFile = this.ide.repository.getCaseFileItemDefinitions().find(file => file.fileName === this.definitionRef) || this.ide.repository.createCFIDFile(this.typeRef);
+            cfidFile.source = this.activeDefinition.toXMLString();
+            cfidFile.save();
         }
     }
 }
