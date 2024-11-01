@@ -95,8 +95,8 @@ export default class CaseSourceEditor {
 
     open() {
         this.html.css('display', 'block');
-        const caseXML = XML.prettyPrint(this.editor.case.caseDefinition.toXML());
-        const dimensionsXML = XML.prettyPrint(this.editor.case.dimensions.toXML());
+        const caseXML = this.editor.case.caseDefinition.toXMLString();
+        const dimensionsXML = this.editor.case.dimensions.toXMLString();
         this.codeMirrorCaseXML.setValue(caseXML);
         this.codeMirrorDimensionsXML.setValue(dimensionsXML);
     }

@@ -203,6 +203,10 @@ export default class ModelDefinition extends XMLSerializable {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
+    toXMLString(): string {
+        return XML.prettyPrint(this.toXML());
+    }
+
     hasMigrated(): boolean {
         return this.__migrated === true;
     }

@@ -46,7 +46,7 @@ export class CaseImporter extends ImportElement {
         file.source = this.content;
         const definition = new CaseDefinition(file);
 
-        file.source = XML.prettyPrint(definition.toXML());
+        file.source = definition.toXMLString();
         file.source = file.source.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
 
         return file.save();
