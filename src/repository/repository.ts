@@ -148,7 +148,10 @@ export default class Repository extends RepositoryBase {
     async listModels() {
         await $read('list')
             .then(models => this.updateFileList(models.map(Metadata.from)))
-            .catch((error: AjaxError) => { throw 'Could not fetch the list of models: ' + error.message });
+            .catch((error: AjaxError) => {
+                console.error(error);
+                throw 'Could not fetch the list of models: ' + error.message;
+            });
     }
 
     /**
@@ -156,7 +159,7 @@ export default class Repository extends RepositoryBase {
      * @returns true if the file already exists, or if a file with the same name and of the same type already exists in the repository list
      */
     hasFile<F extends ServerFile<ModelDefinition>>(file: F | string): boolean {
-        if (typeof(file) === 'string') {
+        if (typeof (file) === 'string') {
             return this.list.find(model => model.fileName === file) !== undefined;
         }
         if (this.list.indexOf(file) >= 0) {
