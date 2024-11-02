@@ -2,6 +2,7 @@ import SchemaPropertyDefinition from "@repository/definition/type/schemaproperty
 import XMLSerializable from "@repository/definition/xmlserializable";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "./casefileitemdef";
+import CaseFileDefinition from "./casefiledefinition";
 
 export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
     property: SchemaPropertyDefinition;
@@ -22,7 +23,7 @@ export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
      * @param {*} parent 
      * @param {SchemaPropertyDefinition} propertyDefinition 
      */
-    constructor(caseDefinition: CaseDefinition, parent: any, propertyDefinition: SchemaPropertyDefinition) {
+    constructor(caseDefinition: CaseDefinition, public parent: CaseFileItemTypeDefinition | CaseFileDefinition, propertyDefinition: SchemaPropertyDefinition) {
         super(caseDefinition.importNode.ownerDocument.createElement('will-not-be-exported'), caseDefinition, parent);
         this.property = this.copyPropertyProperties(propertyDefinition);
 
@@ -90,6 +91,22 @@ export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
     }
 
     addChild(child: SchemaPropertyDefinition) {
+        const recursiveProp = (cfi: CaseFileItemTypeDefinition): boolean => {
+            if (cfi.parent instanceof CaseFileItemTypeDefinition) {
+                if (cfi.parent.property === child) {
+                    console.log(`Detected property ${child.name} inside ancestor ${cfi.getPath()}`);
+                    return true;
+                }
+                return recursiveProp(cfi.parent);
+            }
+            return false;
+        }
+
+        if (recursiveProp(this)) {
+            console.error(`Found recursive property ${child.name} in ${this.getPath()}`);
+            return;
+        }
+
         this.children.push(new CaseFileItemTypeDefinition(this.caseDefinition, this, child));
     }
 
