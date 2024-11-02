@@ -66,7 +66,10 @@ export default class CFIWrapper {
             return;
         }
         this.parentType = parentType;
-        parentType.schema?.createChildProperty(this.cfi.name, this.typeWrapper?.typeFileName);
+        if (this.parentType.schema.properties.find(p => p.name === this.cfi.name)) {
+            return;
+        }
+        parentType.schema?.createChildProperty(this.cfi.name, this.typeWrapper?.typeFileName, this.cfi.multiplicity);
         console.group("Merging " + this.cfi.name + " into " + parentType.name);
         this.childWrappers.forEach(child => child.mergeInto(this.typeWrapper?.typeFile.definition));
         console.groupEnd();

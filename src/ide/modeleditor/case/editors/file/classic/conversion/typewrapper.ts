@@ -24,7 +24,6 @@ export default class TypeWrapper {
             if (!cfidFile.definition) {
                 throw new Error(`CFID file ${cfidFile.fileName} lacks a definition object, cannot continue migration`);
             }
-            console.log("CREATING TW WITH FILE NAME " + typeFileName + " (based on "+ cfidFile.fileName +" with name " + cfidFile.name + ")")
             const wrapper = new TypeWrapper(converter, cfidFile, cfidFile.definition,  typeFileName);
             await wrapper.load();
             return wrapper;
