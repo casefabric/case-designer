@@ -10,6 +10,7 @@ import HumanTaskFile from "./serverfile/humantaskfile";
 import Metadata from "./serverfile/metadata";
 import ProcessFile from "./serverfile/processfile";
 import ServerFile from "./serverfile/serverfile";
+import TypeFile from "./serverfile/typefile";
 
 export default class Repository extends RepositoryBase {
     listeners: (() => void)[] = [];
@@ -27,7 +28,7 @@ export default class Repository extends RepositoryBase {
      * Create a client side representation for the file on the server with the specified name.
      * Parses the extension of the file and uses that to create a client side object that can also parse the source of the file.
      */
-    create(fileName: string, source?: any) {
+    private create(fileName: string, source?: any) {
         // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
         const fileType = fileName.split('.').pop();
         switch (fileType) {
@@ -36,6 +37,7 @@ export default class Repository extends RepositoryBase {
             case 'process': return this.createProcessFile(fileName, source);
             case 'humantask': return this.createHumanTaskFile(fileName, source);
             case 'cfid': return this.createCFIDFile(fileName, source);
+            case 'type': return this.createTypeFile(fileName, source);
             default: {
                 console.warn(`Extension '${fileType}' is not supported on the client for file ${fileName}`);
                 return undefined;
@@ -114,11 +116,29 @@ export default class Repository extends RepositoryBase {
     }
 
     /**
+     * Returns the list of types in the repository
+     */
+    getTypes() {
+        return <TypeFile[]>this.list.filter(serverFile => serverFile instanceof TypeFile);
+    }
+
+    /**
+     * Create a new TypeFile that can parse and write server side .type files
+     */
+    createTypeFile(fileName: string, source: any) {
+        return new TypeFile(this, fileName, source);
+    }
+
+    /**
      * Registers a listener that is invoked each time
      * the list of models in the repository is updated.
      */
     onListRefresh(listener: () => void) {
         this.listeners.push(listener);
+    }
+
+    removeListRefreshCallback(listener: Function) {
+        Util.removeFromArray(this.listeners, listener);
     }
 
     /**
@@ -132,16 +152,26 @@ export default class Repository extends RepositoryBase {
     }
 
     /**
-     * Returns true if a model with the given name exists in the repository.
+     * @param file a ServerFile instance or a file name
+     * @returns true if the file already exists, or if a file with the same name and of the same type already exists in the repository list
      */
-    isExistingModel(fileName: string) {
-        return this.list.find(model => model.fileName === fileName) !== undefined;
+    hasFile<F extends ServerFile<ModelDefinition>>(file: F | string): boolean {
+        if (typeof(file) === 'string') {
+            return this.list.find(model => model.fileName === file) !== undefined;
+        }
+        if (this.list.indexOf(file) >= 0) {
+            return true;
+        }
+        if (this.list.find(existingFile => existingFile.fileName === file.fileName && existingFile.constructor.name === file.constructor.name)) {
+            return true;
+        }
+        return false;
     }
 
     updateMetadata(newServerFileList: Array<Metadata>) {
         console.groupCollapsed("Updating repository metadata");
         // Make a copy of the old list, to be able to clean up old models afterwards;
-        const oldList = this.list;
+        const oldList = [...this.list];
         // Map the new server list into a list of structured objects. Also re-use existing objects as much as possible.
         this.list = newServerFileList.map(fileMetadata => {
             const fileName = fileMetadata.fileName;
@@ -159,8 +189,8 @@ export default class Repository extends RepositoryBase {
                 return existingServerFile;
             }
         }).filter(file => file !== undefined) as ServerFile<ModelDefinition>[];
-        // Inform elements still in old list about their deletion.
-        oldList.forEach(serverFile => serverFile.deprecate());
+        // Inform elements still in old list about their deletion (but only those that were loaded from the server before. Other ones are probably new and "in progress" or so)
+        oldList.forEach(serverFile => serverFile.metadata.lastModified && serverFile.deprecate());
 
         console.log("Informing " + this.listeners.length + " listeners about the new metadata")
         this.listeners.forEach(listener => listener());
@@ -189,23 +219,6 @@ export default class Repository extends RepositoryBase {
         // After refreshing and parsing, invoke any repository listeners about the new list.
         this.listeners.forEach(listener => listener());
         console.groupEnd();
-    }
-
-    /**
-     * Save xml file and upload to server
-     * @deprecated
-     */
-    async saveXMLFile(fileName: string, xml: Document | string) {
-        if (!this.isExistingModel(fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
-            const file = this.create(fileName);
-            if (file) this.list.push(file);
-        }
-        const serverFile = this.list.find(serverFile => serverFile.fileName === fileName);
-        if (serverFile) {
-            const data = xml instanceof String ? xml : XML.prettyPrint(xml);
-            serverFile.source = data;
-            return serverFile.save();
-        }
     }
 
     /**

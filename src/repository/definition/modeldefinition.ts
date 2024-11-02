@@ -101,7 +101,9 @@ export default class ModelDefinition extends XMLSerializable {
        
         console.log(`${this.file.fileName} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
         // Load the underlying dependencies one after the other, just to have it a bit more predictable when an error happens.
-        await Util.PromiseAllSequential(referencingElements.map(element => () => element.loadExternalReferences()))
+        for (let i = 0; i < referencingElements.length; i++) {
+            await referencingElements[i].loadExternalReferences();
+        }
         console.groupEnd();
     }
 
@@ -199,6 +201,10 @@ export default class ModelDefinition extends XMLSerializable {
 
     toXML(): Document {
         throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    toXMLString(): string {
+        return XML.prettyPrint(this.toXML());
     }
 
     hasMigrated(): boolean {

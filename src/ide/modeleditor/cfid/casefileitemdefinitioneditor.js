@@ -1,10 +1,10 @@
 ﻿import CaseFileDefinitionDefinition from "@repository/definition/cfid/casefileitemdefinitiondefinition";
 import XML from "@util/xml";
 import $ from "jquery";
-import CaseFileItemsEditor from "../case/editors/casefileitemseditor";
 import CFIDefinitionUnknown from "./cfidefinitionunknown";
 import CFIDefinitionUnspecified from "./cfidefinitionunspecified";
 import CFIDefinitionXMLElement from "./cfidefinitionxmlelement";
+import CaseFileItemsEditor from "../case/editors/file/classic/casefileitemseditor";
 
 export const UNSPECIFIED = 'Unspecified';
 export const UNSPECIFIED_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unspecified';
@@ -202,7 +202,9 @@ export default class CaseFileItemDefinitionEditor {
 
     saveModel() {
         if (this.activeDefinition) {
-            this.ide.repository.saveXMLFile(this.definitionRef, this.activeDefinition.toXML());
+            const cfidFile = this.ide.repository.getCaseFileItemDefinitions().find(file => file.fileName === this.definitionRef) || this.ide.repository.createCFIDFile(this.typeRef);
+            cfidFile.source = this.activeDefinition.toXMLString();
+            cfidFile.save();
         }
     }
 }

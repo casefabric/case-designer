@@ -13,8 +13,8 @@ export default class Action {
         // console.log("Creating new action with dimensions: ", dimensions)
         this.undoManager = undoManager;
         this.repository = undoManager.editor.ide.repository;
-        this.caseString = XML.prettyPrint(caseDefinition.toXML());
-        this.dimensionsString = XML.prettyPrint(caseDefinition.dimensions.toXML());
+        this.caseString = caseDefinition.toXMLString();
+        this.dimensionsString = caseDefinition.dimensions.toXMLString();
         this.caseFile = caseDefinition.file;
         this.dimensionsFile = caseDefinition.dimensions.file;
         this.caseChanged = false;

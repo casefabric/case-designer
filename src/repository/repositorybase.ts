@@ -5,7 +5,7 @@ import ServerFile from "./serverfile/serverfile";
 export default class RepositoryBase {
     public list: Array<ServerFile<ModelDefinition>> = [];
 
-    isExistingModel(fileName: string): boolean {
+    hasFile(fileName: string): boolean {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 

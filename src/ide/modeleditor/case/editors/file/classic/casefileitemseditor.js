@@ -1,23 +1,23 @@
 ﻿import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import Util from "@util/util";
-import CFINode from "./file/cfinode";
-import CFISelector from "./file/cfiselector";
 import CaseFileItemDefinitionEditor from "@ide/modeleditor/cfid/casefileitemdefinitioneditor";
-import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
 import BottomSplitter from "@ide/splitter/bottomsplitter";
-import CaseView from "../elements/caseview";
+import Util from "@util/util";
 import $ from "jquery";
+import CaseFileEditor from "../casefileeditor";
+import CFIDConverter from "./conversion/cfidconverter";
+import CFINode from "./cfinode";
 
 export const NEWDEF = '__new__';
 
 export default class CaseFileItemsEditor {
     /**
-     * Renders the CaseFile definition through CFINode
-     * @param {CaseView} cs 
+     * Renders the CaseFile definition through fancytree
+     * @param {CaseFileEditor} caseFileEditor 
      * @param {JQuery<HTMLElement>} htmlParent 
      */
-    constructor(cs, htmlParent) {
-        this.case = cs;
+    constructor(caseFileEditor, htmlParent) {
+        this.caseFileEditor = caseFileEditor;
+        this.case = caseFileEditor.case;
         this.ide = this.case.editor.ide;
         this.htmlParent = htmlParent;
 
@@ -46,6 +46,7 @@ export default class CaseFileItemsEditor {
                                 <button class="btnAddChild" type="addchild">Add Child</button>
                                 <button class="btnAddSibling" type="addsibling">Add Sibling</button>
                                 <button class="btnRemoveItem" type="remove">Remove</button>
+                                <button class="btnConvertToType">Convert to Type structure</button>
                             </div>
                             <div class="cfi-container">
                                 <div class="cfi-header cfi-details">
@@ -87,6 +88,7 @@ export default class CaseFileItemsEditor {
         this.html.find('.btnAddChild').on('click', e => this.addChild(e));
         this.html.find('.btnAddSibling').on('click', e => this.addSibling(e));
         this.html.find('.btnRemoveItem').on('click', e => this.removeNode(e));
+        this.html.find('.btnConvertToType').on('click', e => this.convertToType(e));
 
         // Create a splitter and put cfid editor at the bottom.
         this.splitter = new BottomSplitter(this.htmlParent, '70%', 175);
@@ -132,14 +134,6 @@ export default class CaseFileItemsEditor {
      */
     createNode(cfi) {
         return new CFINode(this, undefined, this.divCFIDetailsContainer, cfi);
-    }
-
-    /**
-     * Opens the editor as dialog.
-     * @param {(CaseFileItemDef) => void} callback 
-     */
-    open(callback = undefined) {
-        new CFISelector(this.case).showModalDialog(cfi => cfi && callback(cfi));
     }
 
     /**
@@ -224,7 +218,21 @@ export default class CaseFileItemsEditor {
                 this.case.editor.completeUserAction();
             }
         } else {
-            this.ide.warning('Select a Case File Item to be removed', 1000);
+            this.ide.warning('Select a Case File Item to be removed', 3000);
+        }
+    }
+
+    async convertToType(e) {
+        try {
+            console.groupCollapsed(`Converting CaseFile structure of '${this.case.editor.fileName}'`)
+            await new CFIDConverter(this.case).convert();
+            console.groupEnd();
+            console.log("Completed conversion, refreshing editor");
+            this.case.editor.refresh();
+        } catch (error) {
+            console.error(error);
+            console.groupEnd();
+            this.ide.danger(`Failure during conversion:<p/>${error.message}`)
         }
     }
 
@@ -326,29 +334,6 @@ export default class CaseFileItemsEditor {
     }
 
     /**
-     * Handles the dragging of a case file item from the cfi editor to a zoom field (cfi field)
-     */
-    handleDragStartCFIDataNode(cfi) {
-        this.dragData = new CaseFileItemDragData(this, cfi);
-    }
-
-    /**
-     * Registers a function handler that is invoked upon dropping an element.
-     * If an item from the editor is moved over the canvas, elements and form properties can register themselves as a drop handler
-     * @param {(dragData: CaseFileItemDragData) => void} dropHandler
-     */
-    setDropHandler(dropHandler) {
-        if (this.dragData) this.dragData.setDropHandler(dropHandler);
-    }
-
-    /**
-     * Removes the active drop handler and filter
-     */
-    removeDropHandler() {
-        if (this.dragData) this.dragData.removeDropHandler();
-    }
-
-    /**
      * Raises an issue found during validation. The context in which the issue has occured and the issue number must be passed, 
      * along with some parameters that are used to provide a meaningful description of the issue
      * @param {*} context
@@ -364,7 +349,7 @@ export default class CaseFileItemsEditor {
      */
     validate() {
         const allCaseFileItems = this.case.caseDefinition.caseFile.getDescendants();
-        if (!allCaseFileItems || allCaseFileItems.length <= 0) {
+        if ((!allCaseFileItems || allCaseFileItems.length <= 0) && !this.case.caseDefinition.caseFile.typeRef) {
             this.raiseEditorIssue(this.case, 38, [this.case.name]);
         }
         allCaseFileItems.forEach(item => {

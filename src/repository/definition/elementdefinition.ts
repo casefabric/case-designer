@@ -3,12 +3,11 @@ import XMLSerializable from "./xmlserializable";
 
 export default class ElementDefinition<M extends ModelDefinition> extends XMLSerializable {
     childDefinitions: ElementDefinition<M>[] = [];
-    parent?: ElementDefinition<M>;
 
     /**
      * Creates a new ElementDefinition that belongs to the Definition object.
      */
-    constructor(importNode: Element, public modelDefinition: M, parent?: ElementDefinition<M>) {
+    constructor(importNode: Element, public modelDefinition: M, public parent?: ElementDefinition<M>) {
         super(importNode);
         this.modelDefinition.addElement(this);
         if (parent && parent instanceof ElementDefinition) {
@@ -80,6 +79,13 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
             return references;
         }
         return [];
+    }
+
+    /**
+     * Implement this method to update references this element has to the given element.
+     * The given element has changed its ID and NAME attribute to the new values.
+     */
+    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
     }
 
     hasExternalReferences() {

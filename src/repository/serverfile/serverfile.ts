@@ -28,6 +28,7 @@ export default class ServerFile<M extends ModelDefinition> {
      */
     constructor(public repository: RepositoryBase, fileName: string, source: any) {
         this.repository = repository;
+        this.repository.list.push(this);
         this.name = ''; // Will be filled when the file name is set - which is also done after succesful rename actions
         this.fileType = ''; // Will be filled when the file name is set
         this.fileName = fileName;
@@ -241,10 +242,6 @@ export default class ServerFile<M extends ModelDefinition> {
      * Uploading to server gives also a new file list back, which we use to update the repository contents.
      */
     async save() {
-        if (!this.repository.isExistingModel(this.fileName)) { // temporary hack (i hope). creation should take care of this, instead of saving.
-            this.repository.list.push(this);
-        }
-
         const xmlString = XML.prettyPrint(this.source);
         const url = '/repository/save/' + this.fileName;
         const type = 'post';

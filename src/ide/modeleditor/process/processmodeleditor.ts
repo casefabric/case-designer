@@ -108,7 +108,7 @@ export default class ProcessModelEditor extends ModelEditor {
         this.htmlContainer.find('.model-source-tabs').tabs({
             activate: (e: any, ui: any) => {
                 if (ui.newPanel.hasClass('model-source-editor')) {
-                    this.viewSourceEditor?.render(XML.prettyPrint(this.model?.toXML()));
+                    this.viewSourceEditor?.render(this.model?.toXMLString() || '');
                 }
             }
         });

@@ -39,8 +39,6 @@ export default class PlanItem extends CMMNElementDefinition {
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
         super(importNode, caseDefinition, parent);
-        // this.definitionRef = this.parseAttribute('definitionRef');
-        // this.definition = this;
         this.planItemControl = this.parseElement('itemControl', ItemControlDefinition);
         this.entryCriteria = this.parseElements('entryCriterion', EntryCriterionDefinition, []);
         this.reactivateCriteria = this.parseExtensions(ReactivateCriterionDefinition, []);
