@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@cafienne/repository@^0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@cafienne/repository/-/repository-0.1.7.tgz#3de0f9f623131faf2e9c2cabc83f5e7b07cc4c9d"
-  integrity sha512-oFvdC596lYP4z8COe3fK+Lv88CvVA1DS9Q9u9yhOub6AWMEwjl+iOh6kIXEo3DiKyrOdfZ9Rd7ld67djB2dyoA==
+"@cafienne/repository@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@cafienne/repository/-/repository-0.1.8.tgz#54af55df0e78a8a53e2e538133b1e81d7369123b"
+  integrity sha512-ZTsW1ea6GarmRxmpDwSxBxrKknoHDvwU8ZGRc1yhkbarWesYvcXZ3c55mcqL/OYHUiv3mvmrDPb23qzEv++FWg==
   dependencies:
     "@xmldom/xmldom" "^0.8.10"
     axios "^0.27.2"
