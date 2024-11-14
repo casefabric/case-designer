@@ -125,7 +125,7 @@ export default class CFINode {
         this.divCFIDetails.find('.cfi-icon').on('pointerdown', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            this.editor.caseFileEditor.startDragging(cfi)
+            this.editor.caseFileEditor.startDragging(this.definition);
         });
         this.divCFIDetails.find('.add-child-icon').on('click', e => this.editor.addChild(e, this));
         this.divCFIDetails.find('.add-sibling-icon').on('click', e => this.editor.addSibling(e, this));
