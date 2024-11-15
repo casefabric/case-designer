@@ -152,21 +152,7 @@ export default class CaseView {
             this.graph.addCells(jointElements);
             this.casePlanModel.refreshView();
         }
-        // create object for validation of CMMN schema
-        this.validator = new Validator(this);
         this.validateForm = new ValidateForm(this);
-        this.validator.addListener(validator => {
-            // Shows the number of errors and warnings in the case footer
-            const iErrors = validator.errors.length;
-            const iWarnings = validator.warnings.length;
-
-            const validateLabel = $('.validateLabel');
-            validateLabel.html(`CMMN Validation found ${iErrors} problem${iErrors == 1 ? '' : 's'} and ${iWarnings} suggestion${iWarnings == 1 ? '' : 's'}`);
-            validateLabel.css('color', iErrors > 0 ? 'red' : iWarnings > 0 ? 'orange' : 'grey');
-            if (iErrors == 0 && iWarnings == 0) {
-                validateLabel.html('');
-            }
-        });
 
         const end = new Date();
         console.log(`Case '${this.caseDefinition.file.fileName}' loaded in ${((end - now) / 1000)} seconds`)
@@ -321,15 +307,33 @@ export default class CaseView {
         this.editor.hideMovableEditors();
 
         this.runValidation();
-        if (this.validator.problems.length > 0) {
+
+        if (this.validateForm.validator.problems.length > 0) {
             this.validateForm.show();
         }
+
         this.sourceEditor.open();
     }
 
     runValidation() {
-        this.validator.run();
+        let validator = Validator.run(this.caseDefinition, this.editor.ide.repository);
+        this.showValidationSummary(validator);
+        this.validateForm.renderData(validator);
     }
+
+    showValidationSummary(validator)
+    {
+       // Shows the number of errors and warnings in the case footer
+       const iErrors = validator.errors.length;
+       const iWarnings = validator.warnings.length;
+
+       const validateLabel = $('.validateLabel');
+       validateLabel.html(`CMMN Validation found ${iErrors} problem${iErrors == 1 ? '' : 's'} and ${iWarnings} suggestion${iWarnings == 1 ? '' : 's'}`);
+       validateLabel.css('color', iErrors > 0 ? 'red' : iWarnings > 0 ? 'orange' : 'grey');
+       if (iErrors == 0 && iWarnings == 0) {
+           validateLabel.html('');
+       }
+   }
 
     /**
      * Method invoked after a role or case file item has changed
@@ -470,34 +474,6 @@ export default class CaseView {
     get typeDescription() {
         return 'CaseView';
     };
-
-    /**
-     * validates the case and it's content
-     */
-    validate() {
-        if (!this.casePlanModel) {
-            this.validator.raiseProblem(this.id, 17, [this.name]);
-        }
-
-        //validate editors
-        this.cfiEditor.validate();
-        this.rolesEditor.validate();
-        this.caseParametersEditor.validate();
-
-        //loop all elements in case
-        this.items.forEach(cmmnElement => cmmnElement.__validate());
-    };
-
-    /**
-     * Raises an issue found during validation. The context in which the issue has occured and the issue number must be passed, 
-     * along with some parameters that are used to provide a meaningful description of the issue
-     * @param {*} context
-     * @param {Number} number 
-     * @param {Array<String>} parameters 
-     */
-    raiseEditorIssue(context, number, parameters) {
-        this.validator.raiseProblem(context.id, number, parameters);
-    }
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {

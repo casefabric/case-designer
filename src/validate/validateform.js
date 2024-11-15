@@ -22,8 +22,6 @@ export default class ValidateForm extends StandardForm {
      */
     constructor(cs) {
         super(cs, '');
-        this.validator = cs.case.validator;
-        this.validator.addListener(validator => this.renderData());
         if (ValidateForm.Settings.visible) {
             this.show();
         } else {
@@ -83,7 +81,9 @@ export default class ValidateForm extends StandardForm {
         }
     }
 
-    renderData() {
+    renderData(validator) {
+        this.validator = validator;
+
         if (!this.visible) {
             this.renderForm();
         }
@@ -134,7 +134,6 @@ export default class ValidateForm extends StandardForm {
 
     onShow() {
         ValidateForm.Settings.visible = true;
-        this.showProblemsInForm();
     }
 
     onHide() {
@@ -201,6 +200,9 @@ export default class ValidateForm extends StandardForm {
     }
 
     handleHideProblems() {
+        if (!this.validator) {
+            return;
+        }
         const rows = this.html.find('.problemcontainer .problemrow');
         rows.toArray().forEach(row => {
 
@@ -233,6 +235,10 @@ export default class ValidateForm extends StandardForm {
      * Invokd when all problems must be showed again.
      */
     handleShowAllProblems() {
+        if (!this.validator) {
+            return;
+        }
+
         ProblemType.showAll();
         this.hiddenProblems = [];
         this.showProblemsInForm();

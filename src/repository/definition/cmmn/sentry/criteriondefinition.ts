@@ -46,4 +46,10 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
     createExportNode(parentNode: Element, tagName: string) {
         super.createExportNode(parentNode, tagName, 'ifPart', 'caseFileItemOnParts', 'planItemOnParts');
     }
+
+    get typeDescription() {
+        var classname = this.constructor.name;
+        return classname.substring(0, classname.length - "CriterionDefinition".length).toLowerCase() + "-sentry";
+    }
+
 }
