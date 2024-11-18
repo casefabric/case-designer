@@ -1,23 +1,17 @@
+import ModelDefinition from "@repository/definition/modeldefinition";
 import ServerFile from "@repository/serverfile/serverfile";
 import Util from "@util/util";
 import $ from "jquery";
 import "jquery-ui";
-import CreateNewModelDialog from "./createnewmodeldialog";
+import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
-import IDE from "./ide";
-import ModelDefinition from "@repository/definition/modeldefinition";
 
 export default class ModelListPanel {
     ide: IDE;
     htmlPanel: JQuery<HTMLElement>;
     container: JQuery<HTMLElement>;
-    /**
-     * 
-     * @param {RepositoryBrowser} repositoryBrowser
-     * @param {JQuery<HTMLElement>} accordion 
-     * @param {ModelEditorMetadata} type 
-     */
+
     constructor(public repositoryBrowser: RepositoryBrowser, public accordion: JQuery<HTMLElement>, public type: ModelEditorMetadata) {
         this.accordion = accordion;
         this.repositoryBrowser = repositoryBrowser;
@@ -51,7 +45,7 @@ export default class ModelListPanel {
         Util.clearHTML(this.container);
 
         files.forEach(file => {
-            const error = file.metadata?.error;
+            const error = file.metadata.error;
             const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
