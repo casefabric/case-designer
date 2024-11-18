@@ -9,10 +9,7 @@ import CFIDConverter from "./cfidconverter";
 export default class TypeWrapper {
     repository: Repository;
     typeFile: TypeFile;
-    /**
-     * @param {CFIDConverter} converter 
-     * @param {CFIDFile} cfidFile 
-     */
+
     static async getType(converter: CFIDConverter, cfidFile: CFIDFile): Promise<TypeWrapper> {
         const typeFileName = cfidFile.name + '.type';
 
@@ -30,12 +27,6 @@ export default class TypeWrapper {
         }
     }
 
-    /**
-     * 
-     * @param {CFIDConverter} converter 
-     * @param {CaseFileDefinitionDefinition} cfid 
-     * @param {String} typeFileName 
-     */
     constructor(public converter: CFIDConverter, public cfidFile: CFIDFile, public cfid: CaseFileDefinitionDefinition, public typeFileName: string) {
         this.converter = converter;
         this.repository = this.converter.repository;

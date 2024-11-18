@@ -8,7 +8,6 @@ export default class Dimensions extends ModelDefinition {
     private _diagram?: Diagram;
     /**
      * Parses the content of the XML document into dimension structures that can be accessed via this class.
-     * @param {DimensionsFile} file
      */
     constructor(public file: DimensionsFile) {
         super(file);
@@ -28,7 +27,6 @@ export default class Dimensions extends ModelDefinition {
 
     /**
      * While parsing the XML, an error may occur. This is stored in the overall list of parse errors.
-     * @param {String} msg 
      */
     addParseError(msg: string) {
         this.errors.push(msg);
@@ -36,7 +34,6 @@ export default class Dimensions extends ModelDefinition {
 
     /**
      * While parsing the XML, we may encounter valid but incomplete content, for which a warning will be generated.
-     * @param {String} msg 
      */
     addParseWarning(msg: string) {
         this.errors.push(msg);

@@ -136,9 +136,8 @@ export default class RepositoryBrowser {
 
     /**
      * Runs the search text agains the models currently rendered, and hides them if not matching the search criteria
-     * @param {JQuery.KeyUpEvent} e
      */
-    applySearchFilter(e: any) {
+    applySearchFilter(e: JQuery.KeyUpEvent) {
         const searchText = this.searchBox.val()?.toString().toLowerCase();
         // Loop through all elements, and search for the text. The elements look like <a filetype="case" name="hcmtest" href="...">hcmtest</a>
         this.accordion.find('a').toArray().forEach(htmlElement => {
@@ -150,8 +149,6 @@ export default class RepositoryBrowser {
 
     /**
      * Determines recursively whether each character of text1 is available in text2
-     * @param {String} searchFor 
-     * @param {String} searchIn 
      */
     hasSearchText(searchFor?: string, searchIn?: string): boolean {
         if (!searchFor) { // Nothing left to search for, so found a hit

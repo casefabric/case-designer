@@ -6,11 +6,6 @@ export default class StartCaseSchemaDefinition extends CMMNExtensionDefinition<C
     static TAG = 'cafienne:start-case-model';
     private _value: string | undefined | null;
 
-    /**
-    * @param {Element} importNode 
-    * @param {CaseDefinition} caseDefinition
-    * @param {CMMNElementDefinition} parent optional
-    */
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent?: ElementDefinition<CaseDefinition>) {
         super(importNode, caseDefinition, parent);
         this.value = importNode ? importNode.textContent : '';
@@ -20,9 +15,6 @@ export default class StartCaseSchemaDefinition extends CMMNExtensionDefinition<C
         return this._value;
     }
 
-    /**
-     * @param {String} value
-     */
     set value(value: string | undefined | null) {
         this._value = value;
     }

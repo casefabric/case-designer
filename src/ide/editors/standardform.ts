@@ -10,11 +10,6 @@ export default class StandardForm extends MovableEditor {
     classNames: string[];
     _container?: JQuery<HTMLElement>;
 
-    /**
-     * @param {CaseView} cs 
-     * @param {String} label 
-     * @param {Array<String>} classNames      * 
-     */
     constructor(cs: CaseView, label: string, ...classNames: string[]) {
         super(cs);
         this._label = label;

@@ -15,7 +15,6 @@ export default class MovableEditor {
      * A movable editor resides typically within the context of a case.
      * Usually it is something that pops up upon button click (e.g., Properties of an element, Roles Editor, Parameters Editor, etc)
      * It can be moved around and resized.
-     * @param {CaseView} cs 
      */
     constructor(cs: CaseView) {
         this.case = cs;
@@ -29,9 +28,6 @@ export default class MovableEditor {
         return $(this._html);
     }
 
-    /**
-     * @param {JQuery<HTMLElement>} html
-     */
     set html(html) {
         this._html = $(html);
     }
@@ -59,7 +55,6 @@ export default class MovableEditor {
         return this._visible;
     }
 
-    /** @param {Boolean} visible */
     set visible(visible) {
         const alreadyVisible = this._visible;
         this._visible = visible;

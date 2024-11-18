@@ -9,12 +9,7 @@ import TypeDefinition from "@repository/definition/type/typedefinition";
 
 export default class ImportElement {
     repository: Repository;
-    /**
-     * 
-     * @param {Importer} importer 
-     * @param {String} fileName 
-     * @param {Element} xmlElement 
-     */
+
     constructor(public importer: Importer, public fileName: string, public xmlElement: Element) {
         this.repository = importer.repository;
     }
@@ -79,13 +74,6 @@ export class CFIDImporter extends ImportElement {
 }
 
 export class TypeImporter extends ImportElement {
-    /**
-     * 
-     * @param {Importer} importer 
-     * @param {String} fileName 
-     * @param {Element} xmlElement 
-     * @param {TypeDefinition} typeDefinition 
-     */
     constructor(importer: Importer, fileName: string, xmlElement: Element, public typeDefinition: TypeDefinition) {
         super(importer, fileName, xmlElement);
     }

@@ -70,10 +70,6 @@ export default class ModelEditorMetadata {
 
     /**
      * Create a new model with the specified model name.
-     * @param {IDE} ide 
-     * @param {String} newModelName 
-     * @param {String} newModelDescription 
-     * @returns {Promise<String>} fileName of the new model
      */
     async createNewModel(ide: IDE, newModelName: string, newModelDescription: string): Promise<string> {
         throw new Error('This method must be implemented in ' + this.constructor.name);

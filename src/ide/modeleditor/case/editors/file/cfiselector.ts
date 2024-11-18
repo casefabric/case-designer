@@ -7,9 +7,6 @@ import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/cas
 export default class CFISelector extends Dialog {
     case: CaseView;
     selectedItem?: CaseFileItemDef;
-    /**
-     * @param {CaseView} cs
-     */
     constructor(cs: CaseView) {
         super(cs.editor.ide, 'Select a Case File Item');
         this.case = cs;
@@ -31,11 +28,6 @@ export default class CFISelector extends Dialog {
         dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
     }
 
-    /**
-     * 
-     * @param {CaseFileItemDef} item 
-     * @param {JQuery<HTMLElement>} container
-     */
     renderCaseFileItem(item: CaseFileItemDef, container: JQuery<HTMLElement>) {
         if (item instanceof CaseFileItemTypeDefinition) {
             // Only render complex properties, not the primitive children.

@@ -1,8 +1,6 @@
 import CaseView from "@ide/modeleditor/case/elements/caseview";
 import TypeDefinition from "@repository/definition/type/typedefinition";
 import Repository from "@repository/repository";
-import Util from "@util/util";
-import XML from "@util/xml";
 import CFIWrapper from "./cfiwrapper";
 import TypeWrapper from "./typewrapper";
 
@@ -13,8 +11,6 @@ export default class CFIDConverter {
     typeWrappers: TypeWrapper[];
     /**
      * Convert the CaseFileItems and their CaseFileItemDefinitions (.cfid files) to the new type structure for this case.
-     * 
-     * @param {CaseView} cs 
      */
     constructor(cs: CaseView) {
         this.case = cs;

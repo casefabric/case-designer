@@ -39,10 +39,7 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
 
     /**
      * Create a new HumanTaskView model with given name and description 
-     * @param {IDE} ide 
-     * @param {String} name 
-     * @param {String} description 
-     * @returns {Promise<String>} fileName of the new model
+     * @returns fileName of the new model
      */
     async createNewModel(ide: IDE, name: string, description: string) {
         const newModelContent =

@@ -17,8 +17,6 @@ export default class ItemControlDefinition extends UnnamedCMMNElementDefinition 
 
     /**
      * Gets or creates one of 'repetitionRule', 'requiredRule' or 'manualActivationRule'.
-     * @param {String} ruleName 
-     * @returns {ConstraintDefinition}
      */
     getRule(ruleName: string) {
         if (! (this as any)[ruleName]) {
@@ -29,7 +27,6 @@ export default class ItemControlDefinition extends UnnamedCMMNElementDefinition 
 
     /**
      * Removes one of 'repetitionRule', 'requiredRule' or 'manualActivationRule'.
-     * @param {String} ruleName 
      */
     removeRule(ruleName: string) {
         delete (this as any)[ruleName];

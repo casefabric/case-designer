@@ -5,23 +5,13 @@ import CaseFileItemDef from "./casefileitemdef";
 
 export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
     property: SchemaPropertyDefinition;
-    /**
-     * 
-     * @param {CaseDefinition} parent 
-     * @param {String} id
-     */
+
     static createEmptyDefinition(parent: CaseDefinition, id = undefined) {
         const definition: CaseFileItemDef = parent.createDefinition(CaseFileItemDef, id, '');
         definition.isEmpty = true;
         return definition;
     }
 
-    /**
-     * 
-     * @param {CaseDefinition} caseDefinition 
-     * @param {*} parent 
-     * @param {SchemaPropertyDefinition} propertyDefinition 
-     */
     constructor(caseDefinition: CaseDefinition, parent: any, propertyDefinition: SchemaPropertyDefinition) {
         super(caseDefinition.importNode.ownerDocument.createElement('will-not-be-exported'), caseDefinition, parent);
         this.property = this.copyPropertyProperties(propertyDefinition);

@@ -215,7 +215,6 @@ export default class Splitter {
     /**
      * Moves the splitter by the number of pixels indicated relative to it's current position.
      * Also validates against the minimum size setting.
-     * @param {Number} numPixels 
      */
     moveSplitter(numPixels: number) {
         const currentPosition = this.getBarPixels();
@@ -234,7 +233,6 @@ export default class Splitter {
 
     /**
      * Moves the splitter to the absolute location.
-     * @param {Number} proposedPosition 
      */
     repositionSplitter(proposedPosition: number | string) {
         const newPosition = this.validateNewPosition(proposedPosition);

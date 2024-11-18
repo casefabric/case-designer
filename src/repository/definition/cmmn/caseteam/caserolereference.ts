@@ -1,14 +1,12 @@
 import Util from "@util/util";
 import CaseDefinition from "../casedefinition";
-import CaseRoleDefinition from "./caseroledefinition";
 import PlanItem from "../caseplan/planitem";
 import UserEventDefinition from "../caseplan/usereventdefinition";
+import CaseRoleDefinition from "./caseroledefinition";
 
 export default class CaseRoleReference {
     /**
      * Simple wrapper around a case role, helps in holding a references instead of the actual role.
-     * @param {CaseRoleDefinition} role 
-     * @param {PlanItem|UserEventDefinition} parent
      */
     constructor(public role: CaseRoleDefinition, public parent?: PlanItem | UserEventDefinition) {
     }
@@ -38,8 +36,6 @@ export default class CaseRoleReference {
 
     /**
      * Creates a temporary wrapper
-     * @param {CaseDefinition} caseDefinition 
-     * @returns {CaseRoleReference}
      */
     static createEmptyCaseRoleReference(caseDefinition: CaseDefinition) {
         return new CaseRoleReference(TEMPORARY_EMPTY_ROLE(caseDefinition));

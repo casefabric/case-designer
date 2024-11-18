@@ -7,7 +7,6 @@ export default class HumanTaskModelDefinition extends ModelDefinition {
     private _implementation?: HumanTaskImplementationDefinition;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {HumanTaskFile} file
      */
     constructor(public file: HumanTaskFile) {
         super(file);

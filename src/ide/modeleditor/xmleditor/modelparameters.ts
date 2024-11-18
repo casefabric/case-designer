@@ -39,10 +39,6 @@ export default class ModelParameters {
         this.htmlContainer.append(this.html);
     }
 
-    /**
-     * 
-     * @param {Array<ParameterDefinition>} parameters 
-     */
     renderParameters(parameters: ParameterDefinition<ModelDefinition>[]) {
         // First clean the old content
         Util.clearHTML(this.html.find('tbody'));
@@ -73,10 +69,6 @@ export default class ModelParameters {
         this.editor.completeUserAction();
     }
 
-    /**
-     * 
-     * @param {ParameterDefinition} parameter 
-     */
     addParameter(parameter?: ParameterDefinition<ModelDefinition>) {
         if (parameter === undefined) {
             // create a new, empty parameter at the end of the table

@@ -10,7 +10,6 @@ export default class CaseFileDefinitionDefinition extends ModelDefinition {
     properties: PropertyDefinition[] = [];
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {CFIDFile} file
      */
     constructor(public file: CFIDFile) {
         super(file);

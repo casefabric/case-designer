@@ -13,9 +13,6 @@ export default class Diagram extends DiagramElement {
     connectorStyle: ConnectorStyle;
     /**
      * Representation of a <CMMNDiagram> element
-     * 
-     * @param {Element} importNode 
-     * @param {Dimensions} dimensions 
      */
     constructor(importNode: Element, public dimensions: Dimensions) {
         super(importNode, dimensions, undefined);
@@ -52,7 +49,6 @@ export default class Diagram extends DiagramElement {
 
     /**
      * Removes the shape
-     * @param {ShapeDefinition} shape 
      */
     removeShape(shape: ShapeDefinition) {
         Util.removeFromArray(this.shapes, shape);
