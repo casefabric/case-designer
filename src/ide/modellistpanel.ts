@@ -108,7 +108,7 @@ export default class ModelListPanel {
             const warningMsg = previousProposal !== file.name ? `\n   ${this.type} '${previousProposal}' already exists` : '';
             const text = `Specify a new name for ${this.type} '${file.name}'${warningMsg}`;
             const newName = prompt(text, previousProposal);
-            if (newName && newName !== file.name && this.ide.repository.get(newName + '.' + file.fileType)) {
+            if (newName && newName !== file.name && this.ide.repository.hasFile(newName + '.' + file.fileType)) {
                 return prompter(newName)
             } else {
                 return newName;
@@ -128,7 +128,7 @@ export default class ModelListPanel {
         } else {
             if (this.repositoryBrowser.isValidEntryName(newName)) {
                 const newFileName = newName + '.' + file.fileType;
-                if (this.ide.repository.get(newFileName)) {
+                if (this.ide.repository.hasFile(newFileName)) {
                     this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
                     return;
                 }
