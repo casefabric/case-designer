@@ -103,7 +103,7 @@ export default class PropertyUsage {
             return;
         }
 
-        console.groupCollapsed(`Updating ${caseFileItemReferences.length} references inside case ${caseDefinition.file.fileName}`);
+        console.groupCollapsed(`Updating ${caseFileItemReferences.length} references inside case ${caseDefinition.file}`);
 
         const caseXMLBefore = caseFile.definition.toXMLString();
         const dimXMLBefore = dimensionsFile.definition.toXMLString();
@@ -132,7 +132,7 @@ export default class PropertyUsage {
                 }
             } else /** if (hasCaseDefinitionChanges) */ {
                 caseFile.source = caseXML;
-                console.log("Saving " + caseFile.fileName)
+                console.log("Saving " + caseFile)
                 await caseFile.save();
             }
         }

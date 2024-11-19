@@ -15,11 +15,6 @@ export default class CMMNDocumentationDefinition<M extends ModelDefinition> exte
         return new CMMNDocumentationDefinition(importNode, modelDefinition, parent);
     }
 
-    /**
-     * 
-     * @param {Element} importNode 
-     * @param {ModelDefinition} definition 
-     */
     constructor(importNode: Element, definition: M, parent?: ElementDefinition<M>) {
         super(importNode, definition, parent);
         this.textFormat = this.parseAttribute('textFormat', 'text/plain');

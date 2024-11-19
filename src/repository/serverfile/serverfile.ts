@@ -11,6 +11,8 @@ export default class ServerFile<M extends ModelDefinition> {
     private _source: any;
     private _definition?: M;
     private _xml?: Element;
+    private static count = 0;
+    private instance: number; // Specific for debugging purposes
 
     fileType: string;
     name: string;
@@ -27,13 +29,14 @@ export default class ServerFile<M extends ModelDefinition> {
      * demand through the load method, which can be invoked with a callback.
      */
     constructor(public repository: RepositoryBase, fileName: string, source: any) {
+        this.instance = ServerFile.count++;
         this.repository = repository;
-        this.repository.list.push(this);
         this.name = ''; // Will be filled when the file name is set - which is also done after succesful rename actions
         this.fileType = ''; // Will be filled when the file name is set
         this.fileName = fileName;
         this.source = source;
-        this.metadata = new Metadata({});
+        this.metadata = new Metadata({ fileName, type: this.fileType, usage: []}); // Passing proper default values for the metadata (instead of empty)
+        this.repository.addFile(this);
     }
 
     /**
@@ -43,12 +46,21 @@ export default class ServerFile<M extends ModelDefinition> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
+    get file_identifier(): string {
+        return `${this.instance}_${this.fileName}_${this.constructor.name}`;
+    }
+
+    toString() {
+        // return this.file_identifier; // This is the full instance information, can be used to detect duplicate creations
+        return this.fileName;
+    }
+
     get fileName() {
         return this._fileName;
     }
 
     /**
-     * @param {String} fileName
+     * @param fileName
      */
     set fileName(fileName) {
         if (fileName !== this._fileName) {
@@ -106,14 +118,14 @@ export default class ServerFile<M extends ModelDefinition> {
       *  Returns an array with id/name of the files where this file is used in 
       */
     get usage() {
-        return this.metadata?.usage;
+        return this.metadata.usage;
     }
 
     /**
      *  @returns {Array<ServerFile>} Array with ServerFile's of the files where this file is used in 
      */
     get usageFiles() {
-        return this.usage?.map(usage => usage.id).map(fileName => this.repository.list.find(file => file.fileName === fileName))
+        return this.usage.map(usage => usage.id).map(fileName => this.repository.list.find(file => file.fileName === fileName))
     }
 
     /**
@@ -245,7 +257,7 @@ export default class ServerFile<M extends ModelDefinition> {
         const xmlString = XML.prettyPrint(this.source);
         const url = '/repository/save/' + this.fileName;
         const type = 'post';
-        console.groupCollapsed('Saving ' + this.fileName);
+        console.groupCollapsed('Saving ' + this);
         const response = await $ajax({ url, data: xmlString, type, headers: { 'content-type': 'application/xml' } }).catch(() => {
             console.groupEnd();
             throw 'We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running';
@@ -257,7 +269,7 @@ export default class ServerFile<M extends ModelDefinition> {
         const lmDate = new Date(this.lastModified);
         const HHmmss = lmDate.toTimeString().substring(0, 8);
         const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
-        console.log('Uploaded ' + this.fileName + ' at ' + HHmmss + ':' + millis);
+        console.log('Uploaded ' + this + ' at ' + HHmmss + ':' + millis);
         console.groupEnd();
         return response;
     }
@@ -292,7 +304,7 @@ export default class ServerFile<M extends ModelDefinition> {
         const url = '/repository/delete/' + this.fileName;
         const type = 'delete';
         const response = await $ajax({ url, type });
-        Util.removeFromArray(this.repository.list, this);
+        this.repository.removeFile(this);
         this.repository.updateMetadata(response.data);
         console.log('Deleted ' + this.fileName);
     }

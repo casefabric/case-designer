@@ -9,9 +9,6 @@ export default class DocumentableElementDefinition<M extends ModelDefinition> ex
     /**
      * Creates an XML element that can be referred to by the value of the name or id attribute of the underlying XML element.
      * 
-     * @param {Element} importNode 
-     * @param {ModelDefinition} modelDefinition 
-     * @param {ElementDefinition} parent 
      */
     constructor(importNode: Element, modelDefinition: M, parent?: ElementDefinition<M>) {
         super(importNode, modelDefinition, parent);

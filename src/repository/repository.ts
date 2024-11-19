@@ -1,6 +1,5 @@
 import { $read, AjaxError } from "@util/ajax";
 import Util from "@util/util";
-import XML from "@util/xml";
 import ModelDefinition from "./definition/modeldefinition";
 import RepositoryBase from "./repositorybase";
 import CaseFile from "./serverfile/casefile";
@@ -155,8 +154,8 @@ export default class Repository extends RepositoryBase {
      * @param file a ServerFile instance or a file name
      * @returns true if the file already exists, or if a file with the same name and of the same type already exists in the repository list
      */
-    hasFile<F extends ServerFile<ModelDefinition>>(file: F | string): boolean {
-        if (typeof(file) === 'string') {
+    hasFile<F extends ServerFile<ModelDefinition>>(file: F | string, ignoreCase: boolean = false): boolean {
+        if (typeof (file) === 'string') {
             return this.list.find(model => model.fileName === file) !== undefined;
         }
         if (this.list.indexOf(file) >= 0) {
@@ -170,28 +169,35 @@ export default class Repository extends RepositoryBase {
 
     updateMetadata(newServerFileList: Array<Metadata>) {
         console.groupCollapsed("Updating repository metadata");
-        // Make a copy of the old list, to be able to clean up old models afterwards;
-        const oldList = [...this.list];
-        // Map the new server list into a list of structured objects. Also re-use existing objects as much as possible.
-        this.list = newServerFileList.map(fileMetadata => {
+        // Find out which files are no longer existing and clean them
+        this.list.filter(file => {
+            const metadata = newServerFileList.find(m => m.fileName === file.fileName);
+            // A file is old if the server does not know it, AND if it was previously known (derived from the fact that we have a value for metadata.lastModified)
+            if (metadata === undefined && file.metadata.lastModified !== undefined) {
+                this.removeFile(file);
+                // Inform elements still in old list about their deletion
+                file.deprecate();
+            }
+        });
+
+        // Iterate the data from the server and update existing or create new ServerFile instances. 
+        newServerFileList.forEach(fileMetadata => {
             const fileName = fileMetadata.fileName;
-            const existingServerFile = oldList.find(file => file.fileName == fileName);
+            const existingServerFile = this.list.find(file => file.fileName === fileName);
             if (!existingServerFile) {
                 const newFile = this.create(fileName);
-                console.log("Adding new server file " + fileName);
-                if (newFile) {
+                if (newFile) { // Would be weird if not created, but ok.
                     newFile.refreshMetadata(fileMetadata);
-                    return newFile;
                 }
             } else {
-                Util.removeFromArray(oldList, existingServerFile);
                 existingServerFile.refreshMetadata(fileMetadata);
-                return existingServerFile;
             }
-        }).filter(file => file !== undefined) as ServerFile<ModelDefinition>[];
-        // Inform elements still in old list about their deletion (but only those that were loaded from the server before. Other ones are probably new and "in progress" or so)
-        oldList.forEach(serverFile => serverFile.metadata.lastModified && serverFile.deprecate());
+        });
 
+        // Sort the list in alphabetical order
+        this.list.sort((f1, f2) => f1.fileName.toLowerCase().localeCompare(f2.fileName.toLowerCase()))
+
+        // Tell the rest of the world
         console.log("Informing " + this.listeners.length + " listeners about the new metadata")
         this.listeners.forEach(listener => listener());
         console.groupEnd();

@@ -18,8 +18,6 @@ export default class CaseFileEditor {
     dragData?: CaseFileItemDragData;
     /**
      * Renders the CaseFile definition through fancytree
-     * @param {CaseView} cs 
-     * @param {JQuery<HTMLElement>} htmlParent 
      */
     constructor(cs: CaseView, public htmlParent: JQuery<HTMLElement>) {
         this.case = cs;
@@ -79,7 +77,6 @@ export default class CaseFileEditor {
     /**
      * Registers a function handler that is invoked upon dropping an element.
      * If an item from the editor is moved over the canvas, elements and form properties can register themselves as a drop handler
-     * @param {(dragData: CaseFileItemDragData) => void} dropHandler
      */
     setDropHandler(dropHandler: (dragData: CaseFileItemDragData) => void) {
         if (this.dragData) this.dragData.setDropHandler(dropHandler);

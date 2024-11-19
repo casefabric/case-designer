@@ -1,9 +1,4 @@
 import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
-import ConstraintDefinition from "@repository/definition/cmmn/caseplan/constraintdefinition";
-import CaseParameterDefinition from "@repository/definition/cmmn/contract/caseparameterdefinition";
-import CaseFileItemOnPartDefinition from "@repository/definition/cmmn/sentry/casefileitemonpartdefinition";
-import Edge from "@repository/definition/dimensions/edge";
-import ShapeDefinition from "@repository/definition/dimensions/shape";
 import ElementDefinition from "@repository/definition/elementdefinition";
 import TypeDefinition from "@repository/definition/type/typedefinition";
 import CFIDFile from "@repository/serverfile/cfidfile";
@@ -17,12 +12,7 @@ export default class CFIWrapper {
     cfidFile?: CFIDFile;
     typeWrapper?: TypeWrapper;
     parentType?: TypeDefinition;
-    /**
-     * 
-     * @param {CFIDConverter} converter 
-     * @param {CaseFileItemDef} cfi 
-     * @param {CFIWrapper|undefined} parent 
-     */
+
     constructor(public converter: CFIDConverter, public cfi: CaseFileItemDef, public parent?: CFIWrapper) {
         this.parent = parent;
         if (this.parent) {

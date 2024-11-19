@@ -19,8 +19,6 @@ export default class CaseTypeEditor {
     caseTypeSelector: JQuery<HTMLElement>;
     /**
      * Renders the caseFileModel definition
-     * @param {CaseFileEditor} caseFileEditor 
-     * @param {JQuery<HTMLElement>} htmlParent 
      */
     constructor(public caseFileEditor: CaseFileEditor, public htmlParent: JQuery<HTMLElement>) {
         this.case = caseFileEditor.case;

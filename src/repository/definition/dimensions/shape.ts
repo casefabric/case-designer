@@ -12,10 +12,6 @@ export default class ShapeDefinition extends DiagramElement {
     private bounds?: Bounds;
     /**
      * Representation of a <CMMNShape> element
-     * 
-     * @param {Element} importNode 
-     * @param {Dimensions} dimensions 
-     * @param {Diagram} diagram
      */
     constructor(importNode: Element, dimensions: Dimensions, public diagram: Diagram) {
         super(importNode, dimensions, diagram);
@@ -53,7 +49,6 @@ export default class ShapeDefinition extends DiagramElement {
 
     /**
      * Determines whether this shape surrounds the other shape
-     * @param {ShapeDefinition} other 
      */
     surrounds(other: ShapeDefinition) {
         return this != other && this.bounds?.surrounds(other.bounds);

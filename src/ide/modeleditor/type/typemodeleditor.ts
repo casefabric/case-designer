@@ -15,8 +15,7 @@ export default class TypeModelEditor extends ModelEditor {
 
     /**
      * This editor handles type models; only validates the xml
-     * @param {IDE} ide 
-     * @param {TypeFile} file The ServerFile to be loaded. E.g. 'customer.type', 'order.type'
+     * @param file The ServerFile to be loaded. E.g. 'customer.type', 'order.type'
      */
     constructor(public ide: IDE, public file: TypeFile) {
         super(ide, file);

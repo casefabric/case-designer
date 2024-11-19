@@ -209,22 +209,10 @@ export default class TypeEditor {
         }
     }
 
-    /**
-     * 
-     * @param {*} e 
-     * @param {PropertyRenderer} from 
-     * @returns {PropertyRenderer}
-     */
     addChild(e: any, from: PropertyRenderer | undefined = this.selectedPropertyRenderer): PropertyRenderer | undefined {
         return this.addProperty(e, false, from)
     }
 
-    /**
-     * 
-     * @param {*} e 
-     * @param {PropertyRenderer} from 
-     * @returns {PropertyRenderer}
-     */
     addSibling(e: any, from = this.selectedPropertyRenderer): PropertyRenderer | undefined {
         return this.addProperty(e, true, from);
     }

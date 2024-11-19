@@ -26,8 +26,6 @@ export default class ModelDefinition extends XMLSerializable {
         
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {ServerFile} file
-     * @param {Element} importNode 
      */
     constructor(public file: ServerFile<ModelDefinition>, importNode = ModelDefinition.getImportNode(file)) {
         // Need to pass undefined in the super, and then set the modelDefinition manually.
@@ -73,11 +71,7 @@ export default class ModelDefinition extends XMLSerializable {
      * Creates a new instance of the constructor with an optional id and name
      * attribute. If these are not given, the logic will generate id and name for it based
      * on the type of element and the other content inside the case definition.
-     * @param {Function} constructor 
-     * @param {ElementDefinition} parent 
-     * @param {String} id 
-     * @param {String} name 
-     * @returns {*} an instance of the constructor that is expected to extend CMMNElementDefinition
+     * @returns an instance of the constructor that is expected to extend CMMNElementDefinition
      */
     createDefinition<M extends ModelDefinition, T extends ElementDefinition<M>>(constructor: Function, parent?: ElementDefinition<M>, id?: string, name?: string): T {
         const element = new (constructor as any)(undefined, this.modelDefinition, parent);
@@ -97,9 +91,9 @@ export default class ModelDefinition extends XMLSerializable {
         if (referencingElements.length === 0) {
             return Promise.resolve();
         }
-        console.groupCollapsed(`Loading ${referencingElements.length} dependencies inside ${this.file.fileName}`);
+        console.groupCollapsed(`Loading ${referencingElements.length} dependencies inside ${this.file}`);
        
-        console.log(`${this.file.fileName} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
+        console.log(`${this.file} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
         // Load the underlying dependencies one after the other, just to have it a bit more predictable when an error happens.
         for (let i = 0; i < referencingElements.length; i++) {
             await referencingElements[i].loadExternalReferences();
@@ -186,7 +180,7 @@ export default class ModelDefinition extends XMLSerializable {
             const definitions = this.file.repository.list.map(file => file.definition);
             const elements = definitions.map(definition => definition ? definition.elements : []).flat();
             const references = elements.filter(element => element.referencesElement(this));
-            console.log(this.file.fileName + ": Returning " + references.length +" inbound referneces")
+            console.log(`${this.file}: Returning ${references.length} inbound referneces`)
             return references;
         }
         return [];

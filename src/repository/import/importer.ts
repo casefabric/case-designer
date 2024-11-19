@@ -10,10 +10,6 @@ import SchemaPropertyDefinition from "@repository/definition/type/schemaproperty
 export default class Importer {
     newFiles: ImportElement[] = [];
 
-    /**
-     * 
-     * @param {Repository} repository 
-     */
     constructor(public repository: Repository, public text: string) {
         const isNew = (fileName: string) => this.newFiles.find(file => file.fileName === fileName) === undefined;
         const getAttribute = (element: Element, name: string) => element.getAttribute(name) || '';
@@ -161,11 +157,6 @@ export default class Importer {
         }
     }
 
-    /**
-     * 
-     * @param {string} caseName 
-     * @param {Element} xmlElement 
-     */
     stripCaseNameFromReferences(caseName: string, xmlElement: Element) {
         const caseNamePrefix = caseName + '/';
         const caseNamePrefixLength = caseNamePrefix.length;

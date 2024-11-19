@@ -23,7 +23,6 @@ export default class CaseDefinition extends ModelDefinition {
     dimensions?: Dimensions;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {CaseFile} file
      */
     constructor(public file: CaseFile) {
         super(file);
@@ -60,9 +59,6 @@ export default class CaseDefinition extends ModelDefinition {
     /**
      * Returns the element that has the specified identifier, or undefined.
      * If the constructor argument is specified, the element is checked against the constructor with 'instanceof'
-     * @param {String} id 
-     * @param {Function} constructor
-     * @returns {CMMNElementDefinition}
      */
     getElement<T extends CMMNElementDefinition>(id: string, constructor?: Function): T {
         // Override, just to have a generic type cast
@@ -117,10 +113,9 @@ export default class CaseDefinition extends ModelDefinition {
 
     /**
      * Create a text annotation that can be child to this stage
-     * @param {String} id 
      */
-    createTextAnnotation(id = undefined) {
-        const annotation: TextAnnotationDefinition = super.createDefinition(TextAnnotationDefinition, id);
+    createTextAnnotation(id?: string) {
+        const annotation: TextAnnotationDefinition = super.createDefinition(TextAnnotationDefinition, undefined, id);
         this.annotations.push(annotation);
         return annotation;
     }

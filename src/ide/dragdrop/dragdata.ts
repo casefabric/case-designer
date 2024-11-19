@@ -11,8 +11,8 @@ export default class DragData {
     public event: JQuery<PointerEvent> | undefined = undefined;
     private dragBox: JQuery<HTMLElement>;
     private pointerMoveHandler = (e: any) => this.handleMousemoveModel(e);
-    private pointerUpHandler = (e: any)  => this.handleMouseupModel(e);
-    private escapeKeyListener = (e: any)  => {
+    private pointerUpHandler = (e: any) => this.handleMouseupModel(e);
+    private escapeKeyListener = (e: any) => {
         if (e.keyCode == 27) {
             // Close and clean when pressing escape
             this.cleanUp();
@@ -24,9 +24,7 @@ export default class DragData {
 
     /**
      * Simple helper class for dragging/dropping elements from either RepositoryBrowser or ShapeBox to the CaseModelEditor canvas.
-     * @param {*} owner // If drag data is finished, it will clear the dragData property on the owner object
-     * @param {String} label 
-     * @param {String} imgURL 
+     * @param owner // If drag data is finished, it will clear the dragData property on the owner object
      */
     constructor(private owner: any, public label: string, public imgURL: string) {
         this.dragBox = $(`<div class="dragbox">
@@ -56,11 +54,7 @@ export default class DragData {
         $(document).on('keydown', this.escapeKeyListener);
     }
 
-    /**
-     * 
-     * @param {JQuery<PointerEvent>} e 
-     */
-    handleMousemoveModel(e: any) {
+    handleMousemoveModel(e: any) { // e is a JQuery<PointerEvent>
         DragData.current = this;
 
         //position the drag image
@@ -82,7 +76,7 @@ export default class DragData {
     /**
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
-         */
+     */
     setDropHandler<D extends DragData>(dropHandler: (dragData: D) => void, filter: ((dragData: D) => boolean) | undefined = undefined) {
         this.dropHandler = dropHandler;
         this.dropFilter = filter;
@@ -96,10 +90,6 @@ export default class DragData {
         this.dropFilter = undefined;
     }
 
-    /**
-     * 
-     * @param {JQuery<PointerEvent>} e 
-     */
     canDrop(e: JQuery<PointerEvent>) {
         this.event = e;
         if (!this.dropHandler) {
@@ -109,10 +99,6 @@ export default class DragData {
         return result;
     }
 
-    /**
-     * 
-     * @param {JQuery<PointerEvent>} e 
-     */
     handleMouseupModel(e: JQuery<PointerEvent>) {
         this.event = e;
         if (this.canDrop(e) && this.dropHandler) {

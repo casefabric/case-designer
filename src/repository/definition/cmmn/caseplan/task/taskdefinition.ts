@@ -40,23 +40,14 @@ export default class TaskDefinition extends TaskStageDefinition {
         return true;
     }
 
-    /**
-     * @returns {String}
-     */
     get implementationRef(): string {
         throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
-    /**
-     * @param {String} ref
-     */
     set implementationRef(ref) {
         throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
-    /**
-     * @returns {ModelDefinition}
-     */
     get implementationModel() {
         return this._implementationModel;
     }
@@ -73,17 +64,11 @@ export default class TaskDefinition extends TaskStageDefinition {
         return this.resolveExternalDefinition(this.implementationRef).then(definition => { this.setImplementation(this.implementationRef, definition) });
     }
 
-    /**
-     * @returns {String}
-     */
     get validatorRef(): string {
         throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
-    /**
-     * @param {String} ref
-     */
-    set validatorRef(ref) {
+    set validatorRef(ref: string) {
         throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
@@ -98,7 +83,6 @@ export default class TaskDefinition extends TaskStageDefinition {
 
     /**
      * Returns the type of task, e.g. CaseTask or ProcessTask or HumanTask (can be used for e.g. console logging)
-     * @returns {String}
      */
     get type() {
         return this.constructor.name.substring(0, this.constructor.name.length - 'Definition'.length);
@@ -107,7 +91,6 @@ export default class TaskDefinition extends TaskStageDefinition {
     /**
      * Checks whether an input parameter with the given name exists, and, if not,
      * creates a new one with the specified name.
-     * @param {String} name 
      */
     getInputParameterWithName(name: string) {
         return this.getParameterWithName(name, this.inputs);
@@ -116,7 +99,6 @@ export default class TaskDefinition extends TaskStageDefinition {
     /**
      * Checks whether an input parameter with the given name exists, and, if so,
      * creates a new one with the specified name plus a separator plus a number.
-     * @param {String} name 
      */
     createInputParameterWithName(name: string) {
         const newParameter: TaskParameterDefinition = this.createDefinition(TaskParameterDefinition, undefined, this.generateUniqueParameterName(name, this.inputs));
@@ -127,7 +109,6 @@ export default class TaskDefinition extends TaskStageDefinition {
     /**
      * Checks whether an output parameter with the given name exists, and, if so,
      * creates a new one with the specified name plus a separator plus a number.
-     * @param {String} name 
      */
     createOutputParameterWithName(name: string) {
         const newParameter: TaskParameterDefinition = this.createDefinition(TaskParameterDefinition, undefined, this.generateUniqueOutputParameterName(name));
@@ -141,8 +122,6 @@ export default class TaskDefinition extends TaskStageDefinition {
      * - 'Response.1' ---> the second one generated
      * - 'Response.2' ---> the third one
      * If in the meantime 'Response.1' is deleted or has a new name, then the fourth one will get that "free spot"
-     * @param {string} name 
-     * @returns {string}
      */
     generateUniqueOutputParameterName(name: string) {
         return this.generateUniqueParameterName(name, this.outputs);
@@ -154,9 +133,6 @@ export default class TaskDefinition extends TaskStageDefinition {
      * - 'Response.1' ---> the second one generated
      * - 'Response.2' ---> the third one
      * If in the meantime 'Response.1' is deleted or has a new name, then the fourth one will get that "free spot"
-     * @param {string} name 
-     * @param {Array<TaskParameterDefinition>} siblings 
-     * @returns {string}
      */
     generateUniqueParameterName(name: string, siblings: TaskParameterDefinition[]) {
         const separator = '.';
@@ -166,13 +142,7 @@ export default class TaskDefinition extends TaskStageDefinition {
         return name + separator + counter;
     }
 
-    /**
-     * 
-     * @param {String} name 
-     * @param {Array<TaskParameterDefinition>} collection 
-     * @returns {TaskParameterDefinition}
-     */
-    getParameterWithName(name: string, collection: TaskParameterDefinition[]) {
+    getParameterWithName(name: string, collection: TaskParameterDefinition[]): TaskParameterDefinition {
         const existingParameter = collection.find(p => p.name == name);
         if (!existingParameter) {
             const newParameter: TaskParameterDefinition = this.createDefinition(TaskParameterDefinition, undefined, name);
@@ -185,13 +155,6 @@ export default class TaskDefinition extends TaskStageDefinition {
 
     /**
      * Creates a new mapping and fills some properties if they are specified
-     * 
-     * @param {Function} creator 
-     * @param {String} sourceRef 
-     * @param {String} targetRef 
-     * @param {TaskParameterDefinition} taskParameter 
-     * @param {ParameterDefinition} implementationParameter 
-     * @returns {ParameterMappingDefinition}
      */
     createMapping<M extends ParameterMappingDefinition>(creator: Function, sourceRef?: string, targetRef?: string, taskParameter?: TaskParameterDefinition, implementationParameter?: ParameterDefinition<ModelDefinition>): M {
         const newMapping: ParameterMappingDefinition = this.createDefinition(creator);
@@ -205,19 +168,11 @@ export default class TaskDefinition extends TaskStageDefinition {
         return <M>newMapping;
     }
 
-    /**
-     * 
-     * @param {ParameterDefinition} implementationParameter 
-     */
     createInputMapping(implementationParameter: ParameterDefinition<ModelDefinition>): InputMappingDefinition {
         const targetRef = implementationParameter.getIdentifier();
         return this.createMapping(InputMappingDefinition, '', targetRef, undefined, implementationParameter);
     }
 
-    /**
-     * 
-     * @param {ParameterDefinition} implementationParameter 
-     */
     createOutputMapping(implementationParameter: ParameterDefinition<ModelDefinition>): OutputMappingDefinition {
         const sourceRef = implementationParameter.getIdentifier();
         return this.createMapping(OutputMappingDefinition, sourceRef, '', undefined, implementationParameter);
@@ -226,8 +181,6 @@ export default class TaskDefinition extends TaskStageDefinition {
     /**
      * Generates new mappings and task input/output parameters based on the
      * given xml node that represents the contract of the task implementation.
-     * @param {String} implementationRef 
-     * @param {ModelDefinition} implementationModel 
      */
     changeTaskImplementation(implementationRef: string, implementationModel: ModelDefinition) {
         console.log("Associating new implementation ref (current is " + this.implementationRef + ", new is " + implementationRef + ")");
@@ -246,8 +199,6 @@ export default class TaskDefinition extends TaskStageDefinition {
 
     /**
      * Sets the task implementation, and optionally updates the implementationRef.
-     * @param {String} implementationRef 
-     * @param {ModelDefinition} implementationModel 
      */
     setImplementation(implementationRef: string, implementationModel: ModelDefinition) {
         this.hasImplementation = true;

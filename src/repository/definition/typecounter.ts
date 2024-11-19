@@ -8,7 +8,6 @@ export default class TypeCounter {
     guid: string;
     /**
      * Simple type counter class for counting types of cmmn element definitions
-     * @param {ModelDefinition} modelDefinition 
      */
     constructor(private modelDefinition: ModelDefinition) {
         this.guid = this.modelDefinition.parseAttribute('guid', Util.createID());

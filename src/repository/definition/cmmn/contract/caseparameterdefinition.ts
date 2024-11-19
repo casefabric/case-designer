@@ -9,12 +9,7 @@ import ElementDefinition from "@repository/definition/elementdefinition";
 export default class CaseParameterDefinition extends ParameterDefinition<CaseDefinition> {
     bindingRef: string;
     bindingRefinement?: ExpressionDefinition;
-    /**
-     * 
-     * @param {Element} importNode 
-     * @param {CaseDefinition} caseDefinition
-     * @param {CMMNElementDefinition} parent optional
-     */
+
     constructor(importNode: Element, public caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
         this.bindingRef = this.parseAttribute('bindingRef');

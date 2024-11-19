@@ -12,12 +12,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
     targetRef: string;
     transformation?: ExpressionDefinition;
     private _implementationParameter?: ParameterDefinition<any>;
-    /**
-     * 
-     * @param {Element} importNode 
-     * @param {CaseDefinition} caseDefinition 
-     * @param {TaskDefinition} parent 
-     */
+
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
         this.sourceRef = this.parseAttribute('sourceRef');
@@ -25,9 +20,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         this.transformation = this.parseElement('transformation', ExpressionDefinition);
     }
 
-    /**
-     * @returns {TaskDefinition}
-     */
     get task(): TaskDefinition | undefined {
         let ancestor = this.parent;
         while (ancestor) {
@@ -43,10 +35,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return '';
     }
 
-    /**
-     * 
-     * @param {CaseFileItemDef} newBinding 
-     */
     updateBindingRef(newBinding: CaseFileItemDef) {
         const task = this.task;
         if (!task) return;
@@ -90,9 +78,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         this.taskParameter.bindingRef = newBinding ? newBinding.id : '';
     }
 
-    /**
-     * @returns {TaskParameterDefinition}
-     */
     get taskParameter(): TaskParameterDefinition | undefined {
         if (this.isInputMapping) {
             return this.source;
@@ -101,9 +86,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         }
     }
 
-    /**
-     * @param {TaskParameterDefinition} parameter
-     */
     set taskParameter(parameter: TaskParameterDefinition) {
         if (this.isInputMapping) {
             this.source = parameter;
@@ -116,9 +98,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return this._implementationParameter;
     }
 
-    /**
-     * @param {ParameterDefinition|undefined} parameter
-     */
     set implementationParameter(parameter: ParameterDefinition<any> | undefined ) {
         this._implementationParameter = parameter;
         if (this.isInputMapping) {
@@ -145,7 +124,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
 
     /**
      * Either source or target will be undefined, because one refers to the task-implementation's input/output parameter
-     * @returns {ParameterDefinition}
      */
     get source(): TaskParameterDefinition | undefined {
         return this.task?.inputs.find(parameter => parameter.id === this.sourceRef);
@@ -157,7 +135,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
 
     /**
      * Either source or target will be undefined, because one refers to the task-implementation's input/output parameter
-     * @returns {ParameterDefinition}
      */
     get target(): TaskParameterDefinition | undefined {
         return this.task?.outputs.find(parameter => parameter.id === this.targetRef);
@@ -189,9 +166,6 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         }
     }
 
-    /**
-     * @returns {Boolean}
-     */
     get isInputMapping() {
         const task = this.task;
         if (!task) return false;

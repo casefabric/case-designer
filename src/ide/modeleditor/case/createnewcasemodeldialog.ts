@@ -6,10 +6,7 @@ import TypeSelector, { Option } from "../type/editor/typeselector";
 export default class CreateNewCaseModelDialog extends CreateNewModelDialog {
     typeRef: string = '';
     typeSelector?: TypeSelector;
-    /**
-     * @param {IDE} ide
-     * @param {string} label
-     */
+
     constructor(ide: IDE, label: string) {
         super(ide, label);
     }
@@ -47,7 +44,6 @@ export default class CreateNewCaseModelDialog extends CreateNewModelDialog {
 
     /**
      * Create an additional <new> option when typeRef doesn't already exists
-     * @returns {Array<string>}
      */
     createOptionalNewTypeOption(caseName: string): Option[] {
         if (this.typeRef) {
@@ -62,10 +58,8 @@ export default class CreateNewCaseModelDialog extends CreateNewModelDialog {
 
     /**
      * Returns a case sensitive typeRef when found in repository or construct a new typeRef
-     * @param {string} caseName 
-     * @returns {string}
      */
-    deriveTypeRefFromCaseName(caseName: string) {
+    deriveTypeRefFromCaseName(caseName: string): string {
         if (caseName) {
             // Search (case-insensitive) for an existing type with matching name (excluding the extension '.type')
             const types = this.ide.repository.getTypes();

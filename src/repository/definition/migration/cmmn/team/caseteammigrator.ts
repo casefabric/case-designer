@@ -53,10 +53,6 @@ export default class CaseTeamMigrator {
         });
     }
 
-    /**
-     * 
-     * @param {Element} element 
-     */
     convertRoleDefinition(element: Element) {
         const clearAttribute = (name: string) => {
             const value = element.getAttribute(name);

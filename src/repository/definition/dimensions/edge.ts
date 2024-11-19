@@ -18,9 +18,6 @@ export default class Edge extends DiagramElement {
 
     /**
      * Create a new Edge shape that binds the two CMMNElements.
-     * @param {CMMNElementView} source 
-     * @param {CMMNElementView} target
-     * @returns {Edge}
      */
     static create(source: CMMNElementView, target: CMMNElementView) {
         if (! source.case.dimensions || ! source.case.diagram) {
@@ -36,9 +33,6 @@ export default class Edge extends DiagramElement {
 
     /**
      * Representation of a <CMMNEdge> element
-     * @param {Element} importNode 
-     * @param {Dimensions} dimensions 
-     * @param {Diagram} diagram 
      */
     constructor(importNode: Element, dimensions: Dimensions, public diagram: Diagram) {
         super(importNode, dimensions, diagram);

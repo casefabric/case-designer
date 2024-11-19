@@ -9,7 +9,6 @@ export default class ProcessModelDefinition extends ModelDefinition {
     implementation?: ProcessImplementationDefinition;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
-     * @param {ProcessFile} file
      */
     constructor(public file: ProcessFile) {
         super(file);

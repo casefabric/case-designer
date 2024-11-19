@@ -192,9 +192,6 @@ export default class ModelEditor {
         return this.html.css('display') == 'block';
     }
 
-    /**
-     * @param {Boolean} visible
-     */
     set visible(visible) {
         this.html.css('display', visible ? 'block' : 'none');
         if (visible) {
@@ -222,7 +219,7 @@ export default class ModelEditor {
     }
 
     async refresh() {
-        console.groupCollapsed(`Reloading editor of ${this.file.fileName}`);
+        console.groupCollapsed(`Reloading editor of ${this.file}`);
         await this.file.reload().then(() => {
             console.groupEnd();
             this.loadModel();

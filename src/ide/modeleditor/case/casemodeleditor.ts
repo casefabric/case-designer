@@ -27,8 +27,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     /**
      * This editor handles Case models
-     * @param {IDE} ide 
-     * @param {CaseFile} file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
+     * @param file The full file name to be loaded, e.g. 'helloworld.case', 'sendresponse.humantask'
      */
     constructor(public ide: IDE, public file: CaseFile) {
         super(ide, file);

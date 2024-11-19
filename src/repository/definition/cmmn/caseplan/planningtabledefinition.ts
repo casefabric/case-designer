@@ -7,12 +7,7 @@ import StageDefinition from "./stagedefinition";
 export default class PlanningTableDefinition extends UnnamedCMMNElementDefinition {
     tableItems: any;
     ruleDefinitions: ApplicabilityRuleDefinition[];
-    /**
-     * 
-     * @param {Element} importNode 
-     * @param {CaseDefinition} caseDefinition 
-     * @param {TaskStageDefinition} parent 
-     */
+
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition) {
         super(importNode, caseDefinition, parent);
         this.parent = parent;
@@ -41,7 +36,6 @@ export default class PlanningTableDefinition extends UnnamedCMMNElementDefinitio
         super.createExportNode(parentNode, 'planningTable', 'tableItems', 'ruleDefinitions');
     }
 
-    /** @returns {ApplicabilityRuleDefinition} */
     createNewRule() {
         const newRule: ApplicabilityRuleDefinition = super.createDefinition(ApplicabilityRuleDefinition);
         this.ruleDefinitions.push(newRule);

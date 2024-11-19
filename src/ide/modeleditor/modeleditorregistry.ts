@@ -11,10 +11,6 @@ import TypeModelEditor from "./type/typemodeleditor";
 export default class ModelEditorRegistry {
     editors: Array<ModelEditor> = [];
 
-    /**
-     * 
-     * @param {IDE} ide 
-     */
     constructor(public ide: IDE) {
         this.ide = ide;
 
@@ -94,7 +90,7 @@ export default class ModelEditorRegistry {
             return;
         }
 
-        if (serverFile.metadata?.error) {
+        if (serverFile.metadata.error) {
             this.ide.coverPanel.show('Cannot open ' + fileName + '\nError: ' + serverFile.metadata.error);
             return;
         }
