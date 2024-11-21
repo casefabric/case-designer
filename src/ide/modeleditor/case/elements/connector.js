@@ -37,7 +37,7 @@ export default class Connector extends CanvasElement {
      * @param {CMMNElementView} target 
      */
     static createConnector(source, target) {
-        const edge = Edge.create(source, target);
+        const edge = Edge.create(source.definition, target.definition);
         return new Connector(source.case, source, target, edge);
     }
 

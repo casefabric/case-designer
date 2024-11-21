@@ -2,7 +2,7 @@
 import CaseFileItemDefinitionEditor from "./casefileitemdefinitioneditor";
 import $ from "jquery";
 
-export default class CFIDefinitionUnknown{
+export default class CFIDefinitionUnknown {
     /**
      * 
      * @param {CaseFileItemDefinitionEditor} editor 

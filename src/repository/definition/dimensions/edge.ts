@@ -1,14 +1,14 @@
 import Util from "@util/util";
+import XML from "@util/xml";
+import CMMNElementDefinition from "../cmmnelementdefinition";
+import ElementDefinition from "../elementdefinition";
+import ModelDefinition from "../modeldefinition";
+import XMLSerializable from "../xmlserializable";
 import Diagram from "./diagram";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import Tags from "./tags";
 import Vertex from "./vertex";
-import CMMNElementView from "@ide/modeleditor/case/elements/cmmnelementview";
-import XMLSerializable from "../xmlserializable";
-import XML from "@util/xml";
-import ModelDefinition from "../modeldefinition";
-import ElementDefinition from "../elementdefinition";
 
 export default class Edge extends DiagramElement {
     private _vertices: Vertex[];
@@ -19,15 +19,15 @@ export default class Edge extends DiagramElement {
     /**
      * Create a new Edge shape that binds the two CMMNElements.
      */
-    static create(source: CMMNElementView, target: CMMNElementView) {
-        if (! source.case.dimensions || ! source.case.diagram) {
+    static create(source: CMMNElementDefinition, target: CMMNElementDefinition) {
+        if (! source.caseDefinition.dimensions || ! source.caseDefinition.dimensions.diagram) {
             return undefined;
         }
         
-        const edge = new Edge(XML.loadXMLString(`<${Tags.CMMNEDGE} />`).documentElement, source.case.dimensions, source.case.diagram);
+        const edge = new Edge(XML.loadXMLString(`<${Tags.CMMNEDGE} />`).documentElement, source.caseDefinition.dimensions, source.caseDefinition.dimensions.diagram);
         edge.sourceId = source.id;
         edge.targetId = target.id;
-        source.case.diagram.edges.push(edge);
+        source.caseDefinition.dimensions.diagram.edges.push(edge);
         return edge;
     }
 

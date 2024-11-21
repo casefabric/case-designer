@@ -19,7 +19,7 @@ export default class CFIDefinitionUnspecified {
                 <div class="divTable">
                 </div>
             </div>`);
-        this.tableDiv =  this.html.find('.divTable');
+        this.tableDiv = this.html.find('.divTable');
         this.container.append(this.html);
     }
 
@@ -96,7 +96,7 @@ export default class CFIDefinitionUnspecified {
                 </select>
             </td>
             <td>
-                <input type="checkbox" class="inputBusinessIdentifier" ${property.isBusinessIdentifier?' checked':''} />
+                <input type="checkbox" class="inputBusinessIdentifier" ${property.isBusinessIdentifier ? ' checked' : ''} />
             </td>
         </tr>`);
         html.find('.removeProperty').on('click', e => {
@@ -125,8 +125,8 @@ export default class CFIDefinitionUnspecified {
         parameter.name = name;
         parameter.type = type;
         parameter.isBusinessIdentifier = isBusinessIdentifier;
-        if (! parameter.id) parameter.id = Util.createID('_', 4) + '_' + name.replace(/\s/g, '');
-        if (! parameter.name) parameter.name = parameter.id;
+        if (!parameter.id) parameter.id = Util.createID('_', 4) + '_' + name.replace(/\s/g, '');
+        if (!parameter.name) parameter.name = parameter.id;
         // Make sure a newly generated id is rendered as well.
         html.find('.inputParameterName').val(parameter.name);
         html.find('.inputParameterId').val(parameter.id);
