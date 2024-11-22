@@ -1,19 +1,10 @@
-﻿import CaseFileDefinitionDefinition from "@repository/definition/cfid/casefileitemdefinitiondefinition";
+﻿import CaseFileDefinitionDefinition, { UNKNOWN, UNKNOWN_URI, UNSPECIFIED, UNSPECIFIED_URI, XMLELEMENT, XMLELEMENT_URI } from "@repository/definition/cfid/casefileitemdefinitiondefinition";
 import XML from "@util/xml";
 import $ from "jquery";
 import CFIDefinitionUnknown from "./cfidefinitionunknown";
 import CFIDefinitionUnspecified from "./cfidefinitionunspecified";
 import CFIDefinitionXMLElement from "./cfidefinitionxmlelement";
 import CaseFileItemsEditor from "../case/editors/file/classic/casefileitemseditor";
-
-export const UNSPECIFIED = 'Unspecified';
-export const UNSPECIFIED_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unspecified';
-
-export const XMLELEMENT = 'XMLElement';
-export const XMLELEMENT_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/XSDElement';
-
-export const UNKNOWN = 'Unknown';
-export const UNKNOWN_URI = 'http://www.omg.org/spec/CMMN/DefinitionType/Unknown';
 
 export default class CaseFileItemDefinitionEditor {
     /** 
