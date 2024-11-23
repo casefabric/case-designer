@@ -34,7 +34,6 @@ import "@styles/ide/modeleditors/case/elements/elements.css";
 import "@styles/ide/modeleditors/case/editors/cfiselector.css";
 import "@styles/ide/modeleditors/case/editors/file/classic/casefileitemseditor.css";
 import "@styles/ide/modeleditors/type/typemodeleditor.css";
-import "@styles/ide/editors/roleseditor.css";
 import "@styles/ide/editors/tableeditor.css";
 import "@styles/ide/editors/jsoneditor.css";
 import "@styles/ide/editors/task/taskmappingseditor.css";

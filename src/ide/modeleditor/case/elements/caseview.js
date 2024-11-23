@@ -17,8 +17,8 @@ import CaseSourceEditor from "../editors/casesourceeditor";
 import DeployForm from "../editors/deployform";
 import CaseFileEditor from "../editors/file/casefileeditor";
 import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
-import RolesEditor from "../editors/roleseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
+import CaseTeamEditor from "../editors/team/caseteameditor";
 import Grid from "../grid";
 import ShapeBox from "../shapebox/shapebox";
 import UndoRedoBox from "../undoredo/undoredobox";
@@ -92,7 +92,7 @@ export default class CaseView {
         this.createJointStructure();
 
         //create the editor forms for roles, case file items, and case input and output parameters
-        this.rolesEditor = new RolesEditor(this);
+        this.teamEditor = new CaseTeamEditor(this);
         this.caseParametersEditor = new CaseParametersEditor(this);
         this.startCaseEditor = new StartCaseEditor(this);
         this.debugEditor = new Debugger(this);
@@ -452,7 +452,7 @@ export default class CaseView {
      */
     delete() {
         // Remove all our inline editors.
-        this.rolesEditor.delete();
+        this.teamEditor.delete();
         this.cfiEditor.delete();
         this.caseParametersEditor.delete();
         this.startCaseEditor.delete();

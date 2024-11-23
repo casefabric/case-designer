@@ -20,8 +20,11 @@
             <caseFileItem id="AnotherGreeting" name="AnotherGreeting" multiplicity="ExactlyOne" definitionRef="Greeting.type"/>
         </caseFileModel>
         <casePlanModel id="cm__lqS7a_0" name="a_new_moon" autoComplete="true"/>
-        <caseRoles cafienne:caseTeamRef="moon.caseteam">
-            <role id="cr__5yqOC_0" name="Rock"/>
+        <caseRoles cafienne:caseTeamRef="world.caseteam">
+            <role id="cr__PLjS8_0" name="Mountain"/>
+            <role id="cr__PLjS8_1" name="River"/>
+            <role id="cr__PLjS8_3" name="Forest"/>
+            <role id="cr__PLjS8_4" name="Village"/>
         </caseRoles>
     </case>
     <CMMNDI>
