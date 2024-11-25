@@ -1,5 +1,5 @@
 import IDE from "@ide/ide";
-import CodeMirrorConfig from "@util/codemirrorconfig";
+import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
 import Util from "@util/util";
 import $ from "jquery";
 import SettingsStorage from "./settingsstorage";

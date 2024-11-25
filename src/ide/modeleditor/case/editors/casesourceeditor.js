@@ -1,5 +1,5 @@
 import Tags from "@repository/definition/dimensions/tags";
-import CodeMirrorConfig from "@util/codemirrorconfig";
+import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
 import Util from "@util/util";
 import XML from "@util/xml";
 import $ from "jquery";

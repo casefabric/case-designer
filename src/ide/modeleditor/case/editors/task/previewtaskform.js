@@ -1,6 +1,6 @@
 import StandardForm from "@ide/editors/standardform";
 import ModelEditor from "@ide/modeleditor/modeleditor";
-import AlpacaPreview from "@util/alpacapreview";
+import AlpacaPreview from "@ide/editors/external/alpacapreview";
 import Util from "@util/util";
 import HumanTaskView from "../../elements/humantaskview";
 

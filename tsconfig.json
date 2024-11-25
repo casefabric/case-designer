@@ -46,6 +46,7 @@
       "@repository/*": ["src/repository/*"],
       "@definition/*": ["src/repository/definition/*"],
       "@ide/*": ["src/ide/*"],
+      "@validate/*": ["src/validate/*"],
       "@styles/*": ["app/styles/*"],
       "_images_/*": ["app/images/*"],
       "jquery": ["node_modules/@types/jquery/index"],

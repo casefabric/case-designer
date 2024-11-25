@@ -2,7 +2,7 @@
 
 import CaseView from "@ide/modeleditor/case/elements/caseview";
 import { $read } from "@util/ajax";
-import CodeMirrorConfig from "@util/codemirrorconfig";
+import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
 import Util from "@util/util";
 import $ from "jquery";
 import StandardForm from "../editors/standardform";

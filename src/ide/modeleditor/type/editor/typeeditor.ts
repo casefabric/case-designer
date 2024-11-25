@@ -4,7 +4,7 @@ import CaseView from "@ide/modeleditor/case/elements/caseview";
 import ModelSourceEditor from "@ide/modeleditor/xmleditor/modelsourceeditor";
 import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import TypeFile from "@repository/serverfile/typefile";
-import CodeMirrorConfig from "@util/codemirrorconfig";
+import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
 import Util from "@util/util";
 import XML from "@util/xml";
 import $ from "jquery";
