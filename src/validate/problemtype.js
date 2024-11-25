@@ -1,4 +1,5 @@
-﻿import Problem from "./problem";
+﻿import ElementDefinition from "@repository/definition/elementdefinition";
+import Problem from "./problem";
 import ValidateForm from "./validateform";
 
 export default class ProblemType {
@@ -25,12 +26,16 @@ export default class ProblemType {
 
     /**
      * Creates a validation problem within the context of this case.
-     * @param {String} contextId 
+     * @param {ElementDefinition} element 
      * @param {Array<String>} parameters 
      * @param {String} fileName
      */
-    createProblem(contextId, parameters, fileName) {
-        return new Problem(contextId, this, parameters, fileName);
+    createProblem(element, parameters, fileName) {
+        const problem = new Problem(element.id, this, parameters, fileName);
+
+        element.problems.push(problem);
+
+        return problem;
     }
 
     getHTMLString(description, contextId, problemId, fileName) {

@@ -1,8 +1,10 @@
+import Problem from "@validate/problem";
 import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
 export default class ElementDefinition<M extends ModelDefinition> extends XMLSerializable {
     childDefinitions: ElementDefinition<M>[] = [];
+    problems: Problem[] = [];
 
     /**
      * Creates a new ElementDefinition that belongs to the Definition object.

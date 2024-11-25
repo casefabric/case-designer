@@ -28,6 +28,7 @@ import CaseRoleDefinition from "@repository/definition/cmmn/caseteam/caseroledef
 import ExitCriterionDefinition from "@repository/definition/cmmn/sentry/exitcriteriondefinition";
 import ModelDefinition from "@repository/definition/modeldefinition";
 import ProcessModelDefinition from "@repository/definition/process/processmodeldefinition";
+import ElementDefinition from "@repository/definition/elementdefinition";
 
 export default class Validator {
     _problems: Problem[];
@@ -68,13 +69,13 @@ export default class Validator {
         return validator;
     }
 
-    raiseWarning(contextId: string, messageTemplate: string, parameters: string[]){
+    raiseWarning<M extends ModelDefinition>(element: ElementDefinition<M>, messageTemplate: string, parameters: string[]){
         const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNWarning(hash, messageTemplate).createProblem(contextId, parameters, this.currentModel?.name ?? ''));
+        this._problems.push(new CMMNWarning(hash, messageTemplate).createProblem(element, parameters, this.currentModel?.name ?? ''));
     }
-    raiseError(contextId: string, messageTemplate: string, parameters: string[]){
+    raiseError<M extends ModelDefinition>(element: ElementDefinition<M>, messageTemplate: string, parameters: string[]){
         const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNError(hash, messageTemplate).createProblem(contextId, parameters, this.currentModel?.name ?? ''));
+        this._problems.push(new CMMNError(hash, messageTemplate).createProblem(element, parameters, this.currentModel?.name ?? ''));
     }
 
     validateCase(caseDefinition: CaseDefinition) {
@@ -82,18 +83,14 @@ export default class Validator {
             return;
         }
 
-        this.validationStack.push(caseDefinition);
-        try {
-            this.validateCaseFile(caseDefinition.caseFile);
-            this.validateStage(caseDefinition.casePlan);
-            this.validateCaseTeam(caseDefinition.caseTeam);
-            this.validateCaseInputParameters(caseDefinition.inputParameters);
-            this.validateCaseOutputParameters(caseDefinition.outputParameters);
-            this.validateCaseAnnotations(caseDefinition.annotations);
-            this.validateCaseStartSchema(caseDefinition.startCaseSchema);
-        } finally {
-            this.validationStack.pop();
-        }
+        using context = this.startValidationContext(caseDefinition);
+        this.validateCaseFile(caseDefinition.caseFile);
+        this.validateStage(caseDefinition.casePlan);
+        this.validateCaseTeam(caseDefinition.caseTeam);
+        this.validateCaseInputParameters(caseDefinition.inputParameters);
+        this.validateCaseOutputParameters(caseDefinition.outputParameters);
+        this.validateCaseAnnotations(caseDefinition.annotations);
+        this.validateCaseStartSchema(caseDefinition.startCaseSchema);
     }
     alreadyValidated(caseDefinition: ModelDefinition): boolean {
         if (!this.validatedElements.has(caseDefinition)) {
@@ -116,15 +113,15 @@ export default class Validator {
     validateParameter(outputParameter: CaseParameterDefinition) {
         if (outputParameter.name === "") 
         {
-            this.raiseError(outputParameter.id, 'A case parameter has no name', []);
+            this.raiseError(outputParameter, 'A case parameter has no name', []);
         }
         if (outputParameter.bindingName === "") 
             {
-                this.raiseError(outputParameter.id, 'The case parameter "-par0-" is not bound', [outputParameter.name]);
+                this.raiseError(outputParameter, 'The case parameter "-par0-" is not bound', [outputParameter.name]);
             }
             if (outputParameter.bindingRef === "") 
         {
-            this.raiseError(outputParameter.id, 'The case parameter "-par0-" has no type', [outputParameter.name]);
+            this.raiseError(outputParameter, 'The case parameter "-par0-" has no type', [outputParameter.name]);
         }
     }
     validateCaseInputParameters(inputParameters: CaseParameterDefinition[]) {
@@ -140,37 +137,37 @@ export default class Validator {
         let roles = caseTeam.roles;
         let duplicatesRoles = roles.filter((role, index) => roles.indexOf(role) !== index);
         if (duplicatesRoles.length > 0) {
-            this.raiseError(caseTeam.id, 'The case team has duplicate roles', []);
+            this.raiseError(caseTeam, 'The case team has duplicate roles', []);
         }
     }
     validateRole(role: CaseRoleDefinition) {
         if (role.name === "") 
         {
-            this.raiseError(role.id, 'A case role has no name', []);
+            this.raiseError(role, 'A case role has no name', []);
         }
     }
     validateCaseFile(caseFile: CaseFileDefinition) {
         if (caseFile.isOldStyle) {
-            this.raiseWarning(caseFile.id, 'The case file is in old style and will not be validated', []);
+            this.raiseWarning(caseFile, 'The case file is in old style and will not be validated', []);
         }
         else
         {
             if (caseFile.typeRef === "")  
             {
-                this.raiseError(caseFile.id, `The case file has no type`, []);
+                this.raiseError(caseFile, `The case file has no type`, []);
                 return;
             }
 
             const typeFile = this.repository.getTypes().find(type => type.fileName === caseFile.typeRef);
             if (typeFile === undefined || typeFile.definition === undefined)
             {
-                this.raiseError(caseFile.id, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
+                this.raiseError(caseFile, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
             }
             else
             {
             // TODO: reload needed??? typeFile.reload();
                 if (typeFile.definition === undefined) {
-                    this.raiseError(caseFile.id, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
+                    this.raiseError(caseFile, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
                 }
                 else {
                     this.validateType(typeFile.definition);
@@ -183,23 +180,19 @@ export default class Validator {
             return;
         }
 
-        this.validationStack.push(type);
-        try {
-            this.validateSchema(type.schema, type.name);
-        } finally {
-            this.validationStack.pop();
-        }
+        using context = this.startValidationContext(type);
+        this.validateSchema(type.schema, type.name);
     }
     validateSchema(schema: SchemaDefinition, typeName: string, propertyName?: string) {
         if (schema.childDefinitions.length === 0) 
         {
             if (propertyName === undefined)
             {
-                this.raiseError(schema.id, 'The type  "-par0-" has no child properties', [typeName]);
+                this.raiseError(schema, 'The type  "-par0-" has no child properties', [typeName]);
             }
             else
             {
-                this.raiseError(schema.id, 'The structured property "-par0-" in type "-par1-" has no child properties', [propertyName, typeName]);
+                this.raiseError(schema, 'The structured property "-par0-" in type "-par1-" has no child properties', [propertyName, typeName]);
             }
         }
         for (let childDef of schema.childDefinitions)  {
@@ -211,12 +204,12 @@ export default class Validator {
     validateSchemaProperty(itemDef: SchemaPropertyDefinition, typeName: string) {
         if (itemDef.name === "") 
         {
-            this.raiseError(itemDef.id, `A case file item element in type "-par0-" has no name`, [typeName]);
+            this.raiseError(itemDef, `A case file item element in type "-par0-" has no name`, [typeName]);
         }
         if (["ExactlyOne", "ZeroOrOne", "ZeroOrMore", "OneOrMore", "Unspecified", "Unknown"].
             indexOf(itemDef.multiplicity) === -1) 
         {
-            this.raiseError(itemDef.id, '"-par0-" is not a valid multiplicity for property "-par1-" in type "-par2-")', [itemDef.multiplicity, itemDef.name, typeName]);
+            this.raiseError(itemDef, '"-par0-" is not a valid multiplicity for property "-par1-" in type "-par2-")', [itemDef.multiplicity, itemDef.name, typeName]);
         }
         if (itemDef.isComplexType) 
         {
@@ -224,7 +217,7 @@ export default class Validator {
             {
                 if (itemDef.childDefinitions.length === 0) 
                 {
-                    this.raiseError(itemDef.id, 'The structured property "-par0-" in type "-par1-" has no child properties', [itemDef.name, typeName]);
+                    this.raiseError(itemDef, 'The structured property "-par0-" in type "-par1-" has no child properties', [itemDef.name, typeName]);
                 }
                 for (let childDef of itemDef.childDefinitions)  {
                     if (childDef instanceof SchemaDefinition) {
@@ -232,12 +225,12 @@ export default class Validator {
                     }
                     else
                     {
-                        this.raiseWarning(childDef.id, 'The property of type "-par0-" cannot be validated', [childDef.constructor.name]);
+                        this.raiseWarning(childDef, 'The property of type "-par0-" cannot be validated', [childDef.constructor.name]);
                     }
                 }
             }
             else if (itemDef.subType === undefined) {
-                this.raiseError(itemDef.id, 'The property "-par0-" in type "-par1-" does not have a type', [itemDef.name, typeName]);
+                this.raiseError(itemDef, 'The property "-par0-" in type "-par1-" does not have a type', [itemDef.name, typeName]);
             }
             else{
                 this.validateType(itemDef.subType);
@@ -247,7 +240,7 @@ export default class Validator {
         {
             if (itemDef.type === "") 
             {
-                this.raiseError(itemDef.id, 'The property "-par0-" in type "-par1-" has no type', [itemDef.name, typeName]);
+                this.raiseError(itemDef, 'The property "-par0-" in type "-par1-" has no type', [itemDef.name, typeName]);
             }
         }
     }
@@ -263,7 +256,7 @@ export default class Validator {
         // validate autocomplete
         if (!stage.autoComplete) {
             if (!stage.planningTable || stage.planningTable.tableItems.length == 0) {
-                this.raiseWarning(stage.id, 'The stage "-par0-" has the property autocomplete=FALSE. It is appropriate that this stage contains discretionary elements', 
+                this.raiseWarning(stage, 'The stage "-par0-" has the property autocomplete=FALSE. It is appropriate that this stage contains discretionary elements', 
                     [stage.name]);
             }
         }
@@ -272,7 +265,7 @@ export default class Validator {
         const numPlanItems = stage.planItems.length;
         const numDiscretionaryItems = planningTable ? planningTable.tableItems.length : 0;
         if (numPlanItems + numDiscretionaryItems <= 1) {
-            this.raiseWarning(stage.id, 'The stage "-par0-" contains zero or one plan item, this is allowed but should be avoided',
+            this.raiseWarning(stage, 'The stage "-par0-" contains zero or one plan item, this is allowed but should be avoided',
                 [stage.name]);
         }
 
@@ -304,7 +297,7 @@ export default class Validator {
                     this.validateStage(planItem as StageDefinition);
                     break;
                 default:
-                    this.raiseWarning(planItem.id, 'The plan item "-par0-" cannot be validated', [planItem.constructor.name]);
+                    this.raiseWarning(planItem, 'The plan item "-par0-" cannot be validated', [planItem.constructor.name]);
                     break;
             }
         }
@@ -317,18 +310,18 @@ export default class Validator {
     }
     validateApplicabilityRule(rule: ApplicabilityRuleDefinition, definition: StageDefinition) {
         if (!rule.body) {
-            this.raiseError(definition.id, 'Applicability rule "-par1-" of stage "-par0-" has no expression', 
+            this.raiseError(definition, 'Applicability rule "-par1-" of stage "-par0-" has no expression', 
                 [definition.name, rule.name]);
         }
         if (!rule.contextRef && rule.body !== 'true' && rule.body !== 'false') {
-            this.raiseWarning(definition.id, 'Applicability rule "-par1-" of stage "-par0-" has no context (case file item)',
+            this.raiseWarning(definition, 'Applicability rule "-par1-" of stage "-par0-" has no context (case file item)',
                 [definition.name, rule.name]);
         }
     }
     validatePlanItem(planItem: PlanItem, stageName: string) {
         if (planItem.name === "") 
         {
-            this.raiseError(planItem.id, 'A plan item in stage "-par0-" has no name', [stageName]);
+            this.raiseError(planItem, 'A plan item in stage "-par0-" has no name', [stageName]);
         }
         if (planItem.itemControl !== undefined) 
         {
@@ -339,14 +332,14 @@ export default class Validator {
             if (planItem.itemControl.repetitionRule) {
                 if (planItem.entryCriteria.length == 0) {
                     if(planItem instanceof MilestoneDefinition) {
-                        this.raiseError(planItem.id, 'Item "-par0-" has a repetition rule defined, but no entry criteria. This is mandatory for milestones.',
+                        this.raiseError(planItem, 'Item "-par0-" has a repetition rule defined, but no entry criteria. This is mandatory for milestones.',
                             [planItem.name]);
                     }
                 } 
                 else if (planItem.entryCriteria
                     .filter(criterion => criterion.caseFileItemOnParts.length !== 0 || criterion.planItemOnParts.length !== 0)
                     .length == 0) {
-                        this.raiseError(planItem.id, 'Item "-par0-" has a repetition rule defined, but no entry criteria with at least one on part. This is mandatory.',
+                        this.raiseError(planItem, 'Item "-par0-" has a repetition rule defined, but no entry criteria with at least one on part. This is mandatory.',
                             [planItem.name]);
 
                     }
@@ -372,7 +365,7 @@ export default class Validator {
             // Verify that we cannot have "rendez-vous" with items that we also have "4-eyes" with.
             opposites.forEach((item) => {
                 if (counterparts.filter(counter => item.id === counter.id).length > 0) {
-                    this.raiseError(planItem.id, '"-par0-" has a 4-eyes defined with "-par1-", but also rendez-vous (either directly or indirectly). This is not valid.',
+                    this.raiseError(planItem, '"-par0-" has a 4-eyes defined with "-par1-", but also rendez-vous (either directly or indirectly). This is not valid.',
                         [planItem.name, item.name]);
                 }
             });
@@ -429,7 +422,7 @@ export default class Validator {
             const found = stageChildren.find(child => child.id == sourceRef);
             //no descendant -> error
             if (!found) {
-                this.raiseError(sentry.id, 'The -par0- of discretionary element "-par1-" has an onPart planItem reference to element "-par2-", that is outside the parent stage/case plan model "-par3-". This is not allowed',
+                this.raiseError(sentry, 'The -par0- of discretionary element "-par1-" has an onPart planItem reference to element "-par2-", that is outside the parent stage/case plan model "-par3-". This is not allowed',
                     [sentry.typeDescription, cmmnParentElement.name,  planItem.name, parent.name]);
             }
         });
@@ -437,29 +430,29 @@ export default class Validator {
     validateSentryOnPartPlanItem(planItem: PlanItem, sentry: CriterionDefinition) {
         sentry.planItemOnParts.forEach(onPart => {
             if (!onPart.sourceRef) {
-                this.raiseWarning(sentry.id, 'A -par0- of element "-par1-" has an onPart plan item row with no element reference',
+                this.raiseWarning(sentry, 'A -par0- of element "-par1-" has an onPart plan item row with no element reference',
                     [sentry.typeDescription, planItem.name]);
                 
             } else {
                 const source = this.caseDefinition.getElement(onPart.sourceRef);
                 if (source === undefined) {
-                    this.raiseError(sentry.id, 'A -par0- of element "-par1-" references a plan item which does not exist',
+                    this.raiseError(sentry, 'A -par0- of element "-par1-" references a plan item which does not exist',
                         [sentry.typeDescription, planItem.name]);
                 }
                 if ((source as PlanItem) && (source as PlanItem)?.isDiscretionary) {
                     //onpart element can not be discretionary
-                    this.raiseError (sentry.id, 'A -par0- of element "-par1-" has an onPart plan item element ("-par2-") which is discretionary. This is not allowed.',
+                    this.raiseError (sentry, 'A -par0- of element "-par1-" has an onPart plan item element ("-par2-") which is discretionary. This is not allowed.',
                         [sentry.typeDescription, planItem.name, source.name]);
                 }
                 if (!onPart.standardEvent) {
-                    this.raiseWarning(sentry.id, 'A -par0- of element "-par1-" has an onPart plan item element ("-par2-") with no standard event',
+                    this.raiseWarning(sentry, 'A -par0- of element "-par1-" has an onPart plan item element ("-par2-") with no standard event',
                         [sentry.typeDescription, planItem.name, source.name]);
                 }
 
                 // TODO: check of the below constraint is valid
                 if (sentry instanceof ExitCriterionDefinition) {
                     if (onPart.standardEvent !== 'complete' && onPart.standardEvent !== 'terminate') {
-                        this.raiseError(sentry.id, 'An exit criterion of element "-par0-" has an onPart plan item entry with an invalid standard event ("-par1-")',
+                        this.raiseError(sentry, 'An exit criterion of element "-par0-" has an onPart plan item entry with an invalid standard event ("-par1-")',
                             [planItem.name, onPart.standardEvent]);
                     }
                 }
@@ -470,11 +463,11 @@ export default class Validator {
         if (sentry.ifPart)
         {
             if (!sentry.ifPart.body) {
-            this.raiseWarning(sentry.id, 'A -par0- of element "-par1-" has no expression in the ifPart', 
+            this.raiseWarning(sentry, 'A -par0- of element "-par1-" has no expression in the ifPart', 
                 [sentry.typeDescription, planItem.name]);
             }
             if (!sentry.ifPart.contextRef && sentry.ifPart.body !== 'true' && sentry.ifPart.body !== 'false') {
-                this.raiseWarning(planItem.id, 'A -par0- of element "-par1-" has an if-part expression without a context (case file item)', 
+                this.raiseWarning(planItem, 'A -par0- of element "-par1-" has an if-part expression without a context (case file item)', 
                     [sentry.typeDescription, planItem.name]);
             }
         }
@@ -482,59 +475,59 @@ export default class Validator {
     validateSentryOnPart(planItem: PlanItem, sentry: CriterionDefinition) {
         sentry.caseFileItemOnParts.forEach(onPart => {
             if (!onPart.sourceRef) {
-                this.raiseError(sentry.id, 'A -par0- of element "-par1-" has an onPart case file item entry without a reference to a case file item)', 
+                this.raiseError(sentry, 'A -par0- of element "-par1-" has an onPart case file item entry without a reference to a case file item)', 
                     [sentry.typeDescription, planItem.name]);
             }
             if (!onPart.standardEvent) {
-                this.raiseWarning(sentry.id, 'A -par0- of element "-par1-" has an onPart case file item entry without a standard event',
+                this.raiseWarning(sentry, 'A -par0- of element "-par1-" has an onPart case file item entry without a standard event',
                     [sentry.typeDescription, planItem.name]);
             }
         });
     }
     validateSentryHasIfOrOnPart(planItem: PlanItem, sentry: CriterionDefinition) {
         if (!sentry.ifPart && sentry.caseFileItemOnParts.length === 0 && sentry.planItemOnParts.length === 0) {
-            this.raiseError(planItem.id, 'The item "-par0-" has a -par1- without an if-part or on-part', [planItem.name, sentry.name]);
+            this.raiseError(planItem, 'The item "-par0-" has a -par1- without an if-part or on-part', [planItem.name, sentry.name]);
         }
     }
     validateRule(ruleType: string, planItem: PlanItem, rule?: ConstraintDefinition) {
         //the rule exists for this element and is used
         if (rule && !rule.body) {
-            this.raiseError(planItem.id, 'The item "-par0-" has a -par1- rule without a rule expression', [planItem.name, ruleType]);
+            this.raiseError(planItem, 'The item "-par0-" has a -par1- rule without a rule expression', [planItem.name, ruleType]);
         }
 
         if (rule && !rule.contextRef && rule.body !== 'true' && rule.body !== 'false') {
-            this.raiseWarning(planItem.id, 'The item "-par0-" has a -par1- rule without a context (case file item)', [planItem.name, ruleType]);
+            this.raiseWarning(planItem, 'The item "-par0-" has a -par1- rule without a context (case file item)', [planItem.name, ruleType]);
         }
     }
     validateUserEvent(definition: UserEventDefinition) {
         for (let role of definition.authorizedRoles) {
             if (this.caseDefinition.caseTeam.roles.filter(r => r.id === role.id).length === 0) {
-                this.raiseError(definition.id, 'An authorized role of user event "-par0-" is not defined in the case team', 
+                this.raiseError(definition, 'An authorized role of user event "-par0-" is not defined in the case team', 
                     [definition.name]);
             }
         }
     }
     validateTimerEvent(definition: TimerEventDefinition) {
         if (!definition.timerExpression) {
-            this.raiseError(definition.id, 'The timer event "-par0-" has no timer expression', 
+            this.raiseError(definition, 'The timer event "-par0-" has no timer expression', 
                 [definition.name]);
         }
 
         if (definition.planItemStartTrigger) {
             const planItemStartTrigger = definition.planItemStartTrigger;
             if (planItemStartTrigger.sourceRef && !planItemStartTrigger.standardEvent) {
-                this.raiseError(definition.id, 'The plan item start trigger for timer event "-par0-" has no standard event', 
+                this.raiseError(definition, 'The plan item start trigger for timer event "-par0-" has no standard event', 
                     [definition.name]);
             }
         }
 
         if (definition.caseFileItemStartTrigger) {
             if (!definition.caseFileItemStartTrigger.standardEvent) {
-                this.raiseError(definition.id, 'The case file item start trigger for timer event "-par0-" has no standard event', 
+                this.raiseError(definition, 'The case file item start trigger for timer event "-par0-" has no standard event', 
                     [definition.name]);
             }
             if (!definition.caseFileItemStartTrigger.sourceRef) {
-                this.raiseError(definition.id, 'The case file item start trigger for timer event "-par0-" has no source reference', 
+                this.raiseError(definition, 'The case file item start trigger for timer event "-par0-" has no source reference', 
                     [definition.name]);
             }
         }
@@ -544,7 +537,7 @@ export default class Validator {
         
         if (definition.performerRef !== undefined && definition.performerRef !== "") {
             if (this.caseDefinition.caseTeam.roles.filter(role => role.id === definition.performerRef).length === 0) {
-                this.raiseError(definition.id, 'The performer "-par0-" of task "-par1-" is not defined in the case team', 
+                this.raiseError(definition, 'The performer "-par0-" of task "-par1-" is not defined in the case team', 
                     [definition.performerRef, definition.name]);
             }
         }
@@ -553,26 +546,26 @@ export default class Validator {
     }
     validateTask(definition: TaskDefinition) {
         if (!definition.implementationRef || definition.implementationRef === "") {
-            this.raiseWarning(definition.id, 'No implementation attached to task "-par0-"', 
+            this.raiseWarning(definition, 'No implementation attached to task "-par0-"', 
                 [definition.name]);
         }
 
         if (definition.isBlocking == false) {
             //non blocking task cannot have exit sentries
             if (definition.exitCriteria.length > 0) {
-                this.raiseError(definition.id, 'Non-blocking task "-par0-" has an exit sentry, this is not allowed', 
+                this.raiseError(definition, 'Non-blocking task "-par0-" has an exit sentry, this is not allowed', 
                     [definition.name]);
             }
 
             //non blocking task cannot have output parameters
             if (definition.outputs.length > 0) {
-                this.raiseError(definition.id, 'Non-blocking task "-par0-" has output parameters, this is not allowed.',
+                this.raiseError(definition, 'Non-blocking task "-par0-" has output parameters, this is not allowed.',
                     [definition.name]);
             }
 
             //non blocking task cannot have a planningtable
             if (definition.planningTable) {
-                this.raiseError(definition.id, 'Non-blocking task "-par0-" has a planning table, this is not allowed.',
+                this.raiseError(definition, 'Non-blocking task "-par0-" has a planning table, this is not allowed.',
                     [definition.name]);
             }
         }
@@ -580,13 +573,13 @@ export default class Validator {
         // validate input/output parameters
         definition.mappings.forEach(mapping => {
             if (!mapping['sourceRef']) {
-                this.raiseWarning(definition.id, 'The input mapping "-par1-" of element "-par0-" has empty task parameter(s)',
+                this.raiseWarning(definition, 'The input mapping "-par1-" of element "-par0-" has empty task parameter(s)',
                     [definition.name, mapping.implementationParameter?.name ?? "unnamed"]);
             }
         });
         definition.mappings.forEach(mapping => {
             if (!mapping['targetRef']) {
-                this.raiseWarning(definition.id, 'The output mapping "-par1-" of element "-par0-" has empty task parameter(s)',
+                this.raiseWarning(definition, 'The output mapping "-par1-" of element "-par0-" has empty task parameter(s)',
                     [definition.name, mapping.implementationParameter?.name ?? "unnamed"]);
             }
         });
@@ -597,7 +590,7 @@ export default class Validator {
 
         for (let role of definition.authorizedRoles) {
             if (this.caseDefinition.caseTeam.roles.filter(r => r.id === role.id).length === 0) {
-                this.raiseError(definition.id, 'An authorized role of task "-par0-" is not defined in the case team', 
+                this.raiseError(definition, 'An authorized role of task "-par0-" is not defined in the case team', 
                     [definition.name]);
             }
         }
@@ -609,11 +602,11 @@ export default class Validator {
         if (workflow.dueDate) {
             const dueDate = workflow.dueDate;
             if (!dueDate.body) {
-                this.raiseError(definition.id, 'The due date of task "-par0-" has no due date expression', 
+                this.raiseError(definition, 'The due date of task "-par0-" has no due date expression', 
                     [definition.name]);
             }
             if (!dueDate.contextRef && dueDate.body !== 'true' && dueDate.body !== 'false') {
-                this.raiseWarning(definition.id, 'The due date of task "-par0-" has no context (case file item)',
+                this.raiseWarning(definition, 'The due date of task "-par0-" has no context (case file item)',
                     [definition.name]);
             }
         }
@@ -622,11 +615,11 @@ export default class Validator {
         if (workflow.assignment) {
             const assignment = workflow.assignment;
             if (!assignment.body) {
-                this.raiseError(definition.id, 'The dynamic assignment of task "-par0-" has no due date expression', 
+                this.raiseError(definition, 'The dynamic assignment of task "-par0-" has no due date expression', 
                     [definition.name]);
             }
             if (!assignment.contextRef && assignment.body !== 'true' && assignment.body !== 'false') {
-                this.raiseWarning(definition.id, 'The dynamic assignment of task "-par0-" has no context (case file item)',
+                this.raiseWarning(definition, 'The dynamic assignment of task "-par0-" has no context (case file item)',
                     [definition.name]);
             }
         }
@@ -641,13 +634,13 @@ export default class Validator {
         {
             let caseFile = this.repository.getCases().find(c => c.fileName === definition.implementationRef);
             if (caseFile === undefined) {
-                this.raiseError(definition.id, 'The case task "-par0-" refers to a case that is not defined', 
+                this.raiseError(definition, 'The case task "-par0-" refers to a case that is not defined', 
                     [definition.name]);
             }
             else {
                 // TODO: check for cyclic references
                 if (caseFile.definition === undefined) {
-                    this.raiseError(definition.id, 'The case file "-par0-" does not contain a case definition', 
+                    this.raiseError(definition, 'The case file "-par0-" does not contain a case definition', 
                         [caseFile.name]);
                 } else {
                     this.validateCase(caseFile.definition!);
@@ -662,13 +655,13 @@ export default class Validator {
             {
                 let processModel = this.repository.getProcesses().find(c => c.fileName === definition.implementationRef);
                 if (processModel === undefined) {
-                    this.raiseError(definition.id, 'The process task "-par0-" refers to a process that is not defined', 
+                    this.raiseError(definition, 'The process task "-par0-" refers to a process that is not defined', 
                         [definition.name]);
                 }
                 else {
                     // TODO: check for cyclic references
                     if (processModel.definition === undefined) {
-                        this.raiseError(definition.id, 'The process file "-par0-" does not contain a process definition', 
+                        this.raiseError(definition, 'The process file "-par0-" does not contain a process definition', 
                             [processModel.name]);
                     } else {
                         this.validateProcessModel(processModel.definition!);
@@ -701,6 +694,17 @@ export default class Validator {
     }
     get currentModel(): ModelDefinition | undefined {
         return this.validationStack.peek();
+    }
+    startValidationContext(model: ModelDefinition): Disposable {
+        this.validationStack.push(model);
+        model.clearProblems();
+
+        const validator = this;
+        return {
+            [Symbol.dispose]() {
+                validator.validationStack.pop();
+            }
+       }
     }
 }
 
