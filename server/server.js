@@ -5,7 +5,6 @@ const RepositoryRouter = require("./repository/repository-router").RepositoryRou
 const config = require('../config/config');
 const express = require('express');
 const path = require('path');
-const favicon = require('serve-favicon');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
@@ -31,8 +30,6 @@ app.use('/node_modules', express.static(path.join(__dirname, '/../../node_module
 if (app.get('env') !== 'docker') {
   app.use(express.static(path.join(__dirname, '/../app')));
 }
-app.use(favicon(path.join(__dirname, 'favicon.ico')));
-
 
 app.use('/repository', RepositoryRouter);
 

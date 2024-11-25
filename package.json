@@ -15,8 +15,7 @@
     "jquery-ui": "~1.13.3",
     "lodash": "~4.17.4",
     "morgan": "^1.10.0",
-    "path": "^0.12.7",
-    "serve-favicon": "^2.5.0"
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@types/": "xmldom/xmldom",
@@ -39,7 +38,7 @@
     "clean-build": "npm run build",
     "build-server": "shx mkdir ./dist/config & shx cp ./config/config.js ./dist/config/ & shx cp server.js ./dist & shx mkdir ./dist/server & shx mkdir ./dist/server/repository & shx cp ./server/repository/repository-router.js ./dist/server/repository/",
     "build": "npm run clean & webpack",
-    "watch": "npm run clean & set DEV_MODE=true &  webpack",
+    "watch": "npm run clean & set DEV_MODE=true & webpack",
     "start": "webpack serve",
     "try": "webpack-dev-server",
     "go": "set LOG_TRAFFIC=false & node ./dist/server/server.js"
