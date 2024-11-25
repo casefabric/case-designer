@@ -27,12 +27,13 @@ export default class ProblemType {
      * Creates a validation problem within the context of this case.
      * @param {String} contextId 
      * @param {Array<String>} parameters 
+     * @param {String} fileName
      */
-    createProblem(contextId, parameters) {
-        return new Problem(contextId, this, parameters);
+    createProblem(contextId, parameters, fileName) {
+        return new Problem(contextId, this, parameters, fileName);
     }
 
-    getHTMLString(description, contextId, problemId) {
+    getHTMLString(description, contextId, problemId, fileName) {
         const htmlString = `<div class="problemrow" problemId="${problemId}" contextId="${contextId}" problemType="${this.number}">
 	<div class="hideproblem">
         <input type="checkbox" hideType="all"></input>
@@ -42,6 +43,9 @@ export default class ProblemType {
 	</div>
 	<div class="problemtype" title="${this.number}">
 		<img src="${this.image}"></img>
+	</div>
+	<div class="filename" title="${fileName}">
+        ${fileName}
 	</div>
 	<div class="problemdescription">
         ${description}

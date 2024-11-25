@@ -6,14 +6,16 @@ export default class Problem {
      * @param {String} contextId The context in which this problem occurs. Together with the problemType.number and parameters this must be unique.
      * @param {ProblemType} problemType The template that is the basis for this problem
      * @param {Array<String>} parameters The detailed bindings that can be combined with the template to generate a specific description
+     * @param {String} fileName The name of the file in which the problem occurs
      */
-    constructor(contextId, problemType, parameters) {
+    constructor(contextId, problemType, parameters, fileName) {
         this.contextId = contextId;
         this.problemType = problemType;
         this.parameters = parameters;
         this.hide = false;
         this.index = this.contextId;
         this.description = problemType.descriptionTemplate;
+        this.fileName = fileName;
         // Now substitute parameters into the description template
         for (let i = 0; i < parameters.length; i++) {
             this.description = this.description.replace('-par' + i + '-', parameters[i]);
@@ -28,7 +30,7 @@ export default class Problem {
      * Creates a copy of this object, that can be used for comparison of hidden objects
      */
     copy() {
-        return new Problem(this.contextId, this.problemType, this.parameters);
+        return new Problem(this.contextId, this.problemType, this.parameters, this.fileName);
     }
 
     isWarning() {
@@ -43,6 +45,6 @@ export default class Problem {
      * Generates a HTML string that can render this problem
      */
     getHTMLString() {
-        return this.problemType.getHTMLString(this.description, this.contextId, this.id);
+        return this.problemType.getHTMLString(this.description, this.contextId, this.id, this.fileName);
     }
 }

@@ -56,6 +56,9 @@ export default class ValidateForm extends StandardForm {
                         <div class="hideproblem">HA</div>
                         <div class="hideproblem">HT</div>
                         <div class="problemtype"></div>
+                        <div class="filename">
+                            <label>File name</label>
+                        </div>
                         <div class="problemdescription">
                             <label>Description</label>
                         </div>

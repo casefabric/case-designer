@@ -1,4 +1,5 @@
 import Util from "@util/util";
+import Stack from "@util/stack";
 import Problem from "./problem";
 import { CMMNError, CMMNWarning } from "./problemtype";
 import CaseDefinition from "@repository/definition/cmmn/casedefinition";
@@ -25,15 +26,20 @@ import TaskDefinition from "@repository/definition/cmmn/caseplan/task/taskdefini
 import Repository from "@repository/repository";
 import CaseRoleDefinition from "@repository/definition/cmmn/caseteam/caseroledefinition";
 import ExitCriterionDefinition from "@repository/definition/cmmn/sentry/exitcriteriondefinition";
+import ModelDefinition from "@repository/definition/modeldefinition";
+import ProcessModelDefinition from "@repository/definition/process/processmodeldefinition";
 
 export default class Validator {
     _problems: Problem[];
     repository: Repository;
-    caseDefinition: CaseDefinition;
-    constructor(caseDefinition: CaseDefinition, repository: Repository) {
+    validatedElements: Set<ModelDefinition>;
+    validationStack: Stack<ModelDefinition>;
+
+    constructor(repository: Repository) {
         this._problems = [];
         this.repository = repository;
-        this.caseDefinition = caseDefinition;
+        this.validatedElements = new Set<ModelDefinition>();
+        this.validationStack = new Stack<ModelDefinition>();
     }
 
     get problems(): Problem[] {
@@ -54,7 +60,7 @@ export default class Validator {
      * @returns {Validator} the validator object, containing the problems
      */
     static run(caseDefinition: CaseDefinition, repository:Repository): Validator {
-        const validator = new Validator(caseDefinition, repository);
+        const validator = new Validator(repository);
 
         //validate the case with its' properties
         validator.validateCase(caseDefinition);
@@ -64,21 +70,37 @@ export default class Validator {
 
     raiseWarning(contextId: string, messageTemplate: string, parameters: string[]){
         const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNWarning(hash, messageTemplate).createProblem(contextId, parameters));
+        this._problems.push(new CMMNWarning(hash, messageTemplate).createProblem(contextId, parameters, this.currentModel?.name ?? ''));
     }
     raiseError(contextId: string, messageTemplate: string, parameters: string[]){
         const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNError(hash, messageTemplate).createProblem(contextId, parameters));
+        this._problems.push(new CMMNError(hash, messageTemplate).createProblem(contextId, parameters, this.currentModel?.name ?? ''));
     }
 
     validateCase(caseDefinition: CaseDefinition) {
-        this.validateCaseFile(caseDefinition.caseFile);
-        this.validateStageDefinition(caseDefinition.casePlan);
-        this.validateCaseTeam(caseDefinition.caseTeam);
-        this.validateCaseInputParameters(caseDefinition.inputParameters);
-        this.validateCaseOutputParameters(caseDefinition.outputParameters);
-        this.validateCaseAnnotations(caseDefinition.annotations);
-        this.validateCaseStartSchema(caseDefinition.startCaseSchema);
+        if (this.alreadyValidated(caseDefinition)) {
+            return;
+        }
+
+        this.validationStack.push(caseDefinition);
+        try {
+            this.validateCaseFile(caseDefinition.caseFile);
+            this.validateStage(caseDefinition.casePlan);
+            this.validateCaseTeam(caseDefinition.caseTeam);
+            this.validateCaseInputParameters(caseDefinition.inputParameters);
+            this.validateCaseOutputParameters(caseDefinition.outputParameters);
+            this.validateCaseAnnotations(caseDefinition.annotations);
+            this.validateCaseStartSchema(caseDefinition.startCaseSchema);
+        } finally {
+            this.validationStack.pop();
+        }
+    }
+    alreadyValidated(caseDefinition: ModelDefinition): boolean {
+        if (!this.validatedElements.has(caseDefinition)) {
+            this.validatedElements.add(caseDefinition);
+            return false;
+        }
+        return true;
     }
     validateCaseStartSchema(startCaseSchema: StartCaseSchemaDefinition) {
         // no validations yet
@@ -128,29 +150,45 @@ export default class Validator {
         }
     }
     validateCaseFile(caseFile: CaseFileDefinition) {
-        if (caseFile.typeRef === "")  
-        {
-            this.raiseError(caseFile.id, `The case file has no type`, []);
-        }
-
-        const typeFile = this.repository.getTypes().find(type => type.fileName === caseFile.typeRef);
-        if (typeFile === undefined || typeFile.definition === undefined)
-        {
-            this.raiseError(caseFile.id, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
+        if (caseFile.isOldStyle) {
+            this.raiseWarning(caseFile.id, 'The case file is in old style and will not be validated', []);
         }
         else
         {
-           // TODO: reload needed??? typeFile.reload();
-            if (typeFile.definition === undefined) {
+            if (caseFile.typeRef === "")  
+            {
+                this.raiseError(caseFile.id, `The case file has no type`, []);
+                return;
+            }
+
+            const typeFile = this.repository.getTypes().find(type => type.fileName === caseFile.typeRef);
+            if (typeFile === undefined || typeFile.definition === undefined)
+            {
                 this.raiseError(caseFile.id, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
             }
-            else {
-                this.validateTypeDefinition(typeFile.definition);
+            else
+            {
+            // TODO: reload needed??? typeFile.reload();
+                if (typeFile.definition === undefined) {
+                    this.raiseError(caseFile.id, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
+                }
+                else {
+                    this.validateType(typeFile.definition);
+                }
             }
         }
     }
-    validateTypeDefinition(type: TypeDefinition) {
-        this.validateSchema(type.schema, type.name);
+    validateType(type: TypeDefinition) {
+        if (this.alreadyValidated(type)) {
+            return;
+        }
+
+        this.validationStack.push(type);
+        try {
+            this.validateSchema(type.schema, type.name);
+        } finally {
+            this.validationStack.pop();
+        }
     }
     validateSchema(schema: SchemaDefinition, typeName: string, propertyName?: string) {
         if (schema.childDefinitions.length === 0) 
@@ -166,11 +204,11 @@ export default class Validator {
         }
         for (let childDef of schema.childDefinitions)  {
             if (childDef instanceof SchemaPropertyDefinition) {
-                this.validatePropertyDefinition(childDef, typeName);
+                this.validateSchemaProperty(childDef, typeName);
             }
         }
     }
-    validatePropertyDefinition(itemDef: SchemaPropertyDefinition, typeName: string) {
+    validateSchemaProperty(itemDef: SchemaPropertyDefinition, typeName: string) {
         if (itemDef.name === "") 
         {
             this.raiseError(itemDef.id, `A case file item element in type "-par0-" has no name`, [typeName]);
@@ -202,7 +240,7 @@ export default class Validator {
                 this.raiseError(itemDef.id, 'The property "-par0-" in type "-par1-" does not have a type', [itemDef.name, typeName]);
             }
             else{
-                this.validateTypeDefinition(itemDef.subType);
+                this.validateType(itemDef.subType);
             }
         }
         else
@@ -213,7 +251,7 @@ export default class Validator {
             }
         }
     }
-    validateStageDefinition(stage: StageDefinition) {
+    validateStage(stage: StageDefinition) {
         this.validatePlanItems(stage.name, stage.planItems);
         const planningTable = stage.planningTable;
         if (planningTable) {
@@ -245,25 +283,25 @@ export default class Validator {
 
             switch (this.getClassName(planItem)) {
                 case 'HumanTaskDefinition':
-                    this.validateHumanTaskDefinition(planItem as HumanTaskDefinition);
+                    this.validateHumanTask(planItem as HumanTaskDefinition);
                     break;
                 case 'CaseTaskDefinition':
-                    this.validateCaseTaskDefinition(planItem as CaseTaskDefinition);
+                    this.validateCaseTask(planItem as CaseTaskDefinition);
                     break;
                 case 'ProcessTaskDefinition':
-                    this.validateProcessTaskDefinition(planItem as ProcessTaskDefinition);
+                    this.validateProcessTask(planItem as ProcessTaskDefinition);
                     break;
                 case 'MilestoneDefinition':
-                    this.validateMilestoneDefinition(planItem as MilestoneDefinition);
+                    this.validateMilestone(planItem as MilestoneDefinition);
                     break;
                 case 'UserEventDefinition':
-                    this.validateUserEventDefinition(planItem as UserEventDefinition);
+                    this.validateUserEvent(planItem as UserEventDefinition);
                     break;
                 case 'TimerEventDefinition':
-                    this.validateTimerEventDefinition(planItem as TimerEventDefinition);
+                    this.validateTimerEvent(planItem as TimerEventDefinition);
                     break;
                 case 'StageDefinition':
-                    this.validateStageDefinition(planItem as StageDefinition);
+                    this.validateStage(planItem as StageDefinition);
                     break;
                 default:
                     this.raiseWarning(planItem.id, 'The plan item "-par0-" cannot be validated', [planItem.constructor.name]);
@@ -279,12 +317,12 @@ export default class Validator {
     }
     validateApplicabilityRule(rule: ApplicabilityRuleDefinition, definition: StageDefinition) {
         if (!rule.body) {
-            this.raiseError(definition.id, 'An applicability rule of stage "-par0-" has no expression', 
-                [definition.name]);
+            this.raiseError(definition.id, 'Applicability rule "-par1-" of stage "-par0-" has no expression', 
+                [definition.name, rule.name]);
         }
         if (!rule.contextRef && rule.body !== 'true' && rule.body !== 'false') {
-            this.raiseWarning(definition.id, 'An applicability rule of stage "-par0-" has no context (case file item)',
-                [definition.name]);
+            this.raiseWarning(definition.id, 'Applicability rule "-par1-" of stage "-par0-" has no context (case file item)',
+                [definition.name, rule.name]);
         }
     }
     validatePlanItem(planItem: PlanItem, stageName: string) {
@@ -366,14 +404,14 @@ export default class Validator {
         }
 
         // check if the planItem reference points to a planItem inside the parent of the parentElement
-        var parent = cmmnParentElement.parent;
+        const parent = cmmnParentElement.parent;
 
         // But only if the parent is a stage inside the caseplan.
         if (parent === this.caseDefinition.casePlan) {
             return;
         }
         // get the stage of the discretionary element
-        var stage = ((parent as PlanningTableDefinition).parent as StageDefinition);
+        const stage = ((parent as PlanningTableDefinition).parent as StageDefinition);
 
         const stageChildren = stage.planItems.concat(stage.planningTable?.tableItems);
         //get the planItems from the onPart
@@ -468,7 +506,7 @@ export default class Validator {
             this.raiseWarning(planItem.id, 'The item "-par0-" has a -par1- rule without a context (case file item)', [planItem.name, ruleType]);
         }
     }
-    validateUserEventDefinition(definition: UserEventDefinition) {
+    validateUserEvent(definition: UserEventDefinition) {
         for (let role of definition.authorizedRoles) {
             if (this.caseDefinition.caseTeam.roles.filter(r => r.id === role.id).length === 0) {
                 this.raiseError(definition.id, 'An authorized role of user event "-par0-" is not defined in the case team', 
@@ -476,7 +514,7 @@ export default class Validator {
             }
         }
     }
-    validateTimerEventDefinition(definition: TimerEventDefinition) {
+    validateTimerEvent(definition: TimerEventDefinition) {
         if (!definition.timerExpression) {
             this.raiseError(definition.id, 'The timer event "-par0-" has no timer expression', 
                 [definition.name]);
@@ -501,10 +539,10 @@ export default class Validator {
             }
         }
     }
-    validateHumanTaskDefinition(definition: HumanTaskDefinition) {
-        this.validateTaskDefinition(definition);
+    validateHumanTask(definition: HumanTaskDefinition) {
+        this.validateTask(definition);
         
-        if (definition.performerRef !== undefined) {
+        if (definition.performerRef !== undefined && definition.performerRef !== "") {
             if (this.caseDefinition.caseTeam.roles.filter(role => role.id === definition.performerRef).length === 0) {
                 this.raiseError(definition.id, 'The performer "-par0-" of task "-par1-" is not defined in the case team', 
                     [definition.performerRef, definition.name]);
@@ -513,8 +551,8 @@ export default class Validator {
 
         this.validateWorkflow(definition);
     }
-    validateTaskDefinition(definition: TaskDefinition) {
-        if (!definition.implementationRef) {
+    validateTask(definition: TaskDefinition) {
+        if (!definition.implementationRef || definition.implementationRef === "") {
             this.raiseWarning(definition.id, 'No implementation attached to task "-par0-"', 
                 [definition.name]);
         }
@@ -596,34 +634,73 @@ export default class Validator {
         // 4-eyes
         // rendex-vous
     }
-    validateCaseTaskDefinition(definition: CaseTaskDefinition) {
-        this.validateTaskDefinition(definition);
+    validateCaseTask(definition: CaseTaskDefinition) {
+        this.validateTask(definition);
 
-        if (definition.implementationRef !== undefined &&
-            this.repository.getCases().filter(c => c.fileName === definition.implementationRef).length === 0) {
-            this.raiseError(definition.id, 'The case task "-par0-" refers to a case that is not defined', 
-                [definition.name]);
-        }
-
-        if (definition.implementationRef === this.caseDefinition.id) {
-            // TODO: check for cyclic references
+        if (definition.implementationRef !== undefined && definition.implementationRef !== "")
+        {
+            let caseFile = this.repository.getCases().find(c => c.fileName === definition.implementationRef);
+            if (caseFile === undefined) {
+                this.raiseError(definition.id, 'The case task "-par0-" refers to a case that is not defined', 
+                    [definition.name]);
+            }
+            else {
+                // TODO: check for cyclic references
+                if (caseFile.definition === undefined) {
+                    this.raiseError(definition.id, 'The case file "-par0-" does not contain a case definition', 
+                        [caseFile.name]);
+                } else {
+                    this.validateCase(caseFile.definition!);
+                }
+            }
         }
     }
-    validateProcessTaskDefinition(definition: ProcessTaskDefinition) {
-        this.validateTaskDefinition(definition);
+    validateProcessTask(definition: ProcessTaskDefinition) {
+        this.validateTask(definition);
 
-        if (definition.implementationRef !== undefined &&
-            this.repository.getProcesses().filter(c => c.fileName === definition.implementationRef).length === 0) {
-            this.raiseError(definition.id, 'The process task "-par0-" refers to a process that is not defined', 
-                [definition.name]);
-        }
+        if (definition.implementationRef !== undefined && definition.implementationRef !== "")
+            {
+                let processModel = this.repository.getProcesses().find(c => c.fileName === definition.implementationRef);
+                if (processModel === undefined) {
+                    this.raiseError(definition.id, 'The process task "-par0-" refers to a process that is not defined', 
+                        [definition.name]);
+                }
+                else {
+                    // TODO: check for cyclic references
+                    if (processModel.definition === undefined) {
+                        this.raiseError(definition.id, 'The process file "-par0-" does not contain a process definition', 
+                            [processModel.name]);
+                    } else {
+                        this.validateProcessModel(processModel.definition!);
+                    }
+                }
+            }
+    
     }
-    validateMilestoneDefinition(definition: MilestoneDefinition) {
+    validateProcessModel(process: ProcessModelDefinition) {
+        // TODO: implement validation for input/output parameters
+        // TODO: implement validation for implementation XML, e.g. mapping to output parameters
+        //          based on the classname a fixed set of source parameters can be defined
+    }
+    validateMilestone(definition: MilestoneDefinition) {
         // no validations yet
     }
 
     getClassName(obj: any): string {
         return obj.constructor.name;
+    }
+    get caseDefinition(): CaseDefinition {
+        const model = this.currentModel;
+        if (model instanceof CaseDefinition) {
+            return model;
+        }
+        else {  
+            throw new Error('The current model is not a case definition'); 
+        }
+        
+    }
+    get currentModel(): ModelDefinition | undefined {
+        return this.validationStack.peek();
     }
 }
 
