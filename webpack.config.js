@@ -46,6 +46,7 @@ module.exports = {
             '@repository': path.resolve(__dirname, 'src/repository'),
             '@definition': path.resolve(__dirname, 'src/repository/definition'),
             '@ide': path.resolve(__dirname, 'src/ide'),
+            '@validate': path.resolve(__dirname, 'src/validate'),
             '@styles': path.resolve(__dirname, 'app/styles'),
             '_images_': path.resolve(__dirname, 'app/images'),
             'jquery': path.resolve(__dirname, 'node_modules/jquery/dist/jquery'),
