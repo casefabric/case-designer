@@ -165,7 +165,6 @@ export default class Validator {
             }
             else
             {
-            // TODO: reload needed??? typeFile.reload();
                 if (typeFile.definition === undefined) {
                     this.raiseError(caseFile, `The type "-par0-" of the case file is not defined`, [caseFile.typeRef]);
                 }
@@ -448,14 +447,6 @@ export default class Validator {
                     this.raiseWarning(sentry, 'A -par0- of element "-par1-" has an onPart plan item element ("-par2-") with no standard event',
                         [sentry.typeDescription, planItem.name, source.name]);
                 }
-
-                // TODO: check of the below constraint is valid
-                if (sentry instanceof ExitCriterionDefinition) {
-                    if (onPart.standardEvent !== 'complete' && onPart.standardEvent !== 'terminate') {
-                        this.raiseError(sentry, 'An exit criterion of element "-par0-" has an onPart plan item entry with an invalid standard event ("-par1-")',
-                            [planItem.name, onPart.standardEvent]);
-                    }
-                }
             }
         });
     }
@@ -638,7 +629,7 @@ export default class Validator {
                     [definition.name]);
             }
             else {
-                // TODO: check for cyclic references
+                // TODO: check for cyclic references during startup, see CaseTaskDefintion.java:54 in engine.
                 if (caseFile.definition === undefined) {
                     this.raiseError(definition, 'The case file "-par0-" does not contain a case definition', 
                         [caseFile.name]);
@@ -659,7 +650,6 @@ export default class Validator {
                         [definition.name]);
                 }
                 else {
-                    // TODO: check for cyclic references
                     if (processModel.definition === undefined) {
                         this.raiseError(definition, 'The process file "-par0-" does not contain a process definition', 
                             [processModel.name]);
