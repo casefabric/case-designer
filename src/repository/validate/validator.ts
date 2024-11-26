@@ -33,13 +33,13 @@ import ElementDefinition from "@repository/definition/elementdefinition";
 export default class Validator {
     _problems: Problem[];
     repository: Repository;
-    validatedElements: Set<ModelDefinition>;
+    validatedModels: Set<ModelDefinition>;
     validationStack: Stack<ModelDefinition>;
 
     constructor(repository: Repository) {
         this._problems = [];
         this.repository = repository;
-        this.validatedElements = new Set<ModelDefinition>();
+        this.validatedModels = new Set<ModelDefinition>();
         this.validationStack = new Stack<ModelDefinition>();
     }
 
@@ -93,8 +93,8 @@ export default class Validator {
         this.validateCaseStartSchema(caseDefinition.startCaseSchema);
     }
     alreadyValidated(caseDefinition: ModelDefinition): boolean {
-        if (!this.validatedElements.has(caseDefinition)) {
-            this.validatedElements.add(caseDefinition);
+        if (!this.validatedModels.has(caseDefinition)) {
+            this.validatedModels.add(caseDefinition);
             return false;
         }
         return true;

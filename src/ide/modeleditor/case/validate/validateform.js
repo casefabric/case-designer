@@ -1,9 +1,9 @@
 ﻿﻿import CaseView from "@ide/modeleditor/case/elements/caseview";
 import Settings from "@ide/settings/settings";
-import Util from "@util/util";
-import StandardForm from "../ide/editors/standardform";
-import ProblemType from "./problemtype";
 import ValidationSettings from "./validationsettings";
+import Util from "@util/util";
+import StandardForm from "../../../editors/standardform";
+import ProblemType from "../../../../repository/validate/problemtype";
 import $ from "jquery";
 
 export default class ValidateForm extends StandardForm {
@@ -112,6 +112,18 @@ export default class ValidateForm extends StandardForm {
     }
 
     /**
+     * Returns an array that stores the problems that are hidden by user.
+     * @returns {boolean}
+     */
+    isHiddenProblemType(problemType) {
+        return ValidateForm.Settings.isHiddenProblemType(problemType.number);
+    }
+
+    hideProblemType(problemType, hide) {
+        ValidateForm.Settings.hideProblemType(problemType.number, hide);
+    }
+
+    /**
      * determines the initial problem form position (bottom right)
      */
     positionEditor() {
@@ -156,7 +168,7 @@ export default class ValidateForm extends StandardForm {
 
         const iErrors = this.validator.errors.length;
         const iWarnings = this.validator.warnings.length;
-        const iHidden = iErrors + iWarnings - this.html.find('.problemrow').length;
+        const iHidden = this.html.find('.problemrow:hidden').length;
 
         this.html.find('#validateheadernoerrorsid').html(iErrors);
         this.html.find('#validateheadernowarningsid').html(iWarnings);
@@ -195,8 +207,27 @@ export default class ValidateForm extends StandardForm {
      * @param {Problem} problem
      */
     addProblemRow(problem) {
-        const html = $(problem.getHTMLString());
-        if (problem.problemType.isHidden || this.hiddenProblems.find(p => p == problem.id)) {
+        const html = 
+            $(`<div class="problemrow" problemId="${problem.id}" contextId="${problem.contextId}" problemType="${problem.problemType.number}">
+                <div class="hideproblem">
+                    <input type="checkbox" hideType="all"></input>
+                </div>
+                <div class="hideproblem">
+                    <input type="checkbox" hideType="this"></input>
+                </div>
+                <div class="problemtype" title="${problem.problemType.number}">
+                    <img src="${problem.problemType.image}"></img>
+                </div>
+                <div class="filename" title="${problem.fileName}">
+                    ${problem.fileName}
+                </div>
+                <div class="problemdescription">
+                    ${problem.description}
+                </div>
+            </div>`);
+           
+            
+        if (this.isHiddenProblemType(problem.problemType) || this.hiddenProblems.find(p => p == problem.id)) {
             html.css('display', 'none');
         }
         this.containers.append(html);
@@ -220,8 +251,9 @@ export default class ValidateForm extends StandardForm {
 
             //hide all: set at type level
             //only set when the type is not yet hidden
-            if (!problem.problemType.isHidden) {
-                problem.problemType.isHidden = hideAllChk.checked;
+            if (!this.isHiddenProblemType(problem.problemType)) {
+                this.hideProblemType(problem.problemType, hideAllChk.checked);
+                ValidateForm.Settings.save();
             }
 
             //hide this, add to hiddenProblems array (can not add to problem, because it is created new for every run)
@@ -242,7 +274,7 @@ export default class ValidateForm extends StandardForm {
             return;
         }
 
-        ProblemType.showAll();
+        ValidateForm.Settings._hiddenProblemTypes = [];
         this.hiddenProblems = [];
         this.showProblemsInForm();
     }

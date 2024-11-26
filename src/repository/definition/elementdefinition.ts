@@ -1,4 +1,4 @@
-import Problem from "@validate/problem";
+import Problem from "@repository/validate/problem";
 import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
