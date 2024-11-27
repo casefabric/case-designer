@@ -1,10 +1,10 @@
-﻿﻿import CaseView from "@ide/modeleditor/case/elements/caseview";
+﻿﻿import $ from "jquery";
+import CaseView from "@ide/modeleditor/case/elements/caseview";
 import Settings from "@ide/settings/settings";
-import ValidationSettings from "./validationsettings";
 import Util from "@util/util";
 import StandardForm from "../../../editors/standardform";
-import ProblemType from "../../../../repository/validate/problemtype";
-import $ from "jquery";
+import Problem from "../../../../repository/validate/problem";
+import ValidationSettings from "./validationsettings";
 
 export default class ValidateForm extends StandardForm {
     /** @returns {ValidationSettings} */
@@ -17,7 +17,7 @@ export default class ValidateForm extends StandardForm {
 
     /**
      * This object handles the validation of the CMMN schema drawn by the user;
-     * If holds track of the problems found in the CMMN schema of the case; these problems have a @type {ProblemType}
+     * If holds track of the problems found in the CMMN schema of the case; 
      * @param {CaseView} cs
      */
     constructor(cs) {
@@ -115,12 +115,12 @@ export default class ValidateForm extends StandardForm {
      * Returns an array that stores the problems that are hidden by user.
      * @returns {boolean}
      */
-    isHiddenProblemType(problemType) {
-        return ValidateForm.Settings.isHiddenProblemType(problemType.number);
+    isHiddenProblemType(problemTypeId) {
+        return ValidateForm.Settings.isHiddenProblemType(problemTypeId);
     }
 
-    hideProblemType(problemType, hide) {
-        ValidateForm.Settings.hideProblemType(problemType.number, hide);
+    hideProblemType(problemTypeId, hide) {
+        ValidateForm.Settings.hideProblemType(problemTypeId, hide);
     }
 
     /**
@@ -208,15 +208,15 @@ export default class ValidateForm extends StandardForm {
      */
     addProblemRow(problem) {
         const html = 
-            $(`<div class="problemrow" problemId="${problem.id}" contextId="${problem.contextId}" problemType="${problem.problemType.number}">
+            $(`<div class="problemrow" problemId="${problem.id}" contextId="${problem.contextId}" problemType="${problem.typeId}">
                 <div class="hideproblem">
                     <input type="checkbox" hideType="all"></input>
                 </div>
                 <div class="hideproblem">
                     <input type="checkbox" hideType="this"></input>
                 </div>
-                <div class="problemtype" title="${problem.problemType.number}">
-                    <img src="${problem.problemType.image}"></img>
+                <div class="problemtype">
+                    <img src="${problem.isWarning() ? "images/warningproblem_32.png" : "images/errorproblem_32.png"}"></img>
                 </div>
                 <div class="filename" title="${problem.fileName}">
                     ${problem.fileName}
@@ -227,7 +227,7 @@ export default class ValidateForm extends StandardForm {
             </div>`);
            
             
-        if (this.isHiddenProblemType(problem.problemType) || this.hiddenProblems.find(p => p == problem.id)) {
+        if (this.isHiddenProblemType(problem.typeId) || this.hiddenProblems.find(p => p == problem.id)) {
             html.css('display', 'none');
         }
         this.containers.append(html);
@@ -251,8 +251,8 @@ export default class ValidateForm extends StandardForm {
 
             //hide all: set at type level
             //only set when the type is not yet hidden
-            if (!this.isHiddenProblemType(problem.problemType)) {
-                this.hideProblemType(problem.problemType, hideAllChk.checked);
+            if (!this.isHiddenProblemType(problem.typeId)) {
+                this.hideProblemType(problem.typeId, hideAllChk.checked);
                 ValidateForm.Settings.save();
             }
 

@@ -1,7 +1,6 @@
 import Util from "@util/util";
 import Stack from "@util/stack";
-import Problem from "./problem";
-import { CMMNError, CMMNWarning } from "./problemtype";
+import Problem, { ProblemSeverity } from "./problem";
 import CaseDefinition from "@repository/definition/cmmn/casedefinition";
 import StartCaseSchemaDefinition from "@repository/definition/cmmn/startcaseschemadefinition";
 import CaseParameterDefinition from "@repository/definition/cmmn/contract/caseparameterdefinition";
@@ -32,13 +31,11 @@ import ElementDefinition from "@repository/definition/elementdefinition";
 
 export default class Validator {
     _problems: Problem[];
-    repository: Repository;
     validatedModels: Set<ModelDefinition>;
     validationStack: Stack<ModelDefinition>;
 
-    constructor(repository: Repository) {
+    constructor(public repository: Repository) {
         this._problems = [];
-        this.repository = repository;
         this.validatedModels = new Set<ModelDefinition>();
         this.validationStack = new Stack<ModelDefinition>();
     }
@@ -70,12 +67,18 @@ export default class Validator {
     }
 
     raiseWarning<M extends ModelDefinition>(element: ElementDefinition<M>, messageTemplate: string, parameters: string[]){
-        const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNWarning(hash, messageTemplate).createProblem(element, parameters, this.currentModel?.name ?? ''));
+        this._problems.push(this.createProblem(messageTemplate, element, parameters, this.currentModel?.name ?? '', ProblemSeverity.WARNING));
     }
     raiseError<M extends ModelDefinition>(element: ElementDefinition<M>, messageTemplate: string, parameters: string[]){
-        const hash = Util.hashCode(messageTemplate);
-        this._problems.push(new CMMNError(hash, messageTemplate).createProblem(element, parameters, this.currentModel?.name ?? ''));
+        this._problems.push(this.createProblem(messageTemplate, element, parameters, this.currentModel?.name ?? '', ProblemSeverity.ERROR));
+    }
+
+    createProblem<M extends ModelDefinition>(messageTemplate: string, element: ElementDefinition<M>, parameters: string[], fileName: string, severity:ProblemSeverity): Problem {
+        const problem = new Problem(element.id, messageTemplate, parameters, fileName, severity);
+
+        element.problems.push(problem);
+
+        return problem;
     }
 
     validateCase(caseDefinition: CaseDefinition) {
