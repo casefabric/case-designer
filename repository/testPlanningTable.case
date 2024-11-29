@@ -1,7 +1,5 @@
 <case id="testPlanningTable.case" name="testPlanningTable" expressionLanguage="spel" guid="_0LiAz">
-    <caseFileModel>
-        <caseFileItem id="cfi_testPlanningTable.case_0" name="test" multiplicity="ExactlyOne" definitionRef="greeting.cfid"/>
-    </caseFileModel>
+    <caseFileModel typeRef="Helloworld.type"/>
     <casePlanModel id="cm_testPlanningTable.case_0" name="testPlanningTable" autoComplete="true">
         <documentation textFormat="text/plain">
             <text>
