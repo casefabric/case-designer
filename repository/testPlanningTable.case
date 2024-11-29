@@ -10,7 +10,7 @@
         </documentation>
         <humanTask id="cm_testPlanningTable.case_2" name="Task_1" isBlocking="true">
             <planningTable id="pt_cm_testPlanningTable.case_3">
-                <humanTask id="cm_testPlanningTable.case_12" name="Task_4" isBlocking="true"/>
+                <humanTask id="cm_testPlanningTable.case_12" name="Task_4" applicabilityRuleRefs="rule_testPlanningTable.case_3 rule_testPlanningTable.case_4" isBlocking="true"/>
                 <humanTask id="cm_testPlanningTable.case_14" name="Task_5" isBlocking="true"/>
                 <applicabilityRule id="rule_testPlanningTable.case_2" name="r4">
                     <condition>
@@ -50,7 +50,7 @@
                     </planItemOnPart>
                 </entryCriterion>
             </humanTask>
-            <stage id="cm_testPlanningTable.case_8" name="Stage_1" autoComplete="true">
+            <stage id="cm_testPlanningTable.case_8" name="Stage_1" applicabilityRuleRefs="rule_testPlanningTable.case_1" autoComplete="true">
                 <humanTask id="cm_testPlanningTable.case_10" name="Task_3" isBlocking="true"/>
             </stage>
             <applicabilityRule id="rule_testPlanningTable.case_0" name="rule1">
