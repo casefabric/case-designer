@@ -209,13 +209,12 @@ export default class ServerFile<M extends ModelDefinition> {
         }
         const definition = this.createModelDefinition();
         this._definition = definition;
-        definition.validateDocument();
+        definition.initialize();
         if (definition.hasMigrated()) {
             console.log(`${definition.constructor.name} of '${this.fileName}' has migrated; uploading result`);
             this.source = definition.toXML();
             await this.save();
         }
-        await definition.loadDependencies();
         // console.log("File["+file.fileName+"].definition: " + file.definition);
         this.validateDefinition();
         return this;

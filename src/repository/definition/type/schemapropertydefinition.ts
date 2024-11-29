@@ -12,7 +12,6 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
     multiplicity: string;
     isBusinessIdentifier: boolean;
     schema?: SchemaDefinition;
-    subType?: TypeDefinition;
 
     constructor(importNode: Element, modelDefinition: TypeDefinition, public parent: SchemaDefinition) {
         super(importNode, modelDefinition, parent);
@@ -35,12 +34,8 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
         return <CaseFileItemTypeDefinition[]>Util.removeDuplicates(this.searchInboundReferences().filter(element => element instanceof CaseFileItemTypeDefinition));
     }
 
-    hasExternalReferences(): boolean {
-        return this.typeRef !== '';
-    }
-
-    async loadExternalReferences() {
-        return this.resolveExternalDefinition<TypeDefinition>(this.typeRef).then(definition => { this.subType = definition });
+    get subType(): TypeDefinition | undefined {
+        return this._typeRef.getDefinition();
     }
 
     static get prefix(): string {
@@ -61,9 +56,8 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
             } else {
                 // A primitive type and a typeRef will not have a schema
                 this.schema = undefined;
-                this.subType = undefined;
                 if (this.typeRef) {
-                    this.loadExternalReferences();
+                    this.resolveExternalReferences();
                 }
             }
         }

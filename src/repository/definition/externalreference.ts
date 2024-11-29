@@ -1,7 +1,9 @@
+import ServerFile from "@repository/serverfile/serverfile";
 import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
 export default class ExternalReference<M extends ModelDefinition> {
+    private file?: ServerFile<M>;
     constructor(private element: XMLSerializable, private ref: string) {
     }
 
@@ -17,14 +19,27 @@ export default class ExternalReference<M extends ModelDefinition> {
         return this.ref;
     }
 
-    async resolve() {
+    resolve() {
+        this.file = this.element.loadFile(this.fileName);
+        if (this.nonEmpty() && this.file === undefined) {
+            console.warn(this.element + ": Did not receive a file for " + this.fileName);
+            return;
+        }
 
+    }
+
+    getDefinition(): M | undefined {
+        if (this.file && !this.file.definition) {
+            this.file.parse();
+        }
+        return this.file?.definition;
     }
 
     update(newFileName: string) {
         if (this.ref !== newFileName) {
             // console.log("Setting new reference inside " + this.element +" to value " + newFileName +" (old value was: " + this.ref +")");
             this.ref = newFileName;
+            this.file = this.element.loadFile(this.ref);
         }
     }
 
@@ -34,9 +49,18 @@ export default class ExternalReference<M extends ModelDefinition> {
 }
 
 export class ReferenceSet {
-    constructor(public element: XMLSerializable) {}
+    constructor(public element: XMLSerializable) { }
 
     private references: ExternalReference<ModelDefinition>[] = [];
+
+    resolve() {
+        const actualReferences = this.references.filter(ref => ref.nonEmpty());
+        if (actualReferences.length > 0) {
+            console.log("Element " + this.element.constructor.name + " wants to load " + actualReferences.map(e => e.fileName).join(', '));
+            this.references.forEach(reference => reference.resolve());
+            this.element.resolveExternalReferences();    
+        }
+    }
 
     get all() {
         return [...this.references];

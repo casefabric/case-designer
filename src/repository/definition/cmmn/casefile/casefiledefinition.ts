@@ -22,7 +22,7 @@ export default class CaseFileDefinition extends CaseFileItemCollection {
     get typeRef() {
         return this._typeRef.fileName;
     }
-    
+
     set typeRef(ref) {
         this._typeRef.update(ref);
     }
@@ -31,17 +31,12 @@ export default class CaseFileDefinition extends CaseFileItemCollection {
         return element.id === this.typeRef;
     }
 
-    hasExternalReferences() {
-        return this.typeRef !== '';
-    }
-
-    async loadExternalReferences() {
-        return this.resolveExternalDefinition<TypeDefinition>(this.typeRef).then(definition => {
-            if (definition) {
-                this.type = definition;
-                this.type.schema?.properties.forEach(property => this.addChild(property));
-            }
-        });
+    resolveExternalReferences() {
+        const definition = this._typeRef.getDefinition();
+        if (definition) {
+            this.type = definition;
+            this.type.schema?.properties.forEach(property => this.addChild(property));
+        }
     }
 
     addChild(child: SchemaPropertyDefinition) {

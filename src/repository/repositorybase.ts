@@ -19,6 +19,10 @@ export default class RepositoryBase {
         Util.removeFromArray(this.list, file);
     }
 
+    getFile(fileName: string): ServerFile<ModelDefinition> | undefined {
+        return this.list.find(file => file.fileName === fileName);
+    }
+
     hasFile(fileName: string): boolean {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }

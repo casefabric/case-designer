@@ -56,12 +56,12 @@ export default class TaskDefinition extends TaskStageDefinition {
         this._implementationModel = taskImplementation;
     }
 
-    hasExternalReferences() {
-        return this.implementationRef !== undefined && this.implementationRef !== '';
+    loadImplementation() {
+        throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
-    async loadExternalReferences() {
-        return this.resolveExternalDefinition(this.implementationRef).then(definition => { this.setImplementation(this.implementationRef, definition) });
+    resolveExternalReferences() {
+        this.loadImplementation();
     }
 
     get validatorRef(): string {

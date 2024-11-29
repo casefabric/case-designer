@@ -16,6 +16,10 @@ export default class ProcessTaskDefinition extends TaskDefinition {
         this.processRef = this.parseReference('processRef');
     }
 
+    loadImplementation(): void {
+        this.setImplementation(this.implementationRef, this.processRef.getDefinition() as ProcessModelDefinition);
+    }
+
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'processTask', 'processRef', 'mappings');
     }
