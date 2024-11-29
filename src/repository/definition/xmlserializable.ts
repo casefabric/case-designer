@@ -1,8 +1,9 @@
+import ServerFile from "@repository/serverfile/serverfile";
 import Util from "@util/util";
 import XML from "@util/xml";
 import ElementDefinition from "./elementdefinition";
+import ExternalReference, { ReferenceSet } from "./externalreference";
 import ModelDefinition from "./modeldefinition";
-import ServerFile from "@repository/serverfile/serverfile";
 
 // Some constants
 export const EXTENSIONELEMENTS = 'extensionElements';
@@ -13,6 +14,7 @@ export const IMPLEMENTATION_TAG = 'cafienne:implementation';
 export default class XMLSerializable {
     private _name: string = '';
     private _id: string = '';
+    readonly externalReferences = new ReferenceSet(this);
     extensionElement: Element;
     exportNode: any;
 
@@ -79,6 +81,14 @@ export default class XMLSerializable {
             }
         }
         return defaultValue;
+    }
+
+    parseReference<M extends ModelDefinition>(name: string): ExternalReference<M> {
+        return this.addReference(this.parseAttribute(name));
+    }
+
+    addReference<M extends ModelDefinition>(fileName: string): ExternalReference<M> {
+        return this.externalReferences.add(fileName);
     }
 
     /**
@@ -247,6 +257,11 @@ export default class XMLSerializable {
         } else if (propertyValue instanceof ElementDefinition) {
             // Write XML properties as-is, without converting them to string
             propertyValue.createExportNode(this.exportNode, propertyName);
+        } else if (propertyValue instanceof ExternalReference) {
+            // Write references only if they have a value
+            if (propertyValue.fileName !== '') {
+                this.exportNode?.setAttribute(propertyName, propertyValue.fileName);
+            } 
         } else {
             if (typeof (propertyValue) == 'object') {
                 console.warn('Writing property ' + propertyName + ' has a value of type object', propertyValue);

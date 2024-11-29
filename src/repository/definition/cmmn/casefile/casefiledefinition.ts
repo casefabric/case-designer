@@ -1,20 +1,30 @@
 import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
-import CaseDefinition from "../casedefinition";
+import ExternalReference from "@repository/definition/externalreference";
+import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
 import TypeDefinition from "@repository/definition/type/typedefinition";
+import XMLSerializable from "@repository/definition/xmlserializable";
+import CaseDefinition from "../casedefinition";
 import CaseFileItemDef, { CaseFileItemCollection } from "./casefileitemdef";
 import CaseFileItemTypeDefinition from "./casefileitemtypedefinition";
-import XMLSerializable from "@repository/definition/xmlserializable";
-import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
 
 export default class CaseFileDefinition extends CaseFileItemCollection {
     isOldStyle: boolean;
-    typeRef: string;
+    private _typeRef: ExternalReference<TypeDefinition>;
+
     type?: TypeDefinition;
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
         this.parseElements('caseFileItem', CaseFileItemDef, this.children);
         this.isOldStyle = this.children.length > 0; // If we have found the <caseFileItem> tag, then it is an old style model.
-        this.typeRef = this.parseAttribute('typeRef');
+        this._typeRef = this.parseReference('typeRef');
+    }
+
+    get typeRef() {
+        return this._typeRef.fileName;
+    }
+    
+    set typeRef(ref) {
+        this._typeRef.update(ref);
     }
 
     referencesElement(element: XMLSerializable): boolean {

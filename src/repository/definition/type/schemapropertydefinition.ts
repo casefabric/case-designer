@@ -1,11 +1,13 @@
 import Util from "@util/util";
+import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
+import ExternalReference from "../externalreference";
 import ReferableElementDefinition from "../referableelementdefinition";
 import SchemaDefinition from "./schemadefinition";
 import TypeDefinition from "./typedefinition";
-import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
 
 export default class SchemaPropertyDefinition extends ReferableElementDefinition<TypeDefinition> {
     _type: string;
+    private _typeRef: ExternalReference<TypeDefinition>;
     format: string;
     multiplicity: string;
     isBusinessIdentifier: boolean;
@@ -15,6 +17,7 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
     constructor(importNode: Element, modelDefinition: TypeDefinition, public parent: SchemaDefinition) {
         super(importNode, modelDefinition, parent);
         this._type = this.parseAttribute('type', '');
+        this._typeRef = this.addReference(this.typeRef);
         this.format = this.parseAttribute('format', '');
         this.multiplicity = this.parseAttribute('multiplicity', 'ExactlyOne');
         this.isBusinessIdentifier = this.parseBooleanAttribute('isBusinessIdentifier', false);
@@ -49,6 +52,7 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
     }
 
     set type(newType: string) {
+        this._typeRef.update(newType);
         if (this._type !== newType) {
             this._type = newType;
             if (newType === 'object') {
