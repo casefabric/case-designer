@@ -1,13 +1,15 @@
+import ElementDefinition from "@repository/definition/elementdefinition";
+import ModelDefinition from "@repository/definition/modeldefinition";
 import Util from "@util/util";
 
-export default class Problem {
+export default class Problem <M extends ModelDefinition> {
     typeId: number;
     description: string;
     
     /**
      * Creates a new problem that can render itself as HTML
      */
-    constructor(public contextId: string, public descriptionTemplate: string, public parameters: string[], public fileName: string, public severity: ProblemSeverity) {
+    constructor(public element: ElementDefinition<M>, public descriptionTemplate: string, public parameters: string[], public severity: ProblemSeverity) {
         this.typeId = Util.hashCode(descriptionTemplate);
 
         // Now substitute parameters into the description template
@@ -18,7 +20,15 @@ export default class Problem {
     }
 
     get id(): string {
-        return this.typeId+' in '+this.contextId + '[' + this.parameters.join(',') + ']';
+        return this.typeId+' in '+this.element.id + '[' + this.parameters.join(',') + ']';
+    }
+
+    get fileName(): string {
+        return this.element.modelDefinition.file.fileName;
+    }
+
+    get contextId(): string {
+        return this.element.id;
     }
 
     isWarning(): boolean {

@@ -6,7 +6,7 @@ import ShapeDefinition from "@definition/dimensions/shape";
 import Util from "@util/util";
 import { dia } from "jointjs";
 import ValidateForm from "@ide/modeleditor/case/validate/validateform";
-import Validator from "@repository/validate/validator";
+import ValidationContext from "@repository/validate/validation";
 import Debugger from "../../../debugger/debugger";
 import RightSplitter from "../../../splitter/rightsplitter";
 import CaseModelEditor from "../casemodeleditor";
@@ -308,7 +308,7 @@ export default class CaseView {
 
         this.runValidation();
 
-        if (this.validateForm.validator.problems.length > 0) {
+        if (this.validateForm.validationContext.problems.length > 0) {
             this.validateForm.show();
         }
 
@@ -316,19 +316,19 @@ export default class CaseView {
     }
 
     runValidation() {
-        let validator = Validator.run(this.caseDefinition, this.editor.ide.repository);
-        this.showValidationSummary(validator);
-        this.validateForm.renderData(validator);
+        let validationContext = ValidationContext.runValidation(this.caseDefinition, this.editor.ide.repository);
+        this.showValidationSummary(validationContext);
+        this.validateForm.renderData(validationContext);
     }
 
-    showValidationSummary(validator)
+    showValidationSummary(validationContext)
     {
        // Shows the number of errors and warnings in the case footer
-       const iErrors = validator.errors.length;
-       const iWarnings = validator.warnings.length;
+       const iErrors = validationContext.errors.length;
+       const iWarnings = validationContext.warnings.length;
 
        const validateLabel = $('.validateLabel');
-       validateLabel.html(`CMMN Validation found ${iErrors} problem${iErrors == 1 ? '' : 's'} and ${iWarnings} suggestion${iWarnings == 1 ? '' : 's'}`);
+       validateLabel.html(`CMMN Validation found ${iErrors} issue${iErrors == 1 ? '' : 's'} and ${iWarnings} suggestion${iWarnings == 1 ? '' : 's'}`);
        validateLabel.css('color', iErrors > 0 ? 'red' : iWarnings > 0 ? 'orange' : 'grey');
        if (iErrors == 0 && iWarnings == 0) {
            validateLabel.html('');
