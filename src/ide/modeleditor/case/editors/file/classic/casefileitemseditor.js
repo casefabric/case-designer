@@ -39,7 +39,7 @@ export default class CaseFileItemsEditor {
                 <div>
                     <div class="cfi-editorform basicbox basicform">
                         <div class="casefile-header formheader">
-                            <label>Case File Items</label>
+                            <label>Case File</label>
                         </div>
                         <div class="containerbox">
                             <div class="cfi-buttons">
