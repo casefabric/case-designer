@@ -167,8 +167,10 @@ export default class Repository extends RepositoryBase {
         return false;
     }
 
-    updateMetadata(newServerFileList: Array<Metadata>) {
-        console.groupCollapsed("Updating repository metadata");
+    async updateMetadata(newServerFileList: Array<Metadata>, parseFiles = false) {
+        const isReloading = this.list.length > 0;
+        const logMessage = parseFiles ? 'Loading repository contents' : 'Updating repository metadata';
+        console.groupCollapsed(logMessage);
         // Find out which files are no longer existing and clean them
         this.list.filter(file => {
             const metadata = newServerFileList.find(m => m.fileName === file.fileName);
@@ -187,12 +189,30 @@ export default class Repository extends RepositoryBase {
             if (!existingServerFile) {
                 const newFile = this.create(fileName);
                 if (newFile) { // Would be weird if not created, but ok.
-                    newFile.refreshMetadata(fileMetadata);
+                    newFile.refreshMetadata(fileMetadata, isReloading);
                 }
             } else {
-                existingServerFile.refreshMetadata(fileMetadata);
+                existingServerFile.refreshMetadata(fileMetadata, isReloading);
             }
         });
+
+        // Now parse all files in the list, starting with the cases
+        const filesToParse = this.list.sort((f1, f2) => f2 instanceof CaseFile ? 1 : -1);
+        for (let i = 0; i < filesToParse.length; i++) {
+            const file = filesToParse[i];
+            if (!file.definition) {
+                file.parse();
+            }
+        }
+
+        const migratedFiles = this.list.filter(file => file.definition && file.definition.hasMigrated());
+        if (migratedFiles.length > 0) {
+            console.groupCollapsed(`Saving ${migratedFiles.length} migrated definitions`);
+            for (let i = 0; i < migratedFiles.length; i++) {
+                await migratedFiles[i].saveMigratedDefinition();
+            }
+            console.groupEnd();
+        }
 
         // Sort the list in alphabetical order
         this.list.sort((f1, f2) => f1.fileName.toLowerCase().localeCompare(f2.fileName.toLowerCase()))
@@ -209,22 +229,7 @@ export default class Repository extends RepositoryBase {
      * of each file in the server. Based on this, the locally cached contents is removed if it is stale.
      */
     async updateFileList(newServerFileList: Array<Metadata>): Promise<void> {
-        console.groupCollapsed("Loading repository contents");
-        this.updateMetadata(newServerFileList);
-        // Now parse all files in the list
-        const filesToParse = this.list.sort((f1, f2) => f2 instanceof CaseFile ? 1 : -1);
-        // console.log("Found " + filesToParse.length +" files to be parsed:\n- ", filesToParse.map(file => file.fileName).join('\n- '))
-        for (let i = 0; i < filesToParse.length; i++) {
-            const file = filesToParse[i];
-            if (!file.definition) {
-                // console.log("Starting parse of " + file.fileName)
-                await file.parse()//.then(() => console.log("Completed parsing " + file.fileName));
-            }
-        }
-
-        // After refreshing and parsing, invoke any repository listeners about the new list.
-        this.listeners.forEach(listener => listener());
-        console.groupEnd();
+        await this.updateMetadata(newServerFileList, true);
     }
 
     /**

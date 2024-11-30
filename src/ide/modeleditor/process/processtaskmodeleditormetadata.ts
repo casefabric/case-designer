@@ -1,12 +1,11 @@
 import IDE from "@ide/ide";
+import ModelDefinition from "@repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
 import ProcessFile from "@repository/serverfile/processfile";
 import ServerFile from "@repository/serverfile/serverfile";
 import Icons from "@util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ProcessModelEditor from "./processmodeleditor";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import ModelEditor from "../modeleditor";
 
 export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
     /** @returns {Array<ServerFile>} */
@@ -54,7 +53,6 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
         const fileName = name + '.process';
         const file = ide.repository.createProcessFile(fileName, newModelContent);
         await file.save();
-        await file.parse();
         return fileName;
     }
 }

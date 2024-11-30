@@ -1,5 +1,5 @@
-import Tags from "@repository/definition/dimensions/tags";
 import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
+import Tags from "@repository/definition/dimensions/tags";
 import Util from "@util/util";
 import XML from "@util/xml";
 import $ from "jquery";
@@ -76,8 +76,8 @@ export default class CaseSourceEditor {
         // Now replace the content in the editor, and reload
         this.editor.caseFile.source = caseXML;
         this.editor.dimensionsFile.source = dimensionsXML;
-        await this.editor.dimensionsFile.parse();
-        await this.editor.caseFile.parse();
+        this.editor.dimensionsFile.parse();
+        this.editor.caseFile.parse();
         // Load the new model in the editor, and save it.
         this.editor.loadDefinition();
         // Completing the action will save the model and add a corresponding action to the undo/redo buffer

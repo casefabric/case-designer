@@ -23,12 +23,12 @@ export default class CFIDConverter {
         // First create an empty type file for the case.
         const caseName = this.case.caseDefinition.file.name;
         const topTypeFile = this.repository.createTypeFile('case_' + caseName + '.type', TypeDefinition.createDefinitionSource('case_' + caseName));
-        await topTypeFile.parse();
+        topTypeFile.parse();
 
         // Recursively create the list of CFIWrappers (is actually a hierarchical structure).
         const topWrappers = this.case.caseDefinition.caseFile.children.map(child => new CFIWrapper(this, child, undefined));
         // Now recursively load all of them (this may need to invoke the async parse() method in some of them)
-        for (let i = 0; i<topWrappers.length; i++) {
+        for (let i = 0; i < topWrappers.length; i++) {
             await topWrappers[i].load();
         }
 

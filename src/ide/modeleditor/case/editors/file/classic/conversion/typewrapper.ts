@@ -21,7 +21,7 @@ export default class TypeWrapper {
             if (!cfidFile.definition) {
                 throw new Error(`CFID file ${cfidFile.fileName} lacks a definition object, cannot continue migration`);
             }
-            const wrapper = new TypeWrapper(converter, cfidFile, cfidFile.definition,  typeFileName);
+            const wrapper = new TypeWrapper(converter, cfidFile, cfidFile.definition, typeFileName);
             await wrapper.load();
             return wrapper;
         }
@@ -36,7 +36,7 @@ export default class TypeWrapper {
         this.typeFile = this.createFile();
     }
 
-   createFile(): TypeFile {
+    createFile(): TypeFile {
         const typeFile = this.repository.getTypes().find(file => file.fileName.toLowerCase() === this.typeFileName.toLowerCase());
         if (typeFile) {
             console.log("Found existing typefile " + this.typeFileName);
@@ -49,23 +49,23 @@ export default class TypeWrapper {
     }
 
     async load() {
-        if (! this.typeFile.definition) {
-            await this.typeFile.parse();
+        if (!this.typeFile.definition) {
+            this.typeFile.parse();
         }
         this.cfid.properties.forEach(property => {
             if (this.typeFile.definition?.schema?.properties.find(prop => prop.name === property.name)) {
                 // Skip existing properties with the same name
-                return;                
+                return;
             }
             this.typeFile.definition?.schema?.createChildProperty(property.name, '', 'ExactlyOne', property.isBusinessIdentifier).withCMMNType(property.type);
         });
     }
 
-     async upload() {
+    async upload() {
         const newSource = this.typeFile.definition?.toXMLString();
         if (XML.prettyPrint(this.typeFile.source) === newSource && this.typeFile.metadata.lastModified) {
             // No need to upload
-            console.log("No need to upload the file " + this.typeFileName +", as there are no changes")
+            console.log("No need to upload the file " + this.typeFileName + ", as there are no changes")
             return;
         }
         this.typeFile.source = newSource;

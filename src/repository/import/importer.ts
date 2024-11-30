@@ -1,11 +1,9 @@
+import SchemaDefinition from "@repository/definition/type/schemadefinition";
 import TypeDefinition from "@repository/definition/type/typedefinition";
-import TypeFile from "@repository/serverfile/typefile";
 import XML from "@util/xml";
 import Tags from "../definition/dimensions/tags";
 import Repository from "../repository";
 import ImportElement, { CFIDImporter, CaseImporter, DimensionsImporter, HumanTaskImporter, ProcessImporter, TypeImporter } from "./importelement";
-import SchemaDefinition from "@repository/definition/type/schemadefinition";
-import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
 
 export default class Importer {
     newFiles: ImportElement[] = [];
@@ -39,7 +37,7 @@ export default class Importer {
 
                     // Create .dimensions file
                     // Copy and clean up dimensions from anything that does not occur inside this case's xmlElement
-                    const dimXML = <Element> allDimensionsXML.cloneNode(true);
+                    const dimXML = <Element>allDimensionsXML.cloneNode(true);
                     const elementMatcher = (element: Element, id1: string, id2 = '') => XML.allElements(xmlElement).find(e => getAttribute(e, 'id') == id1 || getAttribute(e, 'id') == id2) || element.parentNode?.removeChild(element);
                     XML.getElementsByTagName(dimXML, Tags.CMMNSHAPE).forEach(shape => elementMatcher(shape, getAttribute(shape, 'cmmnElementRef')));
                     XML.getElementsByTagName(dimXML, Tags.CMMNEDGE).forEach(shape => elementMatcher(shape, getAttribute(shape, 'sourceCMMNElementRef'), getAttribute(shape, 'targetCMMNElementRef')));
@@ -104,28 +102,26 @@ export default class Importer {
                         this.newFiles.push(new CFIDImporter(this, fileName, xmlElement));
                     } else {
                         const typeFile = this.repository.createTypeFile(fileName, `<type id="${fileName}" name="${xmlElement.getAttribute('name')}"><schema/></type>`);
-                        typeFile.parse().then(() => {
-                            if (!typeFile.definition) return;
-                            const typeDefinition: TypeDefinition = typeFile.definition;
-                            const typeSchema = typeDefinition.schema;
-                            if (typeSchema) {
-                                XML.getElementsByTagName(xmlElement, 'property').forEach((propertyElement) => {
-                                    const schemaPropertyDefinition = typeSchema.createChildProperty(propertyElement.getAttribute('name') || '');
-                                    schemaPropertyDefinition.withCMMNType(propertyElement.getAttribute('type') || '');
-                                    XML.getElementsByTagName(propertyElement, 'cafienne:implementation').forEach(propertyExtensionElement => {
-                                        const isBusinessIdentifierAttribute = propertyExtensionElement.getAttribute('isBusinessIdentifier');
-                                        if (isBusinessIdentifierAttribute === 'true') {
-                                            schemaPropertyDefinition.isBusinessIdentifier = true;
-                                        }
-                                    });
+                        if (!typeFile.definition) return;
+                        const typeDefinition: TypeDefinition = typeFile.definition;
+                        const typeSchema = typeDefinition.schema;
+                        if (typeSchema) {
+                            XML.getElementsByTagName(xmlElement, 'property').forEach((propertyElement) => {
+                                const schemaPropertyDefinition = typeSchema.createChildProperty(propertyElement.getAttribute('name') || '');
+                                schemaPropertyDefinition.withCMMNType(propertyElement.getAttribute('type') || '');
+                                XML.getElementsByTagName(propertyElement, 'cafienne:implementation').forEach(propertyExtensionElement => {
+                                    const isBusinessIdentifierAttribute = propertyExtensionElement.getAttribute('isBusinessIdentifier');
+                                    if (isBusinessIdentifierAttribute === 'true') {
+                                        schemaPropertyDefinition.isBusinessIdentifier = true;
+                                    }
                                 });
-                            }
-                            if (fileName.endsWith('.type')) {
-                                this.newFiles.push(new TypeImporter(this, fileName, xmlElement, typeDefinition));
-                            }
-                            // Keep the embedded types for later usage during te import;
-                            typeDefinitions[fileName] = typeDefinition;
-                        });
+                            });
+                        }
+                        if (fileName.endsWith('.type')) {
+                            this.newFiles.push(new TypeImporter(this, fileName, xmlElement, typeDefinition));
+                        }
+                        // Keep the embedded types for later usage during te import;
+                        typeDefinitions[fileName] = typeDefinition;
                     }
                 }
             });
@@ -137,10 +133,8 @@ export default class Importer {
                         let typeDefinition = /** @type {TypeDefinition} */ typeDefinitions[typeRef];
                         if (!typeDefinition) {
                             const typeFile = this.repository.createTypeFile(typeRef, TypeDefinition.createDefinitionSource(typeRef.replace(/\.type$/, '')));
-                            typeFile.parse().then(() => {
-                                // parsing is not a-sync code; so we are sure typeDefinition will be set with a new or already existing type from cache
-                                typeDefinition = typeDefinitions[typeRef] = typeFile.definition;
-                            });
+                            // parsing is not a-sync code; so we are sure typeDefinition will be set with a new or already existing type from cache
+                            typeDefinition = typeDefinitions[typeRef] = typeFile.definition;
                         }
                         for (const caseFileItem of caseFileModel.children) {
                             this.loadCaseFileItem(typeDefinition, typeDefinition.schema, caseFileItem, typeDefinitions);

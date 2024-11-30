@@ -1,6 +1,6 @@
-﻿import StandardForm from "@ide/editors/standardform";
-import { $read, AjaxError } from "@util/ajax";
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
+﻿import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
+import StandardForm from "@ide/editors/standardform";
+import { $read } from "@util/ajax";
 import CaseView from "../elements/caseview";
 
 export default class Deploy extends StandardForm {
@@ -40,7 +40,7 @@ export default class Deploy extends StandardForm {
 
         const model = this.modelEditor.ide.repository.get(this.case.editor.fileName);
         if (model.usage.length > 0) {
-            const modelRenderer = e => `<a href="./#${e.id}?deploy=true" title="Click to open the deploy form of ${e.id}">${e.name}</a>`;
+            const modelRenderer = file => `<a href="./#${file.fileName}?deploy=true" title="Click to open the deploy form of ${file.fileName}">${file.name}</a>`;
             const whereUsedCounter = `Used in ${model.usage.length} other model${model.usage.length == 1 ? '' : 's'}`;
             const whereUsedModels = `${model.usage.map(modelRenderer).join(",&nbsp;&nbsp;")}`;
             this.html.find('.whereUsedContent').html(whereUsedCounter + ": " + whereUsedModels);

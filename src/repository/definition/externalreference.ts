@@ -3,7 +3,7 @@ import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
 export default class ExternalReference<M extends ModelDefinition> {
-    private file?: ServerFile<M>;
+    private _file?: ServerFile<M>;
     constructor(private element: XMLSerializable, private ref: string) {
     }
 
@@ -19,9 +19,13 @@ export default class ExternalReference<M extends ModelDefinition> {
         return this.ref;
     }
 
+    get file() {
+        return this._file;
+    }
+
     resolve() {
-        this.file = this.element.loadFile(this.fileName);
-        if (this.nonEmpty() && this.file === undefined) {
+        this._file = this.element.loadFile(this.fileName);
+        if (this.nonEmpty() && this._file === undefined) {
             console.warn(this.element + ": Did not receive a file for " + this.fileName);
             return;
         }
@@ -29,17 +33,17 @@ export default class ExternalReference<M extends ModelDefinition> {
     }
 
     getDefinition(): M | undefined {
-        if (this.file && !this.file.definition) {
-            this.file.parse();
+        if (this._file && !this._file.definition) {
+            this._file.parse();
         }
-        return this.file?.definition;
+        return this._file?.definition;
     }
 
     update(newFileName: string) {
         if (this.ref !== newFileName) {
             // console.log("Setting new reference inside " + this.element +" to value " + newFileName +" (old value was: " + this.ref +")");
             this.ref = newFileName;
-            this.file = this.element.loadFile(this.ref);
+            this._file = this.element.loadFile(this.ref);
         }
     }
 

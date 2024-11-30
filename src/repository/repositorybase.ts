@@ -6,6 +6,10 @@ import ServerFile from "./serverfile/serverfile";
 export default class RepositoryBase {
     public readonly list: Array<ServerFile<ModelDefinition>> = [];
 
+    async listModels() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
     addFile(file: ServerFile<ModelDefinition>) {
         // if (this.list.find(item => file.fileName === item.fileName)) {
         //     throw new Error("File " + file.fileName + " already exists")
@@ -27,7 +31,7 @@ export default class RepositoryBase {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    updateMetadata(newServerFileList: Array<Metadata>) {
+    async updateMetadata(newServerFileList: Array<Metadata>) {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
