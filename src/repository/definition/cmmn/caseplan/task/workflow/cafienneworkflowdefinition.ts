@@ -28,7 +28,7 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
     }
 
     resolveExternalReferences() {
-        this.task.setImplementation(this.humanTaskRef.fileName, this.humanTaskRef.getDefinition() as HumanTaskModelDefinition);
+        this.task.setImplementation(this.humanTaskRef.fileName, this.humanTaskRef.getDefinition());
     }
 
     createExportNode(parentNode: Element) {
