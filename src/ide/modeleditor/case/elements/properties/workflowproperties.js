@@ -182,7 +182,7 @@ export default class WorkflowProperties extends TaskProperties {
                             </div>
                         </div>`);
         const taskList = html.find('.list-human-tasks');
-        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
+        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item instanceof HumanTaskDefinition);
         tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'fourEyes', task));
         html.find(`#${checkboxIdentifier}`).on('click', e => {
             const newPresence = e.target.checked;
@@ -211,7 +211,7 @@ export default class WorkflowProperties extends TaskProperties {
                             </div>
                         </div>`);
         const taskList = html.find('.list-human-tasks');
-        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item.definition instanceof HumanTaskDefinition);
+        const tasks = this.case.caseDefinition.getAllPlanItems().filter(item => item instanceof HumanTaskDefinition);
         tasks.filter(task => task !== planItem).forEach(task => this.addTask(taskList, 'rendezVous', task));
         html.find(`#${checkboxIdentifier}`).on('click', e => {
             const newPresence = e.target.checked;
