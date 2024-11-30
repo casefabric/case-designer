@@ -12,7 +12,7 @@ export default class IDEHeader {
     <div class="ide-header basicbox">
         <div class="btn-toolbar" role="toolbar">
             <div class="btn-group appname">
-                <label>Cafienne IDE</label>
+                <label>Dynamic Case Management</label>
             </div>
         </div>
     </div>`);

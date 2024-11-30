@@ -83,7 +83,7 @@ export default class ModelEditorRegistry {
         if (existingEditor) existingEditor.visible = true;
 
         //show model name on browser tab
-        document.title = 'Cafienne IDE - ' + serverFile.name;
+        document.title = 'Dynamic Case Management - ' + serverFile.name;
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
         if (existingEditor) {
