@@ -48,6 +48,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
             if (!this.ide) return;
 
             if (newModelInfo) {
+                console.groupCollapsed(`Creating new case ${newModelInfo.name}.case`);
                 const newModelName = newModelInfo.name;
                 const newModelDescription = newModelInfo.description;
                 /** @type {string} */
@@ -78,8 +79,8 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
                     // Simply create the case file, either with an empty or with an existing type definition.
                     await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, newTypeRef);
                     window.location.hash = fileName;
-
                 }
+                console.groupEnd();
             };
         });
     }
@@ -112,7 +113,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         const casePlanId = `cm_${guid}_0`;
         const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const caseString =
-            `<case id="${caseFileName}" name="${name}" guid="${guid}">
+`<case id="${caseFileName}" name="${name}" guid="${guid}">
     ${documentation}
     <caseFileModel typeRef="${typeRef}"/>
     <casePlanModel id="${casePlanId}" name="${name}"/>
