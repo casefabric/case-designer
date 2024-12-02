@@ -28,7 +28,7 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
         // A property is new if it has all default values
         return this.name === '' && this.type === '' && this.format === '' && this.multiplicity === 'ExactlyOne' && this.isBusinessIdentifier !== true;
     }
-    
+
     getCaseFileItemReferences(): CaseFileItemTypeDefinition[] {
         return <CaseFileItemTypeDefinition[]>Util.removeDuplicates(this.searchInboundReferences().filter(element => element instanceof CaseFileItemTypeDefinition));
     }
@@ -245,29 +245,23 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        if (this.name === "") 
-        {
+        if (this.name === "") {
             this.raiseError(`A case file item element has no name`, []);
         }
         if (["ExactlyOne", "ZeroOrOne", "ZeroOrMore", "OneOrMore", "Unspecified", "Unknown"].
-            indexOf(this.multiplicity) === -1) 
-        {
+            indexOf(this.multiplicity) === -1) {
             this.raiseError('"-par0-" is not a valid multiplicity for property "-par1-")', [this.multiplicity, this.name]);
         }
-        if (this.isComplexType) 
-        {
-            if (this.type === "object")
-            {
-                if (this.childDefinitions.length === 0) 
-                {
+        if (this.isComplexType) {
+            if (this.type === "object") {
+                if (this.childDefinitions.length === 0) {
                     this.raiseError('The structured property "-par0-" has no child properties', [this.name]);
                 }
-                for (let childDef of this.childDefinitions)  {
+                for (let childDef of this.childDefinitions) {
                     if (childDef instanceof SchemaDefinition) {
                         childDef.validate(validationContext);
                     }
-                    else
-                    {
+                    else {
                         this.raiseWarning('The property of type "-par0-" cannot be validated', [childDef.constructor.name]);
                     }
                 }
@@ -275,14 +269,12 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
             else if (this.subType === undefined) {
                 this.raiseError('The property "-par0-" does not have a type', [this.name]);
             }
-            else{
+            else {
                 this.subType.validate(validationContext);
             }
         }
-        else
-        {
-            if (this.type === "") 
-            {
+        else {
+            if (this.type === "") {
                 this.raiseError('The property "-par0-" has no type', [this.name]);
             }
         }

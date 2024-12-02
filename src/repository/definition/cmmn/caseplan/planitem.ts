@@ -204,8 +204,7 @@ export default class PlanItem extends CMMNElementDefinition {
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        if (this.itemControl !== undefined) 
-        {
+        if (this.itemControl !== undefined) {
             this.itemControl.repetitionRule?.validate(validationContext, 'Repetition');
             this.itemControl.requiredRule?.validate(validationContext, 'Required');
             this.itemControl.manualActivationRule?.validate(validationContext, 'Manual activation');
@@ -213,12 +212,12 @@ export default class PlanItem extends CMMNElementDefinition {
             if (this.itemControl.repetitionRule) {
                 if (this.entryCriteria.length > 0 &&
                     this.entryCriteria
-                        .filter(criterion => 
-                                    criterion.caseFileItemOnParts.length !== 0 
-                                || criterion.planItemOnParts.length !== 0)
+                        .filter(criterion =>
+                            criterion.caseFileItemOnParts.length !== 0
+                            || criterion.planItemOnParts.length !== 0)
                         .length == 0) {
-                        this.raiseError('Item "-par0-" has a repetition rule defined, but no entry criteria with at least one on part. This is mandatory.',
-                            [this.name]);
+                    this.raiseError('Item "-par0-" has a repetition rule defined, but no entry criteria with at least one on part. This is mandatory.',
+                        [this.name]);
                 }
             }
         }
@@ -235,7 +234,7 @@ export default class PlanItem extends CMMNElementDefinition {
 
         for (let role of this.authorizedRoles) {
             if (this.caseDefinition.caseTeam.roles.filter(r => r.id === role.id).length === 0) {
-                this.raiseError('An authorized role of user event "-par0-" is not defined in the case team', 
+                this.raiseError('An authorized role of user event "-par0-" is not defined in the case team',
                     [this.name]);
             }
         }

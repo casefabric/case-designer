@@ -5,7 +5,7 @@ import XML from "@util/xml";
 export default class CMMNDocumentationDefinition<M extends ModelDefinition> extends ElementDefinition<M> {
     textFormat: string;
     text: string;
-    static createDocumentationElement<M extends ModelDefinition>(importNode: Element|undefined, modelDefinition: M, parent?: ElementDefinition<M>) {
+    static createDocumentationElement<M extends ModelDefinition>(importNode: Element | undefined, modelDefinition: M, parent?: ElementDefinition<M>) {
         if (importNode === undefined) {
             importNode = modelDefinition.importNode.ownerDocument.createElement('documentation');
             if (parent && parent.importNode) {

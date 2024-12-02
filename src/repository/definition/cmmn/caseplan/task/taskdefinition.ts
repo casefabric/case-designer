@@ -250,14 +250,14 @@ export default class TaskDefinition extends TaskStageDefinition {
         super.validate(validationContext);
 
         if (!this.implementationRef || this.implementationRef === "") {
-            this.raiseWarning('No implementation attached to task "-par0-"', 
+            this.raiseWarning('No implementation attached to task "-par0-"',
                 [this.name]);
         }
 
         if (this.isBlocking == false) {
             //non blocking task cannot have exit sentries
             if (this.exitCriteria.length > 0) {
-                this.raiseError('Non-blocking task "-par0-" has an exit sentry, this is not allowed', 
+                this.raiseError('Non-blocking task "-par0-" has an exit sentry, this is not allowed',
                     [this.name]);
             }
 
@@ -294,7 +294,7 @@ export default class TaskDefinition extends TaskStageDefinition {
 
         for (let role of this.authorizedRoles) {
             if (this.caseDefinition.caseTeam.roles.filter(r => r.id === role.id).length === 0) {
-                this.raiseError('An authorized role of task "-par0-" is not defined in the case team', 
+                this.raiseError('An authorized role of task "-par0-" is not defined in the case team',
                     [this.name]);
             }
         }

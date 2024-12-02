@@ -98,7 +98,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return this._implementationParameter;
     }
 
-    set implementationParameter(parameter: ParameterDefinition<any> | undefined ) {
+    set implementationParameter(parameter: ParameterDefinition<any> | undefined) {
         this._implementationParameter = parameter;
         if (this.isInputMapping) {
             this.target = parameter;

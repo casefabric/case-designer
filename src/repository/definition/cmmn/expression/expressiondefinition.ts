@@ -34,6 +34,6 @@ export default class ExpressionDefinition extends UnnamedCMMNElementDefinition {
         const bodyElement = XML.createChildElement(this.exportNode, 'body');
         const bodyCDataNode = this.exportNode.ownerDocument.createCDATASection(this.body);
         bodyElement.appendChild(bodyCDataNode);
-        
+
     }
 }

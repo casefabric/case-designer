@@ -16,7 +16,7 @@ export default class HumanTaskImplementationDefinition extends HumanTaskModelEle
     }
 
     get taskModel(): TaskModelDefinition {
-        if (! this._taskModel) {
+        if (!this._taskModel) {
             this._taskModel = super.createDefinition(TaskModelDefinition);
             this._taskModel.id = '';
             this._taskModel.name = '';

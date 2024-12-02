@@ -14,7 +14,7 @@ export default class PlanItemReference extends CMMNElementDefinition {
     }
 
     get task(): PlanItem {
-        return <PlanItem> this.modelDefinition.getElement(this.taskRef, PlanItem);
+        return <PlanItem>this.modelDefinition.getElement(this.taskRef, PlanItem);
     }
 
     adopt(task: PlanItem) {

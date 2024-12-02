@@ -19,7 +19,7 @@ export default class ItemControlDefinition extends UnnamedCMMNElementDefinition 
      * Gets or creates one of 'repetitionRule', 'requiredRule' or 'manualActivationRule'.
      */
     getRule(ruleName: string) {
-        if (! (this as any)[ruleName]) {
+        if (!(this as any)[ruleName]) {
             (this as any)[ruleName] = super.createDefinition(ConstraintDefinition);
         }
         return (this as any)[ruleName];

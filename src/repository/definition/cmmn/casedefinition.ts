@@ -138,14 +138,12 @@ export default class CaseDefinition extends ModelDefinition {
         return xmlDocument;
     }
 
-    validate(validationContext: ValidationContext):void {
+    validate(validationContext: ValidationContext): void {
         if (validationContext.alreadyValidated(this)) {
             return;
         }
 
         super.validate(validationContext);
-
-        
 
         this.caseFile.validate(validationContext);
         this.casePlan.validate(validationContext);

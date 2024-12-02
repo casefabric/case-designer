@@ -9,8 +9,7 @@ export default class ValidationContext {
      * 
      * @returns {ValidationContext} the validation context, containing the validated models and their problems
      */
-    static runValidation(caseDefinition: CaseDefinition, repository:Repository): ValidationContext 
-    {
+    static runValidation(caseDefinition: CaseDefinition, repository: Repository): ValidationContext {
         const validationContext = new ValidationContext(repository);
 
         //validate the case with its' properties
@@ -33,7 +32,7 @@ export default class ValidationContext {
         return this.problems.filter(p => p.isWarning());
     }
 
-    get problems() : Problem<ModelDefinition>[] {
+    get problems(): Problem<ModelDefinition>[] {
         return this.validatedModels.flatMap(model => model.elements.flatMap(element => element.problems));
     }
 

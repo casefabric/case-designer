@@ -46,8 +46,13 @@ export default class PlanningTableDefinition extends UnnamedCMMNElementDefinitio
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        StageDefinition.validatePlanItems(validationContext, this.tableItems);
+        for (let planItem of this.tableItems) {
+            if (planItem.name === "") {
+                planItem.raiseError('A plan item in element "-par0-" has no name', [parent.name]);
+            }
 
+            planItem.validate(validationContext);
+        }
         for (let rule of this.ruleDefinitions) {
             rule.validate(validationContext);
         }

@@ -59,7 +59,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
 
     static createEmptyDefinition(caseDefinition: CaseDefinition, id: string = '') {
         const definition: CaseFileItemDef = caseDefinition.createDefinition(CaseFileItemDef, undefined, id, '');
-        definition.isEmpty = true;        
+        definition.isEmpty = true;
         return definition;
     }
 
@@ -69,7 +69,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
         this.multiplicity = this.parseAttribute('multiplicity', 'Unspecified');
         this.definitionRef = this.parseAttribute('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);
-        
+
     }
 
     get isArray() {

@@ -2,10 +2,10 @@ import ElementDefinition from "@repository/definition/elementdefinition";
 import ModelDefinition from "@repository/definition/modeldefinition";
 import Util from "@util/util";
 
-export default class Problem <M extends ModelDefinition> {
+export default class Problem<M extends ModelDefinition> {
     typeId: number;
     description: string;
-    
+
     /**
      * Creates a new problem that can render itself as HTML
      */
@@ -20,7 +20,7 @@ export default class Problem <M extends ModelDefinition> {
     }
 
     get id(): string {
-        return this.typeId+' in '+this.element.id + '[' + this.parameters.join(',') + ']';
+        return this.typeId + ' in ' + this.element.id + '[' + this.parameters.join(',') + ']';
     }
 
     get fileName(): string {

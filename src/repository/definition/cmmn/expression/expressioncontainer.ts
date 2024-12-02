@@ -43,7 +43,7 @@ export default class ExpressionContainer extends UnnamedCMMNElementDefinition {
      * @returns {ExpressionDefinition}
      */
     get expression() {
-        if (! this._expression) {
+        if (!this._expression) {
             this._expression = super.createDefinition(ExpressionDefinition);
         }
         return this._expression;
@@ -84,7 +84,7 @@ export default class ExpressionContainer extends UnnamedCMMNElementDefinition {
         ruleType = ruleType ?? this.constructor.name.substring(0, this.constructor.name.length - "RuleDefinition".length);
 
         if (!this.body) {
-            this.raiseError('-par2- rule "-par1-" of element "-par0-" has no expression', 
+            this.raiseError('-par2- rule "-par1-" of element "-par0-" has no expression',
                 [elementName, this.name, ruleType]);
         }
         if (!this.contextRef && this.body !== 'true' && this.body !== 'false') {

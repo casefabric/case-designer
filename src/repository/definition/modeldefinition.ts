@@ -24,7 +24,7 @@ export default class ModelDefinition extends XMLSerializable {
 
     typeCounters = new TypeCounter(this);
     elements: ElementDefinition<ModelDefinition>[] = [];
-        
+
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
@@ -97,7 +97,7 @@ export default class ModelDefinition extends XMLSerializable {
             return Promise.resolve();
         }
         console.groupCollapsed(`Loading ${referencingElements.length} dependencies inside ${this.file}`);
-       
+
         console.log(`${this.file} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
         // Load the underlying dependencies one after the other, just to have it a bit more predictable when an error happens.
         for (let i = 0; i < referencingElements.length; i++) {

@@ -14,8 +14,7 @@ export default class CaseRoleDefinition extends CMMNElementDefinition {
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        if (this.name === "") 
-        {
+        if (this.name === "") {
             this.raiseError('A case role has no name', []);
         }
     }

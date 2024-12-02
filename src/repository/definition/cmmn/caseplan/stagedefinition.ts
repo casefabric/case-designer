@@ -94,17 +94,24 @@ export default class StageDefinition extends TaskStageDefinition {
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        StageDefinition.validatePlanItems(validationContext, this.planItems);
+        for (let planItem of this.planItems) {
+            if (planItem.name === "") {
+                planItem.raiseError('A plan item in stage "-par0-" has no name', [this.name]);
+            }
+
+            planItem.validate(validationContext);
+        }
+
         if (this.planningTable) {
             this.planningTable.validate(validationContext);
         }
 
         // validate plan item nesting: not needed, because object structure forces it
-        
+
         // validate autocomplete
         if (!this.autoComplete) {
             if (!this.planningTable || this.planningTable.tableItems.length == 0) {
-                this.raiseWarning('The stage "-par0-" has the property autocomplete=FALSE. It is appropriate that this stage contains discretionary elements', 
+                this.raiseWarning('The stage "-par0-" has the property autocomplete=FALSE. It is appropriate that this stage contains discretionary elements',
                     [this.name]);
             }
         }
@@ -115,44 +122,6 @@ export default class StageDefinition extends TaskStageDefinition {
         if (numPlanItems + numDiscretionaryItems <= 1) {
             this.raiseWarning('The stage "-par0-" contains zero or one plan item, this is allowed but should be avoided',
                 [this.name]);
-        }
-
-    }
-    static validatePlanItems(validationContext:ValidationContext, planItems: PlanItem[]) {
-        const stageName = this.name;
-        for (let planItem of planItems) {
-            if (planItem.name === "") 
-            {
-                planItem.raiseError('A plan item in stage "-par0-" has no name', [stageName]);
-            }
-
-            switch (planItem.constructor.name) {
-                case 'HumanTaskDefinition':
-                    (planItem as HumanTaskDefinition).validate(validationContext);
-                    break;
-                case 'CaseTaskDefinition':
-                    (planItem as CaseTaskDefinition).validate(validationContext);
-                    break;
-                case 'ProcessTaskDefinition':
-                    (planItem as ProcessTaskDefinition).validate(validationContext);
-                    break;
-                case 'MilestoneDefinition':
-                    (planItem as MilestoneDefinition).validate(validationContext);
-                    break;
-                case 'UserEventDefinition':
-                    (planItem as UserEventDefinition).validate(validationContext);
-                    break;
-                case 'TimerEventDefinition':
-                    (planItem as TimerEventDefinition).validate(validationContext);
-                    break;
-                case 'StageDefinition':
-                    (planItem as StageDefinition).validate(validationContext);
-                    break;
-                default:
-                    planItem.raiseWarning('The plan item "-par0-" cannot be validated, because type is "-par1-"', 
-                        [planItem.name, planItem.constructor.name]);
-                    break;
-            }
         }
     }
 }

@@ -38,7 +38,7 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
         if (this.dueDate) {
             const dueDate = this.dueDate;
             if (!dueDate.body) {
-                this.raiseError('The due date of task "-par0-" has no due date expression', 
+                this.raiseError('The due date of task "-par0-" has no due date expression',
                     [eleemntName]);
             }
             if (!dueDate.contextRef && dueDate.body !== 'true' && dueDate.body !== 'false') {
@@ -51,7 +51,7 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
         if (this.assignment) {
             const assignment = this.assignment;
             if (!assignment.body) {
-                this.raiseError('The dynamic assignment of task "-par0-" has no due date expression', 
+                this.raiseError('The dynamic assignment of task "-par0-" has no due date expression',
                     [eleemntName]);
             }
             if (!assignment.contextRef && assignment.body !== 'true' && assignment.body !== 'false') {

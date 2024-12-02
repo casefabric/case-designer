@@ -108,17 +108,17 @@ export default class Util {
      */
     static hashCode(input: string): number {
         let hash = 0;
-      
+
         if (input.length === 0) return hash;
-      
+
         for (let i = 0; i < input.length; i++) {
             const char = input.charCodeAt(i);
             hash = (hash << 5) - hash + char;
             hash |= 0;
         }
-      
+
         return hash;
-}    
+    }
 
     /**
      * Simple helper function that removes an element from an array, if it is in the array.
@@ -146,7 +146,7 @@ export default class Util {
     /**
      * Remove duplicate elements from an array
      */
-    static removeDuplicates<T extends any> (array: T[]): T[] {
+    static removeDuplicates<T extends any>(array: T[]): T[] {
         const size = array.length;
         const copy = [...array];
         const set = new Set<T>();

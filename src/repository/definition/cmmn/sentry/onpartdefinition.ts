@@ -45,7 +45,7 @@ export default class OnPartDefinition extends UnnamedCMMNElementDefinition {
         const planItem = this.parent?.parent as PlanItem;
 
         if (!this.sourceRef) {
-            this.raiseError('A -par0- of element "-par1-" has an onPart case file item entry without a reference to a case file item)', 
+            this.raiseError('A -par0- of element "-par1-" has an onPart case file item entry without a reference to a case file item)',
                 [parent.typeDescription, planItem.name]);
         }
         if (!this.standardEvent) {

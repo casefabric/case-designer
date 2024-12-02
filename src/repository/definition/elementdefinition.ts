@@ -95,10 +95,10 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         return false;
     }
 
-    raiseWarning(messageTemplate: string, parameters: string[]){
+    raiseWarning(messageTemplate: string, parameters: string[]) {
         this.createProblem(messageTemplate, this, parameters, ProblemSeverity.WARNING);
     }
-    raiseError(messageTemplate: string, parameters: string[]){
+    raiseError(messageTemplate: string, parameters: string[]) {
         this.createProblem(messageTemplate, this, parameters, ProblemSeverity.ERROR);
     }
 
@@ -106,9 +106,8 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         // no validations yet
     }
 
-    private createProblem(messageTemplate: string, element: ElementDefinition<M>, parameters: string[], 
-        severity:ProblemSeverity) : Problem<M> 
-    {
+    private createProblem(messageTemplate: string, element: ElementDefinition<M>, parameters: string[],
+        severity: ProblemSeverity): Problem<M> {
         const problem = new Problem(element, messageTemplate, parameters, severity);
 
         element.problems.push(problem);

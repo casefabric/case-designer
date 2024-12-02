@@ -20,7 +20,7 @@ export default class TimerEventDefinition extends EventListenerDefinition {
         this.planItemStartTrigger = this.parseElement('planItemStartTrigger', PlanItemStartTrigger);
         this.caseFileItemStartTrigger = this.parseElement('caseFileItemStartTrigger', CaseFileItemStartTrigger);
 
-        if (!this.planItemStartTrigger && !this.caseFileItemStartTrigger){
+        if (!this.planItemStartTrigger && !this.caseFileItemStartTrigger) {
             //planItemStartTrigger is default
             this.planItemStartTrigger = this.getPlanItemStartTrigger();
         }
@@ -61,25 +61,25 @@ export default class TimerEventDefinition extends EventListenerDefinition {
         super.validate(validationContext);
 
         if (!this.timerExpression) {
-            this.raiseError('The timer event "-par0-" has no timer expression', 
+            this.raiseError('The timer event "-par0-" has no timer expression',
                 [this.name]);
         }
 
         if (this.planItemStartTrigger) {
             const planItemStartTrigger = this.planItemStartTrigger;
             if (planItemStartTrigger.sourceRef && !planItemStartTrigger.standardEvent) {
-                this.raiseError('The plan item start trigger for timer event "-par0-" has no standard event', 
+                this.raiseError('The plan item start trigger for timer event "-par0-" has no standard event',
                     [this.name]);
             }
         }
 
         if (this.caseFileItemStartTrigger) {
             if (!this.caseFileItemStartTrigger.standardEvent) {
-                this.raiseError('The case file item start trigger for timer event "-par0-" has no standard event', 
+                this.raiseError('The case file item start trigger for timer event "-par0-" has no standard event',
                     [this.name]);
             }
             if (!this.caseFileItemStartTrigger.sourceRef) {
-                this.raiseError('The case file item start trigger for timer event "-par0-" has no source reference', 
+                this.raiseError('The case file item start trigger for timer event "-par0-" has no source reference',
                     [this.name]);
             }
         }

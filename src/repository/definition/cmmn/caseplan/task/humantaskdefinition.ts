@@ -25,7 +25,7 @@ export default class HumanTaskDefinition extends TaskDefinition {
     }
 
     get performer(): CaseRoleDefinition | undefined {
-        return <CaseRoleDefinition> this.caseDefinition.getElement(this.performerRef);
+        return <CaseRoleDefinition>this.caseDefinition.getElement(this.performerRef);
     }
 
     /**
@@ -80,10 +80,10 @@ export default class HumanTaskDefinition extends TaskDefinition {
     }
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
-        
+
         if (this.performerRef !== undefined && this.performerRef !== "") {
             if (this.caseDefinition.caseTeam.roles.filter(role => role.id === this.performerRef).length === 0) {
-                this.raiseError('The performer "-par0-" of task "-par1-" is not defined in the case team', 
+                this.raiseError('The performer "-par0-" of task "-par1-" is not defined in the case team',
                     [this.performerRef, this.name]);
             }
         }

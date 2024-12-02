@@ -40,7 +40,7 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
     }
 
     get defaultOperation() {
-        return this.binding ? this.binding.isArray ? 'add' : 'update' : ''; 
+        return this.binding ? this.binding.isArray ? 'add' : 'update' : '';
     }
 
     get hasUnusualBindingRefinement() {
@@ -78,16 +78,13 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
     validate(validationContext: ValidationContext): void {
         super.validate(validationContext);
 
-        if (this.name === "") 
-        {
+        if (this.name === "") {
             this.raiseError('A case parameter has no name', []);
         }
-        if (this.bindingName === "") 
-        {
+        if (this.bindingName === "") {
             this.raiseError('The case parameter "-par0-" is not bound', [this.name]);
         }
-        if (this.bindingRef === "") 
-        {
+        if (this.bindingRef === "") {
             this.raiseError('The case parameter "-par0-" has no type', [this.name]);
         }
     }

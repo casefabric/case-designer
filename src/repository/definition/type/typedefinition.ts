@@ -4,7 +4,7 @@ import ModelDefinition from "../modeldefinition";
 import ValidationContext from "@repository/validate/validation";
 
 export default class TypeDefinition extends ModelDefinition {
-   private _schema?: SchemaDefinition;
+    private _schema?: SchemaDefinition;
 
     static createDefinitionSource(name: string) {
         return `<type id="${name + '.type'}" name="${name}"><schema/></type>`;
@@ -52,4 +52,4 @@ export default class TypeDefinition extends ModelDefinition {
         super.validate(validationContext);
         this.schema.validate(validationContext);
     }
- }
+}

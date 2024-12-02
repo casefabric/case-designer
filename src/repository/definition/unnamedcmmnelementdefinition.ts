@@ -12,5 +12,4 @@ export default class UnnamedCMMNElementDefinition extends CMMNElementDefinition 
     validate(validationContext: ValidationContext) {
         // no validations yet
     }
-        
 }

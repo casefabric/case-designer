@@ -62,7 +62,7 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
     validateSentryHasIfOrOnPart(validationContext: ValidationContext) {
         const planItem = this.parent as PlanItem;
         if (!this.ifPart && this.caseFileItemOnParts.length === 0 && this.planItemOnParts.length === 0) {
-            this.raiseError('The item "-par0-" has a -par1- without an if-part or on-part', 
+            this.raiseError('The item "-par0-" has a -par1- without an if-part or on-part',
                 [planItem.name, this.name]);
         }
     }
@@ -76,7 +76,7 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
             if (!onPart.sourceRef) {
                 this.raiseWarning('A -par0- of element "-par1-" has an onPart plan item row with no element reference',
                     [this.typeDescription, planItem.name]);
-                
+
             } else {
                 const source = this.caseDefinition.getElement(onPart.sourceRef);
                 if (source === undefined) {
@@ -85,7 +85,7 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
                 }
                 if ((source as PlanItem) && (source as PlanItem)?.isDiscretionary) {
                     //onpart element can not be discretionary
-                    this.raiseError ('A -par0- of element "-par1-" has an onPart plan item element ("-par2-") which is discretionary. This is not allowed.',
+                    this.raiseError('A -par0- of element "-par1-" has an onPart plan item element ("-par2-") which is discretionary. This is not allowed.',
                         [this.typeDescription, planItem.name, source.name]);
                 }
                 if (!onPart.standardEvent) {
@@ -139,7 +139,7 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
             //no descendant -> error
             if (!found) {
                 this.raiseError('The -par0- of discretionary element "-par1-" has an onPart planItem reference to element "-par2-", that is outside the parent stage/case plan model "-par3-". This is not allowed',
-                    [this.typeDescription, cmmnParentElement.name,  planItem.name, parent.name]);
+                    [this.typeDescription, cmmnParentElement.name, planItem.name, parent.name]);
             }
         });
     }

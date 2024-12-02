@@ -54,24 +54,20 @@ export default class SchemaDefinition extends ElementDefinition<TypeDefinition> 
     validate(validationContext: ValidationContext) {
         super.validate(validationContext);
 
-        if (this.childDefinitions.length === 0) 
-        {
+        if (this.childDefinitions.length === 0) {
             const propertyName = this.parent.name;
-            if (propertyName === undefined)
-            {
+            if (propertyName === undefined) {
                 this.raiseError('The type  "-par0-" has no child properties', [this.modelDefinition.name]);
             }
-            else
-            {
+            else {
                 this.raiseError('The structured property "-par0-" has no child properties', [propertyName]);
             }
         }
-        for (let childDef of this.childDefinitions)  {
+        for (let childDef of this.childDefinitions) {
             if (childDef instanceof SchemaPropertyDefinition) {
                 childDef.validate(validationContext);
             }
-            else
-            {
+            else {
                 this.raiseError('Unexpected child definition in schema: "-par0-"', [childDef.constructor.name]);
             }
         }
