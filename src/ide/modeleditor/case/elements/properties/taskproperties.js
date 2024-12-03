@@ -51,7 +51,7 @@ export default class TaskProperties extends TaskStageProperties {
             }
         });
         // Also make the html a drop target for drag/dropping elements from the repository browser
-        html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData), dragData => this.task.supportsFileTypeAsImplementation(dragData)));
+        html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData.file), dragData => this.task.supportsFileTypeAsImplementation(dragData)));
         html.on('pointerout', e => repositoryBrowser.removeDropHandler());
         this.htmlContainer.append(html);
         return html;
