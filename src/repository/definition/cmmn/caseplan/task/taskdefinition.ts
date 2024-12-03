@@ -15,7 +15,6 @@ export default class TaskDefinition extends TaskStageDefinition {
     outputs: TaskParameterDefinition[];
     private _implementationModel?: ModelDefinition;
     private _mappings: ParameterMappingDefinition[];
-    hasImplementation: boolean = false;
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: StageDefinition) {
         super(importNode, caseDefinition, parent);
@@ -56,12 +55,12 @@ export default class TaskDefinition extends TaskStageDefinition {
         this._implementationModel = taskImplementation;
     }
 
-    hasExternalReferences() {
-        return this.implementationRef !== undefined && this.implementationRef !== '';
+    loadImplementation() {
+        throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
-    async loadExternalReferences() {
-        return this.resolveExternalDefinition(this.implementationRef).then(definition => { this.setImplementation(this.implementationRef, definition) });
+    resolveExternalReferences() {
+        this.loadImplementation();
     }
 
     get validatorRef(): string {
@@ -182,14 +181,15 @@ export default class TaskDefinition extends TaskStageDefinition {
      * Generates new mappings and task input/output parameters based on the
      * given xml node that represents the contract of the task implementation.
      */
-    changeTaskImplementation(implementationRef: string, implementationModel: ModelDefinition) {
-        console.log("Associating new implementation ref (current is " + this.implementationRef + ", new is " + implementationRef + ")");
+    changeTaskImplementation(implementationRef: string, implementationModel: ModelDefinition | undefined) {
+        console.log(this + " changes implementation (current is " + this.implementationRef + ", new is " + implementationRef + ")");
         // First remove existing mappings and parameters.
         Util.clearArray(this.mappings);
         this.inputs = [];
         this.outputs = [];
         this.implementationRef = implementationRef;
         this.implementationModel = implementationModel;
+        if (!this.implementationModel) return;
 
         // Generate new task input and output parameters and mappings
         //  for each of the input and output parameters of the contract
@@ -200,13 +200,11 @@ export default class TaskDefinition extends TaskStageDefinition {
     /**
      * Sets the task implementation, and optionally updates the implementationRef.
      */
-    setImplementation(implementationRef: string, implementationModel: ModelDefinition) {
-        this.hasImplementation = true;
-        this.implementationModel = implementationModel;
-
-        if (this.implementationRef !== implementationRef) {
+    setImplementation(implementationRef: string, implementationModel: ModelDefinition | undefined) {
+        if (this.implementationRef !== implementationRef || !implementationModel) {
             this.changeTaskImplementation(implementationRef, implementationModel);
         } else {
+            this.implementationModel = implementationModel;
             this.inputMappings.forEach(mapping => {
                 if (mapping.targetRef) {
                     // Note: if the input parameter cannot be found in the implementation model, the targetRef will be cleared from the mapping

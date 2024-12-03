@@ -1,26 +1,25 @@
 import CaseModelEditor from "@ide/modeleditor/case/casemodeleditor";
 import CaseDefinition from "@repository/definition/cmmn/casedefinition";
 import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
-import XML from "@util/xml";
-import { PropertyRenderer } from "./typerenderer";
-import TypeFile from "@repository/serverfile/typefile";
-import CaseFile from "@repository/serverfile/casefile";
-import Util from "@util/util";
-import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
-import ModelDefinition from "@repository/definition/modeldefinition";
 import ElementDefinition from "@repository/definition/elementdefinition";
+import ModelDefinition from "@repository/definition/modeldefinition";
+import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
+import CaseFile from "@repository/serverfile/casefile";
+import TypeFile from "@repository/serverfile/typefile";
+import Util from "@util/util";
+import { PropertyRenderer } from "./typerenderer";
 
 export default class PropertyUsage {
     static checkPropertyDeletionAllowed(renderer: PropertyRenderer) {
         const getCaseReferences = (property: SchemaPropertyDefinition) => property.getCaseFileItemReferences().map(cftd => cftd.searchInboundReferences()).flat();
 
         // Recursive lookup for all parent TypesFile's using the TypeFile of this property to be removed 
-        const getParentTypes = (typeFile: TypeFile): TypeFile[] => [typeFile, ...(<TypeFile[]>typeFile.usageFiles.filter(fileUsingType => fileUsingType instanceof TypeFile)).map(file => [...getParentTypes(file)]).flat()];
+        const getParentTypes = (typeFile: TypeFile): TypeFile[] => [typeFile, ...(<TypeFile[]>typeFile.usage.filter(fileUsingType => fileUsingType instanceof TypeFile)).map(file => [...getParentTypes(file)]).flat()];
 
         const referringTypeFiles = getParentTypes(renderer.property.modelDefinition.file);
 
         // Lookup all referring .case fileNames (including corresponding .dimensions)
-        const referringCaseFileNames: string[] = referringTypeFiles.map(type => type.usageFiles.filter(file => file instanceof CaseFile)).flat().map(f => f ? f.fileName : '').filter(s => s.length > 0);
+        const referringCaseFileNames: string[] = referringTypeFiles.map(type => type.usage.filter(file => file instanceof CaseFile)).flat().map(f => f ? f.fileName : '').filter(s => s.length > 0);
         const dims = referringCaseFileNames.map(f => f.replace('.case', '.dimensions'));
         referringCaseFileNames.push(...dims);
 

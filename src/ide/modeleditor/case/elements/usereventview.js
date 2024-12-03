@@ -1,4 +1,3 @@
-import PlanItem from "@definition/cmmn/caseplan/planitem";
 import UserEventDefinition from "@definition/cmmn/caseplan/usereventdefinition";
 import ShapeDefinition from "@definition/dimensions/shape";
 import EventListenerView from "./eventlistenerview";

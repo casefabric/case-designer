@@ -1,17 +1,23 @@
+import ExternalReference from "@repository/definition/externalreference";
+import ProcessModelDefinition from "@repository/definition/process/processmodeldefinition";
 import ProcessFile from "@repository/serverfile/processfile";
-import TaskDefinition from "./taskdefinition";
 import CaseDefinition from "../../casedefinition";
 import StageDefinition from "../stagedefinition";
+import TaskDefinition from "./taskdefinition";
 
 export default class ProcessTaskDefinition extends TaskDefinition {
-    processRef: string;
+    processRef: ExternalReference<ProcessModelDefinition>;
     static get infix() {
         return 'pt';
     }
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: StageDefinition) {
         super(importNode, caseDefinition, parent);
-        this.processRef = this.parseAttribute('processRef');
+        this.processRef = this.parseReference('processRef');
+    }
+
+    loadImplementation(): void {
+        this.setImplementation(this.implementationRef, this.processRef.getDefinition());
     }
 
     createExportNode(parentNode: Element) {
@@ -23,10 +29,10 @@ export default class ProcessTaskDefinition extends TaskDefinition {
     }
 
     get implementationRef() {
-        return this.processRef;
+        return this.processRef.fileName;
     }
 
     set implementationRef(ref) {
-        this.processRef = ref;
+        this.processRef.update(ref);
     }
 }

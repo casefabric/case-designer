@@ -23,7 +23,7 @@ export default class ModelDefinition extends XMLSerializable {
 
     typeCounters = new TypeCounter(this);
     elements: ElementDefinition<ModelDefinition>[] = [];
-        
+
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
@@ -36,7 +36,24 @@ export default class ModelDefinition extends XMLSerializable {
         this.parseDocumentationElement();
     }
 
-    validateDocument() {
+    /**
+     * Initialize resolves both internal and external references and validates the definition.
+     */
+    initialize() {
+        this.elements.forEach(element => element.resolveInternalReferences());
+        const externalReferences = this.elements.map(element => element.externalReferences.all.filter(e => e.nonEmpty())).flat().map(e => e.fileName);
+        Util.removeDuplicates(externalReferences);
+        if (externalReferences.length > 0) {
+            console.groupCollapsed(`Initializing ${this.file.fileName} with ${externalReferences.length} dependencies`);
+            // console.groupCollapsed(`Initializing ${this.file.fileName} with ${externalReferences.length} dependencies [${externalReferences.join(', ')}]`);
+
+            // Find elements that have an external reference
+            const referencingElements = this.elements.filter(element => element.externalReferences.all.filter(e => e.nonEmpty()).length);
+            console.log(`${this.file} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
+            this.elements.forEach(element => element.externalReferences.resolve());
+            console.groupEnd();
+        }
+        return this;
     }
 
     parseDocumentationElement() {
@@ -80,25 +97,6 @@ export default class ModelDefinition extends XMLSerializable {
             element.name = name !== undefined ? name : this.getNextNameOfType(constructor);
         }
         return element;
-    }
-
-    /**
-     * Asynchronously load all external references that this definition has.
-     */
-    async loadDependencies(): Promise<void> {
-        const referencingElements = this.elements.filter(element => element.hasExternalReferences());
-        Util.removeDuplicates(referencingElements);
-        if (referencingElements.length === 0) {
-            return Promise.resolve();
-        }
-        console.groupCollapsed(`Loading ${referencingElements.length} dependencies inside ${this.file}`);
-       
-        console.log(`${this.file} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
-        // Load the underlying dependencies one after the other, just to have it a bit more predictable when an error happens.
-        for (let i = 0; i < referencingElements.length; i++) {
-            await referencingElements[i].loadExternalReferences();
-        }
-        console.groupEnd();
     }
 
     /**
@@ -156,6 +154,10 @@ export default class ModelDefinition extends XMLSerializable {
 
     getNextNameOfType(constructor: Function) {
         return this.typeCounters.getNextNameOfType(constructor);
+    }
+
+    loadFile<M extends ModelDefinition>(fileName: string): ServerFile<M> | undefined {
+        return <ServerFile<M>>this.file.repository.getFile(fileName);
     }
 
     /**

@@ -4,8 +4,6 @@ import XML from "@util/xml";
 import ModelDefinition from "../definition/modeldefinition";
 import RepositoryBase from "../repositorybase";
 import Metadata from "./metadata";
-import ServerFileReferences from "./serverfilereferences";
-
 export default class ServerFile<M extends ModelDefinition> {
     private _fileName: any;
     private _source: any;
@@ -16,7 +14,6 @@ export default class ServerFile<M extends ModelDefinition> {
 
     fileType: string;
     name: string;
-    references: ServerFileReferences<M> = new ServerFileReferences(this);
     metadata: Metadata;
     lastModified: string = '';
     hasBeenSavedJustNow: boolean = false;
@@ -35,8 +32,11 @@ export default class ServerFile<M extends ModelDefinition> {
         this.fileType = ''; // Will be filled when the file name is set
         this.fileName = fileName;
         this.source = source;
-        this.metadata = new Metadata({ fileName, type: this.fileType, usage: []}); // Passing proper default values for the metadata (instead of empty)
+        this.metadata = new Metadata({ fileName, type: this.fileType, usage: [] }); // Passing proper default values for the metadata (instead of empty)
         this.repository.addFile(this);
+        if (source) {
+            this.parse();
+        }
     }
 
     /**
@@ -75,7 +75,7 @@ export default class ServerFile<M extends ModelDefinition> {
     /**
      * Refreshes the metadata of the model, based on the server side content.
      */
-    refreshMetadata(serverMetadata: Metadata) {
+    refreshMetadata(serverMetadata: Metadata, isReloading: boolean) {
         this.metadata = serverMetadata;
         if (this.lastModified === serverMetadata.lastModified || this.hasBeenSavedJustNow) {
             // still the same contents, but potentially a new lastmodified timestamp
@@ -85,7 +85,7 @@ export default class ServerFile<M extends ModelDefinition> {
                 this.lastModified = serverMetadata.lastModified;
             }
         } else {
-            console.log("Clearing contents of " + this.fileName + ", since server indicates there is new content")
+            if (isReloading) console.log("Clearing contents of " + this.fileName + ", since server indicates there is new content")
             this.clear();
         }
         if (serverMetadata.serverContent) {
@@ -100,6 +100,7 @@ export default class ServerFile<M extends ModelDefinition> {
 
     set source(source) {
         if (this._source !== source) {
+            // console.log("Setting source of " + this.fileName)
             this._source = source;
             const xml = XML.parseXML(source);
             this._xml = xml ? xml.documentElement : xml;
@@ -112,20 +113,6 @@ export default class ServerFile<M extends ModelDefinition> {
 
     get xml() {
         return this._xml;
-    }
-
-    /**
-      *  Returns an array with id/name of the files where this file is used in 
-      */
-    get usage() {
-        return this.metadata.usage;
-    }
-
-    /**
-     *  @returns {Array<ServerFile>} Array with ServerFile's of the files where this file is used in 
-     */
-    get usageFiles() {
-        return this.usage.map(usage => usage.id).map(fileName => this.repository.list.find(file => file.fileName === fileName))
     }
 
     /**
@@ -148,11 +135,12 @@ export default class ServerFile<M extends ModelDefinition> {
             // Nothing to clear here
             return;
         }
-        console.groupCollapsed(`Clearing the contents of ${this.fileName} and ${this.references.size} referenced files`);
+        const references = this.references;
+        console.groupCollapsed(`Clearing the contents of ${this.fileName} and ${this.references.length} referenced files`);
         this.clearing = true;
         this.source = undefined;
         this._definition = undefined;
-        this.references.clear();
+        references.forEach(file => file.clear());
         this.clearing = false;
         console.groupEnd();
     }
@@ -187,7 +175,7 @@ export default class ServerFile<M extends ModelDefinition> {
         }
         console.log(`Fetched ${this.fileName}, calling parse with data `, response.data);
         this.source = response.data;
-        await this.parse();
+        this.parse();
         console.log(`Parse ${this.fileName} is done`);
         return this;
     }
@@ -195,30 +183,36 @@ export default class ServerFile<M extends ModelDefinition> {
     /**
      * Parse the document and "then" callback
      */
-    async parse(): Promise<ServerFile<M>> {
-        // console.groupEnd();
-        // console.log("Parsing " + this.fileName);
+    parse(): ServerFile<M> {
         if (!this.source) {
-            console.warn("No source content to parse")
-            return Promise.resolve(this);
+            console.warn(this.fileName + ": no source content to parse")
+            return this;
         }
         if (!this.xml) {
             // There is no xml definition available to parse ...
             if (this.metadata) this.metadata.error = 'This file does not contain a valid XML document to parse';
             return this;
         }
-        const definition = this.createModelDefinition();
-        this._definition = definition;
-        definition.validateDocument();
-        if (definition.hasMigrated()) {
-            console.log(`${definition.constructor.name} of '${this.fileName}' has migrated; uploading result`);
-            this.source = definition.toXML();
-            await this.save();
-        }
-        await definition.loadDependencies();
-        // console.log("File["+file.fileName+"].definition: " + file.definition);
+        this._definition = this.createModelDefinition().initialize();
+        // Note: here we should somehow go through the list of ExternalReferences of other models that are using a former definition of us and tell them to update
+        // this.usage.forEach(file => {
+        //     console.log(this.fileName + ": should be updating the file " + file.fileName +" because we have a new definition")
+        // })
         this.validateDefinition();
         return this;
+    }
+
+    /**
+     * Callback when a model is parsed and found to have a migrated definition.
+     */
+    async saveMigratedDefinition() {
+        if (this.definition && this.definition.hasMigrated()) {
+            console.log(`${this.definition.constructor.name} of '${this.fileName}' has migrated; uploading result`);
+            this.source = this.definition.toXML();
+            await this.save();
+        } else {
+            console.warn('Should not be calling this method');
+        }
     }
 
     /**
@@ -236,7 +230,7 @@ export default class ServerFile<M extends ModelDefinition> {
         await this.fetch();
         if (!this.definition) {
             // console.log(`Parsing ${this.fileName} upon loading`)
-            await this.parse();
+            this.parse();
         }
         return this;
     }
@@ -246,7 +240,7 @@ export default class ServerFile<M extends ModelDefinition> {
      */
     async reload() {
         this.clear();
-        return this.load();
+        await this.repository.listModels();
     }
 
     /**
@@ -263,7 +257,7 @@ export default class ServerFile<M extends ModelDefinition> {
             throw 'We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running';
         });
         this.hasBeenSavedJustNow = true;
-        this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(response.data);
         this.hasBeenSavedJustNow = false;
         // Also print a timestampe of the new last modified information
         const lmDate = new Date(this.lastModified);
@@ -286,7 +280,7 @@ export default class ServerFile<M extends ModelDefinition> {
         const response = await $ajax({ url, type }).catch((error: AjaxError) => { throw new Error('We could not rename the file: ' + error.message) });
         this.hasBeenSavedJustNow = true;
         this.fileName = newName;
-        this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(response.data);
         this.hasBeenSavedJustNow = false;
         // Also print a timestampe of the new last modified information
         const lmDate = new Date(this.lastModified);
@@ -305,22 +299,26 @@ export default class ServerFile<M extends ModelDefinition> {
         const type = 'delete';
         const response = await $ajax({ url, type });
         this.repository.removeFile(this);
-        this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(response.data);
         console.log('Deleted ' + this.fileName);
     }
 
     /**
-     * Loads the references and calls back with the reference, to the type the caller of this function expects
+     * @returns A list of files that are used by this file
      */
-    async loadReference<X extends ModelDefinition>(fileName: string): Promise<ServerFile<X>> {
-        console.log("Loading reference " + fileName)
-        return this.references.load(fileName);
+    get references(): ServerFile<ModelDefinition>[] {
+        if (this.definition) {
+            return <ServerFile<ModelDefinition>[]>Util.removeDuplicates(this.definition.elements.map(element => element.externalReferences.all).flat().map(ref => ref.file).filter(file => file !== undefined));
+        } else {
+            return [];
+        }
     }
 
     /**
      * Return a list of files that use this file.
+     *  @returns Array with ServerFile's of the files where this file is used in 
      */
-    usedBy() {
-        return Util.removeDuplicates(this.repository.list.filter(file => file.references.contains(this)));
+    get usage(): ServerFile<ModelDefinition>[] {
+        return Util.removeDuplicates(this.repository.list.filter(file => file.references.find(reference => reference === this)));
     }
 }

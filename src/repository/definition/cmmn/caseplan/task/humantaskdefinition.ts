@@ -40,11 +40,11 @@ export default class HumanTaskDefinition extends TaskDefinition {
     }
 
     get implementationRef() {
-        return this.workflow.humanTaskRef;
+        return this.workflow.humanTaskRef.fileName;
     }
 
     set implementationRef(ref) {
-        this.workflow.humanTaskRef = ref;
+        this.workflow.humanTaskRef.update(ref);
     }
 
     get mappings() {
@@ -71,10 +71,10 @@ export default class HumanTaskDefinition extends TaskDefinition {
     }
 
     get validatorRef() {
-        return this.workflow.validatorRef;
+        return this.workflow.validatorRef.fileName;
     }
 
     set validatorRef(ref) {
-        this.workflow.validatorRef = ref;
+        this.workflow.validatorRef.update(ref);
     }
 }

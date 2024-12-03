@@ -1,7 +1,9 @@
+import CaseFileDefinitionDefinition from "@repository/definition/cfid/casefileitemdefinitiondefinition";
+import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
+import ExternalReference from "@repository/definition/externalreference";
 import Util from "@util/util";
 import XML from "@util/xml";
 import CaseDefinition from "../casedefinition";
-import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
 
 export class CaseFileItemCollection extends CMMNElementDefinition {
     _children: CaseFileItemDef[];
@@ -39,10 +41,10 @@ export class CaseFileItemCollection extends CMMNElementDefinition {
 export default class CaseFileItemDef extends CaseFileItemCollection {
     defaultTransition: string;
     multiplicity: string;
-    definitionRef: string;
+    _definitionRef: ExternalReference<CaseFileDefinitionDefinition>;
     isEmpty = false;
     /**
-     * @returns {Array<String>} List of the possible events/transitions on a case file item
+     * @returns List of the possible events/transitions on a case file item
      */
     static get transitions() {
         return ['', 'addChild', 'addReference', 'create', 'delete', 'removeChild', 'removeReference', 'replace', 'update'];
@@ -54,7 +56,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
 
     static createEmptyDefinition(caseDefinition: CaseDefinition, id: string = '') {
         const definition: CaseFileItemDef = caseDefinition.createDefinition(CaseFileItemDef, undefined, id, '');
-        definition.isEmpty = true;        
+        definition.isEmpty = true;
         return definition;
     }
 
@@ -62,9 +64,16 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
         super(importNode, caseDefinition, parent);
         this.defaultTransition = 'create';
         this.multiplicity = this.parseAttribute('multiplicity', 'Unspecified');
-        this.definitionRef = this.parseAttribute('definitionRef');
+        this._definitionRef = this.parseReference('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);
-        
+    }
+
+    get definitionRef(): string {
+        return this._definitionRef.fileName;
+    }
+
+    set definitionRef(newReference: string) {
+        this._definitionRef.update(newReference);
     }
 
     get isArray() {

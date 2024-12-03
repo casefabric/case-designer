@@ -1,14 +1,16 @@
 import IDE from "@ide/ide";
 import Tags from "@repository/definition/dimensions/tags";
+import ModelDefinition from "@repository/definition/modeldefinition";
+import TypeDefinition from "@repository/definition/type/typedefinition";
 import CaseFile from "@repository/serverfile/casefile";
+import ServerFile from "@repository/serverfile/serverfile";
+import TypeFile from "@repository/serverfile/typefile";
 import Icons from "@util/images/icons";
 import Util from "@util/util";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
 import CreateNewCaseModelDialog from "./createnewcasemodeldialog";
 import Grid from "./grid";
-import ServerFile from "@repository/serverfile/serverfile";
-import ModelDefinition from "@repository/definition/modeldefinition";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
     get modelList() {
@@ -48,9 +50,9 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
             if (!this.ide) return;
 
             if (newModelInfo) {
+                console.groupCollapsed(`Creating new case ${newModelInfo.name}.case`);
                 const newModelName = newModelInfo.name;
                 const newModelDescription = newModelInfo.description;
-                /** @type {string} */
                 const newTypeRef = newModelInfo.typeRef;
 
                 //check if a valid name is used
@@ -65,21 +67,10 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
                     return;
                 }
 
-                // If a type is selected, and it does not yet exist, then first create the type file, and only then create the case model.
-                if (newTypeRef && newTypeRef.endsWith('.type') && !this.ide.repository.hasFile(newTypeRef)) {
-                    const typeModelEditorMetadata = ModelEditorMetadata.types.find(type => type.fileType === 'type');
-                    if (typeModelEditorMetadata) {
-                        const newTypeModelName = newTypeRef.slice(0, newTypeRef.length - 5);
-                        const typeFileName = await typeModelEditorMetadata.createNewModel(this.ide, newTypeModelName, newModelDescription);
-                        await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, typeFileName);
-                        window.location.hash = fileName;
-                    }
-                } else {
-                    // Simply create the case file, either with an empty or with an existing type definition.
-                    await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, newTypeRef);
-                    window.location.hash = fileName;
-
-                }
+                // Simply create the case file, either with an empty or with an existing type definition.
+                await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, newTypeRef);
+                window.location.hash = fileName;
+                console.groupEnd();
             };
         });
     }
@@ -112,7 +103,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         const casePlanId = `cm_${guid}_0`;
         const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const caseString =
-            `<case id="${caseFileName}" name="${name}" guid="${guid}">
+`<case id="${caseFileName}" name="${name}" guid="${guid}">
     ${documentation}
     <caseFileModel typeRef="${typeRef}"/>
     <casePlanModel id="${casePlanId}" name="${name}"/>
@@ -131,14 +122,16 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
     </validation>
 </${Tags.CMMNDI}>`;
 
-        // Upload models to server, and call back
-        const caseFile = ide.repository.createCaseFile(caseFileName, caseString);
+        // Optionally create a new type file
+        const typeFile = typeRef && typeRef.endsWith('.type') && !ide.repository.hasFile(typeRef) ? ide.repository.createTypeFile(typeRef, TypeDefinition.createDefinitionSource(name)) : undefined;
+        // Create dimensions and case files
         const dimensionsFile = ide.repository.createDimensionsFile(dimensionsFileName, dimensionsString);
+        const caseFile = ide.repository.createCaseFile(caseFileName, caseString);
 
-        // First save dimensions, then save the case, and then parse the case (which will load the dimensions)
+        // Upload the new files to the server, in this particular order
+        if (typeFile) await typeFile.save();
         await dimensionsFile.save();
         await caseFile.save();
-        await caseFile.parse();
         return caseFileName;
     }
 }

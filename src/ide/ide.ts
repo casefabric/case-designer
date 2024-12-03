@@ -82,7 +82,10 @@ export default class IDE {
             this.danger(msg);
             return Promise.reject(msg);
         } else {
-            return await editorMetadata.createNewModel(this, newModelName, newModelDescription);
+            console.groupCollapsed(`Creating new ${fileType} ${newModelName}.${fileType}`);
+            const model = await editorMetadata.createNewModel(this, newModelName, newModelDescription);
+            console.groupEnd();
+            return model;
         }
     }
 

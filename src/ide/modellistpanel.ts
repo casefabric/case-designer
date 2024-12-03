@@ -46,7 +46,7 @@ export default class ModelListPanel {
 
         files.forEach(file => {
             const error = file.metadata.error;
-            const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`;
+            const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(u => '- ' + u.fileName).join('\n') : ''}`;
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
             const modelURL = urlPrefix + file.fileName;
@@ -78,7 +78,7 @@ export default class ModelListPanel {
      */
     async delete(file: ServerFile<ModelDefinition>) {
         if (file.usage.length) {
-            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(e => '- ' + e.id).join('\n') : ''}`);
+            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(u => '- ' + u.fileName).join('\n') : ''}`);
         } else {
             const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {

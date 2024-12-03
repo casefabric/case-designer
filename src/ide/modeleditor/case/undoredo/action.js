@@ -1,5 +1,4 @@
 import CaseDefinition from "@definition/cmmn/casedefinition";
-import XML from "@util/xml";
 import UndoManager from "./undoredo";
 
 export default class Action {
@@ -94,11 +93,10 @@ export default class Action {
         console.groupCollapsed("Performing "+direction+" on action "+this.undoCount )
         this.undoManager.performingBufferAction = true;
         // Parse the sources again into a definition and load that in the editor.
-        this.caseFile.clear();        
         this.caseFile.source = this.caseString;
         this.dimensionsFile.source = this.dimensionsString;
-        await this.dimensionsFile.parse();
-        await this.caseFile.parse();
+        this.dimensionsFile.parse();
+        this.caseFile.parse();
         this.undoManager.editor.loadDefinition(this.caseFile.definition);
         // Reset the "saved" flag.
         this.saved = false;

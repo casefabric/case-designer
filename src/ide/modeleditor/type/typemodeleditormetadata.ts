@@ -39,7 +39,6 @@ export default class TypeModelEditorMetadata extends ModelEditorMetadata {
         const fileName = name + '.type';
         const file = ide.repository.createTypeFile(fileName, TypeDefinition.createDefinitionSource(name));
         await file.save();
-        await file.parse();
         return fileName;
     }
 }

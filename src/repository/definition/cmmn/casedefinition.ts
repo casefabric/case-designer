@@ -2,14 +2,15 @@ import CaseFile from "@repository/serverfile/casefile";
 import TextAnnotationDefinition from "../artifact/textannotation";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import Dimensions from "../dimensions/dimensions";
+import ExternalReference from "../externalreference";
 import Migrator from "../migration/cmmn/migrator";
 import ModelDefinition from "../modeldefinition";
 import CaseFileDefinition from "./casefile/casefiledefinition";
 import CasePlanDefinition from "./caseplan/caseplandefinition";
+import PlanItem from "./caseplan/planitem";
 import CaseTeamDefinition from "./caseteam/caseteamdefinition";
 import CaseParameterDefinition from "./contract/caseparameterdefinition";
 import StartCaseSchemaDefinition from "./startcaseschemadefinition";
-import PlanItem from "./caseplan/planitem";
 
 export default class CaseDefinition extends ModelDefinition {
     private _caseFile?: CaseFileDefinition;
@@ -20,7 +21,8 @@ export default class CaseDefinition extends ModelDefinition {
     annotations: TextAnnotationDefinition[];
     startCaseSchema: StartCaseSchemaDefinition;
     defaultExpressionLanguage: string;
-    dimensions?: Dimensions;
+    _dimensions: ExternalReference<Dimensions>;
+
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
@@ -29,31 +31,18 @@ export default class CaseDefinition extends ModelDefinition {
         // First run migrations if necessary.
         Migrator.updateXMLElement(this);
         this._caseFile = this.parseElement('caseFileModel', CaseFileDefinition);
-        /** @type {CasePlanDefinition} */
         this._casePlan = this.parseElement('casePlanModel', CasePlanDefinition)
-        /** @type {CaseTeamDefinition} */
         this._caseTeam = this.parseElement('caseRoles', CaseTeamDefinition);
-        /** @type {Array<CaseParameterDefinition>} */
         this.input = this.parseElements('input', CaseParameterDefinition);
-        /** @type {Array<CaseParameterDefinition>} */
         this.output = this.parseElements('output', CaseParameterDefinition);
         this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
         this.startCaseSchema = this.parseExtension(StartCaseSchemaDefinition);
         this.defaultExpressionLanguage = this.parseAttribute('expressionLanguage', 'spel');
+        this._dimensions = this.addReference(this.file.name + '.dimensions');
     }
 
-    hasExternalReferences() {
-        return true;
-    }
-
-    async loadExternalReferences(): Promise<void> {
-        return this
-            .resolveExternalDefinition<Dimensions>(this.file.name + ".dimensions")
-            .then(definition => { this.dimensions = definition; });
-    }
-
-    validateDocument() {
-        this.elements.forEach(element => element.resolveReferences());
+    get dimensions(): Dimensions | undefined {
+        return this._dimensions.getDefinition();
     }
 
     /**

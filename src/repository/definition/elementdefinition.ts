@@ -1,3 +1,4 @@
+import ServerFile from "@repository/serverfile/serverfile";
 import ModelDefinition from "./modeldefinition";
 import XMLSerializable from "./xmlserializable";
 
@@ -62,11 +63,9 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         console.groupEnd();
     }
 
-    /**
-     * Basic method invoked on an element after the entire XML tree has been parsed.
-     * Can be used to resolve string based references to other elements.
-     */
-    resolveReferences() { }
+    loadFile<M extends ModelDefinition>(fileName: string): ServerFile<M> | undefined {
+        return this.modelDefinition.loadFile(fileName);
+    }
 
     /**
      * Returns all elements that have a reference to this element
@@ -86,9 +85,5 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
      * The given element has changed its ID and NAME attribute to the new values.
      */
     updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
-    }
-
-    hasExternalReferences() {
-        return false;
     }
 }

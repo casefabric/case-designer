@@ -1,11 +1,11 @@
 import IDE from "@ide/ide";
+import ModelDefinition from "@repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
 import HumanTaskFile from "@repository/serverfile/humantaskfile";
 import ServerFile from "@repository/serverfile/serverfile";
 import Icons from "@util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
-import ModelDefinition from "@repository/definition/modeldefinition";
 
 export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
     static register() {
@@ -51,7 +51,6 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
         const fileName = name + '.humantask';
         const file = ide.repository.createHumanTaskFile(fileName, newModelContent);
         await file.save();
-        await file.parse();
         return fileName;
     }
 }

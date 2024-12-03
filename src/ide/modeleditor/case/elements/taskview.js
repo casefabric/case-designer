@@ -103,29 +103,27 @@ export default class TaskView extends TaskStageView {
      * Changes the task implementation if the model's fileName differs from the current implementationRef.
      * If it is a newly added task, then the name maybe filled with the name of the task implementation.
      * This can be indicated by passing the "updateTaskDescription" flag to true.
-     * @param {ServerFile} model 
+     * @param {ServerFile} file 
      * @param {Boolean} updateTaskName 
      */
-    async changeTaskImplementation(model, updateTaskName = false) {
-        console.log("Changing task implementation to model :' ", model)
-        const fileName = model.fileName;
-        if (this.definition.implementationRef == fileName) {
+    async changeTaskImplementation(file, updateTaskName = false) {
+        console.log("Changing task implementation to '" + file.fileName +"'")
+        if (this.definition.implementationRef == file.fileName) {
             // no need to change. Perhaps re-generate parameters??? Better give a separate button for that ...
             return;
         }
 
         // Now, read the file, and update the information in the task parameters.
-        const file = await this.case.editor.ide.repository.load(fileName);
-        const definition = file !== undefined && file.definition;
-        if (!definition) {
-            this.case.editor.ide.warning('Could not read the definition ' + fileName + ' which is referenced from the task ' + this.name);
+        await file.load();
+        if (!file.definition) {
+            this.case.editor.ide.warning('Could not read the definition ' + file.fileName + ' which is referenced from the task ' + this.name);
             return;
         }
 
         // Only update the name if we drag/drop into a new element; do not change for dropping on existing element
         if (updateTaskName) {
-            console.warn(`Updating the task name to ${definition.name}`);
-            const name = definition.name;
+            console.warn(`Updating the task name to ${file.definition.name}`);
+            const name = file.definition.name;
             if (name) {
                 this.definition.name = name;
                 this.refreshView();
@@ -133,7 +131,7 @@ export default class TaskView extends TaskStageView {
         }
 
         // Set the implementation.
-        this.definition.setImplementation(fileName, definition);
+        this.definition.setImplementation(file.fileName, file.definition);
 
         // Make sure to save changes if any.
         this.case.editor.completeUserAction();

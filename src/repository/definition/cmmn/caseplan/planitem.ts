@@ -145,8 +145,8 @@ export default class PlanItem extends CMMNElementDefinition {
         return this;
     }
 
-    resolveReferences() {
-        super.resolveReferences();
+    resolveInternalReferences() {
+        super.resolveInternalReferences();
 
         const entryCriteriaRefs = this.parseAttribute('entryCriteriaRefs');
         if (entryCriteriaRefs) {
