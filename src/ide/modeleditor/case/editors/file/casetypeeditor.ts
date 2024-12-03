@@ -37,7 +37,7 @@ export default class CaseTypeEditor {
         this.htmlContainer = $(
             `<div class="casetype-editor">
                 <div class="casetype-header">
-                    <label>Case File Items</label>
+                    <label>Case File</label>
                 </div>
                 <div class="type-editor-box"></div>
             </div>`
