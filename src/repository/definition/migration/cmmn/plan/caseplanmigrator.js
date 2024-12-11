@@ -37,14 +37,16 @@ export default class CasePlanMigrator {
                 }
             }
 
-            const definitionNodes = XML.getChildrenByTagName(casePlan, '*').filter(isDefinitionName);
+            const definitionNodes = XML.allElements(casePlan).filter(isDefinitionName);
             console.log("Found " + definitionNodes.length + " definition nodes")
 
             new StageMigrator(this, casePlan, casePlan, definitionNodes).migrateStage();
 
             definitionNodes.forEach(node => node.parentElement.removeChild(node));
 
+            console.groupCollapsed("Resulting import node")
             console.log(XML.prettyPrint(importNode));
+            console.groupEnd();
             this.migrator.migrated(`Merged <planItem> and <discretionaryItem> elements with their corresponding definitions, so now we have only <humanTask>, <stage>, <milestone>, etc.`);
 
             console.groupEnd();
@@ -55,13 +57,13 @@ export default class CasePlanMigrator {
 class StageMigrator {
     /**
      * 
-     * @param {CaseDefinition} caseDefinition 
+     * @param {CasePlanMigrator} casePlanMigrator 
      * @param {Element} stage 
      * @param {Element} casePlan 
      * @param {Array<Element>} definitionNodes 
      */
-    constructor(caseDefinition, stage, casePlan, definitionNodes) {
-        this.caseDefinition = caseDefinition;
+    constructor(casePlanMigrator, stage, casePlan, definitionNodes) {
+        this.casePlanMigrator = casePlanMigrator;
         this.stage = stage;
         this.item = stage;
         this.casePlan = casePlan;
@@ -82,7 +84,7 @@ class StageMigrator {
     }
 
     addError(msg) {
-        console.error(`ERROR in migration of ${this.caseDefinition.name}: ${msg}`);
+        console.error(`ERROR in migration of ${this.casePlanMigrator.name}: ${msg}`);
     }
 }
 
@@ -104,6 +106,10 @@ class PlanningTableMigrator {
     migrateTable() {
         console.log("Migrating planning table content of " + this.table.getAttribute('name'))
         this.items.forEach(item => item.migrateItem());
+    }
+
+    addError(msg) {
+        this.migrator.addError(msg);
     }
 }
 

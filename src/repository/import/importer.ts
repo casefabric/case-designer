@@ -6,10 +6,10 @@ import Repository from "../repository";
 import ImportElement, { CFIDImporter, CaseImporter, DimensionsImporter, HumanTaskImporter, ProcessImporter, TypeImporter } from "./importelement";
 
 export default class Importer {
-    newFiles: ImportElement[] = [];
+    importFiles: ImportElement[] = [];
 
     constructor(public repository: Repository, public text: string) {
-        const isNew = (fileName: string) => this.newFiles.find(file => file.fileName === fileName) === undefined;
+        const isNew = (fileName: string) => this.importFiles.find(file => file.fileName === fileName) === undefined;
         const getAttribute = (element: Element, name: string) => element.getAttribute(name) || '';
 
         const xmlDoc = XML.loadXMLString(this.text);
@@ -33,7 +33,7 @@ export default class Importer {
 
                 if (isNew(fileName)) {
                     this.stripCaseNameFromReferences(caseName, xmlElement);
-                    this.newFiles.push(new CaseImporter(this, fileName, xmlElement));
+                    this.importFiles.push(new CaseImporter(this, fileName, xmlElement));
 
                     // Create .dimensions file
                     // Copy and clean up dimensions from anything that does not occur inside this case's xmlElement
@@ -44,7 +44,7 @@ export default class Importer {
                     const dimName = fileName.substring(0, fileName.length - 5) + '.dimensions';
                     if (isNew(dimName)) {
                         this.stripCaseNameFromReferences(caseName, dimXML);
-                        this.newFiles.push(new DimensionsImporter(this, dimName, dimXML));
+                        this.importFiles.push(new DimensionsImporter(this, dimName, dimXML));
                     }
                     // Create .humantask files
                     XML.getElementsByTagName(xmlElement, 'humanTask').forEach(humanTask => {
@@ -82,7 +82,7 @@ export default class Importer {
                             // Now also set the reference on the implementation attribute (for the case it wasn't there yet)
                             humanTaskExtensionElement.setAttribute('humanTaskRef', fileName);
                             if (isNew(fileName)) {
-                                this.newFiles.push(new HumanTaskImporter(this, fileName, task));
+                                this.importFiles.push(new HumanTaskImporter(this, fileName, task));
                             }
                         });
                     });
@@ -91,7 +91,7 @@ export default class Importer {
             XML.getChildrenByTagName(xmlDoc.documentElement, 'process').forEach(xmlElement => {
                 const fileName = getAttribute(xmlElement, 'id');
                 if (isNew(fileName)) {
-                    this.newFiles.push(new ProcessImporter(this, fileName, xmlElement));
+                    this.importFiles.push(new ProcessImporter(this, fileName, xmlElement));
                 }
             });
             XML.getChildrenByTagName(xmlDoc.documentElement, 'caseFileItemDefinition').forEach(xmlElement => {
@@ -99,7 +99,7 @@ export default class Importer {
                 if (isNew(fileName)) {
                     xmlElement.removeAttribute('id');
                     if (fileName.endsWith('.cfid')) {
-                        this.newFiles.push(new CFIDImporter(this, fileName, xmlElement));
+                        this.importFiles.push(new CFIDImporter(this, fileName, xmlElement));
                     } else {
                         const typeFile = this.repository.createTypeFile(fileName, `<type id="${fileName}" name="${xmlElement.getAttribute('name')}"><schema/></type>`);
                         if (!typeFile.definition) return;
@@ -118,7 +118,7 @@ export default class Importer {
                             });
                         }
                         if (fileName.endsWith('.type')) {
-                            this.newFiles.push(new TypeImporter(this, fileName, xmlElement, typeDefinition));
+                            this.importFiles.push(new TypeImporter(this, fileName, xmlElement, typeDefinition));
                         }
                         // Keep the embedded types for later usage during te import;
                         typeDefinitions[fileName] = typeDefinition;
@@ -204,11 +204,19 @@ export default class Importer {
         }
     }
 
-    uploadFiles() {
-        this.newFiles.forEach(file => file.save());
+    async uploadFiles() {
+        console.group("Uploading " + this.importFiles.length +" new files");
+        for (let i = 0; i < this.importFiles.length; i++) {
+            const importElement = this.importFiles[i];
+            await importElement.save();
+        }
+        console.log("Uploaded all")
+        console.groupEnd();
+        // Now parse root file again, so that all dependencies are resolved properly
+        this.repository.get(this.importFiles[0].fileName)?.parse();            
     }
 
     get files() {
-        return this.newFiles;
+        return this.importFiles;
     }
 }

@@ -21,7 +21,7 @@ export default class ImportElement {
     async save() {
         const file = this.repository.get(this.fileName) || this.createFile();
         file.source = this.content.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
-        return file.save();
+        await file.save();
     }
 
     /**
@@ -34,42 +34,42 @@ export default class ImportElement {
 
 export class CaseImporter extends ImportElement {
     createFile() {
-        return this.repository.createCaseFile(this.fileName, this.content);
+        return this.repository.createCaseFile(this.fileName, "");
     }
 
     async save() {
         const file: CaseFile = <CaseFile> this.repository.get(this.fileName) || this.createFile();
         file.source = this.content;
-        const definition = new CaseDefinition(file);
+        const definition = new CaseDefinition(file).initialize();
 
         file.source = definition.toXMLString();
         file.source = file.source.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
 
-        return file.save();
+        await file.save();
     }
 }
 
 export class DimensionsImporter extends ImportElement {
     createFile() {
-        return this.repository.createDimensionsFile(this.fileName, this.content);
+        return this.repository.createDimensionsFile(this.fileName, "");
     }
 }
 
 export class ProcessImporter extends ImportElement {
     createFile() {
-        return this.repository.createProcessFile(this.fileName, this.content);
+        return this.repository.createProcessFile(this.fileName, "");
     }
 }
 
 export class HumanTaskImporter extends ImportElement {
     createFile() {
-        return this.repository.createHumanTaskFile(this.fileName, this.content);
+        return this.repository.createHumanTaskFile(this.fileName, "");
     }
 }
 
 export class CFIDImporter extends ImportElement {
     createFile() {
-        return this.repository.createCFIDFile(this.fileName, this.content);
+        return this.repository.createCFIDFile(this.fileName, "");
     }
 }
 
@@ -83,6 +83,6 @@ export class TypeImporter extends ImportElement {
     }
 
     createFile() {
-        return this.repository.createTypeFile(this.fileName, this.content);
+        return this.repository.createTypeFile(this.fileName, "");
     }
 }
