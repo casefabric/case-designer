@@ -1,6 +1,7 @@
 import $ from "jquery";
 import Importer from "../repository/import/importer";
 import Repository from "../repository/repository";
+import RemoteFileStorage from "../repository/storage/remotefilestorage";
 import CoverPanel from "./coverpanel";
 import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
@@ -24,7 +25,7 @@ export default class IDE {
 
     constructor() {
         this.editorRegistry = new ModelEditorRegistry(this);
-        this.repository = new Repository();
+        this.repository = new Repository(new RemoteFileStorage(window.location.origin));
         this.html = $('body');
         this.header = new IDEHeader(this);
         this.main = new IDEMain(this);
