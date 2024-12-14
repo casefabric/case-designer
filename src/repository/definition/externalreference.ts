@@ -71,11 +71,6 @@ export class ReferenceSet {
     }
 
     add<M extends ModelDefinition>(fileName: string): ExternalReference<M> {
-        const reference = this.references.find(ref => ref.fileName === fileName);
-        if (reference) {
-            return <ExternalReference<M>>reference;
-        }
-
         const newReference = new ExternalReference<M>(this.element, fileName);
         this.references.push(newReference);
         return newReference;
