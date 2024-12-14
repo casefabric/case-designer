@@ -260,20 +260,16 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
                 for (let childDef of this.childDefinitions) {
                     if (childDef instanceof SchemaDefinition) {
                         childDef.validate(validationContext);
-                    }
-                    else {
+                    } else {
                         this.raiseWarning('The property of type "-par0-" cannot be validated', [childDef.constructor.name]);
                     }
                 }
-            }
-            else if (this.subType === undefined) {
+            } else if (this.subType === undefined) {
                 this.raiseError('The property "-par0-" does not have a type', [this.name]);
-            }
-            else {
+            } else {
                 this.subType.validate(validationContext);
             }
-        }
-        else {
+        } else {
             if (this.type === "") {
                 this.raiseError('The property "-par0-" has no type', [this.name]);
             }

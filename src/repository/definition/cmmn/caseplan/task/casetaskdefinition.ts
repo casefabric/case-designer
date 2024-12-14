@@ -39,8 +39,7 @@ export default class CaseTaskDefinition extends TaskDefinition {
             if (caseFile === undefined) {
                 this.raiseError('The case task "-par0-" refers to a case that is not defined',
                     [this.name]);
-            }
-            else {
+            } else {
                 // TODO: check for cyclic references during startup, see CaseTaskDefintion.java:54 in engine.
                 if (caseFile.definition === undefined) {
                     this.raiseError('The case file "-par0-" does not contain a case definition',

@@ -59,8 +59,7 @@ export default class CaseFileDefinition extends CaseFileItemCollection {
 
         if (this.isOldStyle) {
             this.raiseWarning('The case file is in old style and will not be validated', []);
-        }
-        else {
+        } else {
             if (this.typeRef === "") {
                 this.raiseError(`The case file has no type`, []);
                 return;
@@ -69,12 +68,10 @@ export default class CaseFileDefinition extends CaseFileItemCollection {
             const typeFile = validationContext.repository.getTypes().find(type => type.fileName === this.typeRef);
             if (typeFile === undefined || typeFile.definition === undefined) {
                 this.raiseError(`The type "-par0-" of the case file is not defined`, [this.typeRef]);
-            }
-            else {
+            } else {
                 if (typeFile.definition === undefined) {
                     this.raiseError(`The type "-par0-" of the case file is not defined`, [this.typeRef]);
-                }
-                else {
+                } else {
                     typeFile.definition.validate(validationContext);
                 }
             }

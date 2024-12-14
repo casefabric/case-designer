@@ -38,8 +38,7 @@ export default class ProcessTaskDefinition extends TaskDefinition {
             if (processModel === undefined) {
                 this.raiseError('The process task "-par0-" refers to a process that is not defined',
                     [this.name]);
-            }
-            else {
+            } else {
                 if (processModel.definition === undefined) {
                     this.raiseError('The process file "-par0-" does not contain a process definition',
                         [processModel.name]);
