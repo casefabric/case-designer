@@ -42,6 +42,12 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         return true;
     }
 
+    change(field: string, value: string) {
+        console.log("Changing field '" + field + "' in element " + this.constructor.name + " into " + value);
+        const element: any = this;
+        element[field] = value;
+    }
+
     private removeChildDefinitions() {
         // First, delete our children in the reverse order that they were created.
         this.childDefinitions.slice().reverse().forEach(child => {
