@@ -1,4 +1,5 @@
 import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
+import TypeDefinition from "@repository/definition/type/typedefinition";
 import XMLSerializable from "@repository/definition/xmlserializable";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "./casefileitemdef";
@@ -79,7 +80,23 @@ export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
         });
     }
 
+    private childTypeIsRecursive(child: SchemaPropertyDefinition): boolean {
+        // Check if we or one of our parents has the same type definition as the child property
+        if (this.property.modelDefinition === child.subType) {
+            return true;
+        } else if (this.parent instanceof CaseFileItemTypeDefinition) {
+            return this.parent.childTypeIsRecursive(child);
+        } else {
+            return false;
+        }
+    }
+
     addChild(child: SchemaPropertyDefinition) {
+        if (this.childTypeIsRecursive(child)) {
+            // Avoid recursive case file item generation
+            // console.log(`Skip adding CaseFileItem child ${child.name} inside ${this.getPath()} as it has a recursive type`);
+            return;
+        }
         this.children.push(new CaseFileItemTypeDefinition(this.caseDefinition, this, child));
     }
 
