@@ -29,7 +29,7 @@ export default class TaskDefinition extends TaskStageDefinition {
         return this._mappings;
     }
 
-    resolvedReferences() {
+    resolvedExternalReferences() {
         this.bindImplementation();
     }
 

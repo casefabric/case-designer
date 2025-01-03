@@ -30,8 +30,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
         return new ReferenceSet<I>(this, this.parseAttribute(name), constructor);
     }
 
-    resolveReferences() {
-        super.resolveReferences();
+    resolveInternalReferences() {
         this.internalReferences.resolve();
     }
 

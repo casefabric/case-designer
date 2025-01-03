@@ -316,8 +316,19 @@ export default class XMLSerializable {
         return this.createExtensionNode(this.exportNode, IMPLEMENTATION_TAG);
     }
 
+    resolveExternalReferences() {
+        this.externalReferences.resolve();
+        // Now tell the element that the external references have been resolved, so that it can do followup actions.
+        this.resolvedExternalReferences();
+    }
+
+    resolveInternalReferences() {
+    }
+
     resolveReferences() {
         this.externalReferences.resolve();
+        // Now tell the element that the external references have been resolved, so that it can do followup actions.
+        this.resolvedExternalReferences();
     }
 
     /**
@@ -329,10 +340,10 @@ export default class XMLSerializable {
     }
 
     /**
-     * Method invoked when all references in the element have been resolved.
-     * This can be used to do followup actions
+     * Method invoked when all external references in the element have been resolved.
+     * This can be used to do followup actions to load content of that external reference.
      */
-    resolvedReferences() {
+    resolvedExternalReferences() {
     }
 
     /**

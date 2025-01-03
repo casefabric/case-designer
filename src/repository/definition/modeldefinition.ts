@@ -50,10 +50,10 @@ export default class ModelDefinition extends XMLSerializable {
             const referencingElements = this.elements.filter(element => element.externalReferences.all.filter(e => e.nonEmpty).length);
             console.log(`${this.file} has ${referencingElements.length} elements with external dependencies (out of ${this.elements.length} elements)`);
         }
-        // First tell all elements to resolve their references.
-        this.elements.forEach(element => element.resolveReferences());
-        // Then tell all elements that we're done resolving the references
-        this.elements.forEach(element => element.resolvedReferences());
+        // Tell all elements to resolve their references. First the external ones, and then tell all elements to resolve the internal ones.
+        // This order is needed, because an element may refer to content inside an external reference.
+        this.elements.forEach(element => element.resolveExternalReferences());
+        this.elements.forEach(element => element.resolveInternalReferences());
         if (externalReferences.length > 0) {
             console.groupEnd();
         }
