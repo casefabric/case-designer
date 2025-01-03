@@ -34,7 +34,7 @@ export default class CaseFileDefinition extends CaseFileItemCollection {
         return element.id === this.typeRef;
     }
 
-    resolvedReferences() {
+    resolvedExternalReferences() {
         if (this.type) {
             this.type.schema?.properties.forEach(property => this.addChild(property));
         }

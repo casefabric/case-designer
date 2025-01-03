@@ -152,29 +152,27 @@ export default class PlanItem extends CMMNElementDefinition {
         return this;
     }
 
-    resolvedReferences() {
-        const entryCriteriaRefs = this.parseAttribute('entryCriteriaRefs');
-        if (entryCriteriaRefs) {
-            const sentries = this.caseDefinition.findElements(entryCriteriaRefs, []);
-            sentries.forEach(sentry => {
-                const ec: EntryCriterionDefinition = super.createDefinition(EntryCriterionDefinition);
-                this.entryCriteria.push(ec);
-                this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
-            });
-        }
-        const exitCriteriaRefs = this.parseAttribute('exitCriteriaRefs');
-        if (exitCriteriaRefs) {
-            const sentries = this.caseDefinition.findElements(exitCriteriaRefs, []);
-            sentries.forEach(sentry => {
-                const ec: ExitCriterionDefinition = super.createDefinition(ExitCriterionDefinition);
-                this.exitCriteria.push(ec);
-                this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
-            });
-        }
-
-        // Resolve discretionary properties        
-        // this.authorizedRoles = this.caseDefinition.findElements(this.authorizedRoleRefs, [], CaseRoleDefinition).map(role => new CaseRoleReference(role, this));
-    }
+    // resolvedExternalReferences() {
+    // TODO: THIS CODE BELONGS IN MIGRATOR.JS
+    //     const entryCriteriaRefs = this.parseAttribute('entryCriteriaRefs');
+    //     if (entryCriteriaRefs) {
+    //         const sentries = this.caseDefinition.findElements(entryCriteriaRefs, []);
+    //         sentries.forEach(sentry => {
+    //             const ec: EntryCriterionDefinition = super.createDefinition(EntryCriterionDefinition);
+    //             this.entryCriteria.push(ec);
+    //             this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an EntryCriterion`);
+    //         });
+    //     }
+    //     const exitCriteriaRefs = this.parseAttribute('exitCriteriaRefs');
+    //     if (exitCriteriaRefs) {
+    //         const sentries = this.caseDefinition.findElements(exitCriteriaRefs, []);
+    //         sentries.forEach(sentry => {
+    //             const ec: ExitCriterionDefinition = super.createDefinition(ExitCriterionDefinition);
+    //             this.exitCriteria.push(ec);
+    //             this.caseDefinition.migrated(`Migrating CMMN1.0 Sentry in plan item ${this.name} into an ExitCriterion`);
+    //         });
+    //     }
+    // }
 
     createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         // this.authorizedRoleRefs = super.flattenListToString(this.authorizedRoles); // AuthorizedRoles can also have been defined on the UserEvent; therefore always flatten them.
