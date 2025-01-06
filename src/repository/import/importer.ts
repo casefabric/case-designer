@@ -21,8 +21,10 @@ export default class Importer {
             const allDimensionsXML = XML.getChildByTagName(xmlDoc.documentElement, Tags.CMMNDI);
             XML.getChildrenByTagName(xmlDoc.documentElement, 'case').forEach(xmlElement => {
                 // Create .case file
-                const fileName: string = getAttribute(xmlElement, 'id'); // assuming fileName always ends with .case ?!
-                const caseName = getAttribute(xmlElement, 'name');
+                const caseId = getAttribute(xmlElement, 'id');
+                const extension = '.case';
+                const fileName = caseId.endsWith(extension) ? caseId : caseId + extension;
+                const caseName = getAttribute(xmlElement, 'name') || caseId;
 
                 // Try to recover IDE design time guid
                 const idAttributes = XML.allElements(xmlElement).map(element => getAttribute(element, 'id')).filter(id => id && id.startsWith('_')).map(id => id.split('_')[1]);
