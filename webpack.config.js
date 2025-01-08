@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { BannerPlugin } = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const devMode = process.env.DEV_MODE ? process.env.DEV_MODE.trim().toLowerCase() === 'true' : false;
 
@@ -53,7 +54,8 @@ const ideResolvers = {
     },
 };
 
-module.exports = [{
+module.exports = [
+{ // server
     entry: {
         server: './src/server/server.ts'
     },
@@ -75,7 +77,47 @@ module.exports = [{
     },
     watch: devMode,
 },
-{
+{ // repository cli
+    entry: {
+        transpile: { import: './src/repository/transpile.ts', dependOn: ['shared'] },
+        shared: './src/index.js',
+        index: { import: './src/index.js', dependOn: ['shared'] },
+    },
+    output: {
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist/repository'),
+        library: {
+            type: 'module',
+        },
+        globalObject: 'this',
+    },
+    target: 'async-node',
+    plugins: [
+        addBuildHook(new BuildPrinter('repository')),
+        new BannerPlugin({
+            banner: '#!/usr/bin/env node',
+            raw: true,
+        }),
+    ],
+    module: moduleRules,
+    resolve: scriptExtensions,
+    devtool: 'source-map',
+    mode: 'development',
+    stats: {
+        errorDetails: true
+    },
+    watch: devMode,
+    experiments: {
+        outputModule: true,
+    },
+    externals: [
+        nodeExternals({ importType: (request) => `import ${request}` }),
+        {
+            'fs': 'import fs',
+        }
+    ],
+},
+{ // ide
     entry: {
         ide: './src/ide/index.ts',
     },
