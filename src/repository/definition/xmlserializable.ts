@@ -6,6 +6,7 @@ import ModelDefinition from "./modeldefinition";
 import ExternalReference from "./references/externalreference";
 import { ExternalReferenceList } from "./references/referencelist";
 import ReferencingAttribute from "./references/referencingattribute";
+import Reference from "./references/reference";
 
 
 // Some constants
@@ -44,6 +45,16 @@ export default class XMLSerializable {
 
     set name(name) {
         this._name = name;
+    }
+
+    change(field: string, value: string) {
+        console.log("Changing field '" + field + "' in " + this + " into " + value);
+        const element: any = this;
+        if (element[field] instanceof Reference) {
+            (element[field] as any).update(value);
+        } else {
+            element[field] = value;
+        }
     }
 
     /**
