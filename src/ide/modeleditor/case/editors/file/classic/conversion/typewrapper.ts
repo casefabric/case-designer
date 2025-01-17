@@ -1,9 +1,9 @@
-import CaseFileDefinitionDefinition from "@repository/definition/cfid/casefileitemdefinitiondefinition";
-import TypeDefinition from "@repository/definition/type/typedefinition";
-import Repository from "@repository/repository";
-import CFIDFile from "@repository/serverfile/cfidfile";
-import TypeFile from "@repository/serverfile/typefile";
-import XML from "@util/xml";
+import CaseFileDefinitionDefinition from "../../../../../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+import TypeDefinition from "../../../../../../../repository/definition/type/typedefinition";
+import Repository from "../../../../../../../repository/repository";
+import CFIDFile from "../../../../../../../repository/serverfile/cfidfile";
+import TypeFile from "../../../../../../../repository/serverfile/typefile";
+import XML from "../../../../../../../util/xml";
 import CFIDConverter from "./cfidconverter";
 
 export default class TypeWrapper {

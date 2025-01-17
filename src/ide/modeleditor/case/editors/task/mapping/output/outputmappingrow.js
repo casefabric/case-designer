@@ -1,4 +1,4 @@
-import OutputMappingDefinition from "@repository/definition/cmmn/contract/outputmappingdefinition";
+import OutputMappingDefinition from "../../../../../../../repository/definition/cmmn/contract/outputmappingdefinition";
 import MappingRow from "../mappingrow";
 
 export default class OutputMappingRow extends MappingRow {

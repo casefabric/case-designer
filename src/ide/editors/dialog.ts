@@ -1,7 +1,7 @@
-import IDE from "@ide/ide";
+import IDE from "../ide";
 import $ from "jquery";
 import "jquery-ui";
-import Util from "@util/util";
+import HtmlUtil from "../../util/htmlutil";
 
 export default class Dialog {
     callback: Function | undefined;
@@ -59,7 +59,7 @@ export default class Dialog {
     closeModalDialog(returnValue: any) {
         if (this.callback) this.callback(returnValue);
         if (this.dialogHTML) {
-            Util.removeHTML(this.dialogHTML);
+            HtmlUtil.removeHTML(this.dialogHTML);
         }
     }
 

@@ -1,5 +1,5 @@
-import PlanItem from "@definition/cmmn/caseplan/planitem";
-import Images from "@util/images/images";
+import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
+import Images from "../../../../../util/images/images";
 import $ from "jquery";
 import StageView from "../stageview";
 import TaskStageProperties from "./taskstageproperties";

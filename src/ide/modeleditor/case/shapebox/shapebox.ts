@@ -1,8 +1,8 @@
-import ShapeBoxDragData from "@ide/modeleditor/case/shapebox/shapeboxdragdata";
+import ShapeBoxDragData from "../../../modeleditor/case/shapebox/shapeboxdragdata";
 import $ from "jquery";
 import CaseView from "../elements/caseview";
 import ElementRegistry, { ElementMetadata } from "./elementregistry";
-import DragData from "@ide/dragdrop/dragdata";
+import DragData from "../../../dragdrop/dragdata";
 
 export default class ShapeBox {
     case: CaseView;

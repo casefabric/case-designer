@@ -1,4 +1,4 @@
-import CaseDefinition from "@definition/cmmn/casedefinition";
+import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
 import Action from "./action";
 import CaseModelEditor from "../casemodeleditor";
 

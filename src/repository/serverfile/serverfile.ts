@@ -1,9 +1,10 @@
-import $ajax, { AjaxError } from "@util/ajax";
-import Util from "@util/util";
-import XML from "@util/xml";
+import $ajax, { AjaxError } from "../../util/ajax";
+import Util from "../../util/util";
+import XML from "../../util/xml";
 import ModelDefinition from "../definition/modeldefinition";
 import RepositoryBase from "../repositorybase";
 import Metadata from "./metadata";
+
 export default class ServerFile<M extends ModelDefinition> {
     private _fileName: any;
     private _source: any;

@@ -1,8 +1,8 @@
-import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import Dialog from "@ide/editors/dialog";
+import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import Dialog from "../../../../editors/dialog";
 import CaseView from "../../elements/caseview";
 import $ from "jquery";
-import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import CaseFileItemTypeDefinition from "../../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 
 export default class CFISelector extends Dialog {
     case: CaseView;

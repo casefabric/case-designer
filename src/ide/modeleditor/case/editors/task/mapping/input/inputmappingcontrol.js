@@ -1,5 +1,5 @@
-import CaseParameterDefinition from "@repository/definition/cmmn/contract/caseparameterdefinition";
-import ParameterMappingDefinition from "@repository/definition/cmmn/contract/parametermappingdefinition";
+import CaseParameterDefinition from "../../../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
+import ParameterMappingDefinition from "../../../../../../../repository/definition/cmmn/contract/parametermappingdefinition";
 import ColumnRenderer from "../../../tableeditor/columnrenderer";
 import MappingCFI from "../mappingcfi";
 import MappingControl from "../mappingcontrol";

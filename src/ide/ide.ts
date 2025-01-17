@@ -1,5 +1,5 @@
-import Importer from "@repository/import/importer";
-import Repository from "@repository/repository";
+import Importer from "../repository/import/importer";
+import Repository from "../repository/repository";
 import $ from "jquery";
 import CoverPanel from "./coverpanel";
 import IDEFooter from "./idefooter";

@@ -1,7 +1,7 @@
-import CreateNewModelDialog from "@ide/createnewmodeldialog";
-import RepositoryBrowser from "@ide/repositorybrowser";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import ServerFile from "@repository/serverfile/serverfile";
+import CreateNewModelDialog from "../createnewmodeldialog";
+import RepositoryBrowser from "../repositorybrowser";
+import ModelDefinition from "../../repository/definition/modeldefinition";
+import ServerFile from "../../repository/serverfile/serverfile";
 import IDE from "../ide";
 import ModelEditor from "./modeleditor";
 

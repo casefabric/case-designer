@@ -1,13 +1,13 @@
 'use strict';
 
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import CaseView from "@ide/modeleditor/case/elements/caseview";
-import { $get } from "@util/ajax";
-import Util from "@util/util";
+import CodeMirrorConfig from "../editors/external/codemirrorconfig";
+import CaseView from "../modeleditor/case/elements/caseview";
+import { $get } from "../../util/ajax";
 import $ from "jquery";
 import StandardForm from "../editors/standardform";
 import RightSplitter from "../splitter/rightsplitter";
-import Settings from "@ide/settings/settings";
+import Settings from "../settings/settings";
+import HtmlUtil from "../../util/htmlutil";
 
 /**
  * This class implements the logic to call the repository REST service to debug a case instance.
@@ -130,9 +130,9 @@ export default class Debugger extends StandardForm {
         this.html.find('.buttonShowEvents').on('click', () => this.showEvents());
         this.html.find('.buttonClearEvents').on('click', () => this.clearEvents());
         this.html.find('.buttonShowParentEvents').on('click', () => this.showParentEvents());
-        this.html.find('.buttonCopyEvents').on('click', () => Util.copyText(JSON.stringify(this.events, undefined, 2)));
-        this.html.find('.buttonCopyFilteredEvents').on('click', () => Util.copyText(JSON.stringify(this.filteredEvents, undefined, 2)));
-        this.html.find('.buttonCopyDefinition').on('click', () => Util.copyText(this.currentDefinition));
+        this.html.find('.buttonCopyEvents').on('click', () => HtmlUtil.copyText(JSON.stringify(this.events, undefined, 2)));
+        this.html.find('.buttonCopyFilteredEvents').on('click', () => HtmlUtil.copyText(JSON.stringify(this.filteredEvents, undefined, 2)));
+        this.html.find('.buttonCopyDefinition').on('click', () => HtmlUtil.copyText(this.currentDefinition));
 
         this.splitter = new RightSplitter(this.html.find('.debug-container'), '150px');
         this.eventTable = this.html.find('.event-list');
@@ -424,7 +424,7 @@ export default class Debugger extends StandardForm {
         const renderedBefore = this.eventTable.find('tr').length > 1;
         const startMsg = this.events.length > 0 ? '' : 'If there are no events, check case instance id and context variables';
         this.setEventContent('', startMsg);
-        Util.clearHTML(this.eventTable);
+        HtmlUtil.clearHTML(this.eventTable);
 
         const getBackgroundColor = event => {
             if (event.type !== 'PlanItemTransitioned') return '';
@@ -546,7 +546,7 @@ export default class Debugger extends StandardForm {
 
     copyEventDefinition(btn) {
         const event = this.findEvent(btn);
-        Util.copyText(event.content.definition.source);
+        HtmlUtil.copyText(event.content.definition.source);
     }
 
     /**

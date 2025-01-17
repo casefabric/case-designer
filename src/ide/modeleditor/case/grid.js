@@ -5,7 +5,7 @@
  * Grid is currently attached to the paper object of each case (see case.js).
  */
 
-import Settings from "@ide/settings/settings";
+import Settings from "../../settings/settings";
 import CaseView from "./elements/caseview";
 import { dia } from "jointjs";
 import $ from "jquery";

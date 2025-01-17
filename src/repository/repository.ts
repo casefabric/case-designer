@@ -1,5 +1,5 @@
-import { $read, AjaxError } from "@util/ajax";
-import Util from "@util/util";
+import { $read, AjaxError } from "../util/ajax";
+import Util from "../util/util";
 import ModelDefinition from "./definition/modeldefinition";
 import RepositoryBase from "./repositorybase";
 import CaseFile from "./serverfile/casefile";

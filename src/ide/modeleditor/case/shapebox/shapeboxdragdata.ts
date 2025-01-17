@@ -1,4 +1,4 @@
-import ShapeBox from "@ide/modeleditor/case/shapebox/shapebox";
+import ShapeBox from "../../../modeleditor/case/shapebox/shapebox";
 import DragData from "../../../dragdrop/dragdata";
 
 export default class ShapeBoxDragData extends DragData {

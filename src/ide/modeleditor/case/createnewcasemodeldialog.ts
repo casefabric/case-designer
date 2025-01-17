@@ -1,5 +1,5 @@
-import CreateNewModelDialog from "@ide/createnewmodeldialog";
-import IDE from "@ide/ide";
+import CreateNewModelDialog from "../../createnewmodeldialog";
+import IDE from "../../ide";
 import $ from "jquery";
 import TypeSelector, { Option } from "../type/editor/typeselector";
 

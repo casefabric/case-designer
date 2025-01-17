@@ -1,8 +1,8 @@
 ﻿'use strict';
 
-import IDE from "@ide/ide";
+import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
-import TypeFile from "@repository/serverfile/typefile";
+import TypeFile from "../../../repository/serverfile/typefile";
 import TypeEditor from "./editor/typeeditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import TypeModelEditorMetadata from "./typemodeleditormetadata";

@@ -1,6 +1,6 @@
-import ModelDefinition from "./modeldefinition";
+import XML from "../../util/xml";
 import ElementDefinition from "./elementdefinition";
-import XML from "@util/xml";
+import ModelDefinition from "./modeldefinition";
 
 export default class CMMNDocumentationDefinition<M extends ModelDefinition> extends ElementDefinition<M> {
     textFormat: string;

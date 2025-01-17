@@ -1,10 +1,10 @@
-﻿import IDE from "@ide/ide";
-import TypeDefinition from "@repository/definition/type/typedefinition";
-﻿import TypeEditor from "@ide/modeleditor/type/editor/typeeditor";
-import TypeSelector from "@ide/modeleditor/type/editor/typeselector";
-import TypeFile from "@repository/serverfile/typefile";
-import Util from "@util/util";
-import $ from "jquery";
+﻿import $ from "jquery";
+import TypeDefinition from "../../../../../repository/definition/type/typedefinition";
+import TypeFile from "../../../../../repository/serverfile/typefile";
+import HtmlUtil from "../../../../../util/htmlutil";
+import IDE from "../../../../ide";
+import TypeEditor from "../../../../modeleditor/type/editor/typeeditor";
+import TypeSelector from "../../../../modeleditor/type/editor/typeselector";
 import CaseView from "../../elements/caseview";
 import CaseFileEditor from "./casefileeditor";
 
@@ -66,7 +66,7 @@ export default class CaseTypeEditor {
         if (this.typeSelector) {
             this.typeSelector.delete();
         }
-        if (this.htmlContainer) Util.clearHTML(this.htmlContainer);
+        if (this.htmlContainer) HtmlUtil.clearHTML(this.htmlContainer);
     }
 
     get typeRef() {

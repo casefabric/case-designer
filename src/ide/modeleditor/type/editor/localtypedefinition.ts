@@ -1,5 +1,5 @@
-import TypeDefinition from "@repository/definition/type/typedefinition";
-import TypeFile from "@repository/serverfile/typefile";
+import TypeDefinition from "../../../../repository/definition/type/typedefinition";
+import TypeFile from "../../../../repository/serverfile/typefile";
 import MainTypeDefinition from "./maintypedefinition";
 import TypeEditor from "./typeeditor";
 import TypeRenderer from "./typerenderer";

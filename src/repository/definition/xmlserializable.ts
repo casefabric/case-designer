@@ -1,12 +1,12 @@
-import ServerFile from "@repository/serverfile/serverfile";
-import Util from "@util/util";
-import XML from "@util/xml";
+import XML from "../../util/xml";
+import Util from "../../util/util";
+import ServerFile from "../serverfile/serverfile";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 import ExternalReference from "./references/externalreference";
+import Reference from "./references/reference";
 import { ExternalReferenceList } from "./references/referencelist";
 import ReferencingAttribute from "./references/referencingattribute";
-import Reference from "./references/reference";
 
 
 // Some constants

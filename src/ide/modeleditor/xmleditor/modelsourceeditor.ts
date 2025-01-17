@@ -1,7 +1,7 @@
 ﻿'use strict';
 
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import XML from "@util/xml";
+import CodeMirrorConfig from "../../editors/external/codemirrorconfig";
+import XML from "../../../util/xml";
 import ModelEditor from "../modeleditor";
 import TypeEditor from "../type/editor/typeeditor";
 

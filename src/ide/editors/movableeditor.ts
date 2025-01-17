@@ -1,7 +1,7 @@
-import CMMNElementDefinition from "@definition/cmmnelementdefinition";
-import CaseModelEditor from "@ide/modeleditor/case/casemodeleditor";
-import CaseView from "@ide/modeleditor/case/elements/caseview";
-import Util from "@util/util";
+import CMMNElementDefinition from "../../repository/definition/cmmnelementdefinition";
+import CaseModelEditor from "../modeleditor/case/casemodeleditor";
+import CaseView from "../modeleditor/case/elements/caseview";
+import HtmlUtil from "../../util/htmlutil";
 import $ from "jquery";
 
 export default class MovableEditor {
@@ -77,7 +77,7 @@ export default class MovableEditor {
 
     delete() {
         this._visible = false; // Set visible to false to avoid refresh invocations from refreshMovableViews() inside case.js
-        Util.removeHTML(this.html);
+        HtmlUtil.removeHTML(this.html);
     }
 
     show() {

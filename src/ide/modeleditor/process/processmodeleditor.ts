@@ -1,10 +1,10 @@
 ﻿'use strict';
 
-import ProcessModelDefinition from "@definition/process/processmodeldefinition";
-import IDE from "@ide/ide";
-import ProcessFile from "@repository/serverfile/processfile";
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import XML from "@util/xml";
+import ProcessModelDefinition from "../../../repository/definition/process/processmodeldefinition";
+import IDE from "../../ide";
+import ProcessFile from "../../../repository/serverfile/processfile";
+import CodeMirrorConfig from "../../editors/external/codemirrorconfig";
+import XML from "../../../util/xml";
 import $ from "jquery";
 import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";

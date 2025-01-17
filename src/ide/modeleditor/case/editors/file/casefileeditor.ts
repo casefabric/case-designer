@@ -3,9 +3,9 @@ import CaseTypeEditor from "./casetypeeditor";
 import CaseFileItemsEditor from "./classic/casefileitemseditor";
 import CaseView from "../../elements/caseview";
 import CFISelector from "./cfiselector";
-import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
-import IDE from "@ide/ide";
-import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
+import CaseFileItemDragData from "../../../../dragdrop/casefileitemdragdata";
+import IDE from "../../../../ide";
+import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 
 export default class CaseFileEditor {
     case: CaseView;

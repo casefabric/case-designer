@@ -1,5 +1,5 @@
 import Dialog from "./editors/dialog";
-import IDE from "@ide/ide";
+import IDE from "./ide";
 import $ from "jquery";
 
 type NewModelResult = {

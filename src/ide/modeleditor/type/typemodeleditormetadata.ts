@@ -1,9 +1,9 @@
-import IDE from "@ide/ide";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import TypeDefinition from "@repository/definition/type/typedefinition";
-import ServerFile from "@repository/serverfile/serverfile";
-import TypeFile from "@repository/serverfile/typefile";
-import Shapes from "@util/images/shapes";
+import IDE from "../../ide";
+import ModelDefinition from "../../../repository/definition/modeldefinition";
+import TypeDefinition from "../../../repository/definition/type/typedefinition";
+import ServerFile from "../../../repository/serverfile/serverfile";
+import TypeFile from "../../../repository/serverfile/typefile";
+import Shapes from "../../../util/images/shapes";
 import ModelEditorMetadata from "../modeleditormetadata";
 import TypeModelEditor from "./typemodeleditor";
 

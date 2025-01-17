@@ -1,7 +1,7 @@
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import Tags from "@repository/definition/dimensions/tags";
-import Util from "@util/util";
-import XML from "@util/xml";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import Tags from "../../../../repository/definition/dimensions/tags";
+import HtmlUtil from "../../../../util/htmlutil";
+import XML from "../../../../util/xml";
 import $ from "jquery";
 import CaseModelEditor from "../casemodeleditor";
 
@@ -103,6 +103,6 @@ export default class CaseSourceEditor {
 
     delete() {
         // Delete the generic events of the editor (e.g. click add button, ...)
-        Util.removeHTML(this.html);
+        HtmlUtil.removeHTML(this.html);
     }
 }

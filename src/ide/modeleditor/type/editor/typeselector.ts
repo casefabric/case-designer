@@ -1,6 +1,6 @@
-import Repository from "@repository/repository";
-import TypeFile from "@repository/serverfile/typefile";
-import Util from "@util/util";
+import HtmlUtil from "../../../../util/htmlutil";
+import Repository from "../../../../repository/repository";
+import TypeFile from "../../../../repository/serverfile/typefile";
 
 export type Option = {
     option: string,
@@ -46,7 +46,7 @@ export default class TypeSelector {
     }
 
     loadOptions() {
-        Util.clearHTML(this.htmlParent);
+        HtmlUtil.clearHTML(this.htmlParent);
         this.htmlParent.html(this.getOptions());
         this.htmlParent.val(this.typeRef);
         this.htmlParent.on('change', e => {

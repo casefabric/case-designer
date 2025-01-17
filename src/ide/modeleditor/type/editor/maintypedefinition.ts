@@ -1,4 +1,4 @@
-import TypeFile from "@repository/serverfile/typefile";
+import TypeFile from "../../../../repository/serverfile/typefile";
 import LocalTypeDefinition from "./localtypedefinition";
 import TypeEditor from "./typeeditor";
 

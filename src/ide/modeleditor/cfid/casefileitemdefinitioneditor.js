@@ -1,5 +1,5 @@
-﻿import CaseFileDefinitionDefinition, { UNKNOWN, UNKNOWN_URI, UNSPECIFIED, UNSPECIFIED_URI, XMLELEMENT, XMLELEMENT_URI } from "@repository/definition/cfid/casefileitemdefinitiondefinition";
-import XML from "@util/xml";
+﻿import CaseFileDefinitionDefinition, { UNKNOWN, UNKNOWN_URI, UNSPECIFIED, UNSPECIFIED_URI, XMLELEMENT, XMLELEMENT_URI } from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+import XML from "../../../util/xml";
 import $ from "jquery";
 import CFIDefinitionUnknown from "./cfidefinitionunknown";
 import CFIDefinitionUnspecified from "./cfidefinitionunspecified";

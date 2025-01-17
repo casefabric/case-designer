@@ -1,7 +1,7 @@
 'use strict';
 
-import CMMNElementDefinition from "@definition/cmmnelementdefinition";
-import CaseParameterDefinition from "@repository/definition/cmmn/contract/caseparameterdefinition";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
+import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
 import $ from "jquery";
 import TableEditor, { RowEditor, TableEditorColumn } from "../tableeditor/tableeditor";
 

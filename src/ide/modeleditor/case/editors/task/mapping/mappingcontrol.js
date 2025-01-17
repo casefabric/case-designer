@@ -1,4 +1,4 @@
-import ParameterMappingDefinition from "@repository/definition/cmmn/contract/parametermappingdefinition";
+import ParameterMappingDefinition from "../../../../../../repository/definition/cmmn/contract/parametermappingdefinition";
 import TableRenderer from "../../tableeditor/tablerenderer";
 import TaskMappingsEditor from "../taskmappingseditor";
 

@@ -1,6 +1,6 @@
-import PlanItem, { TaskStageDefinition } from "@definition/cmmn/caseplan/planitem";
-import ShapeDefinition from "@definition/dimensions/shape";
-import Util from "@util/util";
+import PlanItem, { TaskStageDefinition } from "../../../../repository/definition/cmmn/caseplan/planitem";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import HtmlUtil from "../../../../util/htmlutil";
 import CMMNElementView from "./cmmnelementview";
 import Connector from "./connector";
 import PlanItemView from "./planitemview";
@@ -55,10 +55,10 @@ export default class TaskStageView extends PlanItemView {
         const cmmnShape = this.html.find('.cmmn-shape');
         if (this.definition.isDiscretionary) {
             // cmmnShape.addClass(className);
-            Util.addClassOverride(cmmnShape, className);
+            HtmlUtil.addClassOverride(cmmnShape, className);
         } else {
             // cmmnShape.removeClass(className);
-            Util.removeClassOverride(cmmnShape, className);
+            HtmlUtil.removeClassOverride(cmmnShape, className);
         }
     }
 
