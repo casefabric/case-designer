@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";

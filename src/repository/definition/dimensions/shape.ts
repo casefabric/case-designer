@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
 import XMLSerializable from "../xmlserializable";
@@ -56,7 +57,7 @@ export default class ShapeDefinition extends DiagramElement {
 
     private getBounds() {
         if (!this.bounds) {
-            this.bounds = new Bounds(this.importNode.ownerDocument.createElement(Tags.BOUNDS), this.dimensions, this);
+            this.bounds = new Bounds(this.createImportNode(Tags.BOUNDS), this.dimensions, this);
         }
         return this.bounds;
     }

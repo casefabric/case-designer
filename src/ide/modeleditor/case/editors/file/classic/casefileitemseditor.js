@@ -272,7 +272,7 @@ export default class CaseFileItemsEditor {
     /**
      * Changes the definitionRef of the case file item, and loads the new definition ref
      * @param {CaseFileItemDef} caseFileItem 
-     * @param {Element} cfidefField 
+     * @param {HTMLElement} cfidefField 
      */
     changeCaseFileItemDefinition(caseFileItem, cfidefField) {
         const newValue = cfidefField.value;

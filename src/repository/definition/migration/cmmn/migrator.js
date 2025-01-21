@@ -1,7 +1,7 @@
 import CaseDefinition from "../../cmmn/casedefinition";
-import CaseTeamMigrator from "./team/caseteammigrator";
-import SentryMigrator from "./plan/sentrymigrator";
 import CasePlanMigrator from "./plan/caseplanmigrator";
+import SentryMigrator from "./plan/sentrymigrator";
+import CaseTeamMigrator from "./team/caseteammigrator";
 
 export default class Migrator {
     static updateXMLElement(definition) {

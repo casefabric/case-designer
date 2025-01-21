@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import Edge from "./edge";
@@ -9,7 +10,7 @@ export default class Vertex extends DiagramElement {
      * (They come as x,y props through the joint library)
      */
     static convert(edge: Edge, x: number, y: number) {
-        return new Vertex(edge.importNode.ownerDocument.createElement(Tags.WAYPOINT), edge.dimensions, edge, x, y);
+        return new Vertex(edge.createImportNode(Tags.WAYPOINT), edge.dimensions, edge, x, y);
     }
 
     /**

@@ -1,4 +1,4 @@
-import XML from "../../../../../util/xml";
+import XML, { Element } from "../../../../../util/xml";
 import Migrator from "../migrator";
 
 export default class CaseTeamMigrator {
@@ -9,7 +9,7 @@ export default class CaseTeamMigrator {
         this.roleElements = XML.getChildrenByTagName(importNode, 'caseRoles');
         if (this.roleElements.length === 0) {
             // Make sure we always have a CaseTeam element
-            importNode.appendChild(importNode.ownerDocument.createElement('caseRoles'));
+            importNode.appendChild(this.migrator.definition.createImportNode('caseRoles'));
         }
     }
 
@@ -44,7 +44,7 @@ export default class CaseTeamMigrator {
 
 
         // Create a new element
-        const caseTeamElement = importNode.ownerDocument.createElement('caseRoles');
+        const caseTeamElement = this.migrator.definition.createImportNode('caseRoles');
         importNode.appendChild(caseTeamElement);
 
         this.roleElements.forEach(role => {
@@ -64,6 +64,6 @@ export default class CaseTeamMigrator {
         const name = clearAttribute('name');
         const description = clearAttribute('description');
         const optionalDescription = name !== description ? `description="${description}"` : '';
-        return XML.loadXMLString(`<role id="${id}" name="${name}" ${optionalDescription}/>`).documentElement;
+        return XML.loadXMLString(`<role id="${id}" name="${name}" ${optionalDescription}/>`).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
     }
 }

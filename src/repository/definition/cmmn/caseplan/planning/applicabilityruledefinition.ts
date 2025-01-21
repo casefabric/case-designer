@@ -1,3 +1,4 @@
+import { Element } from "../../../../../util/xml";
 import CaseDefinition from "../../casedefinition";
 import CaseFileItemReference from "../../casefile/casefileitemreference";
 import ConstraintDefinition from "../constraintdefinition";

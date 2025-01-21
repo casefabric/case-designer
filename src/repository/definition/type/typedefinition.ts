@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import TypeFile from "../../serverfile/typefile";
 import ModelDefinition from "../modeldefinition";
 import SchemaDefinition from "./schemadefinition";

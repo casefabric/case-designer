@@ -1,4 +1,5 @@
 import Util from "../../../../util/util";
+import { Element } from "../../../../util/xml";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import { ReferenceSet } from "../../references/referenceset";
 import CaseDefinition from "../casedefinition";

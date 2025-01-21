@@ -1,5 +1,6 @@
 import ServerFile from "../../../../../repository/serverfile/serverfile";
 import Util from "../../../../../util/util";
+import { Element } from "../../../../../util/xml";
 import ParameterDefinition from "../../../contract/parameterdefinition";
 import ModelDefinition from "../../../modeldefinition";
 import ExternalReference from "../../../references/externalreference";

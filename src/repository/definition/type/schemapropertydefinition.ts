@@ -1,4 +1,5 @@
 import Util from "../../../util/util";
+import { Element } from "../../../util/xml";
 import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
 import ReferableElementDefinition from "../referableelementdefinition";
 import SchemaDefinition from "./schemadefinition";

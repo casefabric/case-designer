@@ -1,4 +1,5 @@
 import Util from "../../../util/util";
+import { Element } from "../../../util/xml";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import ConnectorStyle from "./connectorstyle";
 import DiagramElement from "./diagramelement";
@@ -23,7 +24,7 @@ export default class Diagram extends DiagramElement {
     }
 
     createShape(x: number, y: number, width: number, height: number, cmmnElementRef: string) {
-        const shape = new ShapeDefinition(this.importNode.ownerDocument.createElement(Tags.CMMNSHAPE), this.dimensions, this);
+        const shape = new ShapeDefinition(this.createImportNode(Tags.CMMNSHAPE), this.dimensions, this);
         shape.cmmnElementRef = cmmnElementRef;
         shape.x = x;
         shape.y = y;

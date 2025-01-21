@@ -1,3 +1,4 @@
+import { Element } from "../../../../../util/xml";
 import HumanTaskFile from "../../../../serverfile/humantaskfile";
 import CaseDefinition from "../../casedefinition";
 import CaseRoleDefinition from "../../caseteam/caseroledefinition";

@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import DocumentableElementDefinition from "../documentableelementdefinition";
 import HumanTaskModelDefinition from "./humantaskmodeldefinition";
 

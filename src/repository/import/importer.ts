@@ -1,4 +1,4 @@
-import XML from "../../util/xml";
+import XML, { Element } from "../../util/xml";
 import Tags from "../definition/dimensions/tags";
 import SchemaDefinition from "../definition/type/schemadefinition";
 import TypeDefinition from "../definition/type/typedefinition";
@@ -14,7 +14,7 @@ export default class Importer {
         const getAttribute = (element: Element, name: string) => element.getAttribute(name) || '';
 
         const xmlDoc = XML.loadXMLString(this.text);
-        if (XML.isValid(xmlDoc) && xmlDoc.documentElement.tagName == 'definitions') {
+        if (XML.isValid(xmlDoc) && xmlDoc.documentElement?.tagName === 'definitions') {
             console.log('Parsing and uploading definitions from copy/paste command ...');
             const typeDefinitions: any = new Object();
             const typeRefs: any = new Object();
@@ -55,7 +55,7 @@ export default class Importer {
                             // Create a copy of implementation
                             const standAloneHumanTaskDefinition = <Element>humanTaskExtensionElement.cloneNode(true);
                             // Put the copy in a new XML document
-                            const task = XML.loadXMLString('<humantask />').documentElement;
+                            const task = XML.loadXMLString('<humantask />').documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
                             task.appendChild(standAloneHumanTaskDefinition);
 
                             // Handy remover function
@@ -151,12 +151,13 @@ export default class Importer {
                             // parsing is not a-sync code; so we are sure typeDefinition will be set with a new or already existing type from cache
                             typeDefinition = typeDefinitions[typeRef] = typeFile.definition;
                         }
-                        for (const caseFileItem of caseFileModel.children) {
-                            this.loadCaseFileItem(typeDefinition.schema, caseFileItem, typeDefinitions);
-                        }
+                        XML.elements(caseFileModel).forEach(caseFileItem => this.loadCaseFileItem(typeDefinition.schema, caseFileItem, typeDefinitions));
                     }
                     // Clear content as caseFileModel is definded by a typeRef
-                    caseFileModel.innerHTML = '';
+                    while (caseFileModel.firstChild) {
+                        caseFileModel.removeChild(caseFileModel.firstChild);
+                    }
+
                     // without namespace prefix: typeRef="xxxx.type" in stead of cafienne:typeRef="xxxx.type"
                     caseFileModel.removeAttribute('cafienne:typeRef');
                     caseFileModel.removeAttribute('xmlns:cafienne');
@@ -203,10 +204,9 @@ export default class Importer {
                 const embeddedTypeDefinition = typeDefinitions[definitionRef] as TypeDefinition;
                 embeddedTypeDefinition.schema?.properties.forEach((embeddedProperty) => { property.schema?.properties.push(embeddedProperty) }); // Push all properties of the embedded caseFileItemDefinition to the typeDefinition;
                 const children = XML.getChildByTagName(caseFileItem, 'children');
-                if (children && property.schema) {
-                    for (const embeddedCaseFileItem of children.children) {
-                        this.loadCaseFileItem(property.schema, embeddedCaseFileItem, typeDefinitions);
-                    }
+                const schema = property.schema;
+                if (schema !== undefined) {
+                    XML.elements(children).forEach(embeddedCaseFileItem => this.loadCaseFileItem(schema, embeddedCaseFileItem, typeDefinitions));
                 }
             }
             if (definitionRef.endsWith('.type')) {
@@ -214,10 +214,9 @@ export default class Importer {
                 property.type = definitionRef;
                 const externalTypeDefinition = typeDefinitions[definitionRef] as TypeDefinition;
                 const children = XML.getChildByTagName(caseFileItem, 'children');
-                if (children && externalTypeDefinition.schema) {
-                    for (const embeddedCaseFileItem of children.children) {
-                        this.loadCaseFileItem(externalTypeDefinition.schema, embeddedCaseFileItem, typeDefinitions);
-                    }
+                const schema = externalTypeDefinition.schema;
+                if (schema !== undefined) {
+                    XML.elements(children).forEach(embeddedCaseFileItem => this.loadCaseFileItem(schema, embeddedCaseFileItem, typeDefinitions));
                 }
             }
         }

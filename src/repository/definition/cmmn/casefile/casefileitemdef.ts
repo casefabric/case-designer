@@ -1,5 +1,5 @@
 import Util from "../../../../util/util";
-import XML from "../../../../util/xml";
+import XML, { Element } from "../../../../util/xml";
 import CaseFileDefinitionDefinition from "../../cfid/casefileitemdefinitiondefinition";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ExternalReference from "../../references/externalreference";

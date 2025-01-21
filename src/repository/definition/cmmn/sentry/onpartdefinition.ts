@@ -1,4 +1,4 @@
-import XML from "../../../../util/xml";
+import XML, { Element } from "../../../../util/xml";
 import InternalReference from "../../references/internalreference";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import XMLSerializable from "../../xmlserializable";

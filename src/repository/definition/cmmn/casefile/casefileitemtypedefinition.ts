@@ -13,7 +13,7 @@ export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
     }
 
     constructor(caseDefinition: CaseDefinition, parent: any, propertyDefinition: SchemaPropertyDefinition) {
-        super(caseDefinition.importNode.ownerDocument.createElement('will-not-be-exported'), caseDefinition, parent);
+        super(caseDefinition.createImportNode('will-not-be-exported'), caseDefinition, parent);
         this.property = this.copyPropertyProperties(propertyDefinition);
 
         const childProperties: SchemaPropertyDefinition[] = this.property.schema ? this.property.schema.properties : this.property.subType ? this.property.subType?.schema?.properties || [] : [];

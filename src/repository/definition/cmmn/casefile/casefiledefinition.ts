@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import SchemaPropertyDefinition from "../../type/schemapropertydefinition";
 import TypeDefinition from "../../type/typedefinition";

@@ -1,4 +1,5 @@
 import Util from "../../../util/util";
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
 import SchemaPropertyDefinition from "./schemapropertydefinition";

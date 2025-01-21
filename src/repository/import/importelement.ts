@@ -1,4 +1,4 @@
-import XML from "../../util/xml";
+import XML, { Element } from "../../util/xml";
 import CaseDefinition from "../definition/cmmn/casedefinition";
 import ModelDefinition from "../definition/modeldefinition";
 import TypeDefinition from "../definition/type/typedefinition";
@@ -20,7 +20,6 @@ export default class ImportElement {
 
     async save() {
         const file = this.repository.get(this.fileName) || this.createFile();
-        file.source = this.content.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
         await file.save();
     }
 
@@ -41,9 +40,7 @@ export class CaseImporter extends ImportElement {
         const file: CaseFile = <CaseFile> this.repository.get(this.fileName) || this.createFile();
         file.source = this.content;
         const definition = new CaseDefinition(file).initialize();
-
         file.source = definition.toXMLString();
-        file.source = file.source.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
 
         await file.save();
     }

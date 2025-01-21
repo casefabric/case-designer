@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import ShapeDefinition from "./shape";

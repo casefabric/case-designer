@@ -1,6 +1,6 @@
 import $ajax, { AjaxError } from "../../util/ajax";
 import Util from "../../util/util";
-import XML from "../../util/xml";
+import XML, { Document, Element } from "../../util/xml";
 import ModelDefinition from "../definition/modeldefinition";
 import RepositoryBase from "../repositorybase";
 import Metadata from "./metadata";
@@ -10,6 +10,7 @@ export default class ServerFile<M extends ModelDefinition> {
     private _source: any;
     private _definition?: M;
     private _xml?: Element;
+    private _document?: Document;
     private static count = 0;
     private instance: number; // Specific for debugging purposes
 
@@ -104,8 +105,8 @@ export default class ServerFile<M extends ModelDefinition> {
         if (this._source !== source) {
             // console.log("Setting source of " + this.fileName)
             this._source = source;
-            const xml = XML.parseXML(source);
-            this._xml = xml ? xml.documentElement : xml;
+            this._document = XML.parseXML(source);
+            this._xml = this._document ? this._document.documentElement ?? undefined : undefined;
         }
     }
 
@@ -113,10 +114,15 @@ export default class ServerFile<M extends ModelDefinition> {
         return this._definition;
     }
 
-    get xml() {
+    /**
+     */
+    get xml(): Element | undefined {
         return this._xml;
     }
 
+    get xmlDocument(): Document | undefined {
+        return this._document;
+    }
     /**
      * File no longer exists in server...
      */

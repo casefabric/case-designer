@@ -1,3 +1,4 @@
+import { Element } from "../../../../../../util/xml";
 import ExpressionContainer from "../../../expression/expressioncontainer";
 
 export default class DueDateDefinition extends ExpressionContainer {

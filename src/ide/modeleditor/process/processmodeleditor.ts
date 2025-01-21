@@ -163,7 +163,7 @@ export default class ProcessModelEditor extends ModelEditor {
     changeImplementationType(propertyValue: string) {
         if (!this.model) return;
         if (!this.model.implementation) return;
-        const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
         modelImplementation.setAttribute("class", propertyValue);
         this.model.implementation.xml = XML.prettyPrint(modelImplementation);
         this.freeContentEditor.setValue(this.model.implementation.xml);
@@ -190,7 +190,7 @@ export default class ProcessModelEditor extends ModelEditor {
         if (!this.model) return;
         if (!this.model.implementation) return;
 
-        const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
         const implementationType = modelImplementationDocument.getAttribute("class");
         const implementationTypeSelect = this.htmlContainer.find('.selectImplementationType');
         implementationTypeSelect.val(implementationType);

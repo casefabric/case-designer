@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
 import CaseFileDefinitionDefinition from "./casefileitemdefinitiondefinition";

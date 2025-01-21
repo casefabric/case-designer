@@ -1,4 +1,4 @@
-import XML from "../../util/xml";
+import XML, { Element } from "../../util/xml";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";

@@ -520,7 +520,7 @@ export default class Debugger extends StandardForm {
     }
 
     /**
-     * @param {Element} htmlElement
+     * @param {HTMLElement} htmlElement
      */
     findEvent(htmlElement) {
         const eventId = $(htmlElement).closest('tr').attr('event-nr');

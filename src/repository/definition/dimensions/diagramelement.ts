@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import Dimensions from "./dimensions";
 

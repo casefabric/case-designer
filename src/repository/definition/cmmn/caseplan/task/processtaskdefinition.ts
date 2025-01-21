@@ -1,3 +1,4 @@
+import { Element } from "../../../../../util/xml";
 import ProcessFile from "../../../../serverfile/processfile";
 import ProcessModelDefinition from "../../../process/processmodeldefinition";
 import ExternalReference from "../../../references/externalreference";

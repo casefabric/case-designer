@@ -1,3 +1,4 @@
+import { Element } from "../../../../../../util/xml";
 import CMMNElementDefinition from "../../../../cmmnelementdefinition";
 import CaseDefinition from "../../../casedefinition";
 import ExpressionContainer from "../../../expression/expressioncontainer";

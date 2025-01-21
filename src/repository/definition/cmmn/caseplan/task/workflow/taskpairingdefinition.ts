@@ -1,4 +1,5 @@
 import Util from "../../../../../../util/util";
+import { Element } from "../../../../../../util/xml";
 import CMMNExtensionDefinition from "../../../../extensions/cmmnextensiondefinition";
 import CaseDefinition from "../../../casedefinition";
 import PlanItem from "../../planitem";

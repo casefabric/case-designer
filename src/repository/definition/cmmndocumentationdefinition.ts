@@ -1,4 +1,4 @@
-import XML from "../../util/xml";
+import XML, { Element } from "../../util/xml";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 
@@ -7,7 +7,7 @@ export default class CMMNDocumentationDefinition<M extends ModelDefinition> exte
     text: string;
     static createDocumentationElement<M extends ModelDefinition>(importNode: Element|undefined, modelDefinition: M, parent?: ElementDefinition<M>) {
         if (importNode === undefined) {
-            importNode = modelDefinition.importNode.ownerDocument.createElement('documentation');
+            importNode = modelDefinition.createImportNode('documentation');
             if (parent && parent.importNode) {
                 parent.importNode.appendChild(importNode);
             }

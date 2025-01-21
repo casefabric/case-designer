@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ParameterDefinition from "../../contract/parameterdefinition";
 import ElementDefinition from "../../elementdefinition";

@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import CriterionDefinition from "./criteriondefinition";
 
 export default class EntryCriterionDefinition extends CriterionDefinition {

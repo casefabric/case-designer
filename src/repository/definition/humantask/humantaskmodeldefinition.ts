@@ -16,7 +16,7 @@ export default class HumanTaskModelDefinition extends ModelDefinition {
 
     get implementation(): HumanTaskImplementationDefinition {
         if (! this._implementation) {
-            this._implementation = new HumanTaskImplementationDefinition(this.importNode.ownerDocument.createElement(IMPLEMENTATION_TAG), this, undefined);
+            this._implementation = new HumanTaskImplementationDefinition(this.createImportNode(IMPLEMENTATION_TAG), this, undefined);
         }
         return this._implementation;
     }

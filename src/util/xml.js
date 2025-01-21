@@ -1,3 +1,4 @@
+import { Document, DOMParser, Element, Node, XMLSerializer } from '@xmldom/xmldom';
 import xmlformatter from 'xml-formatter';
 
 export default class XML {
@@ -8,6 +9,10 @@ export default class XML {
      * @returns {Document|undefined}
      */
     static parseXML(xml) {
+        if (xml === undefined) {
+            return undefined;
+        }
+
         if (xml instanceof Document) {
             return xml;
         } else if (xml instanceof Node) {
@@ -29,11 +34,9 @@ export default class XML {
      */
     static getParseErrors(xmlDocument) {
         const errors = [];
-        if (DOMParser) { // code for all but IE
-            const parseErrors = xmlDocument.getElementsByTagName('parsererror');
-            for (let i = 0; i < parseErrors.length; i++) {
-                errors.push(parseErrors.item(i).textContent);
-            }
+        const parseErrors = xmlDocument.getElementsByTagName('parsererror');
+        for (let i = 0; i < parseErrors.length; i++) {
+            errors.push(parseErrors.item(i).textContent);
         }
         return errors;
     }
@@ -62,15 +65,10 @@ export default class XML {
      * @returns {Document}
      */
     static loadXMLString(txt) {
-        if (DOMParser) {
-            return new DOMParser().parseFromString(txt, 'text/xml');
-        } else {
-            // code for IE
-            const xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-            xmlDoc.async = false;
-            xmlDoc.loadXML(txt);
-            return xmlDoc;
+        if (txt === undefined || txt.length === 0) {
+            return new DOMParser().parseFromString('<parsererror>no text passed</parsererror>', 'text/xml');
         }
+        return new DOMParser().parseFromString(txt, 'text/xml');
     }
 
     /**
@@ -192,11 +190,9 @@ export default class XML {
      * @param {Array<Element>} array Optionally provide an array to which the elements will be added, or one will be created
      */
     static allElements(xmlNode, array = []) {
-        xmlNode && xmlNode.childNodes.forEach(child => {
-            if (child instanceof Element) {
-                array.push(child);
-                this.allElements(child, array);
-            }
+        this.elements(xmlNode).forEach(child => {
+            array.push(child);
+            this.allElements(child, array);
         })
         return array;
     }
@@ -254,13 +250,13 @@ export default class XML {
      * @param {any} tree 
      */
     static removeUnnecessaryNamespaceAttributes(tree) {
-        if (!tree instanceof Element && !tree instanceof Document) {
+        if (!(tree instanceof Element) && !(tree instanceof Document)) {
             return;
         }
         XML.allElements(tree).forEach(element => {
-            const parent = element.parentElement;
-            if (parent !== null) {
-                const xmlnsAttributes = element.getAttributeNames().filter(name => name.startsWith("xmlns"));
+            const parent = element.parentNode;
+            if (parent !== undefined && parent !== null && !(parent instanceof Document)) {
+                const xmlnsAttributes = Array.from(element.attributes).map(attribute => attribute.nodeName).filter(name => name.startsWith("xmlns"));
                 xmlnsAttributes.forEach(name => {
                     if (parent.getAttribute(name) === element.getAttribute(name)) {
                         element.removeAttribute(name);
@@ -286,3 +282,6 @@ export default class XML {
         });
     }
 }
+
+export { Document, DOMParser, Element, Node, XML, XMLSerializer };
+

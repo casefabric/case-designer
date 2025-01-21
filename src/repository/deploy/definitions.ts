@@ -1,4 +1,4 @@
-import XML from "../../util/xml";
+import XML, { Element } from "../../util/xml";
 import CaseFileDefinitionDefinition from "../definition/cfid/casefileitemdefinitiondefinition";
 import CaseDefinition from "../definition/cmmn/casedefinition";
 import ModelDefinition from "../definition/modeldefinition";
@@ -14,7 +14,7 @@ export default class Definitions {
     //  typically these are missing files that are referenced
     public errors: Array<string> = [];
     // XML element that will hold the final XML
-    public definitionsElement: Element = XML.loadXMLString('<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" />').documentElement;
+    public definitionsElement: Element = XML.loadXMLString('<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" />').documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
 
     // The diagram element can be used by cases to append their diagram information. 
     //  The element itself is only added as last item to the definitionsElement tree.
