@@ -1,5 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 const devMode = process.env.DEV_MODE ? process.env.DEV_MODE.trim().toLowerCase() === 'true' : false;
 
 var ideBuild = 1;
@@ -52,10 +53,10 @@ Object.keys(repositoryResolvers.alias).forEach(key => ideResolvers.alias[key] = 
 
 module.exports = [{
     entry: {
-        server: './server/utilities.ts'
+        server: './src/server/server.ts'
     },
     output: {
-        filename: 'utilities.js',
+        filename: 'server.js',
         path: path.resolve(__dirname, 'dist/server'),
     },
     plugins: [
@@ -64,19 +65,11 @@ module.exports = [{
                 compiler.hooks.done.tap("server", () => buildPrinter("server", serverBuild++));
             };
         },
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: 'config', to: '../config' },
-                { from: 'server/server.js', to: '../server' },
-            ]
-        })
     ],
     target: 'node',
     module: moduleRules,
-    externals: {
-        fs: 'require("fs")'
-    },
     resolve: repositoryResolvers,
+    externals: [nodeExternals()],
     devtool: 'source-map',
     mode: 'development',
     stats: {

@@ -32,4 +32,4 @@ const config = {
     ,backendUrl
 };
 
-module.exports = config;
+export default config;

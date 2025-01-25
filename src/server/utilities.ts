@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileS
 import path from "path";
 import { Entry, entries } from "walk-sync";
 
-function isKnownExtension(extension: string): boolean {
+export function isKnownExtension(extension: string): boolean {
     return ['.case', '.process', '.humantask', '.dimensions', '.cfid', '.type', '.xml'].indexOf(extension) >= 0;
 }
 
@@ -80,4 +80,3 @@ export class Utilities {
     }
 }
 
-exports.Utilities = Utilities;

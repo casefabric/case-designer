@@ -2,12 +2,13 @@ const startMoment = new Date();
 console.log(`Starting Cafienne IDE Server at ${startMoment}`);
 console.log('==================================================   ');
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const config = require('../config/config');
-const path = require('path');
-const morgan = require('morgan');
-const Utilities = require('./utilities').Utilities;
+import bodyParser from 'body-parser';
+import express, { Request, Response } from 'express';
+import morgan from 'morgan';
+import path from 'path';
+import walkSync from 'walk-sync';
+import config from '../config/config';
+import { Utilities } from './utilities';
 
 const repositoryPath = config.repository;
 const deployPath = config.deploy;
@@ -15,18 +16,18 @@ const deployPath = config.deploy;
 const router = express.Router();
 const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
 
-function replyList(res) {
+function replyList(res: Response) {
     res.json(getRepositoryFiles(false));
 }
 
-function replyContents(res) {
+function replyContents(res: Response) {
     res.json(getRepositoryFiles(true));
 }
 
 /**
  * Returns the repository contents by name, last modified timestamp and usage information
  */
-router.get('/list', (req, res, next) => {
+router.get('/list', (_req: Request, res: Response) => {
     logMessage(`LIST`);
     replyContents(res);
 });
@@ -38,7 +39,7 @@ router.get('/config', (req, res) => {
 /**
  *  Get a file from the repository.
  */
-router.get('/load/*', function (req, res, next) {
+router.get('/load/*', function (req: Request, res: Response, _next) {
     const fileName = req.params[0];
     logMessage(`LOAD   /${fileName}`);
     try {
@@ -46,7 +47,7 @@ router.get('/load/*', function (req, res, next) {
         res.setHeader('Content-Type', 'application/xml');
         res.setHeader('x-sent', 'true');
         res.send(content);
-    } catch (err) {
+    } catch (err: any) {
         const error = err;
         if (error.code === 'ENOENT') {
             // File does not exist, just return an empty string
@@ -61,7 +62,7 @@ router.get('/load/*', function (req, res, next) {
 /**
  * Save a file to the repository
  */
-router.post('/save/*', xmlParser, function (req, res, next) {
+router.post('/save/*', xmlParser, function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logMessage(`SAVE   /${fileName}`);
@@ -76,11 +77,11 @@ router.post('/save/*', xmlParser, function (req, res, next) {
 /**
  * Rename a file in the repository
  */
-router.put('/rename/:fileName', xmlParser, function (req, res, next) {
+router.put('/rename/:fileName', xmlParser, function (req: Request, res: Response, _next) {
     // Note: this code takes the new name from the query parameter ?newName=
     try {
         const fileName = req.params.fileName;
-        const newName = req.query.newName;
+        const newName = req.query.newName?.toString() ?? (() => { throw new Error('newName query parameter is required'); })();
         const newContent = req.body;
         logMessage(`RENAME /${fileName} to /${newName}`);
         Utilities.renameFile(repositoryPath, fileName, newName);
@@ -95,7 +96,7 @@ router.put('/rename/:fileName', xmlParser, function (req, res, next) {
 /**
  * Rename a file in the repository
  */
-router.delete('/delete/*', function (req, res, next) {
+router.delete('/delete/*', function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logMessage(`DELETE /${fileName}`);
@@ -110,7 +111,7 @@ router.delete('/delete/*', function (req, res, next) {
 /**
  * Deploy a file and it's dependencies from the repository to the deployment folder
  */
-router.post('/deploy/*', xmlParser, function (req, res, next) {
+router.post('/deploy/*', xmlParser, function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logMessage(`DEPLOY /${fileName}`);
@@ -126,7 +127,7 @@ router.post('/deploy/*', xmlParser, function (req, res, next) {
 
 const app = express();
 
-const logOptions = {};
+const logOptions: any = {};
 let logActions = false;
 if (config.log_traffic === 'false' || config.log_traffic === 'actions') {
     logActions = config.log_traffic === 'actions';
@@ -140,7 +141,7 @@ if (config.log_traffic === 'false' || config.log_traffic === 'actions') {
     }
 
     // Set a handler that logs failures
-    logOptions.skip = (req, res) => {
+    logOptions.skip = (_req: Request, res: Response) => {
         // Only log failures
         return res.statusCode < 400
     }
@@ -162,8 +163,8 @@ if (app.get('env') !== 'docker') {
 app.use('/repository', router);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    const err = new Error('Not Found: ' + req.url);
+app.use(function (req: Request, _res: Response, next) {
+    const err: any = new Error('Not Found: ' + req.url);
     err.status = 404;
     next(err);
 });
@@ -174,11 +175,12 @@ app.listen(config.serverPort, () => {
     console.log('- sources location: ' + path.resolve(repositoryPath));
     console.log('-  deploy location: ' + path.resolve(deployPath)); // Intentional double space to align both configuration values
     console.log('==================================================   ');
-    console.log(`Cafienne IDE Server started (in ${started - startMoment}ms) on http://localhost:${config.serverPort}\n`);
+    const startMoment = new Date();
+    console.log(`Cafienne IDE Server started (in ${started.getTime() - startMoment.getTime()}ms) on http://localhost:${config.serverPort}\n`);
 });
 
-function getRepositoryFiles(includeJson) {
-    const fileCreator = file => {
+function getRepositoryFiles(includeJson: boolean) {
+    const fileCreator = (file: walkSync.Entry) => {
         const fileName = file.relativePath;
         const type = path.extname(fileName).substring(1);
         const lastModified = file.mtime;
@@ -189,13 +191,13 @@ function getRepositoryFiles(includeJson) {
     return Utilities.getRepositoryFiles(repositoryPath).map(fileCreator);
 }
 
-function logMessage(msg) {
+function logMessage(msg: string) {
     if (logActions) {
         log(msg);
     }
 }
 
-function log(msg) {
+function log(msg: string) {
     const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
     console.log(now + "|" + msg);
 }
