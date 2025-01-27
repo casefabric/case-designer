@@ -438,7 +438,7 @@ export class PropertyRenderer extends TypeRenderer {
                 this.htmlContainer?.find('.selectType').first().val(newTypeFileName);
                 if (this.typeSelector) this.typeSelector.typeRef = newTypeFileName;
                 this.changeProperty('cmmnType', newTypeFileName);
-                this.renderComplexTypeProperty();
+                await this.renderComplexTypeProperty();
                 // Trigger adding a new (empty) child for easy data entry
                 this.editor.addChild(jQuery.Event(''), this);
             }
