@@ -23,6 +23,10 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
         this.dueDate = this.parseElement((DueDateDefinition as any).TAG, DueDateDefinition);
     }
 
+    resolvedExternalReferences() {
+        this.task.bindImplementation();
+    }
+
     get inputs() {
         return this.task.inputs;
     }
