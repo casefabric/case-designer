@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
+import LocalFileStorage from '../repository/storage/localfilestorage';
 import ServerConfiguration from "./serverconfiguration";
-import { Utilities } from "./utilities";
 
 const serverConfig = new ServerConfiguration();
 
@@ -12,7 +12,7 @@ export default class Logger {
             if (serverConfig.logActions) {
                 // both actions and http failures
                 console.log("-  console logging: both repository actions and HTTP errors are logged");
-                Utilities.logMessage = (msg) => this.printAction(msg);
+                LocalFileStorage.logAction = (msg) => this.printAction(msg);
             } else {
                 // Only http failures
                 console.log("-  console logging: only HTTP errors are logged");

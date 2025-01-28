@@ -112,7 +112,6 @@ export { default as FileStorage } from "./repository/storage/filestorage";
 export { default as LocalFileStorage } from "./repository/storage/localfilestorage";
 export { default as Logger } from "./server/logger";
 export { default as ServerConfiguration } from "./server/serverconfiguration";
-export { isKnownExtension, Utilities } from "./server/utilities";
 export { default as Icons } from "./util/images/icons";
 export { default as Images } from "./util/images/images";
 export { default as Shapes } from "./util/images/shapes";

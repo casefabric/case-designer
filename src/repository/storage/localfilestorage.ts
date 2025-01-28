@@ -9,6 +9,8 @@ function isKnownExtension(extension: string): boolean {
 }
 
 export default class LocalFileStorage extends FileStorage {
+    static logAction = (msg: string): void => { };
+
     public sourceFolder = this.config.repository;
     public deployFolder = this.config.deploy;
 
@@ -112,6 +114,7 @@ async function writeFile(folder: string, fileName: string, content: any) {
 
     // Create directory if it doesn't exist
     try {
+        LocalFileStorage.logAction("MKDIR  " + directory);
         await fs.access(directory, fs.constants.F_OK);
     } catch {
         await fs.mkdir(directory, { recursive: true });

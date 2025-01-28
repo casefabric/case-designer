@@ -6,11 +6,10 @@ import bodyParser from 'body-parser';
 import express, { Request, Response } from 'express';
 import morgan from 'morgan';
 import path from 'path';
-import walkSync from 'walk-sync';
 import RepositoryConfiguration from '../config/config';
+import LocalFileStorage from '../repository/storage/localfilestorage';
 import Logger from './logger';
 import ServerConfiguration from './serverconfiguration';
-import { Utilities } from './utilities';
 
 const repositoryConfig = new RepositoryConfiguration();
 const repositoryPath = repositoryConfig.repository;
@@ -19,33 +18,27 @@ const deployPath = repositoryConfig.deploy;
 const serverConfig = new ServerConfiguration();
 const logger = new Logger();
 
+const storage = new LocalFileStorage(repositoryConfig);
 const router = express.Router();
 const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
 
-function replyList(res: Response) {
-    res.json(getRepositoryFiles(false));
-}
-
-function replyContents(res: Response) {
-    res.json(getRepositoryFiles(true));
-}
 
 /**
  * Returns the repository contents by name, last modified timestamp and usage information
  */
-router.get('/list', (_req: Request, res: Response) => {
+router.get('/list', async (_req: Request, res: Response) => {
     logger.printAction(`LIST`);
-    replyContents(res);
+    res.json(await storage.listModels());
 });
 
 /**
  *  Get a file from the repository.
  */
-router.get('/load/*', function (req: Request, res: Response, _next) {
+router.get('/load/*', async function (req: Request, res: Response, _next) {
     const fileName = req.params[0];
     logger.printAction(`LOAD   /${fileName}`);
     try {
-        const content = Utilities.readFile(repositoryPath, fileName);
+        const content = await storage.loadModel(fileName);
         res.setHeader('Content-Type', 'application/xml');
         res.setHeader('x-sent', 'true');
         res.send(content);
@@ -64,12 +57,11 @@ router.get('/load/*', function (req: Request, res: Response, _next) {
 /**
  * Save a file to the repository
  */
-router.post('/save/*', xmlParser, function (req: Request, res: Response, _next) {
+router.post('/save/*', xmlParser, async function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logger.printAction(`SAVE   /${fileName}`);
-        Utilities.writeFile(repositoryPath, fileName, req.body);
-        replyList(res);
+        res.json(await storage.saveModel(fileName, req.body));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
@@ -79,31 +71,29 @@ router.post('/save/*', xmlParser, function (req: Request, res: Response, _next) 
 /**
  * Rename a file in the repository
  */
-router.put('/rename/:fileName', xmlParser, function (req: Request, res: Response, _next) {
+router.put('/rename/:fileName', xmlParser, async function (req: Request, res: Response, _next) {
     // Note: this code takes the new name from the query parameter ?newName=
     try {
         const fileName = req.params.fileName;
         const newName = req.query.newName?.toString() ?? (() => { throw new Error('newName query parameter is required'); })();
         const newContent = req.body;
         logger.printAction(`RENAME /${fileName} to /${newName}`);
-        Utilities.renameFile(repositoryPath, fileName, newName);
-        Utilities.writeFile(repositoryPath, newName, newContent);
-        replyContents(res);
+        return res.json(await storage.renameModel(fileName, newName, newContent));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
+        return [];
     }
 });
 
 /**
  * Rename a file in the repository
  */
-router.delete('/delete/*', function (req: Request, res: Response, _next) {
+router.delete('/delete/*', async function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logger.printAction(`DELETE /${fileName}`);
-        Utilities.deleteFile(repositoryPath, fileName);
-        replyList(res);
+        await res.json(storage.deleteModel(fileName));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
@@ -113,12 +103,12 @@ router.delete('/delete/*', function (req: Request, res: Response, _next) {
 /**
  * Deploy a file and it's dependencies from the repository to the deployment folder
  */
-router.post('/deploy/*', xmlParser, function (req: Request, res: Response, _next) {
+router.post('/deploy/*', xmlParser, async function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logger.printAction(`DEPLOY /${fileName}`);
-        Utilities.writeFile(deployPath, fileName, req.body);
         res.setHeader('Content-Type', 'application/xml');
+        res.json(await storage.deploy(fileName, req.body));
         res.status(201).end();
     } catch (err) {
         console.error(err);
@@ -154,15 +144,3 @@ app.listen(serverConfig.port, () => {
     console.log('==================================================   ');
     console.log(`Cafienne IDE Server started (in ${startCompleted.getTime() - startMoment.getTime()}ms) on http://localhost:${serverConfig.port}\n`);
 });
-
-function getRepositoryFiles(includeJson: boolean) {
-    const fileCreator = (file: walkSync.Entry) => {
-        const fileName = file.relativePath;
-        const type = path.extname(fileName).substring(1);
-        const lastModified = file.mtime;
-        const content = includeJson ? Utilities.readFile(repositoryPath, fileName) : undefined;
-        return { fileName, type, lastModified, content };
-    }
-
-    return Utilities.getRepositoryFiles(repositoryPath).map(fileCreator);
-}
