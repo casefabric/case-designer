@@ -1,6 +1,6 @@
 import $ from "jquery";
 import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import HtmlUtil from "../../../../../util/htmlutil";
+import HtmlUtil from "../../../../util/htmlutil";
 import TableRenderer from "./tablerenderer";
 
 export default class RowRenderer {

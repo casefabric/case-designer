@@ -1,4 +1,4 @@
-import HtmlUtil from "../../../../../../util/htmlutil";
+import HtmlUtil from "../../../../../util/htmlutil";
 import MappingRow from "./mappingrow";
 
 export default class MappingExpression {

@@ -2,10 +2,10 @@ import $ from "jquery";
 import "jquery-ui";
 import ModelDefinition from "../repository/definition/modeldefinition";
 import ServerFile from "../repository/serverfile/serverfile";
-import HtmlUtil from "../util/htmlutil";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
+import HtmlUtil from "./util/htmlutil";
 
 export default class ModelListPanel {
     ide: IDE;

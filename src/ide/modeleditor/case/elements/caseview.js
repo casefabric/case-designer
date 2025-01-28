@@ -5,13 +5,13 @@ import CaseDefinition from "../../../../repository/definition/cmmn/casedefinitio
 import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import HtmlUtil from "../../../../util/htmlutil";
 import Util from "../../../../util/util";
 import ValidateForm from "../../../../validate/validateform";
 import Validator from "../../../../validate/validator";
 import Debugger from "../../../debugger/debugger";
 import DragData from "../../../dragdrop/dragdata";
 import RightSplitter from "../../../splitter/rightsplitter";
+import HtmlUtil from "../../../util/htmlutil";
 import CaseModelEditor from "../casemodeleditor";
 import CaseSourceEditor from "../editors/casesourceeditor";
 import Deploy from "../editors/deploy";

@@ -1,10 +1,10 @@
 ﻿import $ from "jquery";
 import TypeDefinition from "../../../../../repository/definition/type/typedefinition";
 import TypeFile from "../../../../../repository/serverfile/typefile";
-import HtmlUtil from "../../../../../util/htmlutil";
 import IDE from "../../../../ide";
 import TypeEditor from "../../../../modeleditor/type/editor/typeeditor";
 import TypeSelector from "../../../../modeleditor/type/editor/typeselector";
+import HtmlUtil from "../../../../util/htmlutil";
 import CaseView from "../../elements/caseview";
 import CaseFileEditor from "./casefileeditor";
 

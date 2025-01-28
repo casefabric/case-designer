@@ -1,7 +1,7 @@
 import $ from "jquery";
-import HtmlUtil from "../../util/htmlutil";
 import CodeMirrorConfig from "../editors/external/codemirrorconfig";
 import IDE from "../ide";
+import HtmlUtil from "../util/htmlutil";
 import SettingsStorage from "./settingsstorage";
 
 export default class SettingsEditor {

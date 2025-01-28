@@ -1,8 +1,8 @@
 ﻿import $ from "jquery";
 import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
 import PropertyDefinition from "../../../repository/definition/cfid/propertydefinition";
-import HtmlUtil from "../../../util/htmlutil";
 import Util from "../../../util/util";
+import HtmlUtil from "../../util/htmlutil";
 import CaseFileItemDefinitionEditor from "./casefileitemdefinitioneditor";
 
 export default class CFIDefinitionUnspecified {

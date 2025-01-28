@@ -1,7 +1,7 @@
 import $ from "jquery";
-import HtmlUtil from "../../util/htmlutil";
 import Util from "../../util/util";
 import Settings from "../settings/settings";
+import HtmlUtil from "../util/htmlutil";
 import SplitterSettings from "./splittersettings";
 
 export default class Splitter {

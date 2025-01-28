@@ -1,5 +1,5 @@
 import $ from "jquery";
-import Util from "./util";
+import Util from "../../util/util";
 
 export default class HtmlUtil {
     /**

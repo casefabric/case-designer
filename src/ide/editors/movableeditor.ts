@@ -1,8 +1,8 @@
 import $ from "jquery";
 import CMMNElementDefinition from "../../repository/definition/cmmnelementdefinition";
-import HtmlUtil from "../../util/htmlutil";
 import CaseModelEditor from "../modeleditor/case/casemodeleditor";
 import CaseView from "../modeleditor/case/elements/caseview";
+import HtmlUtil from "../util/htmlutil";
 
 export default class MovableEditor {
     case: CaseView;

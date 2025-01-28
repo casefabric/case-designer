@@ -1,7 +1,7 @@
 import $ from "jquery";
 import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import HtmlUtil from "../../../../../util/htmlutil";
 import MovableEditor from "../../../../editors/movableeditor";
+import HtmlUtil from "../../../../util/htmlutil";
 import CaseView from "../../elements/caseview";
 
 export default class TableEditor extends MovableEditor {

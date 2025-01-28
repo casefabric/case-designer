@@ -1,6 +1,6 @@
 import PlanItem, { TaskStageDefinition } from "../../../../repository/definition/cmmn/caseplan/planitem";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import HtmlUtil from "../../../../util/htmlutil";
+import HtmlUtil from "../../../util/htmlutil";
 import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
 import Connector from "./connector";

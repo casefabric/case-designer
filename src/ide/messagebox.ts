@@ -1,7 +1,7 @@
 ﻿import $ from "jquery";
 import "jquery-ui";
-import HtmlUtil from "../util/htmlutil";
 import IDE from "./ide";
+import HtmlUtil from "./util/htmlutil";
 
 export default class MessageBox {
     html: JQuery<HTMLElement>;

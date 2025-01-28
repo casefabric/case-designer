@@ -2,12 +2,12 @@
 
 import $ from "jquery";
 import { $get } from "../../util/ajax";
-import HtmlUtil from "../../util/htmlutil";
 import CodeMirrorConfig from "../editors/external/codemirrorconfig";
 import StandardForm from "../editors/standardform";
 import CaseView from "../modeleditor/case/elements/caseview";
 import Settings from "../settings/settings";
 import RightSplitter from "../splitter/rightsplitter";
+import HtmlUtil from "../util/htmlutil";
 
 /**
  * This class implements the logic to call the repository REST service to debug a case instance.

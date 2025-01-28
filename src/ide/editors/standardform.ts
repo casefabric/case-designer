@@ -1,8 +1,8 @@
 ﻿'use strict';
 
 import $ from "jquery";
-import HtmlUtil from "../../util/htmlutil";
 import CaseView from "../modeleditor/case/elements/caseview";
+import HtmlUtil from "../util/htmlutil";
 import MovableEditor from "./movableeditor";
 
 export default class StandardForm extends MovableEditor {

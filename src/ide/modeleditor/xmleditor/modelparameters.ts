@@ -3,8 +3,8 @@
 import $ from "jquery";
 import ParameterDefinition from "../../../repository/definition/contract/parameterdefinition";
 import ModelDefinition from "../../../repository/definition/modeldefinition";
-import HtmlUtil from "../../../util/htmlutil";
 import Util from "../../../util/util";
+import HtmlUtil from "../../util/htmlutil";
 import ModelEditor from "../modeleditor";
 
 export default class ModelParameters {

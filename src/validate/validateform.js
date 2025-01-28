@@ -2,7 +2,7 @@
 import StandardForm from "../ide/editors/standardform";
 import CaseView from "../ide/modeleditor/case/elements/caseview";
 import Settings from "../ide/settings/settings";
-import HtmlUtil from "../util/htmlutil";
+import HtmlUtil from "../ide/util/htmlutil";
 import ProblemType from "./problemtype";
 import ValidationSettings from "./validationsettings";
 

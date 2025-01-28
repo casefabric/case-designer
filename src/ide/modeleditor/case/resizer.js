@@ -1,5 +1,5 @@
 ﻿import $ from "jquery";
-import HtmlUtil from "../../../util/htmlutil";
+import HtmlUtil from "../../util/htmlutil";
 import CMMNElementView from "./elements/cmmnelementview";
 import Grid from "./grid";
 

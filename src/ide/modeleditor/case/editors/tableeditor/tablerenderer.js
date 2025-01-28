@@ -1,6 +1,6 @@
 import $ from "jquery";
 import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import HtmlUtil from "../../../../../util/htmlutil";
+import HtmlUtil from "../../../../util/htmlutil";
 import CaseView from "../../elements/caseview";
 import ColumnRenderer from "./columnrenderer";
 import RowRenderer from "./rowrenderer";

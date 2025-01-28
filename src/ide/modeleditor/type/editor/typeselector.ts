@@ -1,6 +1,6 @@
 import Repository from "../../../../repository/repository";
 import TypeFile from "../../../../repository/serverfile/typefile";
-import HtmlUtil from "../../../../util/htmlutil";
+import HtmlUtil from "../../../util/htmlutil";
 
 export type Option = {
     option: string,

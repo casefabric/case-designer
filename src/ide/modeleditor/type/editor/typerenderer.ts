@@ -5,9 +5,9 @@ import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/c
 import SchemaDefinition from "../../../../repository/definition/type/schemadefinition";
 import SchemaPropertyDefinition from "../../../../repository/definition/type/schemapropertydefinition";
 import TypeFile from "../../../../repository/serverfile/typefile";
-import HtmlUtil from "../../../../util/htmlutil";
 import Util from "../../../../util/util";
 import IDE from "../../../ide";
+import HtmlUtil from "../../../util/htmlutil";
 import ModelEditorMetadata from "../../modeleditormetadata";
 import TypeModelEditorMetadata from "../typemodeleditormetadata";
 import LocalTypeDefinition from "./localtypedefinition";
