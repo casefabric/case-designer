@@ -1,9 +1,9 @@
 ﻿'use strict';
 
-import MovableEditor from "./movableeditor";
-import CaseView from "../modeleditor/case/elements/caseview";
 import $ from "jquery";
 import HtmlUtil from "../../util/htmlutil";
+import CaseView from "../modeleditor/case/elements/caseview";
+import MovableEditor from "./movableeditor";
 
 export default class StandardForm extends MovableEditor {
     private _label: string;

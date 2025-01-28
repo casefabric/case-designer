@@ -1,8 +1,8 @@
-import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import $ from "jquery";
 import Tags from "../../../../repository/definition/dimensions/tags";
 import HtmlUtil from "../../../../util/htmlutil";
 import XML from "../../../../util/xml";
-import $ from "jquery";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import CaseModelEditor from "../casemodeleditor";
 
 export default class CaseSourceEditor {

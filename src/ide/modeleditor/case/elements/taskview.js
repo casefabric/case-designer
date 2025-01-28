@@ -1,7 +1,7 @@
 ﻿import TaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/taskdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
 import ServerFile from "../../../../repository/serverfile/serverfile";
+import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
 import TaskMappingsEditor from "../editors/task/taskmappingseditor";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";
 import TaskProperties from "./properties/taskproperties";

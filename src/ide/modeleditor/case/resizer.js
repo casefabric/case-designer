@@ -1,7 +1,7 @@
-﻿import HtmlUtil from "../../../util/htmlutil";
+﻿import $ from "jquery";
+import HtmlUtil from "../../../util/htmlutil";
 import CMMNElementView from "./elements/cmmnelementview";
 import Grid from "./grid";
-import $ from "jquery";
 
 export default class Resizer {
     /**

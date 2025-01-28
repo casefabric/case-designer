@@ -1,9 +1,9 @@
-﻿import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+﻿import $ from "jquery";
+import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
 import PropertyDefinition from "../../../repository/definition/cfid/propertydefinition";
-import Util from "../../../util/util";
 import HtmlUtil from "../../../util/htmlutil";
+import Util from "../../../util/util";
 import CaseFileItemDefinitionEditor from "./casefileitemdefinitioneditor";
-import $ from "jquery";
 
 export default class CFIDefinitionUnspecified {
     /**

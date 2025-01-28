@@ -1,6 +1,6 @@
+import $ from "jquery";
 import Dialog from "./editors/dialog";
 import IDE from "./ide";
-import $ from "jquery";
 
 type NewModelResult = {
     name: string,

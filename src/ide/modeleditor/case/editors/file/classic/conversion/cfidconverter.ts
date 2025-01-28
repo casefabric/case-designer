@@ -1,6 +1,6 @@
-import CaseView from "../../../../elements/caseview";
 import TypeDefinition from "../../../../../../../repository/definition/type/typedefinition";
 import Repository from "../../../../../../../repository/repository";
+import CaseView from "../../../../elements/caseview";
 import CFIWrapper from "./cfiwrapper";
 import TypeWrapper from "./typewrapper";
 

@@ -1,5 +1,5 @@
-import CaseView from "../elements/caseview";
 import $ from "jquery";
+import CaseView from "../elements/caseview";
 
 export default class UndoRedoBox {
     /**

@@ -1,4 +1,3 @@
-import IDE from "../../ide";
 import Tags from "../../../repository/definition/dimensions/tags";
 import ModelDefinition from "../../../repository/definition/modeldefinition";
 import TypeDefinition from "../../../repository/definition/type/typedefinition";
@@ -6,6 +5,7 @@ import CaseFile from "../../../repository/serverfile/casefile";
 import ServerFile from "../../../repository/serverfile/serverfile";
 import Icons from "../../../util/images/icons";
 import Util from "../../../util/util";
+import IDE from "../../ide";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
 import CreateNewCaseModelDialog from "./createnewcasemodeldialog";

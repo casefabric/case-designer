@@ -1,14 +1,16 @@
-﻿import TextAnnotationDefinition from "../../../../repository/definition/artifact/textannotation";
+﻿import { dia } from "jointjs";
+import $ from "jquery";
+import TextAnnotationDefinition from "../../../../repository/definition/artifact/textannotation";
 import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
 import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import Util from "../../../../util/util";
 import HtmlUtil from "../../../../util/htmlutil";
-import { dia } from "jointjs";
+import Util from "../../../../util/util";
 import ValidateForm from "../../../../validate/validateform";
 import Validator from "../../../../validate/validator";
 import Debugger from "../../../debugger/debugger";
+import DragData from "../../../dragdrop/dragdata";
 import RightSplitter from "../../../splitter/rightsplitter";
 import CaseModelEditor from "../casemodeleditor";
 import CaseSourceEditor from "../editors/casesourceeditor";
@@ -17,8 +19,8 @@ import CaseFileEditor from "../editors/file/casefileeditor";
 import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
 import RolesEditor from "../editors/roleseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
-import ShapeBox from "../shapebox/shapebox";
 import Grid from "../grid";
+import ShapeBox from "../shapebox/shapebox";
 import UndoRedoBox from "../undoredo/undoredobox";
 import CaseFileItemView from "./casefileitemview";
 import CasePlanView from "./caseplanview";
@@ -26,8 +28,6 @@ import CMMNElementView from "./cmmnelementview";
 import Connector from "./connector";
 import StageView from "./stageview";
 import TextAnnotationView from "./textannotationview";
-import $ from "jquery";
-import DragData from "../../../dragdrop/dragdata";
 
 export default class CaseView {
     /**

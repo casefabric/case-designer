@@ -1,11 +1,11 @@
 import PlanItem, { TaskStageDefinition } from "../../../../repository/definition/cmmn/caseplan/planitem";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import HtmlUtil from "../../../../util/htmlutil";
+import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
 import Connector from "./connector";
 import PlanItemView from "./planitemview";
 import PlanningTableView from "./planningtableview";
-import CaseView from "./caseview";
 import { EntryCriterionView, ExitCriterionView, ReactivateCriterionView } from "./sentryview";
 
 export default class TaskStageView extends PlanItemView {

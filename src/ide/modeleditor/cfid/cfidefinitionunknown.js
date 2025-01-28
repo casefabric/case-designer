@@ -1,6 +1,6 @@
-﻿import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+﻿import $ from "jquery";
+import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
 import CaseFileItemDefinitionEditor from "./casefileitemdefinitioneditor";
-import $ from "jquery";
 
 export default class CFIDefinitionUnknown {
     /**

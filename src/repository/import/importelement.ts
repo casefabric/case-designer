@@ -1,11 +1,11 @@
+import XML from "../../util/xml";
+import CaseDefinition from "../definition/cmmn/casedefinition";
+import ModelDefinition from "../definition/modeldefinition";
+import TypeDefinition from "../definition/type/typedefinition";
 import Repository from "../repository";
+import CaseFile from "../serverfile/casefile";
 import ServerFile from "../serverfile/serverfile";
 import Importer from "./importer";
-import XML from "../../util/xml";
-import ModelDefinition from "../definition/modeldefinition";
-import CaseDefinition from "../definition/cmmn/casedefinition";
-import CaseFile from "../serverfile/casefile";
-import TypeDefinition from "../definition/type/typedefinition";
 
 export default class ImportElement {
     repository: Repository;

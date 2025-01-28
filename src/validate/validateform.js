@@ -1,8 +1,8 @@
-﻿﻿import StandardForm from "../ide/editors/standardform";
+﻿﻿import $ from "jquery";
+import StandardForm from "../ide/editors/standardform";
 import CaseView from "../ide/modeleditor/case/elements/caseview";
 import Settings from "../ide/settings/settings";
 import HtmlUtil from "../util/htmlutil";
-import $ from "jquery";
 import ProblemType from "./problemtype";
 import ValidationSettings from "./validationsettings";
 

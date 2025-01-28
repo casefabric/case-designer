@@ -1,7 +1,7 @@
+import TaskDefinition from "../../../../../../repository/definition/cmmn/caseplan/task/taskdefinition";
 import ParameterMappingDefinition from "../../../../../../repository/definition/cmmn/contract/parametermappingdefinition";
 import RowRenderer from "../../tableeditor/rowrenderer";
 import MappingControl from "./mappingcontrol";
-import TaskDefinition from "../../../../../../repository/definition/cmmn/caseplan/task/taskdefinition";
 
 export default class MappingRow extends RowRenderer {
     /**

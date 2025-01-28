@@ -1,11 +1,11 @@
 import $ from "jquery";
-import CaseTypeEditor from "./casetypeeditor";
-import CaseFileItemsEditor from "./classic/casefileitemseditor";
-import CaseView from "../../elements/caseview";
-import CFISelector from "./cfiselector";
+import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CaseFileItemDragData from "../../../../dragdrop/casefileitemdragdata";
 import IDE from "../../../../ide";
-import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import CaseView from "../../elements/caseview";
+import CaseTypeEditor from "./casetypeeditor";
+import CFISelector from "./cfiselector";
+import CaseFileItemsEditor from "./classic/casefileitemseditor";
 
 export default class CaseFileEditor {
     case: CaseView;

@@ -1,4 +1,5 @@
-﻿import CriterionDefinition from "../../../../repository/definition/cmmn/sentry/criteriondefinition";
+﻿import { g } from "jointjs";
+import CriterionDefinition from "../../../../repository/definition/cmmn/sentry/criteriondefinition";
 import OnPartDefinition from "../../../../repository/definition/cmmn/sentry/onpartdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import CaseFileItemView from "./casefileitemview";
@@ -6,7 +7,6 @@ import CMMNElementView from "./cmmnelementview";
 import Connector from "./connector";
 import PlanItemView from "./planitemview";
 import SentryProperties from "./properties/sentryproperties";
-import { g } from "jointjs";
 // import { EntryCriterionHalo, ExitCriterionHalo, ReactivateCriterionHalo } from "./halo/sentryhalo";
 // BIG TODO HERE
 

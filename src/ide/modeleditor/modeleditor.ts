@@ -1,10 +1,10 @@
-﻿import ServerFile from "../../repository/serverfile/serverfile";
+﻿import $ from "jquery";
+import ModelDefinition from "../../repository/definition/modeldefinition";
+import ServerFile from "../../repository/serverfile/serverfile";
+import HtmlUtil from "../../util/htmlutil";
 import Util from "../../util/util";
-import $ from "jquery";
 import MovableEditor from "../editors/movableeditor";
 import IDE from "../ide";
-import ModelDefinition from "../../repository/definition/modeldefinition";
-import HtmlUtil from "../../util/htmlutil";
 
 export default class ModelEditor {
     movableEditors: MovableEditor[] = [];

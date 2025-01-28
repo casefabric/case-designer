@@ -7,9 +7,12 @@ import ProcessTaskDefinition from "../../../../repository/definition/cmmn/casepl
 import TimerEventDefinition from "../../../../repository/definition/cmmn/caseplan/timereventdefinition";
 import UserEventDefinition from "../../../../repository/definition/cmmn/caseplan/usereventdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import CaseFile from "../../../../repository/serverfile/casefile";
+import HumanTaskFile from "../../../../repository/serverfile/humantaskfile";
+import ProcessFile from "../../../../repository/serverfile/processfile";
+import Util from "../../../../util/util";
 import CaseFileItemDragData from "../../../dragdrop/casefileitemdragdata";
 import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
-import Util from "../../../../util/util";
 import CaseFileItemView from "./casefileitemview";
 import CaseTaskView from "./casetaskview";
 import CaseView from "./caseview";
@@ -25,9 +28,6 @@ import TaskView from "./taskview";
 import TextAnnotationView from "./textannotationview";
 import TimerEventView from "./timereventview";
 import UserEventView from "./usereventview";
-import HumanTaskFile from "../../../../repository/serverfile/humantaskfile";
-import ProcessFile from "../../../../repository/serverfile/processfile";
-import CaseFile from "../../../../repository/serverfile/casefile";
 
 export default class StageView extends TaskStageView {
     /**

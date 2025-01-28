@@ -1,11 +1,11 @@
-import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
-import ExpressionDefinition from "./expressiondefinition";
-import CaseDefinition from "../casedefinition";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
-import XMLSerializable from "../../xmlserializable";
-import ModelDefinition from "../../modeldefinition";
 import ElementDefinition from "../../elementdefinition";
+import ModelDefinition from "../../modeldefinition";
+import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
+import XMLSerializable from "../../xmlserializable";
+import CaseDefinition from "../casedefinition";
 import CaseFileItemReference from "../casefile/casefileitemreference";
+import ExpressionDefinition from "./expressiondefinition";
 
 /**
  * Simple class that does basic expression parsing 

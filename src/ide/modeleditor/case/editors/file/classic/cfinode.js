@@ -1,7 +1,7 @@
-import CaseFileItemDef, { CaseFileItemCollection } from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
-import Util from "../../../../../../util/util";
-import HtmlUtil from "../../../../../../util/htmlutil";
 import $ from "jquery";
+import CaseFileItemDef, { CaseFileItemCollection } from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import HtmlUtil from "../../../../../../util/htmlutil";
+import Util from "../../../../../../util/util";
 import CaseFileItemsEditor, { NEWDEF } from "./casefileitemseditor";
 
 export default class CFINode {

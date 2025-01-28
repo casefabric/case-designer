@@ -1,6 +1,6 @@
+import $ from "jquery";
 import UserEventView from "../usereventview";
 import PlanItemProperties from "./planitemproperties";
-import $ from "jquery";
 
 export default class UserEventProperties extends PlanItemProperties {
     /**

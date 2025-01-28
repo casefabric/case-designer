@@ -1,7 +1,7 @@
-﻿import CaseFileItemDef from "../../../repository/definition/cmmn/casefile/casefileitemdef";
-import CMMNElementView from "./elements/cmmnelementview";
+﻿import $ from "jquery";
+import CaseFileItemDef from "../../../repository/definition/cmmn/casefile/casefileitemdef";
 import HtmlUtil from "../../../util/htmlutil";
-import $ from "jquery";
+import CMMNElementView from "./elements/cmmnelementview";
 
 export default class Marker {
     /**

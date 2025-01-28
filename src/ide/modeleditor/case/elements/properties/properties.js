@@ -1,9 +1,9 @@
-import Util from "../../../../../util/util";
+import $ from "jquery";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
 import HtmlUtil from "../../../../../util/htmlutil";
+import Util from "../../../../../util/util";
 import MovableEditor from "../../../../editors/movableeditor";
 import CMMNElementView from "../cmmnelementview";
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import $ from "jquery";
 
 export default class Properties extends MovableEditor {
     /**

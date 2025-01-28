@@ -1,7 +1,7 @@
+import Util from "../../../../../util/util";
+import AlpacaPreview from "../../../../editors/external/alpacapreview";
 import StandardForm from "../../../../editors/standardform";
 import ModelEditor from "../../../modeleditor";
-import AlpacaPreview from "../../../../editors/external/alpacapreview";
-import Util from "../../../../../util/util";
 import HumanTaskView from "../../elements/humantaskview";
 
 export default class PreviewTaskForm extends StandardForm {

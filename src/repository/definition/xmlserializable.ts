@@ -1,5 +1,5 @@
-import XML from "../../util/xml";
 import Util from "../../util/util";
+import XML from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";

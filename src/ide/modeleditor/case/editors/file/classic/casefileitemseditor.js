@@ -1,11 +1,11 @@
-﻿import CaseFileItemDef from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+﻿import $ from "jquery";
+import CaseFileItemDef from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import HtmlUtil from "../../../../../../util/htmlutil";
 import CaseFileItemDefinitionEditor from "../../../../../modeleditor/cfid/casefileitemdefinitioneditor";
 import BottomSplitter from "../../../../../splitter/bottomsplitter";
-import HtmlUtil from "../../../../../../util/htmlutil";
-import $ from "jquery";
 import CaseFileEditor from "../casefileeditor";
-import CFIDConverter from "./conversion/cfidconverter";
 import CFINode from "./cfinode";
+import CFIDConverter from "./conversion/cfidconverter";
 
 export const NEWDEF = '__new__';
 

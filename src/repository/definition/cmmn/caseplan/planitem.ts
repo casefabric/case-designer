@@ -1,6 +1,6 @@
-import { ReferenceSet } from "../../references/referenceset";
 import Util from "../../../../util/util";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
+import { ReferenceSet } from "../../references/referenceset";
 import CaseDefinition from "../casedefinition";
 import CaseRoleReference from "../caseteam/caserolereference";
 import CriterionDefinition from "../sentry/criteriondefinition";

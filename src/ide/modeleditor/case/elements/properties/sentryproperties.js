@@ -1,14 +1,14 @@
+import $ from "jquery";
 import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
 import CaseFileItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/casefileitemonpartdefinition";
 import OnPartDefinition from "../../../../../repository/definition/cmmn/sentry/onpartdefinition";
 import PlanItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/planitemonpartdefinition";
-import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
-import Util from "../../../../../util/util";
 import HtmlUtil from "../../../../../util/htmlutil";
+import Util from "../../../../../util/util";
 import Connector from "../connector";
 import SentryView from "../sentryview";
 import Properties from "./properties";
-import $ from "jquery";
 
 export default class SentryProperties extends Properties {
     /**

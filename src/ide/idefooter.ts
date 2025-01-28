@@ -1,5 +1,5 @@
-import IDE from "./ide";
 import $ from "jquery";
+import IDE from "./ide";
 
 export default class IDEFooter {
     html: JQuery<HTMLElement>;

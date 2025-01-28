@@ -1,9 +1,9 @@
+import { shapes, util } from "jointjs";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import { CMMNDocumentationDefinition } from "../../../../repository/definition/elementdefinition";
-import Util from "../../../../util/util";
 import HtmlUtil from "../../../../util/htmlutil";
-import { shapes, util } from "jointjs";
+import Util from "../../../../util/util";
 import Grid from "../grid";
 import Marker from "../marker";
 import Resizer from "../resizer";

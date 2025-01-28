@@ -1,8 +1,8 @@
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
 import PlanItem from "../caseplan/planitem";
-import IfPartDefinition from "./ifpartdefinition";
 import CaseFileItemOnPartDefinition from "./casefileitemonpartdefinition";
+import IfPartDefinition from "./ifpartdefinition";
 import PlanItemOnPartDefinition from "./planitemonpartdefinition";
 
 export default class CriterionDefinition extends UnnamedCMMNElementDefinition {

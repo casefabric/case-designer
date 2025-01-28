@@ -1,5 +1,5 @@
-import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
 import ElementDefinition from "../elementdefinition";
+import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
 import CaseFileDefinitionDefinition from "./casefileitemdefinitiondefinition";
 
 export default class PropertyDefinition extends ElementDefinition<CaseFileDefinitionDefinition> {

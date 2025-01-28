@@ -1,7 +1,7 @@
-﻿import PlanningTableDefinition from "../../../../repository/definition/cmmn/caseplan/planning/planningtabledefinition";
+﻿import { g } from "jointjs";
+import PlanningTableDefinition from "../../../../repository/definition/cmmn/caseplan/planning/planningtabledefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import Images from "../../../../util/images/images";
-import { g } from "jointjs";
 import CMMNElementView from "./cmmnelementview";
 import PlanningTableHalo from "./halo/planningtablehalo";
 import PlanningTableProperties from "./properties/planningtableproperties";

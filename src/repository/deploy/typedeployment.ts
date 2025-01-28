@@ -1,5 +1,5 @@
-import TypeDefinition from "../definition/type/typedefinition";
 import XML from "../../util/xml";
+import TypeDefinition from "../definition/type/typedefinition";
 import CaseDeployment from "./casedeployment";
 import DefinitionDeployment from "./definitiondeployment";
 import Definitions from "./definitions";

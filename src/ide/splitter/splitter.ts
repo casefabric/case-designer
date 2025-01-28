@@ -1,8 +1,8 @@
-import Util from "../../util/util";
-import SplitterSettings from "./splittersettings";
-import Settings from "../settings/settings";
 import $ from "jquery";
 import HtmlUtil from "../../util/htmlutil";
+import Util from "../../util/util";
+import Settings from "../settings/settings";
+import SplitterSettings from "./splittersettings";
 
 export default class Splitter {
     private static _settings?: SplitterSettings;

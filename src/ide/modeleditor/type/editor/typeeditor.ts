@@ -1,16 +1,16 @@
-﻿import IDE from "../../../ide";
+﻿import $ from "jquery";
+import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import TypeFile from "../../../../repository/serverfile/typefile";
+import HtmlUtil from "../../../../util/htmlutil";
+import XML from "../../../../util/xml";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import IDE from "../../../ide";
 import CaseTypeEditor from "../../case/editors/file/casetypeeditor";
 import CaseView from "../../case/elements/caseview";
 import ModelSourceEditor from "../../xmleditor/modelsourceeditor";
-import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
-import TypeFile from "../../../../repository/serverfile/typefile";
-import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
-import XML from "../../../../util/xml";
-import $ from "jquery";
 import TypeModelEditor from "../typemodeleditor";
 import MainTypeDefinition from "./maintypedefinition";
 import TypeRenderer, { PropertyRenderer, SchemaRenderer } from "./typerenderer";
-import HtmlUtil from "../../../../util/htmlutil";
 
 export default class TypeEditor {
     viewSourceEditor: ModelSourceEditor;

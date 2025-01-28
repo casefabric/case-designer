@@ -1,11 +1,11 @@
 ﻿'use strict';
 
-import ParameterDefinition from "../../../repository/definition/contract/parameterdefinition";
-import ModelEditor from "../modeleditor";
-import Util from "../../../util/util";
 import $ from "jquery";
+import ParameterDefinition from "../../../repository/definition/contract/parameterdefinition";
 import ModelDefinition from "../../../repository/definition/modeldefinition";
 import HtmlUtil from "../../../util/htmlutil";
+import Util from "../../../util/util";
+import ModelEditor from "../modeleditor";
 
 export default class ModelParameters {
     html: JQuery<HTMLElement>;

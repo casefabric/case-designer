@@ -1,6 +1,6 @@
 import TypeFile from "../../serverfile/typefile";
-import SchemaDefinition from "./schemadefinition";
 import ModelDefinition from "../modeldefinition";
+import SchemaDefinition from "./schemadefinition";
 
 export default class TypeDefinition extends ModelDefinition {
     private _schema?: SchemaDefinition;

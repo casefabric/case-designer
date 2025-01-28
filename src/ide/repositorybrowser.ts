@@ -1,13 +1,13 @@
-import ServerFile from "../repository/serverfile/serverfile";
 import $ from "jquery";
 import "jquery-ui";
+import ModelDefinition from "../repository/definition/modeldefinition";
+import Repository from "../repository/repository";
+import ServerFile from "../repository/serverfile/serverfile";
+import DragData from "./dragdrop/dragdata";
 import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
-import ModelDefinition from "../repository/definition/modeldefinition";
-import DragData from "./dragdrop/dragdata";
-import Repository from "../repository/repository";
 
 export default class RepositoryBrowser {
     repository: Repository;

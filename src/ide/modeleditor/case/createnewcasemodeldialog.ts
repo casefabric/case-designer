@@ -1,6 +1,6 @@
+import $ from "jquery";
 import CreateNewModelDialog from "../../createnewmodeldialog";
 import IDE from "../../ide";
-import $ from "jquery";
 import TypeSelector, { Option } from "../type/editor/typeselector";
 
 export default class CreateNewCaseModelDialog extends CreateNewModelDialog {

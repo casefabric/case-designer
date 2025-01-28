@@ -1,19 +1,19 @@
-import IDE from "../../../ide";
-import ModelEditorMetadata from "../../modeleditormetadata";
+import $ from "jquery";
 import CaseFileDefinition from "../../../../repository/definition/cmmn/casefile/casefiledefinition";
 import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import SchemaDefinition from "../../../../repository/definition/type/schemadefinition";
 import SchemaPropertyDefinition from "../../../../repository/definition/type/schemapropertydefinition";
 import TypeFile from "../../../../repository/serverfile/typefile";
+import HtmlUtil from "../../../../util/htmlutil";
 import Util from "../../../../util/util";
-import $ from "jquery";
+import IDE from "../../../ide";
+import ModelEditorMetadata from "../../modeleditormetadata";
 import TypeModelEditorMetadata from "../typemodeleditormetadata";
 import LocalTypeDefinition from "./localtypedefinition";
 import PropertyUsage from "./propertyusage";
 import TypeEditor from "./typeeditor";
 import TypeSelector from "./typeselector";
-import HtmlUtil from "../../../../util/htmlutil";
 
 export default class TypeRenderer {
 

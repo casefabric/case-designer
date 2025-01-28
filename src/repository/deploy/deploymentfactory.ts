@@ -1,9 +1,9 @@
 import CaseDefinition from "../definition/cmmn/casedefinition";
-import Definitions from "./definitions";
-import CaseDeployment from "./casedeployment";
 import ModelDefinition from "../definition/modeldefinition";
-import DefinitionDeployment from "./definitiondeployment";
 import TypeDefinition from "../definition/type/typedefinition";
+import CaseDeployment from "./casedeployment";
+import DefinitionDeployment from "./definitiondeployment";
+import Definitions from "./definitions";
 import TypeDeployment from "./typedeployment";
 
 export default class DeploymentFactory {

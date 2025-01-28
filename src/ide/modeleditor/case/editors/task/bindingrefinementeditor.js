@@ -1,8 +1,8 @@
 'use strict';
 
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
 import $ from "jquery";
+import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
 import TableEditor, { RowEditor, TableEditorColumn } from "../tableeditor/tableeditor";
 
 export default class BindingRefinementEditor extends TableEditor {

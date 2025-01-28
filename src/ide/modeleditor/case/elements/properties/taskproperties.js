@@ -1,5 +1,5 @@
-import Images from "../../../../../util/images/images";
 import $ from "jquery";
+import Images from "../../../../../util/images/images";
 import TaskView from "../taskview";
 import TaskStageProperties from "./taskstageproperties";
 

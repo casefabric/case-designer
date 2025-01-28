@@ -1,6 +1,6 @@
+import $ from "jquery";
 import Halo from "../halo";
 import HaloItem from "./haloitem";
-import $ from "jquery";
 
 export default class HaloClickItem extends HaloItem {
     constructor(halo, imgURL, title, clickHandler, html) {

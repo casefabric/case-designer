@@ -1,10 +1,10 @@
 ﻿'use strict';
 
+import TypeFile from "../../../repository/serverfile/typefile";
 import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
-import TypeFile from "../../../repository/serverfile/typefile";
-import TypeEditor from "./editor/typeeditor";
 import ModelEditorMetadata from "../modeleditormetadata";
+import TypeEditor from "./editor/typeeditor";
 import TypeModelEditorMetadata from "./typemodeleditormetadata";
 
 export default class TypeModelEditor extends ModelEditor {
