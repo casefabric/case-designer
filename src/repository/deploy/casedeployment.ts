@@ -8,10 +8,12 @@ import TypeDeployment from "./typedeployment";
 
 export default class CaseDeployment extends DefinitionDeployment {
     public caseElement: Element;
+    public isRoot: boolean;
 
     constructor(public definitionsDocument: Definitions, public definition: CaseDefinition) {
         super(definitionsDocument, definition);
         this.caseElement = this.element;
+        this.isRoot = definition === definitionsDocument.caseDefinition;
 
         CMMNCompliance.convert(this.element);
 

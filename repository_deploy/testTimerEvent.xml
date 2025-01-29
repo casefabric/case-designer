@@ -1,12 +1,13 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="test_cfi_def_01" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="test_cfi_def_01.cfid">
+    <caseFileItemDefinition name="case_testTimerEvent" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_testTimerEvent.type"/>
+    <caseFileItemDefinition name="test_cfi_def_01" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="test_cfi_def_01.type">
         <property name="cfidefprop_01" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
         <property name="cfidefprop_02" type="http://www.omg.org/spec/CMMN/PropertyType/boolean"/>
         <property name="cfidefprop_03" type="http://www.omg.org/spec/CMMN/PropertyType/date"/>
     </caseFileItemDefinition>
     <case id="testTimerEvent.case" name="testTimerEvent" expressionLanguage="spel">
-        <caseFileModel>
-            <caseFileItem id="cfi_testTimerEvent.case_0" name="CFI" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.cfid"/>
+        <caseFileModel cafienne:typeRef="case_testTimerEvent.type">
+            <caseFileItem id="CFI" name="CFI" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.type"/>
         </caseFileModel>
         <casePlanModel id="cm_testTimerEvent.case_0" name="testTimerEvent" autoComplete="true">
             <planItem id="cm_testTimerEvent.case_2" name="Task_1" definitionRef="ht_cm_testTimerEvent.case_2"/>
@@ -19,7 +20,7 @@
                         <![CDATA[cfi-expression]]>
                     </body>
                 </timerExpression>
-                <caseFileItemStartTrigger sourceRef="cfi_testTimerEvent.case_0">
+                <caseFileItemStartTrigger sourceRef="CFI">
                     <standardEvent>create</standardEvent>
                 </caseFileItemStartTrigger>
             </timerEvent>
@@ -34,6 +35,7 @@
                 </planItemStartTrigger>
             </timerEvent>
         </casePlanModel>
+        <caseRoles/>
         <extensionElements mustUnderstand="false">
             <cafienne:start-case-model xmlns:cafienne="org.cafienne">{
   "schema":{
@@ -59,11 +61,11 @@
             <CMMNShape cmmnElementRef="cm_testTimerEvent.case_2">
                 <Bounds x="160" y="190" width="100" height="60"/>
             </CMMNShape>
-            <CMMNShape cmmnElementRef="cm_testTimerEvent.case_6">
+            <CMMNShape cmmnElementRef="CFI">
                 <Bounds x="196" y="79" width="25" height="40"/>
             </CMMNShape>
             <CMMNEdge sourceCMMNElementRef="cm_testTimerEvent.case_2" targetCMMNElementRef="cm_testTimerEvent.case_5"/>
-            <CMMNEdge sourceCMMNElementRef="cm_testTimerEvent.case_6" targetCMMNElementRef="cm_testTimerEvent.case_4"/>
+            <CMMNEdge sourceCMMNElementRef="CFI" targetCMMNElementRef="cm_testTimerEvent.case_4"/>
         </CMMNDiagram>
     </CMMNDI>
 </definitions>

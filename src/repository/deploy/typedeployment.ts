@@ -181,7 +181,7 @@ class Property {
         const pathPrefix = parentCFIPath ? parentCFIPath + '/' : '';
         const cfiPath = pathPrefix + this.name;
 
-        if (caseDeployment.definitionsDocument.rootCaseName == caseDeployment.caseName) {
+        if (caseDeployment.isRoot) {
             // No need to change the cfi paths inside the root case, we do that only in subcases.
             return cfiPath;
         } else {
