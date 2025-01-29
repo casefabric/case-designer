@@ -1,8 +1,9 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="data" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="data.cfid"/>
+    <caseFileItemDefinition name="case_faulthandling_subcase" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_faulthandling_subcase.type"/>
+    <caseFileItemDefinition name="data" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="data.type"/>
     <case id="faulthandling_subcase.case" name="faulthandling_subcase" expressionLanguage="spel">
-        <caseFileModel>
-            <caseFileItem id="_y2XPO_2" name="data" multiplicity="ExactlyOne" definitionRef="data.cfid"/>
+        <caseFileModel cafienne:typeRef="case_faulthandling_subcase.type">
+            <caseFileItem id="data" name="data" multiplicity="ExactlyOne" definitionRef="data.type"/>
         </caseFileModel>
         <casePlanModel id="cm__y2XPO_0" name="faulthandling_subcase" autoComplete="true">
             <planItem id="pi__y2XPO_0" name="Stage Without Fault Handling" definitionRef="_y2XPO_0"/>
@@ -12,7 +13,7 @@
                 <planItem id="pi_ht__y2XPO_0" name="Task" definitionRef="ht__y2XPO_0"/>
             </stage>
             <processTask id="pt__y2XPO_0" name="Call without Fault Handling" isBlocking="true" processRef="GetResponse2.process">
-                <inputs id="_y2XPO_13" name="data" bindingRef="_y2XPO_2"/>
+                <inputs id="_y2XPO_13" name="data" bindingRef="data"/>
                 <parameterMapping id="_y2XPO_7" sourceRef="_y2XPO_13" targetRef="_FcAX_data"/>
             </processTask>
             <humanTask id="ht__y2XPO_0" name="Task" isBlocking="true"/>
@@ -52,8 +53,8 @@
                 </sentry>
             </stage>
             <processTask id="pt__y2XPO_1" name="Call with Fault Handling" isBlocking="true" processRef="GetResponse2.process">
-                <extensionElements mustUnderstand="false"></extensionElements>
-                <inputs id="_y2XPO_30" name="data" bindingRef="_y2XPO_2"/>
+                <extensionElements mustUnderstand="false"/>
+                <inputs id="_y2XPO_30" name="data" bindingRef="data"/>
                 <parameterMapping id="_y2XPO_15" sourceRef="_y2XPO_30" targetRef="_FcAX_data"/>
             </processTask>
             <stage id="_y2XPO_21" name="Failure Handling" autoComplete="true">
@@ -83,7 +84,7 @@
             <milestone id="ms__y2XPO_0" name="Task Failed"/>
         </casePlanModel>
         <caseRoles/>
-        <input id="_y2XPO_3" name="data" bindingRef="_y2XPO_2"/>
+        <input id="_y2XPO_3" name="data" bindingRef="data"/>
     </case>
     <process name="GetResponse2" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified" id="GetResponse2.process">
         <input id="_FcAX_data" name="input"/>
@@ -92,7 +93,7 @@
         <output id="_vrBb_errorMessage" name="errorPayload"/>
         <output id="_fnkJ_responseMessage" name="responseMessage"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" xmlns="org.cafienne">
                 <url>http://localhost:${input.port}/get/code/${input.responseCode}</url>
                 <method>POST</method>
                 <post-content>${input.payload}</post-content>

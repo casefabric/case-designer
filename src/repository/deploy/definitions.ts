@@ -5,8 +5,8 @@ import ProcessModelDefinition from "@repository/definition/process/processmodeld
 import TypeDefinition from "@repository/definition/type/typedefinition";
 import XML from "@util/xml";
 import DefinitionDeployment from "./definitiondeployment";
-import Tags from "./tags";
 import DeploymentFactory from "./deploymentfactory";
+import Tags from "./tags";
 
 export default class Definitions {
 
@@ -23,7 +23,7 @@ export default class Definitions {
     public definitions: Array<DefinitionDeployment> = [];
 
     get rootCaseName(): string {
-        return this.caseDefinition.name;
+        return this.caseDefinition.file.name;
     }
 
     get fileName(): string {
