@@ -24,9 +24,7 @@
                 <itemControl id="_3GznZ_1">
                     <repetitionRule id="_3GznZ_12">
                         <condition id="_3GznZ_13">
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
@@ -35,19 +33,15 @@
                 <itemControl id="_3GznZ_2">
                     <repetitionRule id="_3GznZ_10">
                         <condition id="_3GznZ_11">
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
             </planItem>
             <planItem id="pi_ue__3GznZ_0" name="UserEvent_0 " definitionRef="ue__3GznZ_0">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[UserEvent_0
-]]>
-                    </text>
+                    <text><![CDATA[UserEvent_0
+]]></text>
                 </documentation>
             </planItem>
             <planningTable id="_3GznZ_3">
@@ -55,9 +49,7 @@
                     <itemControl id="_3GznZ_0">
                         <repetitionRule id="_3GznZ_8">
                             <condition id="_3GznZ_9">
-                                <body>
-                                    <![CDATA[true]]>
-                                </body>
+                                <body><![CDATA[true]]></body>
                             </condition>
                         </repetitionRule>
                     </itemControl>
@@ -68,9 +60,7 @@
                 <extensionElements mustUnderstand="false">
                     <cafienne:implementation name="SendResponse" xmlns:cafienne="org.cafienne" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition" humanTaskRef="sendresponse.humantask">
                         <documentation textFormat="text/plain">
-                            <text>
-                                <![CDATA[Sends a response back to the initiator of the hello world case]]>
-                            </text>
+                            <text><![CDATA[Sends a response back to the initiator of the hello world case]]></text>
                         </documentation>
                         <input id="Greeting" name="Greeting"/>
                         <output id="Response" name="Response"/>
@@ -134,8 +124,7 @@
       }
     }
   }
-}
-</task-model>
+}</task-model>
                         <parameterMapping id="_3GznZ_21" sourceRef="Response" targetRef="_3GznZ_20"/>
                     </cafienne:implementation>
                 </extensionElements>
@@ -147,16 +136,12 @@
         <caseRoles>
             <role id="_3GznZ_4" name="Role1">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Role ABC]]>
-                    </text>
+                    <text><![CDATA[Role ABC]]></text>
                 </documentation>
             </role>
             <role id="_3GznZ_5" name="Role2">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Role 2]]>
-                    </text>
+                    <text><![CDATA[Role 2]]></text>
                 </documentation>
             </role>
             <role id="_3GznZ_6" name="Role 3"/>
@@ -169,7 +154,7 @@
                 <Bounds x="20" y="20" width="800" height="500"/>
             </CMMNShape>
             <CMMNShape cmmnElementRef="pi_ht__3GznZ_0">
-                <Bounds x="80" y="110" width="100" height="60"/>
+                <Bounds x="90" y="110" width="100" height="60"/>
             </CMMNShape>
             <CMMNShape cmmnElementRef="pi_ht__3GznZ_1">
                 <Bounds x="300" y="110" width="100" height="60"/>

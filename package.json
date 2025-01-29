@@ -14,10 +14,11 @@
     "lodash": "~4.17.4",
     "morgan": "^1.10.0",
     "path": "^0.12.7",
-    "walk-sync": "^3.0.0"
+    "walk-sync": "^3.0.0",
+    "xml-formatter": "^3.6.4"
   },
   "devDependencies": {
-    "@types/": "xmldom/xmldom",
+    "@types/@xmldom/xmldom": "^0.9.7",
     "@types/express": "^4.17.13",
     "@types/jquery": "^3.5.30",
     "@types/jqueryui": "^1.12.23",

@@ -1,4 +1,4 @@
-<case id="testCaseFile.case" name="testCaseFile" expressionLanguage="spel" guid="_ZDMuS">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="testCaseFile.case" name="testCaseFile" expressionLanguage="spel" guid="_ZDMuS">
     <caseFileModel>
         <caseFileItem id="_ZDMuS_4" name="Root" multiplicity="ExactlyOne" definitionRef="root.cfid">
             <children>
@@ -8,4 +8,5 @@
         <caseFileItem id="_ZDMuS_5" name="AnotherRoot" multiplicity="ExactlyOne"/>
     </caseFileModel>
     <casePlanModel id="cm_testCaseFile.case_0" name="testCaseFile" autoComplete="true"/>
+    <caseRoles/>
 </case>

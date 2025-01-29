@@ -21,9 +21,7 @@
         </caseFileModel>
         <casePlanModel id="cm_testPlanningTable.case_0" name="testPlanningTable" autoComplete="true">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[testPlanningTable]]>
-                </text>
+                <text><![CDATA[testPlanningTable]]></text>
             </documentation>
             <planItem id="cm_testPlanningTable.case_2" name="Task_1" definitionRef="ht_cm_testPlanningTable.case_2"/>
             <sentry id="s__0LiAz_6">
@@ -38,16 +36,12 @@
                 <discretionaryItem id="cm_testPlanningTable.case_8" name="Stage_1" definitionRef="s_cm_testPlanningTable.case_8"/>
                 <applicabilityRule id="rule_testPlanningTable.case_0" name="rule1">
                     <condition>
-                        <body>
-                            <![CDATA[r1==true]]>
-                        </body>
+                        <body><![CDATA[r1==true]]></body>
                     </condition>
                 </applicabilityRule>
                 <applicabilityRule id="rule_testPlanningTable.case_1" name="rule2">
                     <condition>
-                        <body>
-                            <![CDATA[r2]]>
-                        </body>
+                        <body><![CDATA[r2]]></body>
                     </condition>
                 </applicabilityRule>
             </planningTable>
@@ -57,30 +51,22 @@
                     <discretionaryItem id="cm_testPlanningTable.case_14" name="Task_5" definitionRef="ht_cm_testPlanningTable.case_14"/>
                     <applicabilityRule id="rule_testPlanningTable.case_2" name="r4">
                         <condition>
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </applicabilityRule>
                     <applicabilityRule id="rule_testPlanningTable.case_3" name="r5">
                         <condition>
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </applicabilityRule>
                     <applicabilityRule id="rule_testPlanningTable.case_4" name="r6">
                         <condition>
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </applicabilityRule>
                     <applicabilityRule id="rule_testPlanningTable.case_5" name="r7">
                         <condition>
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </applicabilityRule>
                 </planningTable>
@@ -96,23 +82,17 @@
         <caseRoles>
             <role id="_j75iY_31" name="CaseRole_1">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[r1]]>
-                    </text>
+                    <text><![CDATA[r1]]></text>
                 </documentation>
             </role>
             <role id="_j75iY_45" name="CaseRole_2">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[null]]>
-                    </text>
+                    <text><![CDATA[null]]></text>
                 </documentation>
             </role>
             <role id="_j75iY_50" name="CaseRole_3">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[null]]>
-                    </text>
+                    <text><![CDATA[null]]></text>
                 </documentation>
             </role>
         </caseRoles>
@@ -133,7 +113,7 @@
                 <Bounds x="10" y="10" width="734" height="742"/>
             </CMMNShape>
             <CMMNShape cmmnElementRef="cm_testPlanningTable.case_4">
-                <Bounds x="290" y="120" width="100" height="60"/>
+                <Bounds x="300" y="90" width="100" height="60"/>
             </CMMNShape>
             <CMMNShape cmmnElementRef="cm_testPlanningTable.case_8">
                 <Bounds x="250" y="220" width="420" height="140"/>
@@ -157,7 +137,7 @@
                 <Bounds x="107" y="80" width="24" height="16"/>
             </CMMNShape>
             <CMMNShape cmmnElementRef="_0LiAz_6">
-                <Bounds x="284" y="140" width="12" height="20"/>
+                <Bounds x="294" y="110" width="12" height="20"/>
             </CMMNShape>
             <CMMNEdge sourceCMMNElementRef="cm_testPlanningTable.case_12" targetCMMNElementRef="cm_testPlanningTable.case_2"/>
             <CMMNEdge sourceCMMNElementRef="cm_testPlanningTable.case_14" targetCMMNElementRef="cm_testPlanningTable.case_2"/>

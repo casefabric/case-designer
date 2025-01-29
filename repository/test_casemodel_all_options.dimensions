@@ -1,4 +1,4 @@
-<CMMNDI>
+<CMMNDI xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
     <CMMNDiagram>
         <CMMNShape cmmnElementRef="cm_cs7Ha_2">
             <Bounds x="10" y="24" width="1198" height="1919"/>

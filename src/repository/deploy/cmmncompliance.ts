@@ -170,7 +170,7 @@ export default class CMMNCompliance {
                     lastPlanItem.parentNode?.appendChild(sentry);
                 }
                 // Move the criterion content into the <sentry> element
-                XML.elements(criterion).forEach(child => sentry.appendChild(XML.cloneWithoutNamespace(child)));
+                XML.elements(criterion).forEach(child => sentry.appendChild(child.cloneNode(true)));
             }
         });
     }

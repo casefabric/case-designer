@@ -27,9 +27,7 @@
                 <itemControl id="_U6HlD_13">
                     <repetitionRule id="_U6HlD_14" contextRef="Greeting">
                         <condition id="_U6HlD_15">
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
@@ -43,9 +41,7 @@
                 <extensionElements mustUnderstand="false">
                     <cafienne:implementation name="ReadResponse" xmlns:cafienne="org.cafienne" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition" humanTaskRef="readresponse.humantask">
                         <documentation textFormat="text/plain">
-                            <text>
-                                <![CDATA[Read Response]]>
-                            </text>
+                            <text><![CDATA[Read Response]]></text>
                         </documentation>
                         <input id="Response" name="Response"/>
                         <task-model>{
@@ -84,8 +80,7 @@
       "ui:widget": "textarea"
     }
   }
-}
-</task-model>
+}</task-model>
                     </cafienne:implementation>
                 </extensionElements>
             </humanTask>
@@ -93,9 +88,7 @@
                 <extensionElements mustUnderstand="false">
                     <cafienne:implementation name="SendResponse" xmlns:cafienne="org.cafienne" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition" humanTaskRef="sendresponse.humantask">
                         <documentation textFormat="text/plain">
-                            <text>
-                                <![CDATA[Sends a response back to the initiator of the hello world case]]>
-                            </text>
+                            <text><![CDATA[Sends a response back to the initiator of the hello world case]]></text>
                         </documentation>
                         <input id="Greeting" name="Greeting"/>
                         <output id="Response" name="Response"/>
@@ -159,8 +152,7 @@
       }
     }
   }
-}
-</task-model>
+}</task-model>
                     </cafienne:implementation>
                 </extensionElements>
             </humanTask>
