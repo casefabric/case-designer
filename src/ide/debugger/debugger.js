@@ -1,12 +1,12 @@
 'use strict';
 
 import $ from "jquery";
-import { $get } from "../../util/ajax";
 import CodeMirrorConfig from "../editors/external/codemirrorconfig";
 import StandardForm from "../editors/standardform";
 import CaseView from "../modeleditor/case/elements/caseview";
 import Settings from "../settings/settings";
 import RightSplitter from "../splitter/rightsplitter";
+import { $get } from "../util/ajax";
 import HtmlUtil from "../util/htmlutil";
 
 /**

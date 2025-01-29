@@ -1,7 +1,6 @@
 import $ from "jquery";
 import Importer from "../repository/import/importer";
 import Repository from "../repository/repository";
-import RemoteFileStorage from "../repository/storage/remotefilestorage";
 import CoverPanel from "./coverpanel";
 import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
@@ -9,6 +8,7 @@ import IDEMain from "./idemain";
 import MessageBox from "./messagebox";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
+import RemoteFileStorage from "./remotefilestorage";
 import RepositoryBrowser from "./repositorybrowser";
 import SettingsEditor from "./settings/settingseditor";
 

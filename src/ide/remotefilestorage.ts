@@ -1,7 +1,7 @@
-import $ajax, { $get, AjaxError } from '../../util/ajax';
-import XML from '../../util/xml';
-import Metadata from '../serverfile/metadata';
-import FileStorage from './filestorage';
+import Metadata from '../repository/serverfile/metadata';
+import FileStorage from '../repository/storage/filestorage';
+import XML from '../util/xml';
+import $ajax, { $get, AjaxError } from './util/ajax';
 
 export default class RemoteFileStorage extends FileStorage {
     repositoryUrl: string;

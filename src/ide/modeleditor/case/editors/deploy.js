@@ -1,8 +1,8 @@
 ﻿import Definitions from "../../../../repository/deploy/definitions";
-import $ajax from "../../../../util/ajax";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import StandardForm from "../../../editors/standardform";
 import Settings from "../../../settings/settings";
+import $ajax from "../../../util/ajax";
 import CaseView from "../elements/caseview";
 
 export default class Deploy extends StandardForm {
