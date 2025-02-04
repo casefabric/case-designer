@@ -1,5 +1,5 @@
 import XML, { Element } from "../../util/xml";
-import Tags from "../definition/dimensions/tags";
+import Tags from "../definition/tags";
 import SchemaDefinition from "../definition/type/schemadefinition";
 import TypeDefinition from "../definition/type/typedefinition";
 import Repository from "../repository";

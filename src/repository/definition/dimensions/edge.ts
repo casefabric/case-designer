@@ -3,11 +3,11 @@ import { Element } from "../../../util/xml";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
+import Tags from "../tags";
 import XMLSerializable from "../xmlserializable";
 import Diagram from "./diagram";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
-import Tags from "./tags";
 import Vertex from "./vertex";
 
 export default class Edge extends DiagramElement {

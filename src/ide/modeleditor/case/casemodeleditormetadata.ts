@@ -1,5 +1,5 @@
-import Tags from "../../../repository/definition/dimensions/tags";
 import ModelDefinition from "../../../repository/definition/modeldefinition";
+import Tags from "../../../repository/definition/tags";
 import TypeDefinition from "../../../repository/definition/type/typedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import ServerFile from "../../../repository/serverfile/serverfile";

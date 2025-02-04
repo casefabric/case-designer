@@ -1,5 +1,5 @@
 import $ from "jquery";
-import Tags from "../../../../repository/definition/dimensions/tags";
+import Tags from "../../../../repository/definition/tags";
 import XML from "../../../../util/xml";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import HtmlUtil from "../../../util/htmlutil";

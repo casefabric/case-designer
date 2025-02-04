@@ -1,12 +1,12 @@
 import Util from "../../../util/util";
 import { Element } from "../../../util/xml";
 import CMMNElementDefinition from "../cmmnelementdefinition";
+import Tags from "../tags";
 import ConnectorStyle from "./connectorstyle";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import Edge from "./edge";
 import ShapeDefinition from "./shape";
-import Tags from "./tags";
 
 export default class Diagram extends DiagramElement {
     shapes: ShapeDefinition[];

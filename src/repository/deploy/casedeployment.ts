@@ -1,9 +1,9 @@
 import XML, { Element } from "../../util/xml";
 import CaseDefinition from "../definition/cmmn/casedefinition";
+import Tags from "../definition/tags";
 import CMMNCompliance from "./cmmncompliance";
 import DefinitionDeployment from "./definitiondeployment";
 import Definitions from "./definitions";
-import Tags from "./tags";
 import TypeDeployment from "./typedeployment";
 
 export default class CaseDeployment extends DefinitionDeployment {

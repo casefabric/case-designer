@@ -1,8 +1,8 @@
 import { Element } from "../../../util/xml";
+import Tags from "../tags";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import Edge from "./edge";
-import Tags from "./tags";
 
 export default class Vertex extends DiagramElement {
     /**

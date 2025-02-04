@@ -1,7 +1,7 @@
 import DimensionsFile from "../../serverfile/dimensionsfile";
 import ModelDefinition from "../modeldefinition";
+import Tags from "../tags";
 import Diagram from "./diagram";
-import Tags from "./tags";
 
 export default class Dimensions extends ModelDefinition {
     errors: string[] = [];

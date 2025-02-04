@@ -3,10 +3,10 @@ import CaseFileDefinitionDefinition from "../definition/cfid/casefileitemdefinit
 import CaseDefinition from "../definition/cmmn/casedefinition";
 import ModelDefinition from "../definition/modeldefinition";
 import ProcessModelDefinition from "../definition/process/processmodeldefinition";
+import Tags from "../definition/tags";
 import TypeDefinition from "../definition/type/typedefinition";
 import DefinitionDeployment from "./definitiondeployment";
 import DeploymentFactory from "./deploymentfactory";
-import Tags from "./tags";
 
 export default class Definitions {
 

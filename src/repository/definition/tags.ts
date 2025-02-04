@@ -8,4 +8,8 @@ export default class Tags {
     static CMMNELEMENTREF = 'cmmnElementRef';
     static SOURCECMMNELEMENTREF = 'sourceCMMNElementRef';
     static TARGETCMMNELEMENTREF = 'targetCMMNElementRef';
+    static CASE_FILE_ITEM = 'caseFileItem';
+    static CASE_FILE_ITEM_DEFINITION = 'caseFileItemDefinition';
+    static CHILDREN = 'children';
+    static PROPERTY = 'property';
 }
