@@ -20,4 +20,8 @@ export default class FileStorage {
     async listModels(): Promise<Metadata[]> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
+
+    async deploy(fileName: string, body: any): Promise<void> {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
 }

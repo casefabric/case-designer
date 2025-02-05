@@ -1,5 +1,6 @@
 import Util from "../util/util";
 import ModelDefinition from "./definition/modeldefinition";
+import Definitions from "./deploy/definitions";
 import CaseFile from "./serverfile/casefile";
 import CFIDFile from "./serverfile/cfidfile";
 import DimensionsFile from "./serverfile/dimensionsfile";
@@ -302,5 +303,9 @@ export default class Repository {
 
     getFile(fileName: string): ServerFile<ModelDefinition> | undefined {
         return this.list.find(file => file.fileName === fileName);
+    }
+
+    async deploy(definitions: Definitions) {
+        this.storage.deploy(definitions.fileName, definitions.contents());
     }
 }

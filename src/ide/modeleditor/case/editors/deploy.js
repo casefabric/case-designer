@@ -90,11 +90,7 @@ export default class Deploy extends StandardForm {
 
     async deploy() {
         const deployment = new Definitions(this.case.caseDefinition);
-        const data = deployment.contents();
-        const url = '/repository/deploy/' + deployment.fileName;
-        const type = 'post';
-        console.log('Posting deployment to ' + url);
-        await $ajax({ url, data, type, headers: { 'content-type': 'application/xml' } }).catch((error) => {
+        await this.modelEditor.ide.repository.deploy(deployment).catch(error => {
             console.error('Deployment failed ', error);
             console.groupEnd();
             this._setDeployTextArea(error.message);

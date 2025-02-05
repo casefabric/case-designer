@@ -72,4 +72,16 @@ export default class RemoteFileStorage extends FileStorage {
                 throw 'Could not fetch the list of models: ' + error.message
             });
     }
+
+    async deploy(fileName: string, body: any): Promise<void> {
+        const url = `${this.repositoryUrl}/deploy/${fileName}`;
+        const type = 'post';
+        console.log('Posting deployment to ' + url);
+        const response = await $ajax({ url, data: body, type, headers: { 'content-type': 'application/xml' } })
+            .catch((error: any) => {
+                throw new Error('Deployment failed: ' + error.message);
+            });
+
+        return response.data;
+    }
 }
