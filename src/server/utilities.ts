@@ -9,9 +9,6 @@ export function isKnownExtension(extension: string): boolean {
 }
 
 export class Utilities {
-    static logging: boolean = false;
-    private static date = new Date();
-
     static logMessage: (msg: string) => void = (msg:string) => {}; // By default ignore logging from 'ensureDirectory'
 
     static getFiles(directory: string) {

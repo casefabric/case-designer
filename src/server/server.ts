@@ -7,11 +7,17 @@ import express, { Request, Response } from 'express';
 import morgan from 'morgan';
 import path from 'path';
 import walkSync from 'walk-sync';
-import config from '../config/config';
+import RepositoryConfiguration from '../config/config';
+import Logger from './logger';
+import ServerConfiguration from './serverconfiguration';
 import { Utilities } from './utilities';
 
-const repositoryPath = config.repository;
-const deployPath = config.deploy;
+const repositoryConfig = new RepositoryConfiguration();
+const repositoryPath = repositoryConfig.repository;
+const deployPath = repositoryConfig.deploy;
+
+const serverConfig = new ServerConfiguration();
+const logger = new Logger();
 
 const router = express.Router();
 const xmlParser = bodyParser.text({ type: 'application/xml', limit: '50mb' });
@@ -28,12 +34,8 @@ function replyContents(res: Response) {
  * Returns the repository contents by name, last modified timestamp and usage information
  */
 router.get('/list', (_req: Request, res: Response) => {
-    logMessage(`LIST`);
+    logger.printAction(`LIST`);
     replyContents(res);
-});
-
-router.get('/config', (req, res) => {
-    res.json(Object.assign({ server: config.backendUrl }));
 });
 
 /**
@@ -41,7 +43,7 @@ router.get('/config', (req, res) => {
  */
 router.get('/load/*', function (req: Request, res: Response, _next) {
     const fileName = req.params[0];
-    logMessage(`LOAD   /${fileName}`);
+    logger.printAction(`LOAD   /${fileName}`);
     try {
         const content = Utilities.readFile(repositoryPath, fileName);
         res.setHeader('Content-Type', 'application/xml');
@@ -65,7 +67,7 @@ router.get('/load/*', function (req: Request, res: Response, _next) {
 router.post('/save/*', xmlParser, function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
-        logMessage(`SAVE   /${fileName}`);
+        logger.printAction(`SAVE   /${fileName}`);
         Utilities.writeFile(repositoryPath, fileName, req.body);
         replyList(res);
     } catch (err) {
@@ -83,7 +85,7 @@ router.put('/rename/:fileName', xmlParser, function (req: Request, res: Response
         const fileName = req.params.fileName;
         const newName = req.query.newName?.toString() ?? (() => { throw new Error('newName query parameter is required'); })();
         const newContent = req.body;
-        logMessage(`RENAME /${fileName} to /${newName}`);
+        logger.printAction(`RENAME /${fileName} to /${newName}`);
         Utilities.renameFile(repositoryPath, fileName, newName);
         Utilities.writeFile(repositoryPath, newName, newContent);
         replyContents(res);
@@ -99,7 +101,7 @@ router.put('/rename/:fileName', xmlParser, function (req: Request, res: Response
 router.delete('/delete/*', function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
-        logMessage(`DELETE /${fileName}`);
+        logger.printAction(`DELETE /${fileName}`);
         Utilities.deleteFile(repositoryPath, fileName);
         replyList(res);
     } catch (err) {
@@ -114,7 +116,7 @@ router.delete('/delete/*', function (req: Request, res: Response, _next) {
 router.post('/deploy/*', xmlParser, function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
-        logMessage(`DEPLOY /${fileName}`);
+        logger.printAction(`DEPLOY /${fileName}`);
         Utilities.writeFile(deployPath, fileName, req.body);
         res.setHeader('Content-Type', 'application/xml');
         res.status(201).end();
@@ -124,34 +126,10 @@ router.post('/deploy/*', xmlParser, function (req: Request, res: Response, _next
     }
 });
 
-
 const app = express();
-
-const logOptions: any = {};
-let logActions = false;
-if (config.log_traffic === 'false' || config.log_traffic === 'actions') {
-    logActions = config.log_traffic === 'actions';
-    if (logActions) {
-        // both actions and http failures
-        console.log("-  console logging: both repository actions and HTTP errors are logged");
-        Utilities.logMessage = logMessage;
-    } else {
-        // Only http failures
-        console.log("-  console logging: only HTTP errors are logged");
-    }
-
-    // Set a handler that logs failures
-    logOptions.skip = (_req: Request, res: Response) => {
-        // Only log failures
-        return res.statusCode < 400
-    }
-} else {
-    console.log("-  console logging: all HTTP traffic is logged");
-}
-app.use(morgan('dev', logOptions));
+app.use(morgan('dev', logger));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 app.use('/node_modules', express.static(path.join(__dirname, '/../../node_modules')));
 
 // Do not add static content when running in a docker container.
@@ -169,14 +147,12 @@ app.use(function (req: Request, _res: Response, next) {
     next(err);
 });
 
-app.listen(config.serverPort, () => {
-    const started = new Date();
-    console.log('- backend endpoint: ' + config.backendUrl);
+app.listen(serverConfig.port, () => {
+    const startCompleted = new Date();
     console.log('- sources location: ' + path.resolve(repositoryPath));
     console.log('-  deploy location: ' + path.resolve(deployPath)); // Intentional double space to align both configuration values
     console.log('==================================================   ');
-    const startMoment = new Date();
-    console.log(`Cafienne IDE Server started (in ${started.getTime() - startMoment.getTime()}ms) on http://localhost:${config.serverPort}\n`);
+    console.log(`Cafienne IDE Server started (in ${startCompleted.getTime() - startMoment.getTime()}ms) on http://localhost:${serverConfig.port}\n`);
 });
 
 function getRepositoryFiles(includeJson: boolean) {
@@ -189,15 +165,4 @@ function getRepositoryFiles(includeJson: boolean) {
     }
 
     return Utilities.getRepositoryFiles(repositoryPath).map(fileCreator);
-}
-
-function logMessage(msg: string) {
-    if (logActions) {
-        log(msg);
-    }
-}
-
-function log(msg: string) {
-    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
-    console.log(now + "|" + msg);
 }
