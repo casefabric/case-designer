@@ -1,5 +1,6 @@
-import ElementDefinition from "@repository/definition/elementdefinition";
-import ModelDefinition from "@repository/definition/modeldefinition";
+import { Element } from "../../../../util/xml";
+import ElementDefinition from "../../elementdefinition";
+import ModelDefinition from "../../modeldefinition";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
 import CriterionDefinition from "./criteriondefinition";

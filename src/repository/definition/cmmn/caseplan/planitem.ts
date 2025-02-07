@@ -1,6 +1,7 @@
-import { ReferenceSet } from "@repository/definition/references/referenceset";
-import Util from "@util/util";
+import Util from "../../../../util/util";
+import { Element } from "../../../../util/xml";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
+import { ReferenceSet } from "../../references/referenceset";
 import CaseDefinition from "../casedefinition";
 import CaseRoleReference from "../caseteam/caserolereference";
 import CriterionDefinition from "../sentry/criteriondefinition";

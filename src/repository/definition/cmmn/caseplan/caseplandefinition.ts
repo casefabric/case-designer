@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import StageDefinition from "./stagedefinition";
 
 export default class CasePlanDefinition extends StageDefinition {

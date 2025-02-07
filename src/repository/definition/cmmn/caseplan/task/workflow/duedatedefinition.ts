@@ -1,4 +1,5 @@
-import ExpressionContainer from "@repository/definition/cmmn/expression/expressioncontainer";
+import { Element } from "../../../../../../util/xml";
+import ExpressionContainer from "../../../expression/expressioncontainer";
 
 export default class DueDateDefinition extends ExpressionContainer {
     static TAG = 'duedate';

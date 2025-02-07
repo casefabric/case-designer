@@ -1,3 +1,4 @@
+import { Element } from "../../../../../util/xml";
 import CaseDefinition from "../../casedefinition";
 import CaseParameterDefinition from "../../contract/caseparameterdefinition";
 import TaskDefinition from "./taskdefinition";

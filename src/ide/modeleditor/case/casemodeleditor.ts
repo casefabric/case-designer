@@ -1,16 +1,16 @@
-import CaseDefinition from "@definition/cmmn/casedefinition";
-import MovableEditor from "@ide/editors/movableeditor";
-import IDE from "@ide/ide";
-import CaseFile from "@repository/serverfile/casefile";
-import ModelEditor from "../modeleditor";
-import CaseView from "./elements/caseview";
-import Grid from "./grid";
-import UndoManager from "./undoredo/undoredo";
 import $ from "jquery";
+import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
+import CaseFile from "../../../repository/serverfile/casefile";
+import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
+import MovableEditor from "../../editors/movableeditor";
+import IDE from "../../ide";
+import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditorMetadata from "./casemodeleditormetadata";
-import DimensionsFile from "@repository/serverfile/dimensionsfile";
+import CaseView from "./elements/caseview";
 import CMMNElementView from "./elements/cmmnelementview";
+import Grid from "./grid";
+import UndoManager from "./undoredo/undoredo";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;

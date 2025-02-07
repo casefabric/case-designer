@@ -1,4 +1,4 @@
-import XML from "@util/xml";
+import XML from "../../../../../util/xml";
 import Migrator from "../migrator";
 
 export default class CasePlanMigrator {
@@ -160,7 +160,7 @@ class ItemMigrator {
         if (this.item.getAttribute('authorizedRoleRefs')) {
             newChild.setAttribute('authorizedRoleRefs', this.item.getAttribute('authorizedRoleRefs'))
         }
-        this.item.childNodes.forEach(node => newChild.appendChild(node.cloneNode(true)));
+        XML.children(this.item).forEach(node => newChild.appendChild(node.cloneNode(true)));
         // NOTE: as of now we're keeping the plan item in tree, as that will anyway not be parsed no longer and therefore also not serialized.
         this.item.parentElement.insertBefore(newChild, this.item);
         console.log("Conversion result: ", XML.prettyPrint(newChild));

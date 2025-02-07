@@ -1,8 +1,8 @@
-﻿import Edge from "@definition/dimensions/edge";
+﻿import { dia } from "jointjs";
+import Edge from "../../../../repository/definition/dimensions/edge";
 import CanvasElement from "./canvaselement";
 import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
-import { dia } from "jointjs";
 
 export default class Connector extends CanvasElement {
     /**

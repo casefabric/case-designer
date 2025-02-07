@@ -1,10 +1,10 @@
-﻿import CaseFileDefinitionDefinition, { UNKNOWN, UNKNOWN_URI, UNSPECIFIED, UNSPECIFIED_URI, XMLELEMENT, XMLELEMENT_URI } from "@repository/definition/cfid/casefileitemdefinitiondefinition";
-import XML from "@util/xml";
-import $ from "jquery";
+﻿import $ from "jquery";
+import CaseFileDefinitionDefinition, { UNKNOWN, UNKNOWN_URI, UNSPECIFIED, UNSPECIFIED_URI, XMLELEMENT, XMLELEMENT_URI } from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+import XML from "../../../util/xml";
+import CaseFileItemsEditor from "../case/editors/file/classic/casefileitemseditor";
 import CFIDefinitionUnknown from "./cfidefinitionunknown";
 import CFIDefinitionUnspecified from "./cfidefinitionunspecified";
 import CFIDefinitionXMLElement from "./cfidefinitionxmlelement";
-import CaseFileItemsEditor from "../case/editors/file/classic/casefileitemseditor";
 
 export default class CaseFileItemDefinitionEditor {
     /** 

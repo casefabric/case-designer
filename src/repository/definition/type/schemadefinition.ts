@@ -1,8 +1,9 @@
-import Util from "@util/util";
+import Util from "../../../util/util";
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
+import ModelDefinition from "../modeldefinition";
 import SchemaPropertyDefinition from "./schemapropertydefinition";
 import TypeDefinition from "./typedefinition";
-import ModelDefinition from "../modeldefinition";
 
 export default class SchemaDefinition extends ElementDefinition<TypeDefinition> {
     static TAG: string = 'schema';

@@ -1,10 +1,10 @@
 import StageView from "../../stageview";
+import DecoratorBox from "../decoratorbox";
+import AutoCompleteDecorator from "../items/autocomplete";
 import ManualActivationRuleDecorator from "../items/manualactivationrule";
+import MinusDecorator from "../items/minus";
 import RepetitionRuleDecorator from "../items/repetitionrule";
 import RequiredRuleDecorator from "../items/requiredrule";
-import DecoratorBox from "../decoratorbox";
-import MinusDecorator from "../items/minus";
-import AutoCompleteDecorator from "../items/autocomplete";
 
 export default class StageDecoratorBox extends DecoratorBox {
     /**

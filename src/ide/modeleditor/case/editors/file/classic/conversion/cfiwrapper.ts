@@ -1,7 +1,7 @@
-import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
-import ElementDefinition from "@repository/definition/elementdefinition";
-import TypeDefinition from "@repository/definition/type/typedefinition";
-import CFIDFile from "@repository/serverfile/cfidfile";
+import CaseFileItemDef from "../../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import ElementDefinition from "../../../../../../../repository/definition/elementdefinition";
+import TypeDefinition from "../../../../../../../repository/definition/type/typedefinition";
+import CFIDFile from "../../../../../../../repository/serverfile/cfidfile";
 import CFIDConverter from "./cfidconverter";
 import TypeWrapper from "./typewrapper";
 

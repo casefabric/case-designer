@@ -1,8 +1,9 @@
-import Util from "@util/util";
-import MovableEditor from "@ide/editors/movableeditor";
-import CMMNElementView from "../cmmnelementview";
-import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
 import $ from "jquery";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
+import Util from "../../../../../util/util";
+import MovableEditor from "../../../../editors/movableeditor";
+import HtmlUtil from "../../../../util/htmlutil";
+import CMMNElementView from "../cmmnelementview";
 
 export default class Properties extends MovableEditor {
     /**
@@ -93,7 +94,7 @@ export default class Properties extends MovableEditor {
 
     clear() {
         if (this.htmlContainer) {
-            Util.clearHTML(this.htmlContainer);
+            HtmlUtil.clearHTML(this.htmlContainer);
         }
     }
 

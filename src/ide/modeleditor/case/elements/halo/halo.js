@@ -1,9 +1,9 @@
-import Util from "@util/util";
+import $ from "jquery";
+import HtmlUtil from "../../../../util/htmlutil";
 import CMMNElementView from "../cmmnelementview";
 import HaloBar from "./halobar";
 import { DeleteHaloItem, PropertiesHaloItem } from "./item/haloclickitems";
 import { ConnectorHaloItem } from "./item/halodragitems";
-import $ from "jquery";
 
 export default class Halo {
     /**
@@ -64,7 +64,7 @@ export default class Halo {
      */
     delete() {
         this.element.case.paperContainer.off('scroll', this.scrollListener);
-        Util.removeHTML(this.html);
+        HtmlUtil.removeHTML(this.html);
     }
 
     refresh() {

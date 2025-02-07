@@ -1,10 +1,10 @@
-import CasePlanDefinition from "@definition/cmmn/caseplan/caseplandefinition";
-import PlanItem from "@definition/cmmn/caseplan/planitem";
-import { CaseFileItemStartTrigger, PlanItemStartTrigger } from "@definition/cmmn/caseplan/timereventdefinition";
-import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
+import $ from "jquery";
+import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import CasePlanDefinition from "../../../../../repository/definition/cmmn/caseplan/caseplandefinition";
+import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
+import { CaseFileItemStartTrigger, PlanItemStartTrigger } from "../../../../../repository/definition/cmmn/caseplan/timereventdefinition";
 import TimerEventView from "../timereventview";
 import PlanItemProperties from "./planitemproperties";
-import $ from "jquery";
 
 export default class TimerEventProperties extends PlanItemProperties {
     /**

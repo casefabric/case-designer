@@ -1,4 +1,4 @@
-import XML from "@util/xml";
+import XML, { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
 import ProcessModelDefinition from "./processmodeldefinition";
@@ -22,6 +22,6 @@ export default class ProcessImplementationDefinition extends CafienneImplementat
     }
 
     createExportNode(parentNode: Element) {
-        super.getExtensionsElement(parentNode).appendChild(XML.loadXMLString(this._xml).documentElement);
+        super.getExtensionsElement(parentNode).appendChild(XML.loadXMLString(this._xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })());
     }
 }

@@ -1,9 +1,9 @@
-import TypeDefinition from "@repository/definition/type/typedefinition";
-import XML from "@util/xml";
+import XML, { Element } from "../../util/xml";
+import Tags from "../definition/tags";
+import TypeDefinition from "../definition/type/typedefinition";
 import CaseDeployment from "./casedeployment";
 import DefinitionDeployment from "./definitiondeployment";
 import Definitions from "./definitions";
-import Tags from "./tags";
 
 export default class TypeDeployment extends DefinitionDeployment {
     schema: Schema;

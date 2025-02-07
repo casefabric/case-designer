@@ -1,11 +1,11 @@
-﻿import CaseDefinition from "@definition/cmmn/casedefinition";
-import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import ShapeDefinition from "@definition/dimensions/shape";
+﻿import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
+import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import { CMMNDocumentationDefinition } from "../../../../repository/definition/elementdefinition";
 import CMMNElementView from "./cmmnelementview";
+import CaseFileItemHalo from "./halo/casefileitemhalo";
 import CaseFileItemProperties from "./properties/casefileitemproperties";
 import StageView from "./stageview";
-import CaseFileItemHalo from "./halo/casefileitemhalo";
-import { CMMNDocumentationDefinition } from "@repository/definition/elementdefinition";
 
 export default class CaseFileItemView extends CMMNElementView {
     /**

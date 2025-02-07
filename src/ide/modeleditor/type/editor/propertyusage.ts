@@ -1,12 +1,12 @@
-import CaseModelEditor from "@ide/modeleditor/case/casemodeleditor";
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
-import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
-import ElementDefinition from "@repository/definition/elementdefinition";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import SchemaPropertyDefinition from "@repository/definition/type/schemapropertydefinition";
-import CaseFile from "@repository/serverfile/casefile";
-import TypeFile from "@repository/serverfile/typefile";
-import Util from "@util/util";
+import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
+import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import ElementDefinition from "../../../../repository/definition/elementdefinition";
+import ModelDefinition from "../../../../repository/definition/modeldefinition";
+import SchemaPropertyDefinition from "../../../../repository/definition/type/schemapropertydefinition";
+import CaseFile from "../../../../repository/serverfile/casefile";
+import TypeFile from "../../../../repository/serverfile/typefile";
+import Util from "../../../../util/util";
+import CaseModelEditor from "../../case/casemodeleditor";
 import { PropertyRenderer } from "./typerenderer";
 
 export default class PropertyUsage {

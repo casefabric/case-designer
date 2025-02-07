@@ -1,9 +1,10 @@
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
-import ParameterMappingDefinition from "@repository/definition/cmmn/contract/parametermappingdefinition";
-import ExternalReference from "@repository/definition/references/externalreference";
-import HumanTaskModelDefinition from "@repository/definition/humantask/humantaskmodeldefinition";
-import ProcessModelDefinition from "@repository/definition/process/processmodeldefinition";
+import { Element } from "../../../../../../util/xml";
+import CaseDefinition from "../../../../cmmn/casedefinition";
+import ParameterMappingDefinition from "../../../../cmmn/contract/parametermappingdefinition";
 import CafienneImplementationDefinition from "../../../../extensions/cafienneimplementationdefinition";
+import HumanTaskModelDefinition from "../../../../humantask/humantaskmodeldefinition";
+import ProcessModelDefinition from "../../../../process/processmodeldefinition";
+import ExternalReference from "../../../../references/externalreference";
 import HumanTaskDefinition from "../humantaskdefinition";
 import AssignmentDefinition from "./assignmentdefinition";
 import DueDateDefinition from "./duedatedefinition";

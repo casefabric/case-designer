@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import { MilestoneEventListenerDefinition } from "./planitem";
 
 export default class MilestoneDefinition extends MilestoneEventListenerDefinition {

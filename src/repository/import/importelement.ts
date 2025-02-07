@@ -1,11 +1,11 @@
-import Repository from "@repository/repository";
+import XML, { Element } from "../../util/xml";
+import CaseDefinition from "../definition/cmmn/casedefinition";
+import ModelDefinition from "../definition/modeldefinition";
+import TypeDefinition from "../definition/type/typedefinition";
+import Repository from "../repository";
+import CaseFile from "../serverfile/casefile";
 import ServerFile from "../serverfile/serverfile";
 import Importer from "./importer";
-import XML from "@util/xml";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
-import CaseFile from "@repository/serverfile/casefile";
-import TypeDefinition from "@repository/definition/type/typedefinition";
 
 export default class ImportElement {
     repository: Repository;
@@ -20,7 +20,6 @@ export default class ImportElement {
 
     async save() {
         const file = this.repository.get(this.fileName) || this.createFile();
-        file.source = this.content.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
         await file.save();
     }
 
@@ -41,9 +40,7 @@ export class CaseImporter extends ImportElement {
         const file: CaseFile = <CaseFile> this.repository.get(this.fileName) || this.createFile();
         file.source = this.content;
         const definition = new CaseDefinition(file).initialize();
-
         file.source = definition.toXMLString();
-        file.source = file.source.replace(/xmlns="http:\/\/www.omg.org\/spec\/CMMN\/20151109\/MODEL"/g, '');
 
         await file.save();
     }

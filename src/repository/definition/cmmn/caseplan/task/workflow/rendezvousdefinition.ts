@@ -1,4 +1,5 @@
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
+import { Element } from "../../../../../../util/xml";
+import CaseDefinition from "../../../../cmmn/casedefinition";
 import PlanItem from "../../planitem";
 import TaskPairingDefinition from "./taskpairingdefinition";
 

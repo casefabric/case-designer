@@ -1,7 +1,8 @@
-import CafienneImplementationDefinition from "@repository/definition/extensions/cafienneimplementationdefinition";
-import ReferableElementDefinition from "@repository/definition/referableelementdefinition";
-import ModelDefinition from "../modeldefinition";
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
+import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
+import ModelDefinition from "../modeldefinition";
+import ReferableElementDefinition from "../referableelementdefinition";
 
 export default class ParameterDefinition<M extends ModelDefinition> extends ReferableElementDefinition<M> {
     required: boolean = false;

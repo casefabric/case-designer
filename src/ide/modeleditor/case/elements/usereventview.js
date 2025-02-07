@@ -1,5 +1,5 @@
-import UserEventDefinition from "@definition/cmmn/caseplan/usereventdefinition";
-import ShapeDefinition from "@definition/dimensions/shape";
+import UserEventDefinition from "../../../../repository/definition/cmmn/caseplan/usereventdefinition";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import EventListenerView from "./eventlistenerview";
 import UserEventProperties from "./properties/usereventproperties";
 import StageView from "./stageview";

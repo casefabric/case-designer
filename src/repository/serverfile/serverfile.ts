@@ -1,14 +1,15 @@
-import $ajax, { AjaxError } from "@util/ajax";
-import Util from "@util/util";
-import XML from "@util/xml";
+import Util from "../../util/util";
+import XML, { Document, Element } from "../../util/xml";
 import ModelDefinition from "../definition/modeldefinition";
-import RepositoryBase from "../repositorybase";
+import Repository from "../repository";
 import Metadata from "./metadata";
+
 export default class ServerFile<M extends ModelDefinition> {
     private _fileName: any;
     private _source: any;
     private _definition?: M;
     private _xml?: Element;
+    private _document?: Document;
     private static count = 0;
     private instance: number; // Specific for debugging purposes
 
@@ -26,7 +27,7 @@ export default class ServerFile<M extends ModelDefinition> {
      * When created the reference does not yet hold the content. This can be loaded on 
      * demand through the load method, which can be invoked with a callback.
      */
-    constructor(public repository: RepositoryBase, fileName: string, source: any) {
+    constructor(public repository: Repository, fileName: string, source: any) {
         this.instance = ServerFile.count++;
         this.repository = repository;
         this.name = ''; // Will be filled when the file name is set - which is also done after succesful rename actions
@@ -89,8 +90,8 @@ export default class ServerFile<M extends ModelDefinition> {
             if (isReloading) console.log("Clearing contents of " + this.fileName + ", since server indicates there is new content")
             this.clear();
         }
-        if (serverMetadata.serverContent) {
-            this.source = serverMetadata.serverContent;
+        if (serverMetadata.content) {
+            this.source = serverMetadata.content;
         }
         this.lastModified = serverMetadata.lastModified;
     }
@@ -103,8 +104,8 @@ export default class ServerFile<M extends ModelDefinition> {
         if (this._source !== source) {
             // console.log("Setting source of " + this.fileName)
             this._source = source;
-            const xml = XML.parseXML(source);
-            this._xml = xml ? xml.documentElement : xml;
+            this._document = XML.parseXML(source);
+            this._xml = this._document ? this._document.documentElement ?? undefined : undefined;
         }
     }
 
@@ -112,10 +113,15 @@ export default class ServerFile<M extends ModelDefinition> {
         return this._definition;
     }
 
-    get xml() {
+    /**
+     */
+    get xml(): Element | undefined {
         return this._xml;
     }
 
+    get xmlDocument(): Document | undefined {
+        return this._document;
+    }
     /**
      * File no longer exists in server...
      */
@@ -155,27 +161,7 @@ export default class ServerFile<M extends ModelDefinition> {
             return Promise.resolve(this);
         }
 
-        const url = '/repository/load/' + this.fileName;
-        const type = 'get';
-        console.log('Loading ' + url);
-
-        // Simple method for easy checking whether the functionality is still working ...
-        // this.usage();
-
-        const response = await $ajax({ type, url }).catch((error: AjaxError) => {
-            if (error.xhr && error.xhr.status === 404) {
-                throw `File "${this.fileName}" cannot be found in the repository. Perhaps it has been deleted`;
-            } else {
-                throw error;
-            }
-        });
-        if (response.xhr.responseText === '') {
-            const msg = this.fileName + ' does not exist or is an empty file in the repository';
-            console.warn(msg);
-            // we could reject?
-        }
-        console.log(`Fetched ${this.fileName}, calling parse with data `, response.data);
-        this.source = response.data;
+        this.source = await this.repository.storage.loadModel(this.fileName);
         this.parse();
         console.log(`Parse ${this.fileName} is done`);
         return this;
@@ -254,17 +240,11 @@ export default class ServerFile<M extends ModelDefinition> {
      * Uploads the XML content to the server, and invokes the callback after it.
      * Uploading to server gives also a new file list back, which we use to update the repository contents.
      */
-    async save() {
-        const xmlString = XML.prettyPrint(this.source);
-        const url = '/repository/save/' + this.fileName;
-        const type = 'post';
-        console.groupCollapsed('Saving ' + this);
-        const response = await $ajax({ url, data: xmlString, type, headers: { 'content-type': 'application/xml' } }).catch(() => {
-            console.groupEnd();
-            throw 'We could not save your work due to an error in the server. Please refresh the browser and make sure the server is up and running';
-        });
+    async save(): Promise<void> {
+        console.groupCollapsed('Saving ' + this.fileName);
+        const newMetadata = await this.repository.storage.saveModel(this.fileName, this.source);
         this.hasBeenSavedJustNow = true;
-        await this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(newMetadata);
         this.hasBeenSavedJustNow = false;
         // Also print a timestampe of the new last modified information
         const lmDate = new Date(this.lastModified);
@@ -272,7 +252,6 @@ export default class ServerFile<M extends ModelDefinition> {
         const millis = ('000' + lmDate.getMilliseconds()).substr(-3);
         console.log('Uploaded ' + this + ' at ' + HHmmss + ':' + millis);
         console.groupEnd();
-        return response;
     }
 
     protected isRenaming = false;
@@ -302,16 +281,10 @@ export default class ServerFile<M extends ModelDefinition> {
             }
         }
 
-        console.groupCollapsed(`Renaming '${oldFileName}' to '${newFileName}'`);
-        const url = '/repository/rename/' + oldFileName + '?newName=' + newFileName;
-        const type = 'put';
-        const xmlString = XML.prettyPrint(this.definition?.toXMLString());
-
-        console.log(`Sending server request to rename '${oldFileName}' to '${newFileName}'`);
-        const response = await $ajax({ url, type, data: xmlString, headers: { 'content-type': 'application/xml' } }).catch((error: AjaxError) => { throw new Error('We could not rename the file: ' + error.message) });
+        const newMetadata = await this.repository.storage.renameModel(oldFileName, newFileName, this.definition?.toXML());
         this.hasBeenSavedJustNow = true;
         this.fileName = newFileName;
-        await this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(newMetadata);
         this.hasBeenSavedJustNow = false;
         const filesToBeSaved = this.usage;
         console.log(`Updating ${filesToBeSaved.length} files that have references to ${oldFileName}`)
@@ -328,11 +301,9 @@ export default class ServerFile<M extends ModelDefinition> {
      * Delete the file
      */
     async delete() {
-        const url = '/repository/delete/' + this.fileName;
-        const type = 'delete';
-        const response = await $ajax({ url, type });
+        const metadata = await this.repository.storage.deleteModel(this.fileName);
         this.repository.removeFile(this);
-        await this.repository.updateMetadata(response.data);
+        await this.repository.updateMetadata(metadata);
         console.log('Deleted ' + this.fileName);
     }
 

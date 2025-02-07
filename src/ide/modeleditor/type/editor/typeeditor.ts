@@ -1,13 +1,13 @@
-﻿import IDE from "@ide/ide";
-import CaseTypeEditor from "@ide/modeleditor/case/editors/file/casetypeeditor";
-import CaseView from "@ide/modeleditor/case/elements/caseview";
-import ModelSourceEditor from "@ide/modeleditor/xmleditor/modelsourceeditor";
-import CaseFileItemTypeDefinition from "@repository/definition/cmmn/casefile/casefileitemtypedefinition";
-import TypeFile from "@repository/serverfile/typefile";
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import Util from "@util/util";
-import XML from "@util/xml";
-import $ from "jquery";
+﻿import $ from "jquery";
+import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import TypeFile from "../../../../repository/serverfile/typefile";
+import XML from "../../../../util/xml";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import IDE from "../../../ide";
+import HtmlUtil from "../../../util/htmlutil";
+import CaseTypeEditor from "../../case/editors/file/casetypeeditor";
+import CaseView from "../../case/elements/caseview";
+import ModelSourceEditor from "../../xmleditor/modelsourceeditor";
 import TypeModelEditor from "../typemodeleditor";
 import MainTypeDefinition from "./maintypedefinition";
 import TypeRenderer, { PropertyRenderer, SchemaRenderer } from "./typerenderer";
@@ -288,7 +288,7 @@ export default class TypeEditor {
         if (this.renderer) {
             this.renderer.delete();
             this.deselectPropertyRenderers();
-            Util.clearHTML(this.htmlTypeSchemaContainer);
+            HtmlUtil.clearHTML(this.htmlTypeSchemaContainer);
             this.inputName.val('');
         }
 
@@ -307,7 +307,7 @@ export default class TypeEditor {
         if (this.renderer) {
             this.renderer.delete();
         }
-        Util.removeHTML(this.htmlParent);
+        HtmlUtil.removeHTML(this.htmlParent);
     }
 
     refresh() {

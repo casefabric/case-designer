@@ -1,3 +1,6 @@
+import { Document, DOMParser, Element, Node, XMLSerializer } from '@xmldom/xmldom';
+import xmlformatter from 'xml-formatter';
+
 export default class XML {
     /**
      * Parses the given xml string into a Document object
@@ -6,6 +9,10 @@ export default class XML {
      * @returns {Document|undefined}
      */
     static parseXML(xml) {
+        if (xml === undefined) {
+            return undefined;
+        }
+
         if (xml instanceof Document) {
             return xml;
         } else if (xml instanceof Node) {
@@ -27,11 +34,9 @@ export default class XML {
      */
     static getParseErrors(xmlDocument) {
         const errors = [];
-        if (DOMParser) { // code for all but IE
-            const parseErrors = xmlDocument.getElementsByTagName('parsererror');
-            for (let i = 0; i < parseErrors.length; i++) {
-                errors.push(parseErrors.item(i).textContent);
-            }
+        const parseErrors = xmlDocument.getElementsByTagName('parsererror');
+        for (let i = 0; i < parseErrors.length; i++) {
+            errors.push(parseErrors.item(i).textContent);
         }
         return errors;
     }
@@ -60,15 +65,10 @@ export default class XML {
      * @returns {Document}
      */
     static loadXMLString(txt) {
-        if (DOMParser) {
-            return new DOMParser().parseFromString(txt, 'text/xml');
-        } else {
-            // code for IE
-            const xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
-            xmlDoc.async = false;
-            xmlDoc.loadXML(txt);
-            return xmlDoc;
+        if (txt === undefined || txt.length === 0) {
+            return new DOMParser().parseFromString('<parsererror>no text passed</parsererror>', 'text/xml');
         }
+        return new DOMParser().parseFromString(txt, 'text/xml');
     }
 
     /**
@@ -185,47 +185,14 @@ export default class XML {
     }
 
     /**
-     * Clones the node, but only with local names.
-     * Note: this method invokes Node.cloneNode(deep) if node is not of type Element.
-     * This effectively drops the namespace and makes the node adopt the default namespace of a target
-     * that it can be attached to.
-     * @param {Node} node 
-     * @param {Boolean} deep Whether to include any children of the node if it is of type element, defaults to true
-     * @param {String | undefined} newNamespace Optional new namespace to clone the element to
-     */
-    static cloneWithoutNamespace(node, deep = true, newNamespace = undefined) {
-        if (node.nodeType === 1) {
-            const element = /** @type {Element} */ (node);
-            const newNode = this.createChildElement(element.ownerDocument, element.localName, newNamespace);
-            const attributes = element.attributes;
-            if (attributes !== null) {
-                for (let i = 0; i < attributes.length; i++) {
-                    const attribute = attributes.item(i);
-                    if (attribute && attribute.nodeValue) {
-                        newNode.setAttribute(attribute.localName, attribute.nodeValue);
-                    }
-                }
-            }
-            if (deep) {
-                XML.children(element).forEach(child => newNode.appendChild(this.cloneWithoutNamespace(child, deep, newNamespace)));
-            }
-            return newNode;
-        } else {
-            return node.cloneNode(deep);
-        }
-    }
-
-    /**
      * Returns an array with all elements under the given XML node
      * @param {Document | Element | Node} xmlNode 
      * @param {Array<Element>} array Optionally provide an array to which the elements will be added, or one will be created
      */
     static allElements(xmlNode, array = []) {
-        xmlNode && xmlNode.childNodes.forEach(child => {
-            if (child instanceof Element) {
-                array.push(child);
-                this.allElements(child, array);
-            }
+        this.elements(xmlNode).forEach(child => {
+            array.push(child);
+            this.allElements(child, array);
         })
         return array;
     }
@@ -283,13 +250,13 @@ export default class XML {
      * @param {any} tree 
      */
     static removeUnnecessaryNamespaceAttributes(tree) {
-        if (!tree instanceof Element && !tree instanceof Document) {
+        if (!(tree instanceof Element) && !(tree instanceof Document)) {
             return;
         }
         XML.allElements(tree).forEach(element => {
-            const parent = element.parentElement;
-            if (parent !== null) {
-                const xmlnsAttributes = element.getAttributeNames().filter(name => name.startsWith("xmlns"));
+            const parent = element.parentNode;
+            if (parent !== undefined && parent !== null && !(parent instanceof Document)) {
+                const xmlnsAttributes = Array.from(element.attributes).map(attribute => attribute.nodeName).filter(name => name.startsWith("xmlns"));
                 xmlnsAttributes.forEach(name => {
                     if (parent.getAttribute(name) === element.getAttribute(name)) {
                         element.removeAttribute(name);
@@ -309,114 +276,12 @@ export default class XML {
         const xml = typeof (object) == 'string' ? this.parseXML(object) : object;
         this.removeUnnecessaryNamespaceAttributes(xml);
         const text = new XMLSerializer().serializeToString(xml);
-        //  This code is based on jquery.format.js by Zach Shelton
-        //  https://github.com/zachofalltrades/jquery.format        
-        const shift = createShiftArr('    '); // 4 spaces
-        const ar = text.replace(/>\s{0,}</g, '><')
-            .replace(/</g, '~::~<')
-            .split('~::~'),
-            len = ar.length;
-        let inComment = false,
-            deep = 0,
-            str = '';
 
-        for (let ix = 0; ix < len; ix++) {
-
-            // start comment or <![CDATA[...]]> or <!DOCTYPE //
-            if (ar[ix].search(/<!/) > -1) {
-
-                str += shift[deep] + ar[ix];
-                inComment = true;
-                // end comment  or <![CDATA[...]]> //
-                if (ar[ix].search(/-->/) > -1
-                    || ar[ix].search(/\]>/) > -1
-                    || ar[ix].search(/!DOCTYPE/) > -1) {
-
-                    inComment = false;
-                }
-            } else
-
-                // end comment  or <![CDATA[...]]> //
-                if (ar[ix].search(/-->/) > -1
-                    || ar[ix].search(/\]>/) > -1) {
-
-                    str += ar[ix];
-                    inComment = false;
-                } else
-
-                    // <elm></elm> //
-                    if (/^<\w/.exec(ar[ix - 1])
-                        && /^<\/\w/.exec(ar[ix])
-                        && /^<[\w:\-\.\,]+/.exec(ar[ix - 1]) == /^<\/[\w:\-\.\,]+/.exec(ar[ix])[0].replace('/', '')) {
-
-                        if (!inComment) {
-                            --deep;
-                        }
-                        str = (!inComment && str.endsWith('/>')) ? str += shift[deep] + ar[ix] : str += ar[ix];
-                    } else
-
-                        // <elm> //
-                        if (ar[ix].search(/<\w/) > -1
-                            && ar[ix].search(/<\//) == -1
-                            && ar[ix].search(/\/>/) == -1) {
-
-                            str = !inComment ? str += shift[deep++] + ar[ix] : str += ar[ix];
-                        } else
-
-                            // <elm>...</elm> //
-                            if (ar[ix].search(/<\w/) > -1
-                                && ar[ix].search(/<\//) > -1) {
-
-                                str = !inComment ? str += shift[deep] + ar[ix] : str += ar[ix];
-                            } else
-
-                                // </elm> //
-                                if (ar[ix].search(/<\//) > -1) {
-
-                                    str = !inComment ? str += shift[--deep] + ar[ix] : str += ar[ix];
-                                } else
-
-                                    // <elm/> //
-                                    if (ar[ix].search(/\/>/) > -1) {
-
-                                        str = !inComment ? str += shift[deep] + ar[ix] : str += ar[ix];
-                                    } else
-
-                                        // <? xml ... ?> //
-                                        if (ar[ix].search(/<\?/) > -1) {
-
-                                            str += shift[deep] + ar[ix];
-                                        } else
-
-                                            // xmlns //
-                                            if (ar[ix].search(/xmlns\:/) > -1
-                                                || ar[ix].search(/xmlns\=/) > -1) {
-
-                                                str += shift[deep] + ar[ix];
-                                            }
-                                            else {
-
-                                                str += ar[ix];
-                                            }
-        }
-
-        return (str[0] == '\n') ? str.slice(1) : str;
+        return xmlformatter(text, {
+            collapseContent: true,
+        });
     }
 }
 
-/**
- * utility function called from constructor of Formatter
- */
-function createShiftArr(step) {
-    let space = '    ';
-    if (isNaN(parseInt(step))) {  // argument is string
-        space = step;
-    } else { // argument is integer
-        space = new Array(step + 1).join(' '); //space is result of join (a string), not an array
-    }
-    const shift = ['\n']; // array of shifts
-    for (let ix = 0; ix < 100; ix++) {
-        shift.push(shift[ix] + space);
-    }
-    return shift;
-}
+export { Document, DOMParser, Element, Node, XML, XMLSerializer };
+

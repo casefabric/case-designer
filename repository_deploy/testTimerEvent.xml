@@ -16,9 +16,7 @@
             <humanTask id="ht_cm_testTimerEvent.case_2" name="Task_1" isBlocking="true"/>
             <timerEvent id="tmr_cm_testTimerEvent.case_4" name="CFI-StartedTimer">
                 <timerExpression>
-                    <body>
-                        <![CDATA[cfi-expression]]>
-                    </body>
+                    <body><![CDATA[cfi-expression]]></body>
                 </timerExpression>
                 <caseFileItemStartTrigger sourceRef="CFI">
                     <standardEvent>create</standardEvent>
@@ -26,9 +24,7 @@
             </timerEvent>
             <timerEvent id="tmr_cm_testTimerEvent.case_5" name="EventListener_2">
                 <timerExpression>
-                    <body>
-                        <![CDATA[task-triggered-expression]]>
-                    </body>
+                    <body><![CDATA[task-triggered-expression]]></body>
                 </timerExpression>
                 <planItemStartTrigger sourceRef="cm_testTimerEvent.case_2">
                     <standardEvent>complete</standardEvent>

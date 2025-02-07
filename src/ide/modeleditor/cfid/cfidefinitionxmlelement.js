@@ -1,7 +1,7 @@
-﻿import CaseFileDefinitionDefinition from "@definition/cfid/casefileitemdefinitiondefinition";
-import Util from "@util/util";
+﻿import $ from "jquery";
+import CaseFileDefinitionDefinition from "../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+import HtmlUtil from "../../util/htmlutil";
 import CaseFileItemDefinitionEditor from "./casefileitemdefinitioneditor";
-import $ from "jquery";
 
 export default class CFIDefinitionXMLElement {
     /**
@@ -22,7 +22,7 @@ export default class CFIDefinitionXMLElement {
      * @param {CaseFileDefinitionDefinition} data 
      */
     show(data) {
-        Util.clearHTML(this.html);
+        HtmlUtil.clearHTML(this.html);
         this.html.html(`<div>
                         <label>Structure Ref</label>
                         <input class="inputStructureRef" value="${data.structureRef}" />

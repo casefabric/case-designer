@@ -66,20 +66,14 @@
         </casePlanModel>
         <caseRoles/>
         <textAnnotation id="_mlHqQ_47">
-            <text>
-                <![CDATA[RendezVous between Task1 and Task2]]>
-            </text>
+            <text><![CDATA[RendezVous between Task1 and Task2]]></text>
         </textAnnotation>
         <textAnnotation id="_mlHqQ_48">
-            <text>
-                <![CDATA[FourEyes between Task1 and Task3. Hence also between Task3 and Task2]]>
-            </text>
+            <text><![CDATA[FourEyes between Task1 and Task3. Hence also between Task3 and Task2]]></text>
         </textAnnotation>
         <textAnnotation id="_mlHqQ_49">
-            <text>
-                <![CDATA[FourEyes between Task3, Task4 and Task5.
-All three tasks must be operated on by different users]]>
-            </text>
+            <text><![CDATA[FourEyes between Task3, Task4 and Task5.
+All three tasks must be operated on by different users]]></text>
         </textAnnotation>
     </case>
     <CMMNDI>

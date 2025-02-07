@@ -1,7 +1,7 @@
-import CMMNElementDefinition from "@definition/cmmnelementdefinition";
-import TableRenderer from "./tablerenderer";
-import Util from "@util/util";
 import $ from "jquery";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
+import HtmlUtil from "../../../../util/htmlutil";
+import TableRenderer from "./tablerenderer";
 
 export default class RowRenderer {
     /**
@@ -72,7 +72,7 @@ export default class RowRenderer {
             this.control.case.editor.ide.danger('The element is in use, it cannot be deleted');
         } else {
             // delete the role
-            Util.removeHTML(this.html);
+            HtmlUtil.removeHTML(this.html);
             this.element.removeDefinition();
             this.case.editor.completeUserAction();
         }

@@ -1,5 +1,5 @@
-import HumanTaskDefinition from "@definition/cmmn/caseplan/task/humantaskdefinition";
-import Images from "@util/images/images";
+import HumanTaskDefinition from "../../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
+import Images from "../../../../../util/images/images";
 import HumanTaskView from "../humantaskview";
 import TaskProperties from "./taskproperties";
 

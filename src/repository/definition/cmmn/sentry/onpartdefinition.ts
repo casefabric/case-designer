@@ -1,7 +1,7 @@
-import InternalReference from "@repository/definition/references/internalreference";
-import XMLSerializable from "@repository/definition/xmlserializable";
-import XML from "@util/xml";
+import XML, { Element } from "../../../../util/xml";
+import InternalReference from "../../references/internalreference";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
+import XMLSerializable from "../../xmlserializable";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
 import PlanItem from "../caseplan/planitem";

@@ -1,6 +1,6 @@
-﻿import CaseRoleDefinition from "@definition/cmmn/caseteam/caseroledefinition";
+﻿import $ from "jquery";
+import CaseRoleDefinition from "../../../../repository/definition/cmmn/caseteam/caseroledefinition";
 import TableEditor, { RowEditor, TableEditorColumn } from "./tableeditor/tableeditor";
-import $ from "jquery";
 
 export default class RolesEditor extends TableEditor {
     get label() {

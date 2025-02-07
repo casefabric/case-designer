@@ -1,13 +1,14 @@
-import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import CaseFileItemOnPartDefinition from "@definition/cmmn/sentry/casefileitemonpartdefinition";
-import OnPartDefinition from "@definition/cmmn/sentry/onpartdefinition";
-import PlanItemOnPartDefinition from "@definition/cmmn/sentry/planitemonpartdefinition";
-import PlanItem from "@repository/definition/cmmn/caseplan/planitem";
-import Util from "@util/util";
+import $ from "jquery";
+import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
+import CaseFileItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/casefileitemonpartdefinition";
+import OnPartDefinition from "../../../../../repository/definition/cmmn/sentry/onpartdefinition";
+import PlanItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/planitemonpartdefinition";
+import Util from "../../../../../util/util";
+import HtmlUtil from "../../../../util/htmlutil";
 import Connector from "../connector";
 import SentryView from "../sentryview";
 import Properties from "./properties";
-import $ from "jquery";
 
 export default class SentryProperties extends Properties {
     /**
@@ -89,19 +90,19 @@ export default class SentryProperties extends Properties {
             const newLanguage = e.target.value || this.cmmnElement.definition.caseDefinition.defaultExpressionLanguage;
             this.change(rule, 'language', newLanguage);
             if (rule.hasCustomLanguage) {
-                Util.addClassOverride(htmlExpressionLanguage, 'custom-language');
+                HtmlUtil.addClassOverride(htmlExpressionLanguage, 'custom-language');
             } else {
-                Util.removeClassOverride(htmlExpressionLanguage, 'custom-language');
+                HtmlUtil.removeClassOverride(htmlExpressionLanguage, 'custom-language');
             }
             this.done();
         });
         showHTMLExpressionLanguage.on('click', () => {
             if (editHTMLExpressionLanguage.css('display') === 'none') {
                 editHTMLExpressionLanguage.css('display', 'block');
-                Util.addClassOverride(htmlExpressionLanguage, 'show-language-input');
+                HtmlUtil.addClassOverride(htmlExpressionLanguage, 'show-language-input');
             } else {
                 editHTMLExpressionLanguage.css('display', 'none');
-                Util.removeClassOverride(htmlExpressionLanguage, 'show-language-input');
+                HtmlUtil.removeClassOverride(htmlExpressionLanguage, 'show-language-input');
             }
         });
 

@@ -1,5 +1,5 @@
-<CMMNDI>
-    <CMMNDiagram xmlns:ns1="org.cafienne" ns1:labels="full">
+<CMMNDI xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <CMMNDiagram cafienne:labels="full">
         <CMMNShape cmmnElementRef="cm__y2XPO_0">
             <Bounds x="20" y="20" width="800" height="500"/>
         </CMMNShape>

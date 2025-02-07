@@ -1,13 +1,26 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { BannerPlugin } = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const devMode = process.env.DEV_MODE ? process.env.DEV_MODE.trim().toLowerCase() === 'true' : false;
 
-var ideBuild = 1;
-var serverBuild = 1;
-
-function buildPrinter(buildName, buildNumber) {
-    setTimeout(() => console.log(`\n=== ${new Date().toTimeString().split(' ')[0]} completed ${buildName} build ${buildNumber} ===\n`), 0)
+class BuildPrinter {
+    constructor(name) {
+        this.buildName = name;
+        this.buildNumber = 1;
+    }
 }
+
+/**
+ * 
+ * @param {BuildPrinter} hook 
+ */
+function addBuildHook(hook) {
+    return new function () {
+        console.log(`Adding build hook '${hook.buildName}'`)
+        this.apply = (compiler) => compiler.hooks.done.tap(hook.buildName, () => setTimeout(() => console.log(`\n=== ${new Date().toTimeString().split(' ')[0]} completed ${hook.buildName} build ${hook.buildNumber++} ===\n`), 0));
+    }
+} 
 
 const moduleRules = {
     rules: [
@@ -27,56 +40,36 @@ const moduleRules = {
     ],
 };
 
-const repositoryResolvers = {
+const scriptExtensions = {
     extensions: ['.ts', '.js'],
-    alias: {
-        '@util': path.resolve(__dirname, 'src/util'),
-        '@repository': path.resolve(__dirname, 'src/repository'),
-        '@definition': path.resolve(__dirname, 'src/repository/definition'),
-    },
 }
 
 const ideResolvers = {
     extensions: ['.tsx', '.ts', '.js', '.html'],
     alias: {
-        '@ide': path.resolve(__dirname, 'src/ide'),
-        '@validate': path.resolve(__dirname, 'src/validate'),
         '@styles': path.resolve(__dirname, 'app/styles'),
         '_images_': path.resolve(__dirname, 'app/images'),
         'jquery': path.resolve(__dirname, 'node_modules/jquery/dist/jquery'),
         'jquery-ui': path.resolve(__dirname, 'node_modules/jquery-ui/dist/jquery-ui'),
     },
 };
-// Merge repository resolvers into the ideResolvers
-Object.keys(repositoryResolvers.alias).forEach(key => ideResolvers.alias[key] = repositoryResolvers.alias[key]);
 
-module.exports = [{
+module.exports = [
+{ // server
     entry: {
-        server: './server/utilities.ts'
+        server: './src/server/server.ts'
     },
     output: {
-        filename: 'utilities.js',
+        filename: 'server.js',
         path: path.resolve(__dirname, 'dist/server'),
     },
     plugins: [
-        new function () {
-            this.apply = (compiler) => {
-                compiler.hooks.done.tap("server", () => buildPrinter("server", serverBuild++));
-            };
-        },
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: 'config', to: '../config' },
-                { from: 'server/server.js', to: '../server' },
-            ]
-        })
+        addBuildHook(new BuildPrinter('server'))
     ],
     target: 'node',
     module: moduleRules,
-    externals: {
-        fs: 'require("fs")'
-    },
-    resolve: repositoryResolvers,
+    resolve: scriptExtensions,
+    externals: [nodeExternals()],
     devtool: 'source-map',
     mode: 'development',
     stats: {
@@ -84,24 +77,47 @@ module.exports = [{
     },
     watch: devMode,
 },
-{
+{ // repository cli
     entry: {
-        repository: './src/repository/index.ts',
+        transpile: { import: './src/repository/transpile.ts', dependOn: ['shared'] },
+        shared: './src/index.js',
+        index: { import: './src/index.js', dependOn: ['shared'] },
     },
     output: {
-        filename: 'repository_bundle.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist/repository'),
+        library: {
+            type: 'module',
+        },
+        globalObject: 'this',
     },
+    target: 'async-node',
+    plugins: [
+        addBuildHook(new BuildPrinter('repository')),
+        new BannerPlugin({
+            banner: '#!/usr/bin/env node',
+            raw: true,
+        }),
+    ],
     module: moduleRules,
-    resolve: repositoryResolvers,
+    resolve: scriptExtensions,
     devtool: 'source-map',
     mode: 'development',
     stats: {
         errorDetails: true
     },
     watch: devMode,
+    experiments: {
+        outputModule: true,
+    },
+    externals: [
+        nodeExternals({ importType: (request) => `import ${request}` }),
+        {
+            'fs': 'import fs',
+        }
+    ],
 },
-{
+{ // ide
     entry: {
         ide: './src/ide/index.ts',
     },
@@ -110,11 +126,7 @@ module.exports = [{
         path: path.resolve(__dirname, 'dist/app'),
     },
     plugins: [
-        new function () {
-            this.apply = (compiler) => {
-                compiler.hooks.done.tap("ide", () => buildPrinter("ide", ideBuild++));
-            };
-        },
+        addBuildHook(new BuildPrinter('ide')),
         new CopyWebpackPlugin({
             patterns: [
                 { from: 'app' },

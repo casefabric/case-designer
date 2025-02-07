@@ -1,5 +1,4 @@
 import $ from "jquery";
-import IDE from "../ide";
 
 export default class DragData {
     protected static current: DragData | undefined = undefined;

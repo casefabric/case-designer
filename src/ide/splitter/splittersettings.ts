@@ -1,4 +1,4 @@
-import Settings from "@ide/settings/settings";
+import Settings from "../settings/settings";
 
 export default class SplitterSettings {
     splitters: any = {};

@@ -1,12 +1,12 @@
-import ConstraintDefinition from "@definition/cmmn/caseplan/constraintdefinition";
-import PlanItem from "@definition/cmmn/caseplan/planitem";
-import ShapeDefinition from "@definition/dimensions/shape";
+import { g } from "jointjs";
+import ConstraintDefinition from "../../../../repository/definition/cmmn/caseplan/constraintdefinition";
+import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import CaseView from "./caseview";
 import CMMNElementView from "./cmmnelementview";
 import DecoratorBox from "./decorator/decoratorbox";
 import PlanItemProperties from "./properties/planitemproperties";
 import { EntryCriterionView, ExitCriterionView, ReactivateCriterionView } from "./sentryview";
-import CaseView from "./caseview";
-import { g } from "jointjs";
 // import PlanItemHalo from "./halo/planitemhalo";
 // BIG TODO HERE
 

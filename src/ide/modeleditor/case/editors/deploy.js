@@ -1,9 +1,9 @@
-﻿import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import StandardForm from "@ide/editors/standardform";
-import Definitions from "@repository/deploy/definitions";
-import $ajax from "@util/ajax";
+﻿import Definitions from "../../../../repository/deploy/definitions";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import StandardForm from "../../../editors/standardform";
+import Settings from "../../../settings/settings";
+import $ajax from "../../../util/ajax";
 import CaseView from "../elements/caseview";
-import Settings from "@ide/settings/settings";
 
 export default class Deploy extends StandardForm {
     /**
@@ -90,11 +90,7 @@ export default class Deploy extends StandardForm {
 
     async deploy() {
         const deployment = new Definitions(this.case.caseDefinition);
-        const data = deployment.contents();
-        const url = '/repository/deploy/' + deployment.fileName;
-        const type = 'post';
-        console.log('Posting deployment to ' + url);
-        await $ajax({ url, data, type, headers: { 'content-type': 'application/xml' } }).catch((error) => {
+        await this.modelEditor.ide.repository.deploy(deployment).catch(error => {
             console.error('Deployment failed ', error);
             console.groupEnd();
             this._setDeployTextArea(error.message);

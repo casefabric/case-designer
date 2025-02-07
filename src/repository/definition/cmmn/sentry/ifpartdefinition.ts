@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import ConstraintDefinition from "../caseplan/constraintdefinition";
 
 export default class IfPartDefinition extends ConstraintDefinition {

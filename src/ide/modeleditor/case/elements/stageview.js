@@ -1,15 +1,18 @@
-﻿import MilestoneDefinition from "@definition/cmmn/caseplan/milestonedefinition";
-import PlanItem from "@definition/cmmn/caseplan/planitem";
-import StageDefinition from "@definition/cmmn/caseplan/stagedefinition";
-import CaseTaskDefinition from "@definition/cmmn/caseplan/task/casetaskdefinition";
-import HumanTaskDefinition from "@definition/cmmn/caseplan/task/humantaskdefinition";
-import ProcessTaskDefinition from "@definition/cmmn/caseplan/task/processtaskdefinition";
-import TimerEventDefinition from "@definition/cmmn/caseplan/timereventdefinition";
-import UserEventDefinition from "@definition/cmmn/caseplan/usereventdefinition";
-import ShapeDefinition from "@definition/dimensions/shape";
-import CaseFileItemDragData from "@ide/dragdrop/casefileitemdragdata";
-import ServerFileDragData from "@ide/dragdrop/serverfiledragdata";
-import Util from "@util/util";
+﻿import MilestoneDefinition from "../../../../repository/definition/cmmn/caseplan/milestonedefinition";
+import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
+import StageDefinition from "../../../../repository/definition/cmmn/caseplan/stagedefinition";
+import CaseTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/casetaskdefinition";
+import HumanTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
+import ProcessTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/processtaskdefinition";
+import TimerEventDefinition from "../../../../repository/definition/cmmn/caseplan/timereventdefinition";
+import UserEventDefinition from "../../../../repository/definition/cmmn/caseplan/usereventdefinition";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import CaseFile from "../../../../repository/serverfile/casefile";
+import HumanTaskFile from "../../../../repository/serverfile/humantaskfile";
+import ProcessFile from "../../../../repository/serverfile/processfile";
+import Util from "../../../../util/util";
+import CaseFileItemDragData from "../../../dragdrop/casefileitemdragdata";
+import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
 import CaseFileItemView from "./casefileitemview";
 import CaseTaskView from "./casetaskview";
 import CaseView from "./caseview";
@@ -25,9 +28,6 @@ import TaskView from "./taskview";
 import TextAnnotationView from "./textannotationview";
 import TimerEventView from "./timereventview";
 import UserEventView from "./usereventview";
-import HumanTaskFile from "@repository/serverfile/humantaskfile";
-import ProcessFile from "@repository/serverfile/processfile";
-import CaseFile from "@repository/serverfile/casefile";
 
 export default class StageView extends TaskStageView {
     /**

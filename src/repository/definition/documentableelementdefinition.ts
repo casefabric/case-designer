@@ -1,7 +1,7 @@
-import XML from "@util/xml";
+import XML, { Element } from "../../util/xml";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
-import ModelDefinition from "./modeldefinition";
 import ElementDefinition from "./elementdefinition";
+import ModelDefinition from "./modeldefinition";
 import ReferableElementDefinition from "./referableelementdefinition";
 
 export default class DocumentableElementDefinition<M extends ModelDefinition> extends ReferableElementDefinition<M> {

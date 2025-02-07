@@ -1,5 +1,5 @@
-﻿import StandardForm from "@ide/editors/standardform";
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
+﻿import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+import StandardForm from "../../../editors/standardform";
 import CaseView from "../elements/caseview";
 
 export default class StartCaseEditor extends StandardForm {

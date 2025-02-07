@@ -1,12 +1,12 @@
-import ServerFile from "@repository/serverfile/serverfile";
-import Util from "@util/util";
-import XML from "@util/xml";
+import Util from "../../util/util";
+import XML, { Element } from "../../util/xml";
+import ServerFile from "../serverfile/serverfile";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 import ExternalReference from "./references/externalreference";
+import Reference from "./references/reference";
 import { ExternalReferenceList } from "./references/referencelist";
 import ReferencingAttribute from "./references/referencingattribute";
-import Reference from "./references/reference";
 
 
 // Some constants
@@ -187,6 +187,19 @@ export default class XMLSerializable {
             }
         }
         return newChild;
+    }
+
+    /**
+     * Option to create an import node for a new definition if that definition does not have an import node available.
+     */
+    createImportNode(tag: string): Element {
+        const document = this.importNode.ownerDocument;
+        if (!document) {
+            const error = new Error("Right. and that on an Element...");
+            console.error(error);
+            throw error;
+        }
+        return document.createElement(tag);
     }
 
     /**

@@ -1,6 +1,7 @@
-import TypeFile from "@repository/serverfile/typefile";
-import SchemaDefinition from "./schemadefinition";
+import { Element } from "../../../util/xml";
+import TypeFile from "../../serverfile/typefile";
 import ModelDefinition from "../modeldefinition";
+import SchemaDefinition from "./schemadefinition";
 
 export default class TypeDefinition extends ModelDefinition {
     private _schema?: SchemaDefinition;

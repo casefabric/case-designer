@@ -1,4 +1,4 @@
-import Util from "@util/util";
+import Util from "../../../../../util/util";
 import PlanItemView from "../planitemview";
 import DecoratorBox from "./decoratorbox";
 

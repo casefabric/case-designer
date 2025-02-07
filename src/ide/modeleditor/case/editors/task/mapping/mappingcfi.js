@@ -1,6 +1,6 @@
-import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
-import MappingRow from "./mappingrow";
+import CaseFileItemDef from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import BindingRefinementEditor from "../bindingrefinementeditor";
+import MappingRow from "./mappingrow";
 
 export default class MappingCFI {
     static get label() {

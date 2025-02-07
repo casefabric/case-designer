@@ -1,6 +1,7 @@
-import ExternalReference from "@repository/definition/references/externalreference";
-import ProcessModelDefinition from "@repository/definition/process/processmodeldefinition";
-import ProcessFile from "@repository/serverfile/processfile";
+import { Element } from "../../../../../util/xml";
+import ProcessFile from "../../../../serverfile/processfile";
+import ProcessModelDefinition from "../../../process/processmodeldefinition";
+import ExternalReference from "../../../references/externalreference";
 import CaseDefinition from "../../casedefinition";
 import StageDefinition from "../stagedefinition";
 import TaskDefinition from "./taskdefinition";

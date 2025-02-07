@@ -1,4 +1,4 @@
-import Images from "@util/images/images";
+import Images from "../../../../../../util/images/images";
 import PlanItemView from "../../planitemview";
 import DecoratorBox from "../decoratorbox";
 import RuleDecorator from "./rule";

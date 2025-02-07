@@ -1,7 +1,8 @@
+import { Element } from "../../../util/xml";
+import Tags from "../tags";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
 import ShapeDefinition from "./shape";
-import Tags from "./tags";
 
 export default class Bounds extends DiagramElement {
     hasError = false;

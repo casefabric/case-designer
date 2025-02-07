@@ -1,9 +1,9 @@
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
-import XML from "@util/xml";
+import XML, { Element } from "../../util/xml";
+import CaseDefinition from "../definition/cmmn/casedefinition";
+import Tags from "../definition/tags";
 import CMMNCompliance from "./cmmncompliance";
 import DefinitionDeployment from "./definitiondeployment";
 import Definitions from "./definitions";
-import Tags from "./tags";
 import TypeDeployment from "./typedeployment";
 
 export default class CaseDeployment extends DefinitionDeployment {
@@ -42,11 +42,7 @@ export default class CaseDeployment extends DefinitionDeployment {
         if (!this.dimensionsTree) return;
         // Just read the shapes from the 'local' diagramElement and copy (or is it move?) them into the 'global' diagramElement
         const localCMMNDiagramElement = this.dimensionsTree.getElementsByTagName(Tags.CMMNDIAGRAM)[0];
-        const shapeElements = localCMMNDiagramElement.childNodes;
-        for (let i = 0; i < shapeElements.length; i++) {
-            const shapeElement = shapeElements[i].cloneNode(true);
-            this.definitionsDocument.diagram.appendChild(shapeElement);
-        }
+        XML.children(localCMMNDiagramElement).forEach(shapeElement => this.definitionsDocument.diagram.appendChild(shapeElement).cloneNode(true));
     }
 
     get caseFileModel(): Element {

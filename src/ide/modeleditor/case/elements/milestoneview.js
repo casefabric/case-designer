@@ -1,5 +1,5 @@
-﻿import MilestoneDefinition from "@definition/cmmn/caseplan/milestonedefinition";
-import ShapeDefinition from "@definition/dimensions/shape";
+﻿import MilestoneDefinition from "../../../../repository/definition/cmmn/caseplan/milestonedefinition";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import MilestoneDecoratorBox from "./decorator/box/milestonedecoratorbox";
 import PlanItemView from "./planitemview";
 import MilestoneProperties from "./properties/milestoneproperties";

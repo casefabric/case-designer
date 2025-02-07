@@ -1,6 +1,6 @@
-import Images from "@util/images/images";
-import Util from "@util/util";
 import $ from "jquery";
+import Images from "../../../../../util/images/images";
+import Util from "../../../../../util/util";
 import TaskStageView from "../taskstageview";
 import PlanItemProperties from "./planitemproperties";
 

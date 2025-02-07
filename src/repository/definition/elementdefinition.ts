@@ -1,4 +1,5 @@
-import ServerFile from "@repository/serverfile/serverfile";
+import { Element } from "../../util/xml";
+import ServerFile from "../serverfile/serverfile";
 import ModelDefinition from "./modeldefinition";
 import InternalReference from "./references/internalreference";
 import { InternalReferenceList } from "./references/referencelist";

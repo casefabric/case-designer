@@ -1,11 +1,11 @@
-import HumanTaskDefinition from "@definition/cmmn/caseplan/task/humantaskdefinition";
-import PlanItem from "@repository/definition/cmmn/caseplan/planitem";
-import AssignmentDefinition from "@repository/definition/cmmn/caseplan/task/workflow/assignmentdefinition";
-import DueDateDefinition from "@repository/definition/cmmn/caseplan/task/workflow/duedatedefinition";
-import Util from "@util/util";
+import $ from "jquery";
+import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
+import HumanTaskDefinition from "../../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
+import AssignmentDefinition from "../../../../../repository/definition/cmmn/caseplan/task/workflow/assignmentdefinition";
+import DueDateDefinition from "../../../../../repository/definition/cmmn/caseplan/task/workflow/duedatedefinition";
+import Util from "../../../../../util/util";
 import HumanTaskView from "../humantaskview";
 import TaskProperties from "./taskproperties";
-import $ from "jquery";
 
 export default class WorkflowProperties extends TaskProperties {
     /**

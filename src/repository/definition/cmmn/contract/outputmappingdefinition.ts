@@ -1,3 +1,4 @@
+import { Element } from "../../../../util/xml";
 import ParameterMappingDefinition from "./parametermappingdefinition";
 
 export default class OutputMappingDefinition extends ParameterMappingDefinition {

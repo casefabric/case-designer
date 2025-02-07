@@ -1,11 +1,11 @@
 ﻿'use strict';
 
-import ProcessModelDefinition from "@definition/process/processmodeldefinition";
-import IDE from "@ide/ide";
-import ProcessFile from "@repository/serverfile/processfile";
-import CodeMirrorConfig from "@ide/editors/external/codemirrorconfig";
-import XML from "@util/xml";
 import $ from "jquery";
+import ProcessModelDefinition from "../../../repository/definition/process/processmodeldefinition";
+import ProcessFile from "../../../repository/serverfile/processfile";
+import XML from "../../../util/xml";
+import CodeMirrorConfig from "../../editors/external/codemirrorconfig";
+import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ModelParameters from "../xmleditor/modelparameters";
@@ -163,7 +163,7 @@ export default class ProcessModelEditor extends ModelEditor {
     changeImplementationType(propertyValue: string) {
         if (!this.model) return;
         if (!this.model.implementation) return;
-        const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
         modelImplementation.setAttribute("class", propertyValue);
         this.model.implementation.xml = XML.prettyPrint(modelImplementation);
         this.freeContentEditor.setValue(this.model.implementation.xml);
@@ -190,7 +190,7 @@ export default class ProcessModelEditor extends ModelEditor {
         if (!this.model) return;
         if (!this.model.implementation) return;
 
-        const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement;
+        const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
         const implementationType = modelImplementationDocument.getAttribute("class");
         const implementationTypeSelect = this.htmlContainer.find('.selectImplementationType');
         implementationTypeSelect.val(implementationType);

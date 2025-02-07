@@ -1,9 +1,9 @@
-import IDE from "@ide/ide";
-import ModelDefinition from "@repository/definition/modeldefinition";
-import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "@repository/definition/xmlserializable";
-import HumanTaskFile from "@repository/serverfile/humantaskfile";
-import ServerFile from "@repository/serverfile/serverfile";
-import Icons from "@util/images/icons";
+import ModelDefinition from "../../../repository/definition/modeldefinition";
+import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
+import HumanTaskFile from "../../../repository/serverfile/humantaskfile";
+import ServerFile from "../../../repository/serverfile/serverfile";
+import Icons from "../../../util/images/icons";
+import IDE from "../../ide";
 import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
 

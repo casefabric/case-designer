@@ -1,5 +1,5 @@
-import IDE from "./ide";
 import $ from "jquery";
+import IDE from "./ide";
 
 export default class IDEHeader {
     html: JQuery<HTMLElement>;

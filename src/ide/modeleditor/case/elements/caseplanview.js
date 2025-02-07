@@ -1,11 +1,11 @@
-﻿import CasePlanDefinition from "@definition/cmmn/caseplan/caseplandefinition";
-import ShapeDefinition from "@definition/dimensions/shape";
+﻿import CasePlanDefinition from "../../../../repository/definition/cmmn/caseplan/caseplandefinition";
+import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import CaseView from "./caseview";
 import CasePlanDecoratorBox from "./decorator/box/caseplandecoratorbox";
+import CasePlanHalo from "./halo/caseplanhalo";
 import CasePlanProperties from "./properties/caseplanproperties";
 import { ExitCriterionView } from "./sentryview";
 import StageView from "./stageview";
-import CasePlanHalo from "./halo/caseplanhalo";
 
 const CPM_TAB_HEIGHT = 22;
 

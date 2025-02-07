@@ -1,7 +1,7 @@
-﻿import CaseFileItemDef from "@repository/definition/cmmn/casefile/casefileitemdef";
+﻿import $ from "jquery";
+import CaseFileItemDef from "../../../repository/definition/cmmn/casefile/casefileitemdef";
+import HtmlUtil from "../../util/htmlutil";
 import CMMNElementView from "./elements/cmmnelementview";
-import Util from "@util/util";
-import $ from "jquery";
 
 export default class Marker {
     /**
@@ -26,7 +26,7 @@ export default class Marker {
     }
 
     delete() {
-        Util.removeHTML(this.html);
+        HtmlUtil.removeHTML(this.html);
     }
 
     /**

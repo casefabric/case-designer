@@ -1,11 +1,12 @@
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
+import Tags from "../tags";
 import XMLSerializable from "../xmlserializable";
 import Bounds from "./bounds";
 import Diagram from "./diagram";
 import DiagramElement from "./diagramelement";
 import Dimensions from "./dimensions";
-import Tags from "./tags";
 
 export default class ShapeDefinition extends DiagramElement {
     cmmnElementRef: string;
@@ -56,7 +57,7 @@ export default class ShapeDefinition extends DiagramElement {
 
     private getBounds() {
         if (!this.bounds) {
-            this.bounds = new Bounds(this.importNode.ownerDocument.createElement(Tags.BOUNDS), this.dimensions, this);
+            this.bounds = new Bounds(this.createImportNode(Tags.BOUNDS), this.dimensions, this);
         }
         return this.bounds;
     }

@@ -1,5 +1,5 @@
-import Util from "@util/util";
-import XML from "@util/xml";
+import Util from "../../util/util";
+import XML, { Document, Element } from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
 import ParameterDefinition from "./contract/parameterdefinition";
@@ -27,7 +27,7 @@ export default class ModelDefinition extends XMLSerializable {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
-    constructor(public file: ServerFile<ModelDefinition>, importNode = ModelDefinition.getImportNode(file)) {
+    constructor(public file: ServerFile<ModelDefinition>, public readonly importNode: Element = ModelDefinition.getImportNode(file)) {
         // Need to pass undefined in the super, and then set the modelDefinition manually.
         super(importNode);
         this.modelDefinition = this;

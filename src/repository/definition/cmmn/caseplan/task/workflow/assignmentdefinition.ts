@@ -1,6 +1,7 @@
-import CaseDefinition from "@repository/definition/cmmn/casedefinition";
-import ExpressionContainer from "@repository/definition/cmmn/expression/expressioncontainer";
-import CMMNElementDefinition from "@repository/definition/cmmnelementdefinition";
+import { Element } from "../../../../../../util/xml";
+import CMMNElementDefinition from "../../../../cmmnelementdefinition";
+import CaseDefinition from "../../../casedefinition";
+import ExpressionContainer from "../../../expression/expressioncontainer";
 
 export default class AssignmentDefinition extends ExpressionContainer {
     static TAG = 'assignment';

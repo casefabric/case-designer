@@ -1,11 +1,11 @@
-﻿import CaseFileItemDef from "@definition/cmmn/casefile/casefileitemdef";
-import CaseFileItemDefinitionEditor from "@ide/modeleditor/cfid/casefileitemdefinitioneditor";
-import BottomSplitter from "@ide/splitter/bottomsplitter";
-import Util from "@util/util";
-import $ from "jquery";
+﻿import $ from "jquery";
+import CaseFileItemDef from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import CaseFileItemDefinitionEditor from "../../../../../modeleditor/cfid/casefileitemdefinitioneditor";
+import BottomSplitter from "../../../../../splitter/bottomsplitter";
+import HtmlUtil from "../../../../../util/htmlutil";
 import CaseFileEditor from "../casefileeditor";
-import CFIDConverter from "./conversion/cfidconverter";
 import CFINode from "./cfinode";
+import CFIDConverter from "./conversion/cfidconverter";
 
 export const NEWDEF = '__new__';
 
@@ -100,7 +100,7 @@ export default class CaseFileItemsEditor {
 
     renderCaseFileModel() {
         this.cfiNodes.forEach(node => node.delete());
-        Util.clearHTML(this.html.find('.cfi-details-container'));
+        HtmlUtil.clearHTML(this.html.find('.cfi-details-container'));
         this.case.caseDefinition.caseFile.children.forEach(cfi => this.createNode(cfi));
     }
 
@@ -141,7 +141,7 @@ export default class CaseFileItemsEditor {
      */
     delete() {
         // Delete the generic events of the treeEditor (e.g. click add button, ...)
-        Util.removeHTML(this.html);
+        HtmlUtil.removeHTML(this.html);
         this.splitter.delete();
     }
 
@@ -272,7 +272,7 @@ export default class CaseFileItemsEditor {
     /**
      * Changes the definitionRef of the case file item, and loads the new definition ref
      * @param {CaseFileItemDef} caseFileItem 
-     * @param {Element} cfidefField 
+     * @param {HTMLElement} cfidefField 
      */
     changeCaseFileItemDefinition(caseFileItem, cfidefField) {
         const newValue = cfidefField.value;

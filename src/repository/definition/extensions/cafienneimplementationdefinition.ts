@@ -1,3 +1,4 @@
+import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
 import { IMPLEMENTATION_TAG } from "../xmlserializable";

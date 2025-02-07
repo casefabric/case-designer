@@ -1,5 +1,4 @@
 import Splitter from "./splitter";
-import $ from "jquery";
 
 export default class HorizontalSplitter extends Splitter {
     minimizeImg?: JQuery<HTMLElement>;

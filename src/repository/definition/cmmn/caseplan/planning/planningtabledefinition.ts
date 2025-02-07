@@ -1,5 +1,6 @@
-import ElementDefinition from "@repository/definition/elementdefinition";
-import UnnamedCMMNElementDefinition from "@repository/definition/unnamedcmmnelementdefinition";
+import { Element } from "../../../../../util/xml";
+import ElementDefinition from "../../../elementdefinition";
+import UnnamedCMMNElementDefinition from "../../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../../casedefinition";
 import PlanItem, { TaskStageDefinition } from "../planitem";
 import StageDefinition from "../stagedefinition";
