@@ -1,5 +1,4 @@
-﻿import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
-import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
+﻿import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import { CMMNDocumentationDefinition } from "../../../../repository/definition/elementdefinition";
 import CMMNElementView from "./cmmnelementview";
@@ -19,18 +18,6 @@ export default class CaseFileItemView extends CMMNElementView {
         definition = definition || CaseFileItemDef.createEmptyDefinition(stage.case.caseDefinition);
         const shape = stage.case.diagram.createShape(x, y, 25, 40, definition.id);
         return new CaseFileItemView(stage, definition, shape);
-    }
-
-    /**
-     * Check if the shape has the right size to be an "empty" case file item.
-     * @param {CaseDefinition} caseDefinition 
-     * @param {ShapeDefinition} shape 
-     * @returns 
-     */
-    static createElementForShape(caseDefinition, shape) {
-        if (shape.width == 25 && shape.height == 40) {
-            return CaseFileItemDef.createEmptyDefinition(caseDefinition);
-        }
     }
 
     /**

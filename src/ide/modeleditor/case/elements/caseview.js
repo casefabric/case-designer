@@ -101,43 +101,9 @@ export default class CaseView {
             this.loading = true;
             this.casePlanModel = new CasePlanView(this, this.caseDefinition.casePlan, this.diagram.getShape(this.caseDefinition.casePlan));
 
-            const getDefinition = shape => {
-                const element = caseDefinition.getElement(shape.cmmnElementRef);
-                if (element) {
-                    return element;
-                } else {
-                    // It may well be an empty, unreferenced CaseFileItemView, as that is not resizable; let CaseFileItemView figure that out
-                    const emptyCaseFileItem = CaseFileItemView.createElementForShape(caseDefinition, shape);
-                    if (emptyCaseFileItem) {
-                        emptyCaseFileItem.id = shape.cmmnElementRef;
-                    } else {
-                        // But if it is not, then we should print a warning
-                        console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
-                    }
-                    return emptyCaseFileItem;
-                }
-            }
-            // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage            
-            const stages = /** @type {Array<StageView>} */ (this.items.filter(element => element.isStage));
-            this.diagram.shapes.forEach(shape => {
-                const definitionElement = getDefinition(shape);
-                // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
-                if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
-                    const parent = this.getSurroundingStage(stages, shape);
-                    if (definitionElement instanceof CaseFileItemDef) {
-                        parent.__addCMMNChild(new CaseFileItemView(parent, definitionElement, shape));
-                    } else if (definitionElement instanceof TextAnnotationDefinition) {
-                        parent.__addCMMNChild(new TextAnnotationView(parent, definitionElement, shape));
-                    } else {
-                        // Quite weird :)
-                    }
-                }
-                const view = this.items.find(view => view.shape === shape);
-                if (definitionElement && !view) {
-                    this.editor.migrated("Removing unused shape " + shape.cmmnElementRef +" from " + this.dimensions.file.fileName);
-                    shape.removeDefinition();
-                }
-            });
+            // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
+            //  Also clean up remaining shapes for which no view can be created
+            this.renderLooseShapesAndDropUnusedShapes();
 
             // Finally render all connectors
             this.diagram.edges.forEach(edge => Connector.createConnectorFromEdge(this, edge));
@@ -171,6 +137,48 @@ export default class CaseView {
 
         const end = new Date();
         console.log(`Case '${this.caseDefinition.file.fileName}' loaded in ${((end - now) / 1000)} seconds`)
+    }
+
+    renderLooseShapesAndDropUnusedShapes() {
+        const getDefinition = shape => {
+            const element = this.caseDefinition.getElement(shape.cmmnElementRef);
+            if (element) {
+                return element;
+            } else {
+                // It may well be an empty, unreferenced CaseFileItemView, as that is not resizable.
+                // Check if the shape has the right size to be an "empty" case file item (they must be 25*40)
+                if (shape.width == 25 && shape.height == 40) {
+                    return CaseFileItemDef.createEmptyDefinition(this.caseDefinition, shape.cmmnElementRef);
+                } else {
+                    // But if it is not, then we should print a warning
+                    console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
+                    return undefined;
+                }
+            }
+        }
+        // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage            
+        const stages = /** @type {Array<StageView>} */ (this.items.filter(element => element.isStage));
+        this.diagram.shapes.forEach(shape => {
+            const definitionElement = getDefinition(shape);
+            // Only take the textboxes and case file items, not the other elements, as they are rendered from caseplanmodel constructor.
+            if (definitionElement instanceof CaseFileItemDef || definitionElement instanceof TextAnnotationDefinition) {
+                const parent = this.getSurroundingStage(stages, shape);
+                if (definitionElement instanceof CaseFileItemDef) {
+                    parent.__addCMMNChild(new CaseFileItemView(parent, definitionElement, shape));
+                } else if (definitionElement instanceof TextAnnotationDefinition) {
+                    parent.__addCMMNChild(new TextAnnotationView(parent, definitionElement, shape));
+                } else {
+                    // Quite weird :)
+                }
+            }
+            
+            // Now check if we have an actually view element for this shape, if not, it means we have no corresponding definition element, and then we'll remove the shape from the Dimensions.
+            const view = this.items.find(view => view.shape === shape);
+            if (!view) {
+                this.editor.migrated("Removing unused shape " + shape.cmmnElementRef + " from " + this.dimensions.file.fileName);
+                shape.removeDefinition();
+            }
+        });
     }
 
     onShow() {

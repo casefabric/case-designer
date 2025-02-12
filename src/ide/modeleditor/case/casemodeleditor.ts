@@ -79,6 +79,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.case = new CaseView(this, this.htmlContainer, caseDefinition);
 
         if (this.__migrated) {
+            console.log('Uploading migrated files');
             this.saveModel();
         }
 
