@@ -46,6 +46,13 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     }
 
     /**
+     * Option to create an import node for a new definition if that definition does not have an import node available.
+     */
+    createImportNode(tag: string): Element {
+        return this.modelDefinition.createImportNode(tag);
+    }
+
+    /**
      * Creates a new instance of the constructor with an optional id and name
      * attribute. If these are not given, the logic will generate id and name for it based
      * on the type of element and the other content inside the model definition.

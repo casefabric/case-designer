@@ -190,19 +190,6 @@ export default class XMLSerializable {
     }
 
     /**
-     * Option to create an import node for a new definition if that definition does not have an import node available.
-     */
-    createImportNode(tag: string): Element {
-        const document = this.importNode.ownerDocument;
-        if (!document) {
-            const error = new Error("Right. and that on an Element...");
-            console.error(error);
-            throw error;
-        }
-        return document.createElement(tag);
-    }
-
-    /**
      * Instantiates the constructor as a child to this element, and leaves it to the constructor to parse the childNode.
      * This method has no check on the presence of the childNode. That way it can also be used in empty CMMNExtensionDefinitions.
      */
