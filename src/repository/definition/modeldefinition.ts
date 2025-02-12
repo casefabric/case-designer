@@ -16,7 +16,7 @@ export default class ModelDefinition extends XMLSerializable {
     private __migrated: boolean = false;
     private static getImportNode(file: ServerFile<ModelDefinition>): Element {
         if (!file.xml) {
-            throw new Error('Expected an XML element')
+            throw new Error('Expected an XML element');
         }
         return file.xml;
     }
@@ -86,6 +86,19 @@ export default class ModelDefinition extends XMLSerializable {
     addElement(element: ElementDefinition<ModelDefinition>) {
         // console.warn(this.file.fileName +": adding a " + element.constructor.name)
         this.elements.push(element);
+    }
+
+    /**
+     * Option to create an import node for a new definition if that definition does not have an import node available.
+     */
+    createImportNode(tag: string): Element {
+        const document = this.importNode.ownerDocument;
+        if (!document) {
+            const error = new Error("Right. and that on an Element...");
+            console.error(error);
+            throw error;
+        }
+        return document.createElement(tag);
     }
 
     /**

@@ -25,7 +25,7 @@ export default class XMLSerializable {
     /**
      * Creates a new XMLSerializeable that belongs to an optional parent.
      */
-    constructor(public importNode: Element) {
+    constructor(public readonly importNode: Element) {
         this.extensionElement = XML.getChildByTagName(this.importNode, EXTENSIONELEMENTS);
         this.name = this.parseAttribute('name');
         this.id = this.parseAttribute('id');
@@ -187,19 +187,6 @@ export default class XMLSerializable {
             }
         }
         return newChild;
-    }
-
-    /**
-     * Option to create an import node for a new definition if that definition does not have an import node available.
-     */
-    createImportNode(tag: string): Element {
-        const document = this.importNode.ownerDocument;
-        if (!document) {
-            const error = new Error("Right. and that on an Element...");
-            console.error(error);
-            throw error;
-        }
-        return document.createElement(tag);
     }
 
     /**

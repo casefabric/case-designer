@@ -13,7 +13,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     /**
      * Creates a new ElementDefinition that belongs to the Definition object.
      */
-    constructor(importNode: Element, public modelDefinition: M, public parent?: ElementDefinition<M>) {
+    constructor(public readonly importNode: Element, public modelDefinition: M, public parent?: ElementDefinition<M>) {
         super(importNode);
         this.modelDefinition.addElement(this);
         if (parent && parent instanceof ElementDefinition) {
@@ -43,6 +43,13 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
 
     getIdentifier() {
         return this.id ? this.id : this.name ? this.name : '';
+    }
+
+    /**
+     * Option to create an import node for a new definition if that definition does not have an import node available.
+     */
+    createImportNode(tag: string): Element {
+        return this.modelDefinition.createImportNode(tag);
     }
 
     /**
