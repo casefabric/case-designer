@@ -25,7 +25,7 @@ export default class XMLSerializable {
     /**
      * Creates a new XMLSerializeable that belongs to an optional parent.
      */
-    constructor(public importNode: Element) {
+    constructor(public readonly importNode: Element) {
         this.extensionElement = XML.getChildByTagName(this.importNode, EXTENSIONELEMENTS);
         this.name = this.parseAttribute('name');
         this.id = this.parseAttribute('id');

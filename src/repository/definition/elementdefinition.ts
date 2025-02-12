@@ -13,7 +13,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     /**
      * Creates a new ElementDefinition that belongs to the Definition object.
      */
-    constructor(importNode: Element, public modelDefinition: M, public parent?: ElementDefinition<M>) {
+    constructor(public readonly importNode: Element, public modelDefinition: M, public parent?: ElementDefinition<M>) {
         super(importNode);
         this.modelDefinition.addElement(this);
         if (parent && parent instanceof ElementDefinition) {
