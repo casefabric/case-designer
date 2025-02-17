@@ -20,6 +20,7 @@ export default class ImportElement {
 
     async save() {
         const file = this.repository.get(this.fileName) || this.createFile();
+        file.source = this.content;
         await file.save();
     }
 
