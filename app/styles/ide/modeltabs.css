@@ -1,0 +1,84 @@
+
+.model-tabs {
+    position: absolute;
+    float: left;
+    left: 4px;
+    right: 0px;
+    top: 0px;
+    height: 20px;
+    display: block;
+    border-bottom: 2px solid rgb(221, 221, 221);
+}
+
+/* Style the tab */
+.model-tab {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    padding-left: 6px;
+    padding-right: 2px;
+    overflow: hidden;
+    display: inline-block;
+    margin-right: 0px; /* Space between tabs */
+    border-top-left-radius: 4px; /* Rounded corners */
+    border-top-right-radius: 4px; /* Rounded corners */
+    text-align: center;
+    background-color: rgb(66, 68, 70);
+    color: lightgrey;
+    border: 1px solid #DDDDDD;
+    height: 19px;
+    margin-top: 1px;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* Create an active/current tablink class */
+.model-tab.active {
+    /* background-color: rgb(66, 68, 70);; */
+    /* border-bottom: 1px solid; */
+    /* font-weight: normal; */
+    height: 20px;
+    color: white;
+    margin-top: 0px;
+}
+
+/* First tab must be little to the left */
+.model-tab.first {
+    border: 1px solid #DDDDDD;
+    margin-left: -1px;
+}
+
+/* If there is only one tab we correct the size*/
+.model-tab.one {
+    height: 19px;
+    margin-top: 1px;
+}
+
+/* Style the label that are used to open the tab content */
+.model-tab label {
+    transition: 0.3s;
+    font-weight: normal;
+    cursor: pointer;
+    margin-top: 1px;
+    margin-right:8px;
+}
+
+/* Hide the refresh button when not active, as refreshing invisible models gives weird results */
+.model-tab .refreshButton {
+    display: none;
+}
+
+.model-tab.active .refreshButton {
+    display: inline;
+}
+
+.model-tab img {
+    position:relative;
+    right: 0px;
+    width: 9px;
+    height: 9px;
+    opacity: 75%;
+}
+
+.model-tab.active img {
+    opacity: 100%;
+}

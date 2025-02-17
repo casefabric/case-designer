@@ -51,7 +51,7 @@ export default class IDE {
 
     back() {
         // Simplistic. Buggy. But nice and simple for now. Better would be to hash all locations we've been and go back properly
-        history.back();
+        // history.back();
     }
 
     handlePasteText(e: JQuery.TriggeredEvent) {
