@@ -85,6 +85,7 @@ export default class ModelEditorRegistry {
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
         if (existingEditor) {
+            this.ide.modelTabs.addTab(existingEditor);
             return;
         }
 
