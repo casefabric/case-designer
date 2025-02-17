@@ -32,6 +32,7 @@ export default abstract class ModelEditor {
     <div class="model-editor-content"></div>
 </div>`);
         this.ide.divModelEditors.append(this._html);
+        this.ide.modelTabs.addTab(this);
 
         this.htmlContainer = this.html.find('.model-editor-content');
         this.divMovableEditors = this.html.find('.divMovableEditors');
@@ -217,6 +218,7 @@ export default abstract class ModelEditor {
     }
 
     close() {
+        this.ide.modelTabs.removeTab(this);
         this.ide.back();
     }
 
