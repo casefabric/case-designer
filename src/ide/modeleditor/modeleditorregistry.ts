@@ -31,7 +31,7 @@ export default class ModelEditorRegistry {
      * @returns 
      */
     get<M extends ModelEditor>(file: ServerFile): M | undefined {
-        return <M> this.editors.find(editor => editor.file.fileName === file.fileName);
+        return <M>this.editors.find(editor => editor.file.fileName === file.fileName);
     }
 
     /** 
@@ -86,6 +86,7 @@ export default class ModelEditorRegistry {
 
         // If we already have an editor for the fileName, no need to go further in the loading logic
         if (existingEditor) {
+            this.ide.main.tabs.addTab(existingEditor);
             return;
         }
 
@@ -99,7 +100,9 @@ export default class ModelEditorRegistry {
         this.ide.coverPanel.show('Opening ' + fileName);
 
         // Now create and load the new editor
-        editorMetadata.createEditor(this.ide, serverFile).loadModel();
+        const editor = editorMetadata.createEditor(this.ide, serverFile)
+        this.ide.main.tabs.addTab(editor);
+        editor.loadModel();
     }
 
     remove(fileName: string) {
