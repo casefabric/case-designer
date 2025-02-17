@@ -68,7 +68,12 @@ export default class XML {
         if (txt === undefined || txt.length === 0) {
             return new DOMParser().parseFromString('<parsererror>no text passed</parsererror>', 'text/xml');
         }
-        return new DOMParser().parseFromString(txt, 'text/xml');
+        try {
+            const doc = new DOMParser().parseFromString(txt, 'text/xml');
+            return doc;
+        } catch (e) {
+            return new DOMParser().parseFromString(`<parsererror>${e}</parsererror>`, 'text/xml');
+        }
     }
 
     /**
