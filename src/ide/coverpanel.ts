@@ -14,8 +14,7 @@ export default class CoverPanel {
      */
     constructor(public ide: IDE) {
         this.ide = ide;
-        this.html = $(
-`<div class="divCoverPanel">
+        this.html = $(`<div class="divCoverPanel">
     <div></div>
     <div class="basicbox">
         <label class="labelCoverPanelDescription"></label>
@@ -29,7 +28,11 @@ export default class CoverPanel {
      * Show a message on the cover panel and make it visible
      */
     show(msg: string) {
-        this.visible = true;
         this.msgElement.html(msg);
+        this.html.show();
+    }
+
+    hide() {
+        this.html.hide();
     }
 }
