@@ -90,7 +90,7 @@
                         <documentation textFormat="text/plain">
                             <text><![CDATA[Sends a response back to the initiator of the hello world case]]></text>
                         </documentation>
-                        <input id="Greeting" name="Greeting"/>
+                        <input id="Greeting" name="Greeting" typeRef="Greeting.type"/>
                         <output id="Response" name="Response"/>
                         <task-model>{
   "schema" : {
