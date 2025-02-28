@@ -1,4 +1,4 @@
-<case id="four_eyes.case" name="four_eyes" expressionLanguage="spel" guid="_mlHqQ">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="four_eyes.case" name="four_eyes" expressionLanguage="spel" guid="_mlHqQ">
     <caseFileModel typeRef="case_four_eyes.type"/>
     <casePlanModel id="cm__mlHqQ_0" name="four_eyes" autoComplete="true">
         <humanTask id="pi_ht__mlHqQ_0" name="Task1" isBlocking="true">
@@ -46,19 +46,13 @@
     </casePlanModel>
     <caseRoles/>
     <textAnnotation id="_mlHqQ_47">
-        <text>
-            <![CDATA[RendezVous between Task1 and Task2]]>
-        </text>
+        <text><![CDATA[RendezVous between Task1 and Task2]]></text>
     </textAnnotation>
     <textAnnotation id="_mlHqQ_48">
-        <text>
-            <![CDATA[FourEyes between Task1 and Task3. Hence also between Task3 and Task2]]>
-        </text>
+        <text><![CDATA[FourEyes between Task1 and Task3. Hence also between Task3 and Task2]]></text>
     </textAnnotation>
     <textAnnotation id="_mlHqQ_49">
-        <text>
-            <![CDATA[FourEyes between Task3, Task4 and Task5.
-All three tasks must be operated on by different users]]>
-        </text>
+        <text><![CDATA[FourEyes between Task3, Task4 and Task5.
+All three tasks must be operated on by different users]]></text>
     </textAnnotation>
 </case>

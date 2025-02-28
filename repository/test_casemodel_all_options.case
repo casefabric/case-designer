@@ -1,8 +1,6 @@
-<case id="test_casemodel_all_options.case" name="test_casemodel_all_options" expressionLanguage="spel" guid="_tEZDU">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="test_casemodel_all_options.case" name="test_casemodel_all_options" expressionLanguage="spel" guid="_tEZDU">
     <documentation textFormat="text/plain">
-        <text>
-            <![CDATA[This case has all possible elements, parameters,options and more.]]>
-        </text>
+        <text><![CDATA[This case has all possible elements, parameters,options and more.]]></text>
     </documentation>
     <caseFileModel>
         <caseFileItem id="cfi_csgXo_0" name="cfi1" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.cfid">
@@ -27,78 +25,64 @@
         <exitCriterion id="_tEZDU_12" name="ExitCriterion_2">
             <ifPart>
                 <condition language="Spel">
-                    <body>
-                        <![CDATA[
+                    <body><![CDATA[
                         
                             If Part Expression
                         
-                    ]]>
-                    </body>
+                    ]]></body>
                 </condition>
             </ifPart>
         </exitCriterion>
         <humanTask id="cm_cs6iD_4" name="Human Task with Role and Rules" isBlocking="true" performerRef="role_csgXo_0">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Human Task with
-Role and Rules]]>
-                </text>
+                <text><![CDATA[Human Task with
+Role and Rules]]></text>
             </documentation>
             <itemControl>
                 <repetitionRule id="cm_cs6iD_4_repetitionRule" contextRef="cfi_csgXo_3">
                     <condition>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                             
                                 Repetition rule expression
 Multiple lines
                             
-                        ]]>
-                        </body>
+                        ]]></body>
                     </condition>
                 </repetitionRule>
                 <requiredRule id="cm_cs6iD_4_requiredRule">
                     <condition>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                             
                                 Required Rule
                             
-                        ]]>
-                        </body>
+                        ]]></body>
                     </condition>
                 </requiredRule>
                 <manualActivationRule id="cm_cs6iD_4_manualActivationRule" contextRef="cfi_csgXo_4">
                     <condition>
-                        <body>
-                            <![CDATA[]]>
-                        </body>
+                        <body><![CDATA[
+                            
+                        ]]></body>
                     </condition>
                 </manualActivationRule>
             </itemControl>
         </humanTask>
         <humanTask id="cm_cs6iD_6" name="Non-Blocking Humantask - No Implementation" isBlocking="false">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Non-Blocking Humantask
-- No Implementation]]>
-                </text>
+                <text><![CDATA[Non-Blocking Humantask
+- No Implementation]]></text>
             </documentation>
         </humanTask>
         <caseTask id="cm_csPHe_7" name="Case Task  - No Implementation" isBlocking="true">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Case Task 
-- No Implementation]]>
-                </text>
+                <text><![CDATA[Case Task 
+- No Implementation]]></text>
             </documentation>
         </caseTask>
         <processTask id="cm_csPHe_9" name="Process Task - No Implementation" isBlocking="true">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Process Task
-- No Implementation]]>
-                </text>
+                <text><![CDATA[Process Task
+- No Implementation]]></text>
             </documentation>
         </processTask>
         <stage id="cm_csPHe_14" name="Non-task elements no Links" autoComplete="true">
@@ -107,43 +91,35 @@ Multiple lines
                 <itemControl>
                     <repetitionRule id="cm_csPHe_17_repetitionRule" contextRef="cfi_csgXo_1">
                         <condition>
-                            <body>
-                                <![CDATA[
+                            <body><![CDATA[
                                 
                                     Repeat rule expression
                                 
-                            ]]>
-                            </body>
+                            ]]></body>
                         </condition>
                     </repetitionRule>
                     <requiredRule id="cm_csPHe_17_requiredRule" contextRef="cfi_csgXo_6">
                         <condition>
-                            <body>
-                                <![CDATA[
+                            <body><![CDATA[
                                 
                                     Required rule expression
                                 
-                            ]]>
-                            </body>
+                            ]]></body>
                         </condition>
                     </requiredRule>
                 </itemControl>
             </milestone>
             <timerEvent id="cm_csPHe_18" name="Timer Event - CFI Start Trigger">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Timer Event
-- CFI Start Trigger]]>
-                    </text>
+                    <text><![CDATA[Timer Event
+- CFI Start Trigger]]></text>
                 </documentation>
                 <timerExpression>
-                    <body>
-                        <![CDATA[
+                    <body><![CDATA[
                     
                         Timer cfi trigger expression
                     
-                ]]>
-                    </body>
+                ]]></body>
                 </timerExpression>
                 <caseFileItemStartTrigger sourceRef="cfi_csgXo_7">
                     <standardEvent>addReference</standardEvent>
@@ -151,10 +127,8 @@ Multiple lines
             </timerEvent>
             <timerEvent id="cm_cs5MY_19" name="Timer Event - PlanItem Start Trigger">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Timer Event
-- PlanItem Start Trigger]]>
-                    </text>
+                    <text><![CDATA[Timer Event
+- PlanItem Start Trigger]]></text>
                 </documentation>
                 <planItemStartTrigger sourceRef="cm_csPHe_16">
                     <standardEvent>create</standardEvent>
@@ -163,52 +137,42 @@ Multiple lines
             <stage id="cm_cs5MY_20" name="Stage" autoComplete="true"/>
             <userEvent id="cm_cs5MY_24" name="User Event - No Authorized Roles">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[User Event
-- No Authorized Roles]]>
-                    </text>
+                    <text><![CDATA[User Event
+- No Authorized Roles]]></text>
                 </documentation>
             </userEvent>
             <userEvent id="cm_cs5MY_25" name="User Event - with Authorized Roles">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[User Event
-- with Authorized Roles]]>
-                    </text>
+                    <text><![CDATA[User Event
+- with Authorized Roles]]></text>
                 </documentation>
             </userEvent>
         </stage>
         <stage id="cm_cs5MY_26" name="Tasks with Implementation and Mapping" autoComplete="true">
             <caseTask id="cm_cs5MY_28" name="Case Task with Mapping Configuration  Reorder, Expressions, CFI" isBlocking="true" caseRef="test_casemodel_parameters.case">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Case Task with
+                    <text><![CDATA[Case Task with
 Mapping Configuration 
-Reorder, Expressions, CFI]]>
-                    </text>
+Reorder, Expressions, CFI]]></text>
                 </documentation>
                 <inputs id="_bQAdT" name="case_input_parameter_01" bindingRef="cfi_csgXo_3"/>
                 <inputs id="_QlMx9" name="case_input_parameter_02" bindingRef="cfi_csgXo_6">
                     <bindingRefinement>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                         
                             Binding Refinement Expression
                         
-                    ]]>
-                        </body>
+                    ]]></body>
                     </bindingRefinement>
                 </inputs>
                 <outputs id="_kiZnA" name="case_output_parameter_01" bindingRef="cfi_csgXo_4"/>
                 <outputs id="_dDwRG" name="case_output_parameter_02">
                     <bindingRefinement>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                         
                             Output Binding Refinement Expression
                         
-                    ]]>
-                        </body>
+                    ]]></body>
                     </bindingRefinement>
                     <extensionElements mustUnderstand="false">
                         <cafienne:implementation xmlns:cafienne="org.cafienne" required="true"/>
@@ -222,27 +186,23 @@ Reorder, Expressions, CFI]]>
                 </outputs>
                 <parameterMapping id="_Le6ho" sourceRef="_bQAdT" targetRef="csARK_inCPs_0">
                     <transformation>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                         
                             Transformation Expression
                         
-                    ]]>
-                        </body>
+                    ]]></body>
                     </transformation>
                 </parameterMapping>
                 <parameterMapping id="_dZyCS" sourceRef="_QlMx9" targetRef="csARK_inCPs_1"/>
                 <parameterMapping id="_vbrGf" sourceRef="csARK_outCPs_0" targetRef="_kiZnA"/>
                 <parameterMapping id="_Fx3J6" sourceRef="csARK_outCPs_1" targetRef="_dDwRG">
                     <transformation>
-                        <body>
-                            <![CDATA[
+                        <body><![CDATA[
                         
                             Output Transformation Expression
 Multiple Lines
                         
-                    ]]>
-                        </body>
+                    ]]></body>
                     </transformation>
                 </parameterMapping>
                 <parameterMapping id="_U8ppd" sourceRef="csARK_outCPs_2" targetRef="_geeCE"/>
@@ -250,10 +210,8 @@ Multiple Lines
             </caseTask>
             <processTask id="cm_cs5MY_30" name="Process Task with Implementation" isBlocking="true" processRef="test_processmodel_parameters.process">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Process Task with
-Implementation]]>
-                    </text>
+                    <text><![CDATA[Process Task with
+Implementation]]></text>
                 </documentation>
                 <outputs id="_4HYcn" name="process_output_parameter_01"/>
                 <outputs id="_GlD8J" name="process_output_parameter_02"/>
@@ -264,10 +222,8 @@ Implementation]]>
             </processTask>
             <humanTask id="cm_cseQf_31" name="Human Task with Mapping" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Human Task with
-Mapping]]>
-                    </text>
+                    <text><![CDATA[Human Task with
+Mapping]]></text>
                 </documentation>
                 <inputs id="_qVRDD" name="ht_input_parameter_01" bindingRef="cfi_csgXo_6"/>
                 <outputs id="_ArOOj" name="ht_output_parameter_01">
@@ -293,48 +249,40 @@ Mapping]]>
         </stage>
         <humanTask id="cm_cscw1_45" name="With Planning Table Applicability Rules and Multiple Discretionary Tasks" isBlocking="true">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[With Planning Table
+                <text><![CDATA[With Planning Table
 Applicability Rules
-and Multiple Discretionary Tasks]]>
-                </text>
+and Multiple Discretionary Tasks]]></text>
             </documentation>
             <planningTable id="pt_cm_46">
                 <caseTask id="cm_cscw1_47" name="Authorized Roles Selected Applic Rules" authorizedRoleRefs="role_csgXo_0" isBlocking="true">
                     <documentation textFormat="text/plain">
-                        <text>
-                            <![CDATA[Authorized Roles
-Selected Applic Rules]]>
-                        </text>
+                        <text><![CDATA[Authorized Roles
+Selected Applic Rules]]></text>
                     </documentation>
                 </caseTask>
                 <humanTask id="cm_cscw1_43" name="No Authorized Roles No Applic. Rules" isBlocking="true">
                     <documentation textFormat="text/plain">
-                        <text>
-                            <![CDATA[No Authorized Roles
-No Applic. Rules]]>
-                        </text>
+                        <text><![CDATA[No Authorized Roles
+No Applic. Rules]]></text>
                     </documentation>
                 </humanTask>
                 <applicabilityRule id="rule_cscw1_3" name="applic_rule_04">
                     <condition>
-                        <body>
-                            <![CDATA[just some text]]>
-                        </body>
+                        <body><![CDATA[just some text]]></body>
                     </condition>
                 </applicabilityRule>
                 <applicabilityRule id="rule_cscw1_4" name="applic_rule_05">
                     <condition>
-                        <body>
-                            <![CDATA[]]>
-                        </body>
+                        <body><![CDATA[
+                            
+                        ]]></body>
                     </condition>
                 </applicabilityRule>
                 <applicabilityRule id="rule_cscw1_5" name="applic_rule_06">
                     <condition>
-                        <body>
-                            <![CDATA[]]>
-                        </body>
+                        <body><![CDATA[
+                            
+                        ]]></body>
                     </condition>
                 </applicabilityRule>
             </planningTable>
@@ -348,10 +296,8 @@ No Applic. Rules]]>
             <humanTask id="cm_cslbG_62" name="Task A" isBlocking="true"/>
             <humanTask id="cm_cslbG_64" name="Task B Sentry Links to Task A" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task B
-Sentry Links to Task A]]>
-                    </text>
+                    <text><![CDATA[Task B
+Sentry Links to Task A]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_1" name="EntryCriterion_1">
                     <planItemOnPart id="ref_id_cm_cslbG_62" sourceRef="cm_cslbG_62">
@@ -362,10 +308,8 @@ Sentry Links to Task A]]>
             <humanTask id="cm_cslbG_67" name="Task C" isBlocking="true"/>
             <humanTask id="cm_cslbG_69" name="Task D Sentry Links, invisible, to Task C" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task D
-Sentry Links, invisible, to Task C]]>
-                    </text>
+                    <text><![CDATA[Task D
+Sentry Links, invisible, to Task C]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_2" name="EntryCriterion_2">
                     <planItemOnPart id="ref_id_cm_cslbG_67" sourceRef="cm_cslbG_67">
@@ -375,18 +319,14 @@ Sentry Links, invisible, to Task C]]>
             </humanTask>
             <humanTask id="cm_cslbG_72" name="Task E Links with Bounds" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task E
-Links with Bounds]]>
-                    </text>
+                    <text><![CDATA[Task E
+Links with Bounds]]></text>
                 </documentation>
             </humanTask>
             <humanTask id="cm_cslbG_74" name="Task F Sentry Links To Task E" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task F
-Sentry Links To Task E]]>
-                    </text>
+                    <text><![CDATA[Task F
+Sentry Links To Task E]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_3" name="EntryCriterion_3">
                     <planItemOnPart id="ref_id_cm_cslbG_72" sourceRef="cm_cslbG_72">
@@ -396,10 +336,8 @@ Sentry Links To Task E]]>
             </humanTask>
             <humanTask id="cm_cslbG_76" name="Task G Sentry Links to Task E" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task G
-Sentry Links to Task E]]>
-                    </text>
+                    <text><![CDATA[Task G
+Sentry Links to Task E]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_4" name="EntryCriterion_4">
                     <planItemOnPart id="ref_id_cm_cslbG_72" sourceRef="cm_cslbG_72">
@@ -411,10 +349,8 @@ Sentry Links to Task E]]>
             <humanTask id="cm_csQ4n_82" name="Task I" isBlocking="true"/>
             <milestone id="cm_csQ4n_84" name="Milestone A Two Links to Sentry">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Milestone A
-Two Links to Sentry]]>
-                    </text>
+                    <text><![CDATA[Milestone A
+Two Links to Sentry]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_5" name="EntryCriterion_5">
                     <planItemOnPart id="ref_id_cm_csQ4n_80" sourceRef="cm_csQ4n_80">
@@ -439,31 +375,25 @@ Two Links to Sentry]]>
             </stage>
             <humanTask id="cm_csQ4n_94" name="Task L Exit to Entry" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task L
-Exit to Entry]]>
-                    </text>
+                    <text><![CDATA[Task L
+Exit to Entry]]></text>
                 </documentation>
                 <exitCriterion id="_tEZDU_8" name="ExitCriterion_0">
                     <ifPart>
                         <condition language="Spel">
-                            <body>
-                                <![CDATA[
+                            <body><![CDATA[
                             
                                 If Part Expression
                             
-                        ]]>
-                            </body>
+                        ]]></body>
                         </condition>
                     </ifPart>
                 </exitCriterion>
             </humanTask>
             <humanTask id="cm_csQ4n_97" name="Task M Entry to Exit" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task M
-Entry to Exit]]>
-                    </text>
+                    <text><![CDATA[Task M
+Entry to Exit]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_9" name="EntryCriterion_8">
                     <planItemOnPart id="ref_id_cm_csQ4n_96" sourceRef="cm_csQ4n_94" exitCriterionRef="cm_csQ4n_96">
@@ -473,11 +403,9 @@ Entry to Exit]]>
             </humanTask>
             <humanTask id="cm_csQ4n_100" name="Task N Links to 2 CFI Elements Links Multiple bounds" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Task N
+                    <text><![CDATA[Task N
 Links to 2 CFI Elements
-Links Multiple bounds]]>
-                    </text>
+Links Multiple bounds]]></text>
                 </documentation>
                 <entryCriterion id="_tEZDU_10" name="EntryCriterion_9">
                     <caseFileItemOnPart sourceRef="cfi_csgXo_2">
@@ -505,24 +433,20 @@ Links Multiple bounds]]>
         <planningTable id="pt_cm_undefined_1">
             <humanTask id="cm_cseQf_34" name="Discr. to CPM - Authorized Roles - Selected Applic. Rules" authorizedRoleRefs="role_csgXo_1 role_csgXo_2" isBlocking="true">
                 <documentation textFormat="text/plain">
-                    <text>
-                        <![CDATA[Discr. to CPM
+                    <text><![CDATA[Discr. to CPM
 - Authorized Roles
-- Selected Applic. Rules]]>
-                    </text>
+- Selected Applic. Rules]]></text>
                 </documentation>
             </humanTask>
             <stage id="cm_cscw1_35" name="Discretionary to CPM - Ref to Auth. Roles and Applic. Rules" authorizedRoleRefs="role_csgXo_0" autoComplete="true">
                 <itemControl>
                     <repetitionRule id="cm_cscw1_35_repetitionRule" contextRef="cfi_csgXo_1">
                         <condition>
-                            <body>
-                                <![CDATA[
+                            <body><![CDATA[
                                 
                                     Repeat Rule Stage
                                 
-                            ]]>
-                            </body>
+                            ]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
@@ -530,11 +454,9 @@ Links Multiple bounds]]>
                     <stage id="cm_cscw1_49" name="Nested Discretionary - no Applic Rules - Not Auto Complete" autoComplete="false">
                         <humanTask id="cm_cscw1_51" name="With Planning Table Discr. to Elements Inside and Outside Parent" isBlocking="true">
                             <documentation textFormat="text/plain">
-                                <text>
-                                    <![CDATA[With Planning Table
+                                <text><![CDATA[With Planning Table
 Discr. to Elements Inside
-and Outside Parent]]>
-                                </text>
+and Outside Parent]]></text>
                             </documentation>
                             <planningTable id="pt_cm_52">
                                 <stage id="cm_csPyw_54" name="Discr. to Task" autoComplete="true"/>
@@ -550,27 +472,25 @@ and Outside Parent]]>
             </stage>
             <applicabilityRule id="rule_cseQf_0" name="applic_rule_01" contextRef="cfi_csgXo_4">
                 <condition>
-                    <body>
-                        <![CDATA[
+                    <body><![CDATA[
                         
                             Rule Expression
                         
-                    ]]>
-                    </body>
+                    ]]></body>
                 </condition>
             </applicabilityRule>
             <applicabilityRule id="rule_cseQf_1" name="applic_rule_02">
                 <condition>
-                    <body>
-                        <![CDATA[]]>
-                    </body>
+                    <body><![CDATA[
+                        
+                    ]]></body>
                 </condition>
             </applicabilityRule>
             <applicabilityRule id="rule_cseQf_2" name="applic_rule_03" contextRef="cfi_csgXo_2">
                 <condition>
-                    <body>
-                        <![CDATA[]]>
-                    </body>
+                    <body><![CDATA[
+                        
+                    ]]></body>
                 </condition>
             </applicabilityRule>
         </planningTable>
@@ -578,36 +498,26 @@ and Outside Parent]]>
     <caseRoles>
         <role id="role_csgXo_0" name="role1">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[First role]]>
-                </text>
+                <text><![CDATA[First role]]></text>
             </documentation>
         </role>
         <role id="role_csgXo_1" name="role2">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[null]]>
-                </text>
+                <text><![CDATA[null]]></text>
             </documentation>
         </role>
         <role id="role_csgXo_2" name="role3">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Third role]]>
-                </text>
+                <text><![CDATA[Third role]]></text>
             </documentation>
         </role>
     </caseRoles>
     <textAnnotation id="cm_csPHe_13">
-        <text>
-            <![CDATA[Tasks :]]>
-        </text>
+        <text><![CDATA[Tasks :]]></text>
     </textAnnotation>
     <textAnnotation id="cm_cseQf_33">
-        <text>
-            <![CDATA[Discretionary :
-(Discr)]]>
-        </text>
+        <text><![CDATA[Discretionary :
+(Discr)]]></text>
     </textAnnotation>
     <extensionElements mustUnderstand="false">
         <cafienne:start-case-model xmlns:cafienne="org.cafienne">{

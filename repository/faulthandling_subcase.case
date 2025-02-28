@@ -1,4 +1,4 @@
-<case id="faulthandling_subcase.case" name="faulthandling_subcase" expressionLanguage="spel" guid="_y2XPO">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="faulthandling_subcase.case" name="faulthandling_subcase" expressionLanguage="spel" guid="_y2XPO">
     <caseFileModel typeRef="case_faulthandling_subcase.type"/>
     <casePlanModel id="cm__y2XPO_0" name="faulthandling_subcase" autoComplete="true">
         <stage id="pi__y2XPO_0" name="Stage Without Fault Handling" autoComplete="true">
@@ -34,9 +34,7 @@
                 <itemControl id="_y2XPO_22">
                     <repetitionRule id="_y2XPO_23">
                         <condition id="_y2XPO_24">
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
@@ -49,9 +47,7 @@
                     <itemControl id="_y2XPO_37">
                         <requiredRule id="_y2XPO_40">
                             <condition id="_y2XPO_41">
-                                <body>
-                                    <![CDATA[true]]>
-                                </body>
+                                <body><![CDATA[true]]></body>
                             </condition>
                         </requiredRule>
                     </itemControl>
