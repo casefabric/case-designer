@@ -1,13 +1,11 @@
-<case id="testRoles.case" name="testRoles" expressionLanguage="spel" guid="_3GznZ">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="testRoles.case" name="testRoles" expressionLanguage="spel" guid="_3GznZ">
     <caseFileModel typeRef="Helloworld.type"/>
     <casePlanModel id="cm__3GznZ_0" name="testRoles" autoComplete="true">
         <humanTask id="pi_ht__3GznZ_0" name="HumanTask_0" isBlocking="true" performerRef="_3GznZ_4">
             <itemControl id="_3GznZ_1">
                 <repetitionRule id="_3GznZ_12">
                     <condition id="_3GznZ_13">
-                        <body>
-                            <![CDATA[true]]>
-                        </body>
+                        <body><![CDATA[true]]></body>
                     </condition>
                 </repetitionRule>
             </itemControl>
@@ -22,19 +20,15 @@
             <itemControl id="_3GznZ_2">
                 <repetitionRule id="_3GznZ_10">
                     <condition id="_3GznZ_11">
-                        <body>
-                            <![CDATA[true]]>
-                        </body>
+                        <body><![CDATA[true]]></body>
                     </condition>
                 </repetitionRule>
             </itemControl>
         </humanTask>
         <userEvent id="pi_ue__3GznZ_0" name="UserEvent_0 ">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[UserEvent_0
-]]>
-                </text>
+                <text><![CDATA[UserEvent_0
+]]></text>
             </documentation>
         </userEvent>
         <planningTable id="_3GznZ_3">
@@ -42,9 +36,7 @@
                 <itemControl id="_3GznZ_0">
                     <repetitionRule id="_3GznZ_8">
                         <condition id="_3GznZ_9">
-                            <body>
-                                <![CDATA[true]]>
-                            </body>
+                            <body><![CDATA[true]]></body>
                         </condition>
                     </repetitionRule>
                 </itemControl>
@@ -54,16 +46,12 @@
     <caseRoles>
         <role id="_3GznZ_4" name="Role1">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Role ABC]]>
-                </text>
+                <text><![CDATA[Role ABC]]></text>
             </documentation>
         </role>
         <role id="_3GznZ_5" name="Role2">
             <documentation textFormat="text/plain">
-                <text>
-                    <![CDATA[Role 2]]>
-                </text>
+                <text><![CDATA[Role 2]]></text>
             </documentation>
         </role>
         <role id="_3GznZ_6" name="Role 3"/>

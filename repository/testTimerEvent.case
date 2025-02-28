@@ -1,12 +1,10 @@
-<case id="testTimerEvent.case" name="testTimerEvent" expressionLanguage="spel" guid="_nrtSA">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="testTimerEvent.case" name="testTimerEvent" expressionLanguage="spel" guid="_nrtSA">
     <caseFileModel typeRef="case_testTimerEvent.type"/>
     <casePlanModel id="cm_testTimerEvent.case_0" name="testTimerEvent" autoComplete="true">
         <humanTask id="cm_testTimerEvent.case_2" name="Task_1" isBlocking="true"/>
         <timerEvent id="cm_testTimerEvent.case_4" name="CFI-StartedTimer">
             <timerExpression>
-                <body>
-                    <![CDATA[cfi-expression]]>
-                </body>
+                <body><![CDATA[cfi-expression]]></body>
             </timerExpression>
             <caseFileItemStartTrigger sourceRef="CFI">
                 <standardEvent>create</standardEvent>
@@ -14,9 +12,7 @@
         </timerEvent>
         <timerEvent id="cm_testTimerEvent.case_5" name="EventListener_2">
             <timerExpression>
-                <body>
-                    <![CDATA[task-triggered-expression]]>
-                </body>
+                <body><![CDATA[task-triggered-expression]]></body>
             </timerExpression>
             <planItemStartTrigger sourceRef="cm_testTimerEvent.case_2">
                 <standardEvent>complete</standardEvent>

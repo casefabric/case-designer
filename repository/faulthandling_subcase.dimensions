@@ -1,5 +1,5 @@
 <CMMNDI xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <CMMNDiagram cafienne:labels="full">
+    <CMMNDiagram xmlns="org.cafienne" labels="full">
         <CMMNShape cmmnElementRef="cm__y2XPO_0">
             <Bounds x="20" y="20" width="800" height="500"/>
         </CMMNShape>
@@ -38,9 +38,6 @@
         </CMMNShape>
         <CMMNShape cmmnElementRef="_y2XPO_38">
             <Bounds x="544" y="380" width="12" height="20"/>
-        </CMMNShape>
-        <CMMNShape cmmnElementRef="_y2XPO_33">
-            <Bounds x="284" y="380" width="12" height="20"/>
         </CMMNShape>
         <CMMNShape cmmnElementRef="_y2XPO_25">
             <Bounds x="284" y="380" width="12" height="20"/>

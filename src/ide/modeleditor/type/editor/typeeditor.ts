@@ -320,6 +320,7 @@ export default class TypeEditor {
     loadSource(newSource: any) {
         if (this.file) {
             this.file.source = newSource;
+            this.file.parse();
             this.mainType?.save(); // Saving the type will refresh the editor    
         }
     }

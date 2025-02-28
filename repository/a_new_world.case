@@ -1,4 +1,4 @@
-<case id="a.case" name="Hello World" expressionLanguage="spel" guid="_U6HlD">
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="a.case" name="Hello World" expressionLanguage="spel" guid="_U6HlD">
     <caseFileModel typeRef="Helloworld.type"/>
     <casePlanModel id="cm__U6HlD_0" name="Hello World" autoComplete="true">
         <humanTask id="pi_ht__U6HlD_0" name="ReadResponse" isBlocking="true">
@@ -15,9 +15,7 @@
             <itemControl id="_U6HlD_13">
                 <repetitionRule id="_U6HlD_14" contextRef="Greeting">
                     <condition id="_U6HlD_15">
-                        <body>
-                            <![CDATA[true]]>
-                        </body>
+                        <body><![CDATA[true]]></body>
                     </condition>
                 </repetitionRule>
             </itemControl>

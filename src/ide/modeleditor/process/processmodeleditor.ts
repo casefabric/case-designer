@@ -255,6 +255,7 @@ export default class ProcessModelEditor extends ModelEditor {
      */
     loadSource(newSource: any) {
         this.file.source = newSource;
+        this.file.parse();
         this.loadModel();
         this.saveModel();
     }
