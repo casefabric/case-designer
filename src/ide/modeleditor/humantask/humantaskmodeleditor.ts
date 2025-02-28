@@ -266,6 +266,7 @@ export default class HumantaskModelEditor extends ModelEditor {
      */
     loadSource(source: string) {
         this.file.source = source;
+        this.file.parse();
         this.loadModel();
         this.saveModel();
     }
