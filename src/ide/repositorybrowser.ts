@@ -8,6 +8,7 @@ import ServerFileDragData from "./dragdrop/serverfiledragdata";
 import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelListPanel from "./modellistpanel";
+import Images from "./util/images/images";
 
 export default class RepositoryBrowser {
     repository: Repository;
@@ -24,7 +25,7 @@ export default class RepositoryBrowser {
                 <div class="formheader">
                     <label>Repository</label>
                     <div class="btnRefresh" title="Refresh the model list">
-                        <img src="images/refresh_32.png" />
+                        <img src="${Images.Refresh}" />
                     </div>
                 </div>
                 <div class="formfooter">

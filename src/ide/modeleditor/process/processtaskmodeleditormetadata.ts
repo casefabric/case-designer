@@ -2,8 +2,8 @@ import ModelDefinition from "../../../repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
 import ProcessFile from "../../../repository/serverfile/processfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
-import Icons from "../../../util/images/icons";
 import IDE from "../../ide";
+import Icons from "../../util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ProcessModelEditor from "./processmodeleditor";
 

@@ -1,6 +1,6 @@
 import $ from "jquery";
 import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
-import Images from "../../../../../util/images/images";
+import Images from "../../../../util/images/images";
 import StageView from "../stageview";
 import TaskStageProperties from "./taskstageproperties";
 
@@ -53,8 +53,8 @@ export default class StageProperties extends TaskStageProperties {
         
         this.cmmnElement.definition.planItems.forEach(item => {
             const itemHTML = $(`<div>
-                                    <span title="Move plan item up (affects instantiation order)" class="upButton"><img src="images/doubleup_32.png" /></span>
-                                    <span title="Move plan item down (affects instantiation order)" class="downButton"><img src="images/doubledown_32.png" /></span> ${item.name}
+                                    <span title="Move plan item up (affects instantiation order)" class="upButton"><img src="${Images.DoubleUp}" /></span>
+                                    <span title="Move plan item down (affects instantiation order)" class="downButton"><img src="${Images.DoubleDown}" /></span> ${item.name}
                                     <span class="separator" />
                                 </div>`);
             itemHTML.find('.upButton').on('click', e => this.up(e, itemHTML, item, this.cmmnElement.definition.planItems));

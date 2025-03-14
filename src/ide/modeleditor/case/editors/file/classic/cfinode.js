@@ -2,6 +2,8 @@ import $ from "jquery";
 import CaseFileItemDef, { CaseFileItemCollection } from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import Util from "../../../../../../util/util";
 import HtmlUtil from "../../../../../util/htmlutil";
+import Images from "../../../../../util/images/images";
+import Shapes from "../../../../../util/images/shapes";
 import CaseFileItemsEditor, { NEWDEF } from "./casefileitemseditor";
 
 export default class CFINode {
@@ -43,12 +45,12 @@ export default class CFINode {
         HtmlUtil.clearHTML(this.divCFIDetails);
         this.divCFIDetails.html(
             `<div class="input-name-container">
-                <img class="cfi-icon" src="images/svg/casefileitem.svg" title="Drag item on case model ..."/>
+                <img class="cfi-icon" src="${Shapes.CaseFileItem}" title="Drag item on case model ..."/>
                 <input class="inputName" type="text" readonly></input>
                 <div class="action-icon-container">
-                    <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete ..."/>
-                    <img class="action-icon add-sibling-icon" src="images/svg/add-sibling-node.svg" title="Add sibling ..."/>
-                    <img class="action-icon add-child-icon" src="images/svg/add-child-node.svg" title="Add child ..."/>
+                    <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete ..."/>
+                    <img class="action-icon add-sibling-icon" src="${Images.AddSiblingNode}" title="Add sibling ..."/>
+                    <img class="action-icon add-child-icon" src="${Images.AddChildNode}" title="Add child ..."/>
                 </div>
             </div>
             <div class="select-container">
