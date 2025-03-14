@@ -41,6 +41,10 @@ const moduleRules = {
             test: /\.(png|svg|jpg|jpeg|gif)$/i,
             type: 'asset/inline',
         },
+        {
+            resourceQuery: /raw/,
+            type: 'asset/source',
+        },
     ],
 };
 
