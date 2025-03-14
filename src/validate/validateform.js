@@ -3,6 +3,7 @@ import StandardForm from "../ide/editors/standardform";
 import CaseView from "../ide/modeleditor/case/elements/caseview";
 import Settings from "../ide/settings/settings";
 import HtmlUtil from "../ide/util/htmlutil";
+import Images from "../ide/util/images/images";
 import ProblemType from "./problemtype";
 import ValidationSettings from "./validationsettings";
 
@@ -45,7 +46,7 @@ export default class ValidateForm extends StandardForm {
                         <span>&nbsp;Hidden)</span>
                     </label>
                     <div class="formclose">
-                        <img src="images/close_32.png" />
+                        <img src="${Images.Close}" />
                     </div>
                 </div>
                 <div class="headerrowmenu">

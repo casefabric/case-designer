@@ -2,6 +2,7 @@ import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
 import HumanTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import Images from "../../../util/images/images";
 import PreviewTaskForm from "../editors/task/previewtaskform";
 import { HumanTaskHalo } from "./halo/taskhalo";
 import HumanTaskProperties from "./properties/humantaskproperties";
@@ -9,8 +10,6 @@ import WorkflowProperties from "./properties/workflowproperties";
 import StageView from "./stageview";
 import TaskView from "./taskview";
 
-const BLOCKINGHUMANTASK_IMG = 'images/svg/blockinghumantask.svg';
-const NONBLOCKINGHUMANTASK_IMG = 'images/svg/nonblockinghumantask.svg';
 export default class HumanTaskView extends TaskView {
     /**
      * 
@@ -91,7 +90,7 @@ export default class HumanTaskView extends TaskView {
      * Returns the element type image for this task
      */
     get imageURL() {
-        return this.definition.isBlocking ? BLOCKINGHUMANTASK_IMG : NONBLOCKINGHUMANTASK_IMG;
+        return this.definition.isBlocking ? Images.BlockingHumanTask : Images.NonBlockingHumanTask;
     }
 
     get fileType() {

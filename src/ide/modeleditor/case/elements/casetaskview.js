@@ -1,6 +1,7 @@
 import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
 import CaseTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/casetaskdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import Shapes from "../../../util/images/shapes";
 import StageView from "./stageview";
 import TaskView from "./taskview";
 
@@ -37,7 +38,7 @@ export default class CaseTaskView extends TaskView {
      * Returns the element type image for this task
      */
     get imageURL() {
-        return 'images/svg/casetask.svg';
+        return Shapes.CaseTask;
     }
 
     get fileType() {

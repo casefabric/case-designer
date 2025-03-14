@@ -37,6 +37,10 @@ const moduleRules = {
             test: /\.css$/i,
             use: ["style-loader", "css-loader"],
         },
+        {
+            test: /\.(png|svg|jpg|jpeg|gif)$/i,
+            type: 'asset/inline',
+        },
     ],
 };
 
@@ -129,7 +133,9 @@ module.exports = [
         addBuildHook(new BuildPrinter('ide')),
         new CopyWebpackPlugin({
             patterns: [
-                { from: 'app' },
+                { 
+                    from: 'app/*', to: "../"
+                },
             ]
         })
     ],

@@ -1,4 +1,5 @@
 import $ from "jquery";
+import Images from "../../../util/images/images";
 import CaseView from "../elements/caseview";
 
 export default class UndoRedoBox {
@@ -15,10 +16,10 @@ export default class UndoRedoBox {
     <div>
         <div class="undo" type="button" title="Undo">
             <span></span>
-            <img src="images/undo_128.png" />
+            <img src="${Images.Undo}" />
         </div>                
         <div class="redo" type="button" title="Redo">
-            <img src="images/redo_128.png" />
+            <img src="${Images.Redo}" />
             <span></span>
         </div>
     </div>

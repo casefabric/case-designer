@@ -1,5 +1,6 @@
 import UserEventDefinition from "../../../../repository/definition/cmmn/caseplan/usereventdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import Shapes from "../../../util/images/shapes";
 import EventListenerView from "./eventlistenerview";
 import UserEventProperties from "./properties/usereventproperties";
 import StageView from "./stageview";
@@ -33,7 +34,7 @@ export default class UserEventView extends EventListenerView {
     }
 
     get imageURL() {
-        return 'images/svg/userevent.svg';
+        return Shapes.UserEvent;
     }
 
     /**

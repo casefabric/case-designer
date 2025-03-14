@@ -1,5 +1,6 @@
 import ProcessTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/processtaskdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import Shapes from "../../../util/images/shapes";
 import StageView from "./stageview";
 import TaskView from "./taskview";
 
@@ -35,7 +36,7 @@ export default class ProcessTaskView extends TaskView {
      * Returns the element type image for this task
      */
     get imageURL() {
-        return 'images/svg/processtask.svg';
+        return Shapes.ProcessTask;
     }
 
     get fileType() {
