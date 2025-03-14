@@ -45,6 +45,10 @@ const moduleRules = {
             resourceQuery: /raw/,
             type: 'asset/source',
         },
+        {
+            test: /\.(woff|woff2|eot|ttf|otf)$/i,
+            type: 'asset/inline',
+        },
     ],
 };
 
