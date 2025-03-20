@@ -5,6 +5,7 @@ import XML from "../../../../util/xml";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import IDE from "../../../ide";
 import HtmlUtil from "../../../util/htmlutil";
+import Images from "../../../util/images/images";
 import CaseTypeEditor from "../../case/editors/file/casetypeeditor";
 import CaseView from "../../case/elements/caseview";
 import ModelSourceEditor from "../../xmleditor/modelsourceeditor";
@@ -53,9 +54,9 @@ export default class TypeEditor {
                                 </div>
                             </div>
                             <div class="menu-container">
-                                <img class="action-icon add-child-icon" src="images/svg/add-child-node.svg" title="Add child ..."/>
-                                <img class="action-icon add-sibling-icon" src="images/svg/add-sibling-node.svg" title="Add sibling ..."/>
-                                <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete ..."/>
+                                <img class="action-icon add-child-icon" src="${Images.AddChildNode}" title="Add child ..."/>
+                                <img class="action-icon add-sibling-icon" src="${Images.AddSiblingNode}" title="Add sibling ..."/>
+                                <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete ..."/>
                             </div>
                             <div class="type-container">
                                 <div class="property-header-container property-container">

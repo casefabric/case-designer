@@ -1,6 +1,6 @@
 
-import Icons from "../../../../util/images/icons";
-import Shapes from "../../../../util/images/shapes";
+import Icons from "../../../util/images/icons";
+import Shapes from "../../../util/images/shapes";
 import CaseFileItemView from "../elements/casefileitemview";
 import CasePlanView from "../elements/caseplanview";
 import CaseTaskView from "../elements/casetaskview";

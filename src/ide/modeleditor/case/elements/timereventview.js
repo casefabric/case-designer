@@ -1,5 +1,6 @@
 import TimerEventDefinition from "../../../../repository/definition/cmmn/caseplan/timereventdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import Shapes from "../../../util/images/shapes";
 import EventListenerView from "./eventlistenerview";
 import TimerEventProperties from "./properties/timereventproperties";
 import StageView from "./stageview";
@@ -33,7 +34,7 @@ export default class TimerEventView extends EventListenerView {
     }
 
     get imageURL() {
-        return 'images/svg/timerevent.svg';       
+        return Shapes.TimerEvent;       
     }
 
     referencesDefinitionElement(definitionId) {

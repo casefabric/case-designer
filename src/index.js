@@ -110,8 +110,5 @@ export { default as ServerFile } from "./repository/serverfile/serverfile";
 export { default as TypeFile } from "./repository/serverfile/typefile";
 export { default as FileStorage } from "./repository/storage/filestorage";
 export { default as LocalFileStorage } from "./repository/storage/localfilestorage";
-export { default as Icons } from "./util/images/icons";
-export { default as Images } from "./util/images/images";
-export { default as Shapes } from "./util/images/shapes";
 export { default as Util } from "./util/util";
 export { default as XML } from "./util/xml";

@@ -2,6 +2,7 @@ import $ from "jquery";
 import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
 import MovableEditor from "../../../../editors/movableeditor";
 import HtmlUtil from "../../../../util/htmlutil";
+import Images from "../../../../util/images/images";
 import CaseView from "../../elements/caseview";
 
 export default class TableEditor extends MovableEditor {
@@ -47,7 +48,7 @@ export default class TableEditor extends MovableEditor {
                                 <div class="formheader">
                                     <label>${this.label}</label>
                                     <div class="formclose">
-                                        <img src="images/close_32.png" />
+                                        <img src="${Images.Close}" />
                                     </div>
                                 </div>
                                 <div class="tableeditorcontainer">

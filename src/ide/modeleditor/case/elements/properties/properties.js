@@ -3,6 +3,7 @@ import CMMNElementDefinition from "../../../../../repository/definition/cmmnelem
 import Util from "../../../../../util/util";
 import MovableEditor from "../../../../editors/movableeditor";
 import HtmlUtil from "../../../../util/htmlutil";
+import Images from "../../../../util/images/images";
 import CMMNElementView from "../cmmnelementview";
 
 export default class Properties extends MovableEditor {
@@ -42,10 +43,10 @@ export default class Properties extends MovableEditor {
     <div class="formheader">
         <label>${this.label}</label>
         <div class="propertiespin">
-            <img src="images/pin-icon_32.png" />
+            <img src="${Images.Pin}" />
         </div>
         <div class="formclose">
-            <img src="images/close_32.png" />
+            <img src="${Images.Close}" />
         </div>
     </div>
     <div class="formcontainer properties-container"></div>

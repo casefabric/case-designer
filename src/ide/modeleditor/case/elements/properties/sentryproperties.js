@@ -6,6 +6,7 @@ import OnPartDefinition from "../../../../../repository/definition/cmmn/sentry/o
 import PlanItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/planitemonpartdefinition";
 import Util from "../../../../../util/util";
 import HtmlUtil from "../../../../util/htmlutil";
+import Images from "../../../../util/images/images";
 import Connector from "../connector";
 import SentryView from "../sentryview";
 import Properties from "./properties";
@@ -51,7 +52,7 @@ export default class SentryProperties extends Properties {
         const html = $(`<div class="propertyRule if-part">
                             <div class="propertyRow">
                                 <input id="${inputIfPartPresence}" class="rulePresence" type="checkbox" ${ruleAvailable?'checked':''}/>
-                                <img src="images/ifpart_32.png" />
+                                <img src="${Images.IfPart}" />
                                 <label for="${inputIfPartPresence}">If Part</label>
                             </div>
                             <div style="display:${ruleAvailable?'block':'none'}" class="ruleProperty">
@@ -241,7 +242,7 @@ export default class SentryProperties extends Properties {
         const html = $(`<tr class="onpart">
                             <td>
                                 <button title="Delete on part" class="btnDelete">
-                                    <img src="images/delete_32.png" />
+                                    <img src="${Images.Delete}" />
                                 </button>
                             </td>
                             <td>
@@ -378,7 +379,7 @@ export default class SentryProperties extends Properties {
         const checkedLabel = connector && connector.label ? 'checked="true"' : '';
         const html = $(`<tr class="onpart">
                             <td title="Delete on part">
-                                <button class="btnDelete"><img src="images/delete_32.png" /></button>
+                                <button class="btnDelete"><img src="${Images.Delete}" /></button>
                             </td>
                             <td title="Select a case file item to which the sentry listens">
                                 <div class="zoomRow zoomSingleRow source-ref">

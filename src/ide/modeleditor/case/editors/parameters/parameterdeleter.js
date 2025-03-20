@@ -1,3 +1,4 @@
+import Images from "../../../../util/images/images";
 import { ParameterRow } from "./caseparameterseditor";
 
 export default class ParameterDeleter {
@@ -19,7 +20,7 @@ export default class ParameterDeleter {
      * @param {JQuery<HTMLTableCellElement>} column 
      */
     constructor(row, column) {
-        const button = column.html('<button class="btnDelete"><img src="images/delete_32.png" /></button>');
+        const button = column.html(`<button class="btnDelete"><img src="${Images.Delete}" /></button>`);
         button.on('click', () => {
             row.parameter.removeDefinition();
             row.case.editor.completeUserAction();

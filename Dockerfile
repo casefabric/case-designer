@@ -23,7 +23,6 @@ WORKDIR /usr/src/app
 RUN mkdir ./repository && mkdir ./repository_deploy && chown -R 1000:1000 ./repository*
 
 # Copy all runtime node modules and build result to runtime image
-COPY --from=build --chown=1000:1000 /home/node/node_modules ./node_modules
 COPY --from=build --chown=1000:1000 /home/node/dist ./dist
 
 # Expose ide port and run as non-root user

@@ -2,6 +2,7 @@ import $ from "jquery";
 import CodeMirrorConfig from "../editors/external/codemirrorconfig";
 import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
+import Images from "../util/images/images";
 import SettingsStorage from "./settingsstorage";
 
 export default class SettingsEditor {
@@ -51,7 +52,7 @@ export default class SettingsEditor {
                 <div class="standardformheader">
                     <label>Settings (raw JSON)</label>
                     <div class="button1st_right" title="Close">
-                        <img src="images/close_32.png" />
+                        <img src="${Images.Close}" />
                     </div>
                 </div>
                 <div class="standardformcontainer">
