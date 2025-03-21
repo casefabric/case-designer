@@ -86,33 +86,6 @@ export default class CFIWrapper {
             console.log(`Changing ${element.constructor.name} to new id ${newId}`);
             element.updateReferences(this.cfi, oldId, newId, oldName, newName);
         });
-
-        // this.cfi.caseDefinition.elements.forEach(element => {
-        //     if (element instanceof ConstraintDefinition && element.contextRef === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.contextRef = newId;
-        //     } else if (element instanceof CaseFileItemOnPartDefinition && element.sourceRef === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.sourceRef = newId;
-        //     } else if (element instanceof CaseParameterDefinition && element.bindingRef === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.bindingRef = newId;
-        //     }
-        // });
-
-        // this.cfi.caseDefinition.dimensions?.elements.forEach(element => {
-        //     if (element instanceof Edge && element.sourceId === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.sourceId = newId;
-        //     } else if (element instanceof Edge && element.targetId === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.targetId = newId;
-        //     } else if (element instanceof ShapeDefinition && element.cmmnElementRef === oldId) {
-        //         console.log(`Changing ${element.constructor.name} to new id ${newId}`);
-        //         element.cmmnElementRef = newId;
-        //     }
-        // });
-
         console.groupEnd();
     }
 }

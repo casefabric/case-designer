@@ -39,7 +39,7 @@ export default class TimerEventView extends EventListenerView {
 
     referencesDefinitionElement(definitionId) {
         const cfiTrigger = this.definition.caseFileItemStartTrigger;
-        if (cfiTrigger && cfiTrigger.sourceRef == definitionId) {
+        if (cfiTrigger && cfiTrigger.sourceRef.references(definitionId)) {
             return true;
         }
         return super.referencesDefinitionElement(definitionId);
