@@ -124,7 +124,7 @@ export default class TimerEventProperties extends PlanItemProperties {
             const trigger = this.cmmnElement.definition.getPlanItemStartTrigger();
             const selectedOption = e.currentTarget.selectedOptions[0];
             const planItemID = selectedOption.value;
-            trigger.sourceRef = planItemID;
+            trigger.sourceRef.update(planItemID);
             const planItem = this.cmmnElement.definition.caseDefinition.getElement(planItemID);
             if (planItem && planItem instanceof PlanItem) {
                 trigger.standardEvent = planItem.defaultTransition;

@@ -268,10 +268,10 @@ export default class SentryProperties extends Properties {
             const planItem = this.cmmnElement.definition.caseDefinition.getElement(planItemID);
             if (planItem && planItem instanceof PlanItem) {
                 const changedOnPart = onPart ? onPart : this.cmmnElement.definition.createPlanItemOnPart();
-                changedOnPart.sourceRef = planItem.id;
+                changedOnPart.sourceRef.update(planItem.id);
                 changedOnPart.standardEvent = planItem.defaultTransition;
             } else if (onPart) {
-                onPart.sourceRef = undefined;
+                onPart.sourceRef.update(undefined);
             }
             if (connector) {
                 connector.remove();
