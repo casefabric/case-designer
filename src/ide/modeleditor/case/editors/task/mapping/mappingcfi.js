@@ -29,6 +29,7 @@ export default class MappingCFI {
         const zoomRow = column.html(
             `<div class="cfiZoom">
                 <label class="cfiName">${parameter ? parameter.bindingName : ''}</label>
+                <button class="zoombt" style="right:42px" title="Select case file item"></button>
                 <button class="openBindingReferenceButton ${extraStyle}" ${!bindingRefPresent ? 'disabled="true"' : ''} title="${breTooltip}">L</button>
                 <button class="removeReferenceButton" title="Remove the reference to the case file item." />
             </div>`);
@@ -36,6 +37,7 @@ export default class MappingCFI {
         //add events for drag and drop
         zoomRow.on('pointerover', e => row.editor.case.cfiEditor.setDropHandler(dragData => this.changeBindingRef(dragData.item, row)));
         zoomRow.on('pointerleave', e => row.editor.case.cfiEditor.removeDropHandler());
+        zoomRow.find('.zoombt').on('click', e => row.case.cfiEditor.open(cfi => this.changeBindingRef(cfi, row)));
         zoomRow.find('.removeReferenceButton').on('click', e => {
             this.removeBindingRef(row);
         });
