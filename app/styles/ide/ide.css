@@ -234,12 +234,3 @@
 .link:hover .marker-arrowheads {
     display: none;
 }
-
-/* Overrules JQuery classes (jquery-ui.css) */
-.ui-widget {
-    font-family: "myriad-pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-}
-
-.ui-widget button {
-    font-family: "myriad-pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-}

@@ -1,6 +1,5 @@
 ﻿import $ from "jquery";
 import CaseRoleDefinition from "../../../../repository/definition/cmmn/caseteam/caseroledefinition";
-import Images from "../../../util/images/images";
 import TableEditor, { RowEditor, TableEditorColumn } from "./tableeditor/tableeditor";
 
 export default class RolesEditor extends TableEditor {
@@ -50,7 +49,7 @@ export class RoleRenderer extends RowEditor {
         const roleName = role ? role.name : '';
         const roleDocumentation = role ? role.documentation.text : '';
         this.html = $(`<tr class="case-team-role">
-                            <td><button class="btnDelete"><img src="${Images.Delete}" /></button></td>
+                            <td><button class="btnDelete"><img src="images/delete_32.png" /></button></td>
                             <td><input class="inputRoleName" type="text" value="${roleName}" /></td>
                             <td><input class="inputDocumentation" type="text" value="${roleDocumentation}" /></td>
                         </tr>`);

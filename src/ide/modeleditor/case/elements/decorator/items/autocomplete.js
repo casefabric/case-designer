@@ -1,4 +1,4 @@
-import Images from "../../../../../util/images/images";
+import Images from "../../../../../../util/images/images";
 import StageView from "../../stageview";
 import StageDecoratorBox from "../box/stagedecoratorbox";
 import Decorator from "../decorator";

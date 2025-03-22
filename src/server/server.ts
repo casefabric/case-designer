@@ -120,6 +120,7 @@ const app = express();
 app.use(morgan('dev', logger));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/node_modules', express.static(path.join(__dirname, '/../../node_modules')));
 
 // Do not add static content when running in a docker container.
 // The docker container serves static content via nginx

@@ -1,5 +1,4 @@
 import $ from "jquery";
-import Images from "../../../../../util/images/images";
 import Halo from "../halo";
 import HaloItem from "./haloitem";
 
@@ -20,7 +19,7 @@ export class PropertiesHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.Settings, 'Open properties of the ' + halo.element.typeDescription, e => this.element.propertiesView.show(true));
+        super(halo, 'images/settings_32.png', 'Open properties of the ' + halo.element.typeDescription, e => this.element.propertiesView.show(true));
     }
 }
 
@@ -34,7 +33,7 @@ export class DeleteHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.DeleteBig, 'Delete the ' + halo.element.typeDescription, e => this.element.case.__removeElement(this.element));
+        super(halo, 'images/delete_64.png', 'Delete the ' + halo.element.typeDescription, e => this.element.case.__removeElement(this.element));
     }
 }
 
@@ -48,7 +47,7 @@ export class InputParametersHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.TaskInput, 'Open input parameter mappings of the ' + halo.element.typeDescription, e => this.element.showMappingsEditor());
+        super(halo, 'images/task_input_128.png', 'Open input parameter mappings of the ' + halo.element.typeDescription, e => this.element.showMappingsEditor());
     }
 }
 
@@ -62,7 +61,7 @@ export class OutputParametersHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.TaskOutput, 'Open output parameter mappings of the ' + halo.element.typeDescription, e => this.element.showMappingsEditor());
+        super(halo, 'images/task_output_128.png', 'Open output parameter mappings of the ' + halo.element.typeDescription, e => this.element.showMappingsEditor());
     }
 }
 
@@ -77,7 +76,7 @@ export class ZoomTaskImplementationHaloItem extends HaloClickItem {
 
     constructor(halo) {
         const implementationRef = halo.element.definition.implementationRef;
-        const imgURL = Images.ZoomIn;
+        const imgURL = 'images/zoomin_64.png';
         const title = 'Open task implementation - ' + implementationRef + '\nRight-click to open in new tab';
         const html = $(`<a href="./#${implementationRef}" title="${title}" ><img src="${imgURL}" /></a>`);
         super(halo, imgURL, title, e => window.location.hash = implementationRef, html);
@@ -93,7 +92,7 @@ export class PreviewTaskFormHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.Preview, 'Preview Task Form', e => this.element.previewTaskForm());
+        super(halo, 'images/preview_32.png', 'Preview Task Form', e => this.element.previewTaskForm());
     }
 }
 export class InvalidPreviewTaskFormHaloItem extends HaloClickItem {
@@ -106,7 +105,7 @@ export class InvalidPreviewTaskFormHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.Preview, 'Task Preview not available', e => { });
+        super(halo, 'images/preview_32.png', 'Task Preview not available', e => {});
         // this.html.css('background-color', 'red');
         this.html.css('border', '2px solid red');
     }
@@ -122,7 +121,7 @@ export class NewTaskImplemenationHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.NewModel, 'Create a new implementation for the task', e => this.element.generateNewTaskImplementation());
+        super(halo, 'images/model_24.png', 'Create a new implementation for the task', e => this.element.generateNewTaskImplementation());
     }
 }
 
@@ -137,6 +136,6 @@ export class WorkflowHaloItem extends HaloClickItem {
     }
 
     constructor(halo) {
-        super(halo, Images.BlockingHumanTaskHalo, 'Open workflow properties', e => this.element.showWorkflowProperties());
+        super(halo, 'images/svg/blockinghumantaskhalo.svg', 'Open workflow properties', e => this.element.showWorkflowProperties());
     }
 }

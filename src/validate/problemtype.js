@@ -1,5 +1,4 @@
-﻿import Images from "../ide/util/images/images";
-import Problem from "./problem";
+﻿import Problem from "./problem";
 import ValidateForm from "./validateform";
 
 export default class ProblemType {
@@ -112,12 +111,12 @@ export default class ProblemType {
 
 export class CMMNWarning extends ProblemType {
     constructor(number, description) {
-        super(number, description, Images.Warning);
+        super(number, description, 'images/warningproblem_32.png');
     }
 }
 
 export class CMMNError extends ProblemType {
     constructor(number, description) {
-        super(number, description, Images.Error);
+        super(number, description, 'images/errorproblem_32.png');
     }
 }

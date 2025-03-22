@@ -1,5 +1,4 @@
 import $ from "jquery";
-import Images from "../../../../../util/images/images";
 import CasePlanView from "../../caseplanview";
 import { TemporaryConnector } from "../../connector";
 import EventListenerView from "../../eventlistenerview";
@@ -104,7 +103,7 @@ export class ConnectorHaloItem extends HaloDragItem {
     }
 
     constructor(halo) {
-        super(halo, Images.Link, 'Connector');
+        super(halo, 'images/link_black_128.png', 'Connector');
     }
 
     handleMouseUp(e) {

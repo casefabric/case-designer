@@ -1,4 +1,3 @@
-import Images from "../../../../../util/images/images";
 import MappingRow from "./mappingrow";
 
 export default class MappingOrderChanger {
@@ -22,8 +21,8 @@ export default class MappingOrderChanger {
     constructor(row, column) {
         const html = column.html(
             `<div>
-    <span title="Move mapping up (affects execution order)" class="upButton"><img src="${Images.DoubleUp}" /></span>
-    <span title="Move mapping down (affects execution order)" class="downButton"><img src="${Images.DoubleDown}" /></span>
+    <span title="Move mapping up (affects execution order)" class="upButton"><img src="images/doubleup_32.png" /></span>
+    <span title="Move mapping down (affects execution order)" class="downButton"><img src="images/doubledown_32.png" /></span>
 </div>`);
         html.find('.upButton').on('click', e => row.up(row.mapping));
         html.find('.downButton').on('click', e => row.down(row.mapping));

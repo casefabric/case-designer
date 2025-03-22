@@ -6,7 +6,6 @@ import IDE from "./ide";
 import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
 import HtmlUtil from "./util/htmlutil";
-import Images from "./util/images/images";
 
 export default class ModelListPanel {
     ide: IDE;
@@ -21,7 +20,7 @@ export default class ModelListPanel {
 
         this.htmlPanel = $(
             `<h3 filetype="${type.fileType}">${type.description}
-                <img class="plus-icon" src="${Images.Plus}" title="Create new ${type} ..."/>
+                <img class="plus-icon" src="images/plus_32.png" title="Create new ${type} ..."/>
             </h3>
             <div class="file-container file-list-${type.fileType}"></div>`);
 
@@ -51,12 +50,12 @@ export default class ModelListPanel {
             const tooltip = error ? error : usageTooltip;
             const nameStyle = error ? 'style="color:red"' : '';
             const modelURL = urlPrefix + file.fileName;
-            const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="${Images.Deploy}" title="Deploy ${file.name} ..."/>` : '';
+            const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="images/deploy_128.png" title="Deploy ${file.name} ..."/>` : '';
             const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
                                 <img class="menu-icon" src="${this.type.icon}" />
                                 <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
-                                <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete model ..."/>
-                                <img class="action-icon rename-icon" src="${Images.Rename}" title="Rename model ..."/>
+                                <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete model ..."/>
+                                <img class="action-icon rename-icon" src="images/svg/rename.svg" title="Rename model ..."/>
                                 ${optionalDeployIcon}
                             </div>`);
             this.container.append(html);

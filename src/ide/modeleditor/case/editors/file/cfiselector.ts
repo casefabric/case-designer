@@ -2,7 +2,6 @@ import $ from "jquery";
 import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CaseFileItemTypeDefinition from "../../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import Dialog from "../../../../editors/dialog";
-import Shapes from "../../../../util/images/shapes";
 import CaseView from "../../elements/caseview";
 
 export default class CFISelector extends Dialog {
@@ -39,7 +38,7 @@ export default class CFISelector extends Dialog {
         const html = $(
         `<div class='cfi-container'>
             <div class='cfi-summary'>
-                <img class="cfi-icon" src="${Shapes.CaseFileItem}" />
+                <img class="cfi-icon" src="images/svg/casefileitem.svg" />
                 ${item.name}
             </div>
             <div class="cfi-children-tree"></div>

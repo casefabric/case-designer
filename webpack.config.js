@@ -1,6 +1,5 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
 const { BannerPlugin } = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const devMode = process.env.DEV_MODE ? process.env.DEV_MODE.trim().toLowerCase() === 'true' : false;
@@ -37,18 +36,6 @@ const moduleRules = {
         {
             test: /\.css$/i,
             use: ["style-loader", "css-loader"],
-        },
-        {
-            test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
-            type: 'asset/inline',
-        },
-        {
-            resourceQuery: /raw/,
-            type: 'asset/source',
-        },
-        {
-            test: /\.(woff|woff2|eot|ttf|otf)$/i,
-            type: 'asset/inline',
         },
     ],
 };
@@ -132,30 +119,17 @@ module.exports = [
 },
 { // ide
     entry: {
+        ide: './src/ide/index.ts',
     },
     output: {
+        filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist/app'),
     },
     plugins: [
         addBuildHook(new BuildPrinter('ide')),
-        new HtmlBundlerPlugin({
-            entry: {
-                index: './src/ide/index.html',
-            },    
-            css: {
-                test: /.*\.xxxxxx$/, // do not process css files
-                filename: 'css/[name].[contenthash:8].css',
-              },
-            js: {
-                test: /\.(ts|js)$/,
-                filename: 'bundle.js',
-            },
-        }),
         new CopyWebpackPlugin({
             patterns: [
-                { 
-                    from: 'app/*', to: "../"
-                },
+                { from: 'app' },
             ]
         })
     ],

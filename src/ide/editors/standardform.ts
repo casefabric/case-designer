@@ -3,7 +3,6 @@
 import $ from "jquery";
 import CaseView from "../modeleditor/case/elements/caseview";
 import HtmlUtil from "../util/htmlutil";
-import Images from "../util/images/images";
 import MovableEditor from "./movableeditor";
 
 export default class StandardForm extends MovableEditor {
@@ -23,7 +22,7 @@ export default class StandardForm extends MovableEditor {
     <div class="standardformheader">
         <label>${this.label}</label>
         <div class="button1st_right" title="Close">
-            <img src="${Images.Close}" />
+            <img src="images/close_32.png" />
         </div>
     </div>
     <div class="standardformcontainer">

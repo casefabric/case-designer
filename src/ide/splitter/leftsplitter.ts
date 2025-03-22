@@ -1,4 +1,3 @@
-import Images from "../util/images/images";
 import HorizontalSplitter from "./horizontalsplitter";
 
 export default class LeftSplitter extends HorizontalSplitter {
@@ -15,11 +14,11 @@ export default class LeftSplitter extends HorizontalSplitter {
     }
 
     get minimizeImgURL() {
-        return Images.DoubleLeft;
+        return 'images/doubleleft_32.png';
     }
 
     get restoreImgURL() {
-        return Images.DoubleRight;
+        return 'images/doubleright_32.png';
     }
 
     /** @returns {Number} */

@@ -1,4 +1,3 @@
-import Images from "../../../../../../util/images/images";
 import MappingRow from "../mappingrow";
 
 export default class InputMappingDeleter {
@@ -20,7 +19,7 @@ export default class InputMappingDeleter {
      * @param {JQuery<HTMLTableCellElement>} column 
      */
     constructor(row, column) {
-        column.html(`<button class="btnDelete"><img src="${Images.Delete}" /></button>`).on('click', () => {
+        column.html('<button class="btnDelete"><img src="images/delete_32.png" /></button>').on('click', () => {
             const taskInputParameter = row.mapping.source;
 
             // First, clear the mapping.

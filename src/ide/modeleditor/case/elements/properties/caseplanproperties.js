@@ -1,5 +1,4 @@
 import $ from "jquery";
-import Images from "../../../../util/images/images";
 import CasePlanView from "../caseplanview";
 import StageProperties from "./stageproperties";
 
@@ -40,7 +39,7 @@ export default class CasePlanProperties extends StageProperties {
         const html = $(`<div title="Edit the case roles" class="propertyBlock">
                             <label>Case Team</label>
                             <div>
-                                <img src="${Images.Roles}" />
+                                <img src="images/roles_128.png" />
                                 <button class="btnCaseRolesEditor">Edit Roles</button>
                             </div>
                         </div>
@@ -48,7 +47,7 @@ export default class CasePlanProperties extends StageProperties {
                         <div title="Edit the 'start case schema'" class="propertyBlock">
                             <label>Start Case Schema</label>
                             <div>
-                                <img src="${Images.StartCaseSchema}" />
+                                <img src="images/startcaseschema_128.png" />
                                 <button class="btnCaseSchemaEditor">Edit Schema</button>
                             </div>
                         </div>`);
@@ -62,9 +61,9 @@ export default class CasePlanProperties extends StageProperties {
         const html = $(`<div title="Edit the case input and output parameters" class="propertyBlock">
                             <label>Case Parameters</label>
                             <div>
-                                <img src="${Images.Input}" />
+                                <img src="images/input_128.png" />
                                 <button class="btnCaseParameters">Edit Parameters</button>
-                                <img src="${Images.Output}" />
+                                <img src="images/output_128.png" />
                             </div>
                         </div>`);
         html.find('.btnCaseParameters').on('click', e => this.cmmnElement.case.caseParametersEditor.show());

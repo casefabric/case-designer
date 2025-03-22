@@ -5,7 +5,6 @@ import Util from "../../util/util";
 import MovableEditor from "../editors/movableeditor";
 import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
-import Images from "../util/images/images";
 
 export default class ModelEditor {
     movableEditors: MovableEditor[] = [];
@@ -23,10 +22,10 @@ export default class ModelEditor {
     <div class="model-editor-header">
         <label>${this.label}</label>
         <div class="refreshButton" title="Refresh">
-            <img src="${Images.Refresh}" />
+            <img src="images/refresh_32.png" />
         </div>
         <div class="closeButton" title="Close">
-            <img src="${Images.Close}" />
+            <img src="images/close_32.png" />
         </div>
     </div>
     <div class="divMovableEditors"></div>
