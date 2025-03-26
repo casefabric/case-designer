@@ -82,7 +82,6 @@ module.exports = [
     target: 'node',
     module: moduleRules,
     resolve: scriptExtensions,
-    externals: [nodeExternals()],
     devtool: 'source-map',
     mode: 'development',
     stats: {
