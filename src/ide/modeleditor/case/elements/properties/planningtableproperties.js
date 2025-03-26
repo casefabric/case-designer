@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { ApplicabilityRuleDefinition } from "../../../../../repository/definition/cmmn/caseplan/planning/planningtabledefinition";
+import Images from "../../../../util/images/images";
 import PlanningTableView from "../planningtableview";
 import Properties from "./properties";
 
@@ -94,7 +95,7 @@ class ApplicabilityRuleProperties {
         const context = rule ? rule.contextName : '';
         const html = $(`<tr class="applicability-rule">
             <td title="Delete this rule from the table">
-                <button class="btnDelete delete-rule"><img src="images/delete_32.png" /></button>
+                <button class="btnDelete delete-rule"><img src="${Images.Delete}" /></button>
             </td>
             <td title="The name of the applicability rule">
                 <input class="single rule-name" value="${name}"></input>

@@ -8,6 +8,8 @@ import TypeFile from "../../../../repository/serverfile/typefile";
 import Util from "../../../../util/util";
 import IDE from "../../../ide";
 import HtmlUtil from "../../../util/htmlutil";
+import Images from "../../../util/images/images";
+import Shapes from "../../../util/images/shapes";
 import ModelEditorMetadata from "../../modeleditormetadata";
 import TypeModelEditorMetadata from "../typemodeleditormetadata";
 import LocalTypeDefinition from "./localtypedefinition";
@@ -274,12 +276,12 @@ export class PropertyRenderer extends TypeRenderer {
             `<div>
                 <div class='property-container' title="${this.path}">
                     <div class="input-name-container">
-                        <img class="cfi-icon" src="images/svg/casefileitem.svg"></img>
+                        <img class="cfi-icon" src="${Shapes.CaseFileItem}"></img>
                         <input class="inputPropertyName"  type="text" readonly value="${this.property.name}" />
                         <div class="action-icon-container">
-                            <img class="action-icon delete-icon" src="images/delete_32.png" title="Delete ..."/>
-                            <img class="action-icon add-sibling-icon" src="images/svg/add-sibling-node.svg" title="Add sibling ..."/>
-                            <img class="action-icon add-child-icon" src="images/svg/add-child-node.svg" title="Add child ..."/>
+                            <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete ..."/>
+                            <img class="action-icon add-sibling-icon" src="${Images.AddSiblingNode}" title="Add sibling ..."/>
+                            <img class="action-icon add-child-icon" src="${Images.AddChildNode}" title="Add child ..."/>
                         </div>
                     </div>
                     <div class="select-container">

@@ -2,9 +2,9 @@ import $ from "jquery";
 import ConstraintDefinition from "../../../../../repository/definition/cmmn/caseplan/constraintdefinition";
 import CaseRoleReference from "../../../../../repository/definition/cmmn/caseteam/caserolereference";
 import { ReferenceSet } from "../../../../../repository/definition/references/referenceset";
-import Images from "../../../../../util/images/images";
 import Util from "../../../../../util/util";
 import HtmlUtil from "../../../../util/htmlutil";
+import Images from "../../../../util/images/images";
 import PlanItemView from "../planitemview";
 import Properties from "./properties";
 
