@@ -83,7 +83,7 @@ export default class ModelEditorMetadata {
         dialog.showModalDialog(async (newModelInfo: any) => {
             if (!this.ide) return;
             if (newModelInfo) {
-                const newModelName = newModelInfo.name;
+                const newModelName = newModelInfo.name.split('/').join('\\');
                 const newModelDescription = newModelInfo.description;
 
                 // Check if a valid name is used

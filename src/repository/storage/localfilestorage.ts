@@ -99,7 +99,7 @@ export default class LocalFileStorage extends FileStorage {
                     const filePath = makePath(this.sourceFolder, fileName);
                     const stats = await fs.stat(filePath);
                     return new Metadata({
-                        fileName: fileName.replace(path.sep, '/'), // Avoid Windows backslashes
+                        fileName: normalizeFileName(fileName), // Avoid Windows backslashes
                         lastModified: stats.mtime,
                         type: path.extname(fileName).substring(1),
                     });
@@ -128,17 +128,23 @@ async function writeFile(folder: string, fileName: string, content: any) {
 }
 
 function makePath(rootFolder: string, artifactName: string) {
+    const artifactFileName = path.join(...artifactName.split('\\'));
+
     // Check to make sure no one is reading/writing outside of the repository folder
-    const fullPathOfArtifact = path.resolve(rootFolder, artifactName);
+    const fullPathOfArtifact = path.resolve(rootFolder, artifactFileName);
     const fullPathOfRepository = path.resolve(rootFolder);
     if (!fullPathOfArtifact.startsWith(fullPathOfRepository)) {
-        throw new Error('Someone is trying to read outside of the repository context: ' + artifactName);
+        throw new Error('Someone is trying to read outside of the repository context: ' + artifactFileName);
     }
 
     // Check for valid extension; cannot just load anything from the server
     const extension = path.extname(fullPathOfArtifact);
     if (!isKnownExtension(extension)) {
-        throw new Error(`'Invalid extension '${extension}' for file '${artifactName}'`);
+        throw new Error(`'Invalid extension '${extension}' for file '${artifactFileName}'`);
     }
     return fullPathOfArtifact;
 }
+function normalizeFileName(fileName: string): string {
+    return fileName.split('/').join('\\');
+}
+

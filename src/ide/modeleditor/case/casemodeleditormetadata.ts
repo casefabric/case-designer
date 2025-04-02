@@ -50,7 +50,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
 
             if (newModelInfo) {
                 console.groupCollapsed(`Creating new case ${newModelInfo.name}.case`);
-                const newModelName = newModelInfo.name;
+                const newModelName = newModelInfo.name.split('/').join('\\');
                 const newModelDescription = newModelInfo.description;
                 const newTypeRef = newModelInfo.typeRef;
 

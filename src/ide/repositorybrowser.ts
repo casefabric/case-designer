@@ -125,7 +125,7 @@ export default class RepositoryBrowser {
             this.ide.danger('Please enter a name for the model.');
         } else if (/\s/.test(entryName)) {
             this.ide.danger('The model name should not contain spaces');
-        } else if (!/^[a-zA-Z0-9_/]+$/.test(entryName)) {
+        } else if (!/^[a-zA-Z0-9_/\\]+$/.test(entryName)) {
             this.ide.danger('The model name should not contain invalid characters (like !@#$%^&* etc)');
         } else {
             // Everything ok then, return true;
