@@ -1,0 +1,7 @@
+<svg height="200px" width="200px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" bx:transform="rotate(0)" viewBox="0 0 200 200" xmlns:bx="https://boxy-svg.com">
+  <g transform="matrix(0.085938, 0, 0, 0.085938, 4.12707, 43.3559)" id="svg2">
+    <g transform="matrix(1,0,0,-1,68.338983,1368.9492)" id="g4">
+      <path d="m 1536,224 v 704 q 0,40 -28,68 -28,28 -68,28 H 736 q -40,0 -68,28 -28,28 -28,68 v 64 q 0,40 -28,68 -28,28 -68,28 H 224 q -40,0 -68,-28 -28,-28 -28,-68 V 224 q 0,-40 28,-68 28,-28 68,-28 h 1216 q 40,0 68,28 28,28 28,68 z m 128,704 V 224 Q 1664,132 1598,66 1532,0 1440,0 H 224 Q 132,0 66,66 0,132 0,224 v 960 q 0,92 66,158 66,66 158,66 h 320 q 92,0 158,-66 66,-66 66,-158 v -32 h 672 q 92,0 158,-66 66,-66 66,-158 z" id="path6" style="fill:currentColor"></path>
+    </g>
+  </g>
+</svg>

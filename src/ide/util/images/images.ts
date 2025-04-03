@@ -34,6 +34,8 @@ import addSiblingNodeImageUrl from '../../../../app/images/svg/add-sibling-node.
 import blockingHumanTaskImageUrl from '../../../../app/images/svg/blockinghumantask.svg';
 import blockingHumanTaskHaloImageUrl from '../../../../app/images/svg/blockinghumantaskhalo.svg';
 import caseTaskImageUrl from '../../../../app/images/svg/casetask.svg';
+import folderCollapseImageUrl from '../../../../app/images/svg/folder-collapse.svg';
+import folderExpandImageUrl from '../../../../app/images/svg/folder-expand.svg';
 import nonblockingHumanTaskImageUrl from '../../../../app/images/svg/nonblockinghumantask.svg';
 import processTaskImageUrl from '../../../../app/images/svg/processtask.svg';
 import renameImageUrl from '../../../../app/images/svg/rename.svg';
@@ -57,6 +59,7 @@ export default class Images {
     static DoubleLeft = doubleLeftImageUrl;
     static DoubleRight = doubleRightImageUrl;
     static Plus = plusImageUrl;
+    static Minus = minusImageUrl;
     static Rename = renameImageUrl;
 
     static Warning = warningImageUrl;
@@ -66,7 +69,6 @@ export default class Images {
     static ManualActivation = manualActivationImageUrl;
     static Required = requiredImageUrl;
     static AutoComplete = autoCompleteImageUrl;
-    static Minus = minusImageUrl;
     static Close = closeImageUrl;
     static Delete = deleteImageUrl;
     static DeleteBig = delete64ImageUrl;
@@ -100,4 +102,7 @@ export default class Images {
 
     static AddSiblingNode = addSiblingNodeImageUrl;
     static AddChildNode = addChildNodeImageUrl;
+
+    static FolderExpand = folderExpandImageUrl;
+    static FolderCollapse = folderCollapseImageUrl;
 }
