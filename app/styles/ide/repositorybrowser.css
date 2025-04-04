@@ -40,7 +40,8 @@
     border-bottom: 1px solid rgb(221, 221, 221);
 }
 
-.repository-browser .divModelList .formcontainer .ui-state-active,.ui-state-focus {
+.repository-browser .divModelList .formcontainer .ui-state-active,
+.ui-state-focus {
     background-color: rgb(139, 138, 138);
     border-color: gray;
 }
@@ -50,6 +51,22 @@
     border: none;
 }
 
+.repository-browser .divModelList .divAccordionList>div a {
+    text-indent: 20px;
+    padding-top: 3px;
+    font: 1.1em "myriad-pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    top: 3px;
+    left: 0px;
+    right: 32px;
+    bottom: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.repository-browser .divModelList .divAccordionList>div .modelselected {
+    background-color: rgb(156, 175, 226);
+}
+
 .repository-browser .divModelList .divAccordionList>div div {
     height: 24px;
     padding: 2px 0px 0px 5px;
@@ -57,10 +74,29 @@
     position: relative;
 }
 
+.repository-browser .divModelList .divAccordionList>div div {
+    height: 24px;
+    padding: 2px 0px 0px 5px;
+    white-space: nowrap;
+    position: relative;
+}
+
+.repository-browser .divModelList .divAccordionList .treecontrols-expander {
+    display: inline-block;
+}
+
+.repository-browser .divModelList .divAccordionList .treecontrols-expander img {
+    height: 16px;
+    width: 16x;
+}
+
+.repository-browser .divModelList .divAccordionList .folderName {
+    padding: 2px;
+}
+
 .repository-browser .divModelList .divAccordionList .menu-icon {
     width: 16px;
     height: 16px;
-    position: absolute;
     left: 2px;
     top: 4px;
     z-index: 0;
@@ -92,7 +128,6 @@
     float: right;
     width: 16px;
     height: 16px;
-    position:relative;
     top: 2px;
     z-index: 0;
 }
@@ -104,23 +139,6 @@
     height: 16px;
     position: relative;
     z-index: 0;
-}
-
-.repository-browser .divModelList .divAccordionList>div a {
-    text-indent: 20px;
-    padding-top: 3px;
-    font: 1.1em "myriad-pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    position: absolute;
-    top: 3px;
-    left: 0px;
-    right: 32px;
-    bottom: 0px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.repository-browser .divModelList .divAccordionList>div .modelselected {
-    background-color: rgb(156, 175, 226);
 }
 
 .repository-browser .divModelList .formfooter {

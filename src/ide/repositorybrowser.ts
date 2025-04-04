@@ -95,26 +95,17 @@ export default class RepositoryBrowser {
      * Checks the window.location hash and loads the corresponding model.
      */
     loadModelFromBrowserLocation() {
-        this.refreshAccordionStatus();
-
         // Ask the IDE to open the model.
         this.ide.editorRegistry.open(this.currentFileName);
+
+        // mark the model as selected in the model list
+        ModelListPanel.selectModel(this.accordion, this.currentFileName);
     }
 
     get currentFileName() {
         // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
         //  Skip anything that is behind the optional question mark
         return window.location.hash.slice(1).split('?')[0];
-    }
-
-    refreshAccordionStatus() {
-        // Select the currently opened model. Should we also open the right accordion with it?
-        //  Also: this logic must also be invoked when we refresh the contents of the accordion.
-        //  That requires that we also know what the current model is.
-        this.accordion.find('.model-item').removeClass('modelselected');
-        this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').addClass('modelselected');
-        // Also select the corresponding accordion tab
-        $(this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').closest('.file-container')).prev('h3')[0]?.click();
     }
 
     /**

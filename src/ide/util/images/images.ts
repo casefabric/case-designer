@@ -103,6 +103,6 @@ export default class Images {
     static AddSiblingNode = addSiblingNodeImageUrl;
     static AddChildNode = addChildNodeImageUrl;
 
-    static FolderExpand = folderExpandImageUrl;
-    static FolderCollapse = folderCollapseImageUrl;
+    static BranchExpand = folderExpandImageUrl;
+    static BranchCollapse = folderCollapseImageUrl;
 }

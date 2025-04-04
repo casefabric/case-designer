@@ -82,4 +82,7 @@ export default class HtmlUtil {
         $(html).remove();
     }
 
+    static cssEscape(value: string): string {
+        return value.split('\\').join("\\\\");
+    }
 }

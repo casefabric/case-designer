@@ -7,11 +7,15 @@ import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import RepositoryBrowser from "./repositorybrowser";
 import HtmlUtil from "./util/htmlutil";
 import Images from "./util/images/images";
+import treecontrols, { branchIdAttribute, collapsedClass, expanderClass, parentBranchIdAttribute } from "./util/treecontrols";
 
 export default class ModelListPanel {
     ide: IDE;
     htmlPanel: JQuery<HTMLElement>;
     container: JQuery<HTMLElement>;
+
+    private urlPrefix = window.location.origin + window.location.pathname + '#';
+
 
     constructor(public repositoryBrowser: RepositoryBrowser, public accordion: JQuery<HTMLElement>, public type: ModelEditorMetadata) {
         this.accordion = accordion;
@@ -23,7 +27,7 @@ export default class ModelListPanel {
             `<h3 filetype="${type.fileType}">${type.description}
                 <img class="plus-icon" src="${Images.Plus}" title="Create new ${type} ..."/>
             </h3>
-            <div class="file-container file-list-${type.fileType}"></div>`);
+            <div class="file-container file-list-${type.fileType}"/>`);
 
         this.accordion.append(this.htmlPanel);
         this.accordion.accordion('refresh');
@@ -39,39 +43,108 @@ export default class ModelListPanel {
      */
     setModelList() {
         const files = this.type.modelList;
-        // First create a big HTML string with for each model an <a> element
-        const urlPrefix = window.location.origin + window.location.pathname + '#';
 
         // Clean current file list
         HtmlUtil.clearHTML(this.container);
 
-        files.forEach(file => {
-            const error = file.metadata.error;
-            const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(u => '- ' + u.fileName).join('\n') : ''}`;
-            const tooltip = error ? error : usageTooltip;
-            const nameStyle = error ? 'style="color:red"' : '';
-            const modelURL = urlPrefix + file.fileName;
-            const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="${Images.Deploy}" title="Deploy ${file.name} ..."/>` : '';
-            const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
-                                <img class="menu-icon" src="${this.type.icon}" />
-                                <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
-                                <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete model ..."/>
-                                <img class="action-icon rename-icon" src="${Images.Rename}" title="Rename model ..."/>
-                                ${optionalDeployIcon}
-                            </div>`);
-            this.container.append(html);
-            // Add event handler for dragging.
-            html.on('pointerdown', e => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.repositoryBrowser.startDrag(file, this.type.icon);
-            });
-            html.find('.delete-icon').on('click', e => this.delete(file));
-            html.find('.rename-icon').on('click', e => this.rename(file));
-            html.find('.deploy-icon').on('click', e => this.deploy(file));
-        });
 
-        this.repositoryBrowser.refreshAccordionStatus();
+        const rootFolder = new Branch("root", "root");
+        files.map(file => {
+            const fileNameFolderParts: string[] = file.fileName.split('\\');
+            let fileFolder = rootFolder;
+
+            fileNameFolderParts
+                .slice(0, fileNameFolderParts.length - 1)
+                .forEach(fileNamePart => {
+                    let folder = fileFolder.folders.find(folder => folder.name === fileNamePart);
+                    if (folder == undefined) {
+                        folder = new Branch(fileNamePart, fileFolder.id + "/" + fileNamePart, fileFolder.level + 1);
+                        fileFolder.folders.push(folder);
+                    }
+                    fileFolder = folder;
+                });
+            fileFolder.files.push(file);
+        })
+
+
+        rootFolder.folders.forEach(subFolder => this.renderFolder(subFolder, rootFolder));
+        rootFolder.files.forEach(file => this.renderFile(file, rootFolder));
+
+        treecontrols(this.container);
+
+        ModelListPanel.selectModel(this.repositoryBrowser.accordion, this.repositoryBrowser.currentFileName);
+    }
+
+
+    static selectModel(accordion: JQuery<HTMLElement>, currentFileName: string) {
+        // Select the currently opened model. Should we also open the right accordion with it?
+        //  Also: this logic must also be invoked when we refresh the contents of the accordion.
+        //  That requires that we also know what the current model is.
+        accordion.find('.model-item').removeClass('modelselected');
+        accordion.find(`.model-item[fileName="${HtmlUtil.cssEscape(currentFileName)}"]`).addClass('modelselected');
+        // Also select the corresponding accordion tab
+        const $container = $(accordion.find(`.model-item[fileName="${HtmlUtil.cssEscape(currentFileName)}"]`).closest('.file-container'));
+        $container.prev('h3')[0]?.click();
+
+        // and open the tree
+        const name = currentFileName;
+        const nameParts = name.split('\\');
+        const folderParts = nameParts.slice(0, nameParts.length - 1);
+        let currentFolderId = "root";
+        folderParts.forEach(folderName => {
+            currentFolderId += `/${folderName}`
+            var $currentFolderElement = $container.find(`.model-folder[${branchIdAttribute}="${currentFolderId}"]`);
+            const $expander = $currentFolderElement.find(`.${expanderClass}`);
+            if ($expander.hasClass(collapsedClass)) {
+                $currentFolderElement.trigger("click");
+            }
+        });
+    }
+
+    renderFolder(folder: Branch, parent?: Branch) {
+        const html = $(
+            `<div class="model-folder" style="padding-left: ${15 * folder.level}px;" 
+                ${branchIdAttribute}=${folder.id} ${parentBranchIdAttribute}=${parent?.id} title="${folder.name}" fileName="${folder.name}">
+                <span class="foldername">${folder.name}</span>
+            </div>`);
+        this.container.append(html);
+
+        folder.folders.forEach(subFolder => this.renderFolder(subFolder, folder));
+        folder.files.forEach(file => this.renderFile(file, folder));
+    }
+
+    renderFile(file: ServerFile<ModelDefinition>, parent?: Branch) {
+        const error = file.metadata.error;
+        const usageTooltip = `${file.name} used in ${file.usage.length} other model${file.usage.length == 1 ? '' : 's'}\n${file.usage.length ? file.usage.map(u => '- ' + u.fileName).join('\n') : ''}`;
+        const tooltip = error ? error : usageTooltip;
+        const nameStyle = error ? 'style="color:red"' : '';
+        const modelURL = this.urlPrefix + file.fileName;
+        const optionalDeployIcon = this.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="${Images.Deploy}" title="Deploy ${file.name} ..."/>` : '';
+
+        const simpleFileName = file.name.split('/').join("\\").split('\\').pop();
+        const html = $(`<div class="model-item" ${parentBranchIdAttribute}=${parent?.id} title="${tooltip}" fileName="${file.fileName}">
+                            <span style="padding-left: ${15 * (parent?.level ?? 0) + 10}px;" >
+                                <img class="menu-icon" src="${this.type.icon}" />
+                                <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}">
+                                    <span ${nameStyle}>${simpleFileName}</span>
+                                </a>
+                            </span>
+                            <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete model ..."/>
+                            <img class="action-icon rename-icon" src="${Images.Rename}" title="Rename model ..."/>
+
+                            ${optionalDeployIcon}
+                        </div>`);
+        this.container.append(html);
+        // Add event handler for dragging.
+        html.on('pointerdown', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.repositoryBrowser.startDrag(file, this.type.icon);
+        });
+        html.find('.delete-icon').on('click', e => this.delete(file));
+        html.find('.rename-icon').on('click', e => this.rename(file));
+        html.find('.deploy-icon').on('click', e => this.deploy(file));
+
     }
 
     /**
@@ -156,4 +229,10 @@ export default class ModelListPanel {
         e.stopPropagation();
         return this.type.openCreateModelDialog();
     }
+}
+class Branch {
+    files: ServerFile<ModelDefinition>[] = [];
+    folders: Branch[] = [];
+
+    constructor(public name: string, public id: string, public level: number = 0) { }
 }
