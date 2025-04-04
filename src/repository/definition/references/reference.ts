@@ -7,6 +7,9 @@ export default class Reference extends ReferencingAttribute {
     }
 
     references(something: string | XMLSerializable | Reference) {
+        if (this.isEmpty) {
+            return false;
+        }
         if (something instanceof XMLSerializable) {
             return this.ref === something.id;
         } else if (something instanceof Reference) {
