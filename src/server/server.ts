@@ -93,7 +93,7 @@ router.delete('/delete/*', async function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logger.printAction(`DELETE /${fileName}`);
-        await res.json(storage.deleteModel(fileName));
+        res.json(await storage.deleteModel(fileName));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);
