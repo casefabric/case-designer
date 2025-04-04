@@ -3,6 +3,7 @@ import Tags from "../../../repository/definition/tags";
 import TypeDefinition from "../../../repository/definition/type/typedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import ServerFile from "../../../repository/serverfile/serverfile";
+import { getSimpleModelName } from "../../../repository/util/repositoryutil";
 import Util from "../../../util/util";
 import IDE from "../../ide";
 import Icons from "../../util/images/icons";
@@ -77,14 +78,14 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
     /**
      * Creates a new case model
      */
-    async createNewModel(ide: IDE, name: string, description: string) {
-        return this.createNewCaseModelWithTypeRef(ide, name, description, '');
+    async createNewModel(ide: IDE, fullName: string, description: string) {
+        return this.createNewCaseModelWithTypeRef(ide, fullName, description, '');
     }
 
     /**
      * Creates a new case model
      */
-    async createNewCaseModelWithTypeRef(ide: IDE, name: string, description: string, typeRef = '') {
+    async createNewCaseModelWithTypeRef(ide: IDE, fullName: string, description: string, typeRef = '') {
         // By default we create a case plan that fills the whole canvas size;
         //  We position it left and top at 2 times the grid size, with a minimum of 10px;
         //  Width and height have to be adjusted for scrollbar size.
@@ -95,23 +96,24 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         const width = 800;//ide.caseModelEditor && ide.caseModelEditor.case ? ide.caseModelEditor.case.canvas.width() - (margin + scrollbar) : 800;
         const height = 500;//ide.caseModelEditor && ide.caseModelEditor.case ? ide.caseModelEditor.case.canvas.height() - (margin + scrollbar) : 500;
 
-        const caseFileName = name + '.case';
-        const dimensionsFileName = name + '.dimensions';
+        const caseFileName = fullName + '.case';
+        const dimensionsFileName = fullName + '.dimensions';
+        const simpleName = getSimpleModelName(fullName);
         const guid = Util.createID();
 
         const casePlanId = `cm_${guid}_0`;
         const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const caseString =
-`<case id="${caseFileName}" name="${name}" guid="${guid}">
+            `<case id="${caseFileName}" name="${simpleName}" guid="${guid}">
     ${documentation}
     <caseFileModel typeRef="${typeRef}"/>
-    <casePlanModel id="${casePlanId}" name="${name}"/>
+    <casePlanModel id="${casePlanId}" name="${simpleName}"/>
 </case>`;
 
         const dimensionsString =
             `<${Tags.CMMNDI}>
     <${Tags.CMMNDIAGRAM}>
-        <${Tags.CMMNSHAPE} ${Tags.CMMNELEMENTREF}="${casePlanId}" name="${name}">
+        <${Tags.CMMNSHAPE} ${Tags.CMMNELEMENTREF}="${casePlanId}" name="${simpleName}">
             <${Tags.BOUNDS} x="${x}" y="${y}" width="${width}" height="${height}" />                    
         </${Tags.CMMNSHAPE}>
     </${Tags.CMMNDIAGRAM}>
@@ -122,7 +124,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
 </${Tags.CMMNDI}>`;
 
         // Optionally create a new type file
-        const typeFile = typeRef && typeRef.endsWith('.type') && !ide.repository.hasFile(typeRef) ? ide.repository.createTypeFile(typeRef, TypeDefinition.createDefinitionSource(name)) : undefined;
+        const typeFile = typeRef && typeRef.endsWith('.type') && !ide.repository.hasFile(typeRef) ? ide.repository.createTypeFile(typeRef, TypeDefinition.createDefinitionSource(fullName)) : undefined;
         // Create dimensions and case files
         const dimensionsFile = ide.repository.createDimensionsFile(dimensionsFileName, dimensionsString);
         const caseFile = ide.repository.createCaseFile(caseFileName, caseString);

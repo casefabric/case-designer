@@ -2,6 +2,7 @@ import ModelDefinition from "../../../repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
 import HumanTaskFile from "../../../repository/serverfile/humantaskfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
+import { getSimpleModelName } from "../../../repository/util/repositoryutil";
 import IDE from "../../ide";
 import Icons from "../../util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
@@ -41,14 +42,14 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
      * Create a new HumanTaskView model with given name and description 
      * @returns fileName of the new model
      */
-    async createNewModel(ide: IDE, name: string, description: string) {
+    async createNewModel(ide: IDE, fullName: string, description: string) {
         const newModelContent =
             `<humantask>
-                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
+                <${IMPLEMENTATION_TAG} name="${getSimpleModelName(fullName)}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
                     <task-model></task-model>
                 </${IMPLEMENTATION_TAG}>
             </humantask>`;
-        const fileName = name + '.humantask';
+        const fileName = fullName + '.humantask';
         const file = ide.repository.createHumanTaskFile(fileName, newModelContent);
         await file.save();
         return fileName;

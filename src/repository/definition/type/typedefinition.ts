@@ -1,13 +1,14 @@
 import { Element } from "../../../util/xml";
 import TypeFile from "../../serverfile/typefile";
+import { getSimpleModelName } from "../../util/repositoryutil";
 import ModelDefinition from "../modeldefinition";
 import SchemaDefinition from "./schemadefinition";
 
 export default class TypeDefinition extends ModelDefinition {
     private _schema?: SchemaDefinition;
 
-    static createDefinitionSource(name: string) {
-        return `<type id="${name + '.type'}" name="${name}"><schema/></type>`;
+    static createDefinitionSource(fullName: string) {
+        return `<type id="${fullName + '.type'}" name="${getSimpleModelName(fullName)}"><schema/></type>`;
     }
 
     constructor(public file: TypeFile) {

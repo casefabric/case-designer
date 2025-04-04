@@ -2,6 +2,7 @@ import ModelDefinition from "../../../repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
 import ProcessFile from "../../../repository/serverfile/processfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
+import { getSimpleModelName } from "../../../repository/util/repositoryutil";
 import IDE from "../../ide";
 import Icons from "../../util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
@@ -42,15 +43,15 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
      * Create a new Process model with given name and description 
      * @returns fileName of the new model
      */
-    async createNewModel(ide: IDE, name: string, description: string) {
+    async createNewModel(ide: IDE, fullName: string, description: string) {
         const newModelContent =
-`<process name="${name}" description="${description}">
+            `<process name="${getSimpleModelName(fullName)}" description="${description}">
     <${EXTENSIONELEMENTS}>
         <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
         </${IMPLEMENTATION_TAG}>
     </${EXTENSIONELEMENTS}>
 </process>`;
-        const fileName = name + '.process';
+        const fileName = fullName + '.process';
         const file = ide.repository.createProcessFile(fileName, newModelContent);
         await file.save();
         return fileName;

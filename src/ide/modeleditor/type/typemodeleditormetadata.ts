@@ -35,9 +35,9 @@ export default class TypeModelEditorMetadata extends ModelEditorMetadata {
     /**
      * Create a new TypeDefinition model with given name and description 
      */
-    async createNewModel(ide: IDE, name: string, description: string) {
-        const fileName = name + '.type';
-        const file = ide.repository.createTypeFile(fileName, TypeDefinition.createDefinitionSource(name));
+    async createNewModel(ide: IDE, fullName: string, description: string) {
+        const fileName = fullName + '.type';
+        const file = ide.repository.createTypeFile(fileName, TypeDefinition.createDefinitionSource(fullName));
         await file.save();
         return fileName;
     }

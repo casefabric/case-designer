@@ -71,7 +71,7 @@ export default class ModelEditorMetadata {
     /**
      * Create a new model with the specified model name.
      */
-    async createNewModel(ide: IDE, newModelName: string, newModelDescription: string): Promise<string> {
+    async createNewModel(ide: IDE, fullName: string, newModelDescription: string): Promise<string> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -83,21 +83,21 @@ export default class ModelEditorMetadata {
         dialog.showModalDialog(async (newModelInfo: any) => {
             if (!this.ide) return;
             if (newModelInfo) {
-                const newModelName = newModelInfo.name.split('/').join('\\');
+                const fullName = newModelInfo.name.split('/').join('\\');
                 const newModelDescription = newModelInfo.description;
 
                 // Check if a valid name is used
-                if (this.ide && !this.ide.repositoryBrowser.isValidEntryName(newModelName)) {
+                if (this.ide && !this.ide.repositoryBrowser.isValidEntryName(fullName)) {
                     return;
                 }
 
-                const fileName = newModelName + '.' + filetype;
+                const fileName = fullName + '.' + filetype;
                 if (this.ide.repository.hasFile(fileName)) {
                     this.ide.danger('A ' + filetype + ' with this name already exists and cannot be overwritten', 5000);
                     return;
                 }
 
-                await this.ide.createNewModel(filetype, newModelName, newModelDescription);
+                await this.ide.createNewModel(filetype, fullName, newModelDescription);
                 window.location.hash = fileName;
             };
         });
