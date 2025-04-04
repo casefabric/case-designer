@@ -69,6 +69,7 @@ export default class RemoteFileStorage extends FileStorage {
         const url = `${this.repositoryUrl}/list`;
         return await $get(url)
             .catch((error: AjaxError) => {
+                console.log(error)
                 throw 'Could not fetch the list of models: ' + error.message
             });
     }
