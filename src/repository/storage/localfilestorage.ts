@@ -114,9 +114,9 @@ async function writeFile(folder: string, fileName: string, content: any) {
 
     // Create directory if it doesn't exist
     try {
-        LocalFileStorage.logAction("MKDIR  " + directory);
         await fs.access(directory, fs.constants.F_OK);
     } catch {
+        LocalFileStorage.logAction("MKDIR  " + directory);
         await fs.mkdir(directory, { recursive: true });
     }
 
