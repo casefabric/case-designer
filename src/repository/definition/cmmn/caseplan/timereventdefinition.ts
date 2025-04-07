@@ -4,8 +4,9 @@ import CaseFileItemDef from "../casefile/casefileitemdef";
 import ExpressionDefinition from "../expression/expressiondefinition";
 import OnPartDefinition from "../sentry/onpartdefinition";
 import EventListenerDefinition from "./eventlistenerdefinition";
-import PlanItem, { TaskStageDefinition } from "./planitem";
+import PlanItem from "./planitem";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
+import TaskStageDefinition from "./taskstagedefinition";
 
 export default class TimerEventDefinition extends EventListenerDefinition {
     timerExpression?: ExpressionDefinition;

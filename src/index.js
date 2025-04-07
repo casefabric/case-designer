@@ -13,7 +13,8 @@ export { default as ConstraintDefinition } from "./repository/definition/cmmn/ca
 export { default as EventListenerDefinition } from "./repository/definition/cmmn/caseplan/eventlistenerdefinition";
 export { default as ItemControlDefinition } from "./repository/definition/cmmn/caseplan/itemcontroldefinition";
 export { default as MilestoneDefinition } from "./repository/definition/cmmn/caseplan/milestonedefinition";
-export { MilestoneEventListenerDefinition, default as PlanItem, TaskStageDefinition } from "./repository/definition/cmmn/caseplan/planitem";
+export { default as MilestoneEventListenerDefinition } from "./repository/definition/cmmn/caseplan/milestoneeventlistenerdefinition";
+export { default as PlanItem } from "./repository/definition/cmmn/caseplan/planitem";
 export { ApplicabilityRuleDefinition } from "./repository/definition/cmmn/caseplan/planning/applicabilityruledefinition";
 export { default as ApplicabilityRuleReference } from "./repository/definition/cmmn/caseplan/planning/applicabilityrulereference";
 export { default as PlanningTableDefinition } from "./repository/definition/cmmn/caseplan/planning/planningtabledefinition";
@@ -30,6 +31,7 @@ export { default as DueDateDefinition } from "./repository/definition/cmmn/casep
 export { default as FourEyesDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/foureyesdefinition";
 export { default as RendezVousDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/rendezvousdefinition";
 export { default as TaskPairingDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/taskpairingdefinition";
+export { default as TaskStageDefinition } from "./repository/definition/cmmn/caseplan/taskstagedefinition";
 export { CaseFileItemStartTrigger, PlanItemStartTrigger, default as TimerEventDefinition } from "./repository/definition/cmmn/caseplan/timereventdefinition";
 export { default as UserEventDefinition } from "./repository/definition/cmmn/caseplan/usereventdefinition";
 export { default as CaseRoleDefinition } from "./repository/definition/cmmn/caseteam/caseroledefinition";

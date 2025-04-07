@@ -1,4 +1,5 @@
-import PlanItem, { TaskStageDefinition } from "../../../../repository/definition/cmmn/caseplan/planitem";
+import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
+import TaskStageDefinition from "../../../../repository/definition/cmmn/caseplan/taskstagedefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import HtmlUtil from "../../../util/htmlutil";
 import CaseView from "./caseview";

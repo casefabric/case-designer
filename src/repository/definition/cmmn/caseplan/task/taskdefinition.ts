@@ -8,8 +8,8 @@ import CaseDefinition from "../../casedefinition";
 import InputMappingDefinition from "../../contract/inputmappingdefinition";
 import OutputMappingDefinition from "../../contract/outputmappingdefinition";
 import ParameterMappingDefinition from "../../contract/parametermappingdefinition";
-import { TaskStageDefinition } from "../planitem";
 import StageDefinition from "../stagedefinition";
+import TaskStageDefinition from "../taskstagedefinition";
 import TaskParameterDefinition from "./taskparameterdefinition";
 
 export default class TaskDefinition extends TaskStageDefinition {

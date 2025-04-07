@@ -2,8 +2,9 @@ import { Element } from "../../../../../util/xml";
 import ElementDefinition from "../../../elementdefinition";
 import UnnamedCMMNElementDefinition from "../../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../../casedefinition";
-import PlanItem, { TaskStageDefinition } from "../planitem";
+import PlanItem from "../planitem";
 import StageDefinition from "../stagedefinition";
+import TaskStageDefinition from "../taskstagedefinition";
 import { ApplicabilityRuleDefinition } from "./applicabilityruledefinition";
 
 export default class PlanningTableDefinition extends UnnamedCMMNElementDefinition {

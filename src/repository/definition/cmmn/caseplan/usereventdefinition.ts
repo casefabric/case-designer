@@ -1,8 +1,8 @@
 import { Element } from "../../../../util/xml";
 import CaseDefinition from "../casedefinition";
 import EventListenerDefinition from "./eventlistenerdefinition";
-import { TaskStageDefinition } from "./planitem";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
+import TaskStageDefinition from "./taskstagedefinition";
 
 export default class UserEventDefinition extends EventListenerDefinition {
     static get infix() {
