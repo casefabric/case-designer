@@ -2,6 +2,7 @@ import $ from "jquery";
 import CaseFileDefinition from "../../../../repository/definition/cmmn/casefile/casefiledefinition";
 import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import Multiplicity from "../../../../repository/definition/type/multiplicity";
 import SchemaDefinition from "../../../../repository/definition/type/schemadefinition";
 import SchemaPropertyDefinition from "../../../../repository/definition/type/schemapropertydefinition";
 import TypeFile from "../../../../repository/serverfile/typefile";
@@ -289,12 +290,7 @@ export class PropertyRenderer extends TypeRenderer {
                     </div>
                     <div class="select-container">
                         <select class="selectMultiplicity">
-                            <option value="ExactlyOne">[1]</option>
-                            <option value="ZeroOrOne">[0..1]</option>
-                            <option value="ZeroOrMore">[0..*]</option>
-                            <option value="OneOrMore">[1..*]</option>
-                            <option value="Unspecified">[*]</option>
-                            <option value="Unknown">[?]</option>
+                            ${Multiplicity.values.map(m => '<option value="' + m.value + '">' + m.label + '</option>')}
                         </select>
                     </div>
                     <div class="checkbox-container" style="text-align:center">
@@ -319,8 +315,8 @@ export class PropertyRenderer extends TypeRenderer {
         this.htmlContainer.find('.delete-icon').on('click', e => this.removeProperty());
 
         this.typeSelector = new TypeSelector(this.editor.ide.repository, this.htmlContainer.find('.selectType'), this.property.cmmnType, (typeRef: string) => this.changeType(typeRef), true, [{ option: '&lt;new&gt;', value: '<new>' }]);
-        this.htmlContainer.find('.selectMultiplicity').on('change', e => this.changeProperty('multiplicity', (e.currentTarget as any).value));
-        this.htmlContainer.find('.selectMultiplicity').val(this.property.multiplicity);
+        this.htmlContainer.find('.selectMultiplicity').on('change', e => this.changeProperty('multiplicity', Multiplicity.parse((e.currentTarget as any).value)));
+        this.htmlContainer.find('.selectMultiplicity').val(this.property.multiplicity.toString());
         this.htmlContainer.find('.checkboxBusinessIdentifier').on('change', e => this.changeProperty('isBusinessIdentifier', (e.currentTarget as any).checked));
         this.htmlContainer.find('.cfi-icon').on('pointerdown', e => {
             if (this.property.isComplexType && this.editor.case) {
@@ -484,7 +480,7 @@ export class PropertyRenderer extends TypeRenderer {
         }
     }
 
-    changeProperty(propertyName: string, propertyValue: string) {
+    changeProperty(propertyName: string, propertyValue: any) {
         (this.property as any)[propertyName] = propertyValue;
         const schema = /** @type {SchemaDefinition} */ (this.property.parent);
         const indexOfProperty = schema.properties.indexOf(this.property);

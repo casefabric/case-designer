@@ -1,6 +1,7 @@
 import Util from "../../util/util";
 import XML, { Element } from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
+import AttributeDefinition from "./attributedefinition";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 import ExternalReference from "./references/externalreference";
@@ -95,6 +96,13 @@ export default class XMLSerializable {
             }
         }
         return defaultValue;
+    }
+
+    /**
+     * Parse an attribute value, and let the parser function convert it to a typed object.
+     */
+    parseTypedAttribute<T>(name: string, parser: ((value: string) => T)): T {
+        return parser(this.parseAttribute(name));
     }
 
     parseReference<E extends ExternalReference<ModelDefinition>>(name: string, constructor?: new (element: XMLSerializable, fileName: string) => E): E {
@@ -276,12 +284,12 @@ export default class XMLSerializable {
         } else if (propertyValue instanceof ReferencingAttribute) {
             propertyValue.setExportAttribute(propertyName);
         } else {
-            if (typeof (propertyValue) == 'object') {
+            if (typeof (propertyValue) == 'object' && !(propertyValue instanceof AttributeDefinition)) {
                 console.warn('Writing property ' + propertyName + ' has a value of type object', propertyValue);
             }
 
             // Convert all values to string
-            const stringifiedValue = propertyValue.toString()
+            const stringifiedValue = propertyValue.toString();
             // If the "toString" version of the property still has a value, then write it into the attribute
             if (stringifiedValue) {
                 this.exportNode?.setAttribute(propertyName, propertyValue);

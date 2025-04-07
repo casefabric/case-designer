@@ -1,6 +1,7 @@
 export { default as RepositoryConfiguration } from "./config/config";
 export { default as ArtifactDefinition } from "./repository/definition/artifact/artifactdefinition";
 export { default as TextAnnotationDefinition } from "./repository/definition/artifact/textannotation";
+export { default as AttributeDefinition } from "./repository/definition/attributedefinition";
 export { default as CaseFileDefinitionDefinition } from "./repository/definition/cfid/casefileitemdefinitiondefinition";
 export { default as PropertyDefinition } from "./repository/definition/cfid/propertydefinition";
 export { default as CaseDefinition } from "./repository/definition/cmmn/casedefinition";
@@ -86,6 +87,7 @@ export { ExternalReferenceList, InternalReferenceList } from "./repository/defin
 export { ReferenceSet } from "./repository/definition/references/referenceset";
 export { default as ReferencingAttribute } from "./repository/definition/references/referencingattribute";
 export { default as Tags } from "./repository/definition/tags";
+export { default as Multiplicity } from "./repository/definition/type/multiplicity";
 export { default as SchemaDefinition } from "./repository/definition/type/schemadefinition";
 export { default as SchemaPropertyDefinition } from "./repository/definition/type/schemapropertydefinition";
 export { default as TypeDefinition } from "./repository/definition/type/typedefinition";

@@ -3,6 +3,7 @@ import XML, { Element } from "../../../../util/xml";
 import CaseFileDefinitionDefinition from "../../cfid/casefileitemdefinitiondefinition";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ExternalReference from "../../references/externalreference";
+import Multiplicity from "../../type/multiplicity";
 import CaseDefinition from "../casedefinition";
 
 export class CaseFileItemCollection extends CMMNElementDefinition {
@@ -22,7 +23,7 @@ export class CaseFileItemCollection extends CMMNElementDefinition {
         const newCaseFileItem: CaseFileItemDef = this.createDefinition(CaseFileItemDef);
         this.children.push(newCaseFileItem);
         newCaseFileItem.name = '';
-        newCaseFileItem.multiplicity = 'ExactlyOne';
+        newCaseFileItem.multiplicity = Multiplicity.ExactlyOne;
         return newCaseFileItem;
     }
 
@@ -40,7 +41,7 @@ export class CaseFileItemCollection extends CMMNElementDefinition {
 
 export default class CaseFileItemDef extends CaseFileItemCollection {
     defaultTransition: string;
-    multiplicity: string;
+    multiplicity: Multiplicity;
     _definitionRef: ExternalReference<CaseFileDefinitionDefinition>;
     isEmpty = false;
     /**
@@ -63,7 +64,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
         this.defaultTransition = 'create';
-        this.multiplicity = this.parseAttribute('multiplicity', 'Unspecified');
+        this.multiplicity = this.parseTypedAttribute('multiplicity', Multiplicity.parse);
         this._definitionRef = this.parseReference('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);
     }
@@ -77,7 +78,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
     }
 
     get isArray() {
-        return this.multiplicity.endsWith('OrMore');
+        return this.multiplicity.isArray;
     }
 
     /**

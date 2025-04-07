@@ -1,5 +1,6 @@
 import XML, { Element } from "../../util/xml";
 import Tags from "../definition/tags";
+import Multiplicity from "../definition/type/multiplicity";
 import SchemaDefinition from "../definition/type/schemadefinition";
 import TypeDefinition from "../definition/type/typedefinition";
 import Repository from "../repository";
@@ -195,7 +196,7 @@ export default class Importer {
 
     loadCaseFileItem(schemaDefinition: SchemaDefinition, caseFileItem: Element, typeDefinitions: any) {
         if (caseFileItem.nodeName === 'caseFileItem') {
-            const property = schemaDefinition.createChildProperty(caseFileItem.getAttribute('name') || '', '', caseFileItem.getAttribute('multiplicity') || '');
+            const property = schemaDefinition.createChildProperty(caseFileItem.getAttribute('name') || '', '', Multiplicity.parse(caseFileItem.getAttribute('multiplicity') || ''));
             // Check whether it is an inline type or a standalone child type
             const definitionRef = caseFileItem.getAttribute('definitionRef') || '';
             if (definitionRef.endsWith('.object')) {
