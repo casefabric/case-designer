@@ -8,14 +8,16 @@ export { default as CaseDefinition } from "./repository/definition/cmmn/casedefi
 export { default as CaseFileDefinition } from "./repository/definition/cmmn/casefile/casefiledefinition";
 export { CaseFileItemCollection, default as CaseFileItemDef } from "./repository/definition/cmmn/casefile/casefileitemdef";
 export { default as CaseFileItemReference } from "./repository/definition/cmmn/casefile/casefileitemreference";
+export { default as CaseFileItemTransition } from "./repository/definition/cmmn/casefile/casefileitemtransition";
 export { default as CaseFileItemTypeDefinition } from "./repository/definition/cmmn/casefile/casefileitemtypedefinition";
-export { default as CasePlanDefinition } from "./repository/definition/cmmn/caseplan/caseplandefinition";
+export { default as CasePlanDefinition, CasePlanTransition } from "./repository/definition/cmmn/caseplan/caseplandefinition";
 export { default as ConstraintDefinition } from "./repository/definition/cmmn/caseplan/constraintdefinition";
 export { default as EventListenerDefinition } from "./repository/definition/cmmn/caseplan/eventlistenerdefinition";
 export { default as ItemControlDefinition } from "./repository/definition/cmmn/caseplan/itemcontroldefinition";
 export { default as MilestoneDefinition } from "./repository/definition/cmmn/caseplan/milestonedefinition";
-export { default as MilestoneEventListenerDefinition } from "./repository/definition/cmmn/caseplan/milestoneeventlistenerdefinition";
+export { default as MilestoneEventListenerDefinition, MilestoneEventListenerTransition } from "./repository/definition/cmmn/caseplan/milestoneeventlistenerdefinition";
 export { default as PlanItem } from "./repository/definition/cmmn/caseplan/planitem";
+export { default as PlanItemTransition } from "./repository/definition/cmmn/caseplan/planitemtransition";
 export { ApplicabilityRuleDefinition } from "./repository/definition/cmmn/caseplan/planning/applicabilityruledefinition";
 export { default as ApplicabilityRuleReference } from "./repository/definition/cmmn/caseplan/planning/applicabilityrulereference";
 export { default as PlanningTableDefinition } from "./repository/definition/cmmn/caseplan/planning/planningtabledefinition";
@@ -32,7 +34,7 @@ export { default as DueDateDefinition } from "./repository/definition/cmmn/casep
 export { default as FourEyesDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/foureyesdefinition";
 export { default as RendezVousDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/rendezvousdefinition";
 export { default as TaskPairingDefinition } from "./repository/definition/cmmn/caseplan/task/workflow/taskpairingdefinition";
-export { default as TaskStageDefinition } from "./repository/definition/cmmn/caseplan/taskstagedefinition";
+export { StageTaskTransition, default as TaskStageDefinition } from "./repository/definition/cmmn/caseplan/taskstagedefinition";
 export { CaseFileItemStartTrigger, PlanItemStartTrigger, default as TimerEventDefinition } from "./repository/definition/cmmn/caseplan/timereventdefinition";
 export { default as UserEventDefinition } from "./repository/definition/cmmn/caseplan/usereventdefinition";
 export { default as CaseRoleDefinition } from "./repository/definition/cmmn/caseteam/caseroledefinition";
@@ -52,6 +54,7 @@ export { default as IfPartDefinition } from "./repository/definition/cmmn/sentry
 export { default as OnPartDefinition } from "./repository/definition/cmmn/sentry/onpartdefinition";
 export { default as PlanItemOnPartDefinition } from "./repository/definition/cmmn/sentry/planitemonpartdefinition";
 export { default as ReactivateCriterionDefinition } from "./repository/definition/cmmn/sentry/reactivatecriteriondefinition";
+export { default as StandardEvent } from "./repository/definition/cmmn/sentry/standardevent";
 export { default as StartCaseSchemaDefinition } from "./repository/definition/cmmn/startcaseschemadefinition";
 export { default as CMMNDocumentationDefinition } from "./repository/definition/cmmndocumentationdefinition";
 export { default as CMMNElementDefinition } from "./repository/definition/cmmnelementdefinition";

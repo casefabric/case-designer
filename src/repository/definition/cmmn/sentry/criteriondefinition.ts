@@ -1,6 +1,7 @@
 import { Element } from "../../../../util/xml";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
+import CaseFileItemTransition from "../casefile/casefileitemtransition";
 import PlanItem from "../caseplan/planitem";
 import CaseFileItemOnPartDefinition from "./casefileitemonpartdefinition";
 import IfPartDefinition from "./ifpartdefinition";
@@ -39,7 +40,7 @@ export default class CriterionDefinition extends UnnamedCMMNElementDefinition {
 
     createCaseFileItemOnPart() {
         const onPart: CaseFileItemOnPartDefinition = this.createDefinition(CaseFileItemOnPartDefinition);
-        onPart.standardEvent = 'create'; // Set the default event for case file items
+        onPart.standardEvent = CaseFileItemTransition.Create; // Set the default event for case file items
         this.caseFileItemOnParts.push(onPart);
         return onPart;
     }

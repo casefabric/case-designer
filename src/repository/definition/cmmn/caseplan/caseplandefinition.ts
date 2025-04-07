@@ -1,4 +1,5 @@
 import { Element } from "../../../../util/xml";
+import PlanItemTransition from "./planitemtransition";
 import StageDefinition from "./stagedefinition";
 
 export default class CasePlanDefinition extends StageDefinition {
@@ -15,6 +16,20 @@ export default class CasePlanDefinition extends StageDefinition {
     }
 
     get transitions() {
-        return ['close', 'complete', 'create', 'reactivate', 'suspend', 'terminate'];
+        return CasePlanTransition.values;
+    }
+}
+
+export class CasePlanTransition extends PlanItemTransition {
+    static get values(): PlanItemTransition[] {
+        return [
+            PlanItemTransition.None,
+            PlanItemTransition.Close,
+            PlanItemTransition.Complete,
+            PlanItemTransition.Create,
+            PlanItemTransition.Reactivate,
+            PlanItemTransition.Suspend,
+            PlanItemTransition.Terminate
+        ];
     }
 }

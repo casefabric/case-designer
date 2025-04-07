@@ -5,6 +5,7 @@ import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ExternalReference from "../../references/externalreference";
 import Multiplicity from "../../type/multiplicity";
 import CaseDefinition from "../casedefinition";
+import CaseFileItemTransition from "./casefileitemtransition";
 
 export class CaseFileItemCollection extends CMMNElementDefinition {
     _children: CaseFileItemDef[];
@@ -40,16 +41,10 @@ export class CaseFileItemCollection extends CMMNElementDefinition {
 }
 
 export default class CaseFileItemDef extends CaseFileItemCollection {
-    defaultTransition: string;
+    readonly defaultTransition: CaseFileItemTransition = CaseFileItemTransition.Create;
     multiplicity: Multiplicity;
     _definitionRef: ExternalReference<CaseFileDefinitionDefinition>;
     isEmpty = false;
-    /**
-     * @returns List of the possible events/transitions on a case file item
-     */
-    static get transitions() {
-        return ['', 'addChild', 'addReference', 'create', 'delete', 'removeChild', 'removeReference', 'replace', 'update'];
-    }
 
     static get prefix() {
         return 'cfi';
@@ -63,7 +58,6 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
-        this.defaultTransition = 'create';
         this.multiplicity = this.parseTypedAttribute('multiplicity', Multiplicity.parse);
         this._definitionRef = this.parseReference('definitionRef');
         this.parseGrandChildren('caseFileItem', CaseFileItemDef, this.children);

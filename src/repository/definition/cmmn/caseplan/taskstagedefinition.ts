@@ -1,6 +1,7 @@
 import { Element } from "../../../../util/xml";
 import CaseDefinition from "../casedefinition";
 import PlanItem from "./planitem";
+import PlanItemTransition from "./planitemtransition";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
 
 /**
@@ -8,7 +9,8 @@ import PlanningTableDefinition from "./planning/planningtabledefinition";
  */
 export default class TaskStageDefinition extends PlanItem {
     planningTable?: PlanningTableDefinition;
-    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
+    constructor(importNode: Element,
+        caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
         super(importNode, caseDefinition, parent);
         this.planningTable = this.parseElement('planningTable', PlanningTableDefinition);
     }
@@ -29,14 +31,37 @@ export default class TaskStageDefinition extends PlanItem {
     }
 
     get transitions() {
-        return ['complete', 'create', 'disable', 'enable', 'exit', 'fault', 'manualStart', 'parentResume', 'parentSuspend', 'reactivate', 'reenable', 'resume', 'start', 'suspend', 'terminate'];
+        return StageTaskTransition.values;
     }
 
     get defaultTransition() {
-        return 'complete';
+        return StageTaskTransition.Complete;
     }
 
     get entryTransition() {
-        return 'start';
+        return PlanItemTransition.Start;
+    }
+}
+
+export class StageTaskTransition extends PlanItemTransition {
+    static get values(): PlanItemTransition[] {
+        return [
+            PlanItemTransition.None,
+            PlanItemTransition.Complete,
+            PlanItemTransition.Create,
+            PlanItemTransition.Disable,
+            PlanItemTransition.Enable,
+            PlanItemTransition.Exit,
+            PlanItemTransition.Fault,
+            PlanItemTransition.ManualStart,
+            PlanItemTransition.ParentResume,
+            PlanItemTransition.ParentSuspend,
+            PlanItemTransition.Reactivate,
+            PlanItemTransition.Reenable,
+            PlanItemTransition.Resume,
+            PlanItemTransition.Start,
+            PlanItemTransition.Suspend,
+            PlanItemTransition.Terminate
+        ];
     }
 }

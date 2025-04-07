@@ -1,10 +1,13 @@
 import { Element } from "../../../../util/xml";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
+import CaseFileItemTransition from "../casefile/casefileitemtransition";
 import ExpressionDefinition from "../expression/expressiondefinition";
 import OnPartDefinition from "../sentry/onpartdefinition";
+import StandardEvent from "../sentry/standardevent";
 import EventListenerDefinition from "./eventlistenerdefinition";
 import PlanItem from "./planitem";
+import PlanItemTransition from "./planitemtransition";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
 import TaskStageDefinition from "./taskstagedefinition";
 
@@ -65,10 +68,26 @@ export class PlanItemStartTrigger extends OnPartDefinition<PlanItem> {
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'planItemStartTrigger');
     }
+
+    parseStandardEvent(value: string): StandardEvent {
+        return PlanItemTransition.parse(value);
+    }
+
+    get description() {
+        return 'plan item start trigger';
+    }
 }
 
 export class CaseFileItemStartTrigger extends OnPartDefinition<CaseFileItemDef> {
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'caseFileItemStartTrigger');
+    }
+
+    parseStandardEvent(value: string): StandardEvent {
+        return CaseFileItemTransition.parse(value);
+    }
+
+    get description() {
+        return 'case file item start trigger';
     }
 }

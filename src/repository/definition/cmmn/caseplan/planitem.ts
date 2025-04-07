@@ -9,6 +9,7 @@ import EntryCriterionDefinition from "../sentry/entrycriteriondefinition";
 import ExitCriterionDefinition from "../sentry/exitcriteriondefinition";
 import ReactivateCriterionDefinition from "../sentry/reactivatecriteriondefinition";
 import ItemControlDefinition from "./itemcontroldefinition";
+import PlanItemTransition from "./planitemtransition";
 import ApplicabilityRuleReference from "./planning/applicabilityrulereference";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
 import StageDefinition from "./stagedefinition";
@@ -54,10 +55,6 @@ export default class PlanItem extends CMMNElementDefinition {
 
     get isDiscretionary(): boolean {
         return this.parent instanceof PlanningTableDefinition;
-    }
-
-    get defaultTransition(): string {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     get itemControl() {
@@ -189,14 +186,21 @@ export default class PlanItem extends CMMNElementDefinition {
     /**
      * Returns a list of transitions valid for this type of plan item definition.
      */
-    get transitions(): string[] {
+    get transitions(): PlanItemTransition[] {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * Returns the default transition for this type of PlanItem
+     */
+    get defaultTransition(): PlanItemTransition {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Returns the entry transition for this type of plan item definition (Task/Stage => Start, Event/Milestone => Occur)
      */
-    get entryTransition(): string {
+    get entryTransition(): PlanItemTransition {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 }

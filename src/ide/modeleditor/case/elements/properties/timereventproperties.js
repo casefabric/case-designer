@@ -1,5 +1,5 @@
 import $ from "jquery";
-import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import CaseFileItemTransition from "../../../../../repository/definition/cmmn/casefile/casefileitemtransition";
 import CasePlanDefinition from "../../../../../repository/definition/cmmn/caseplan/caseplandefinition";
 import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
 import { CaseFileItemStartTrigger, PlanItemStartTrigger } from "../../../../../repository/definition/cmmn/caseplan/timereventdefinition";
@@ -58,7 +58,7 @@ export default class TimerEventProperties extends PlanItemProperties {
     getCaseFileItemStandardEvents(trigger) {
         if (trigger && trigger.source) {
             const isTransitionSelected = transition => transition == trigger.standardEvent ? 'selected="true"' : '';
-            return CaseFileItemDef.transitions.map(t => `<option value="${t}" ${isTransitionSelected(t)}>${t}</option>`).join('');
+            return CaseFileItemTransition.values.map(t => `<option value="${t}" ${isTransitionSelected(t)}>${t}</option>`).join('');
         } else {
             return '<option></option><option>first select a case file item item</option>';
         }
