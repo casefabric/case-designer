@@ -13,6 +13,24 @@
     }
 
     /**
+     * Generate ordinal suffix, thanks https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+     */
+    static ordinal_suffix_of(i: number) {
+        let j = i % 10,
+            k = i % 100;
+        if (j === 1 && k !== 11) {
+            return i + "st";
+        }
+        if (j === 2 && k !== 12) {
+            return i + "nd";
+        }
+        if (j === 3 && k !== 13) {
+            return i + "rd";
+        }
+        return i + "th";
+    }
+    
+    /**
      * Creates a new identifier, with an optional prefix, and a random string consisting of iNumber characters
      */
     static createID(sPrefix = '_', iNumber = 5) {
