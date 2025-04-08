@@ -71,10 +71,11 @@ router.post('/save/*', xmlParser, async function (req: Request, res: Response, _
 /**
  * Rename a file in the repository
  */
-router.put('/rename/:fileName', xmlParser, async function (req: Request, res: Response, _next) {
+router.put('/rename/*', xmlParser, async function (req: Request, res: Response, _next) {
     // Note: this code takes the new name from the query parameter ?newName=
     try {
-        const fileName = req.params.fileName;
+        const fileName = req.params[0];
+        logger.printAction(`Rename has filename: ${fileName}`)
         const newName = req.query.newName?.toString() ?? (() => { throw new Error('newName query parameter is required'); })();
         const newContent = req.body;
         logger.printAction(`RENAME /${fileName} to /${newName}`);
