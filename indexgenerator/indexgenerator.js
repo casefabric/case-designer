@@ -1,4 +1,4 @@
-const { readdirSync, writeFileSync, statSync } = require('fs');
+const { readdirSync, writeFileSync, statSync, readFileSync, existsSync } = require('fs');
 const { join } = require('path');
 
 const IndexableFile = require('./indexablefile.js').IndexableFile;
@@ -58,7 +58,22 @@ class IndexGenerator {
     }
 
     writeIndexFile() {
-        writeFileSync(join(this.targetDirectory, './index.js'), this.exportStatements);
+        const fileName = join(this.targetDirectory, './index.js');
+        const newContents = this.exportStatements;
+        if (existsSync(fileName)) {
+            const existingContents = readFileSync(fileName).toString();
+            if (existingContents === newContents) {
+                console.log("File index.js does not change; skipping write process");
+            } else {
+                console.log("Writing updated index.js file");
+                writeFileSync(fileName, newContents);
+            }
+     
+        } else {
+            console.log("Writing new index.js file");
+            writeFileSync(fileName, newContents);
+        }
+
     }
 }
 
