@@ -1,4 +1,5 @@
 import CaseFileDefinitionDefinition from "../../../../../../../repository/definition/cfid/casefileitemdefinitiondefinition";
+import Multiplicity from "../../../../../../../repository/definition/type/multiplicity";
 import TypeDefinition from "../../../../../../../repository/definition/type/typedefinition";
 import Repository from "../../../../../../../repository/repository";
 import CFIDFile from "../../../../../../../repository/serverfile/cfidfile";
@@ -57,7 +58,7 @@ export default class TypeWrapper {
                 // Skip existing properties with the same name
                 return;
             }
-            this.typeFile.definition?.schema?.createChildProperty(property.name, '', 'ExactlyOne', property.isBusinessIdentifier).withCMMNType(property.type);
+            this.typeFile.definition?.schema?.createChildProperty(property.name, '', Multiplicity.ExactlyOne, property.isBusinessIdentifier).withCMMNType(property.type);
         });
     }
 

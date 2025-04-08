@@ -1,4 +1,5 @@
 ﻿import { g } from "jointjs";
+import CaseFileItemTransition from "../../../../repository/definition/cmmn/casefile/casefileitemtransition";
 import CriterionDefinition from "../../../../repository/definition/cmmn/sentry/criteriondefinition";
 import OnPartDefinition from "../../../../repository/definition/cmmn/sentry/onpartdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
@@ -78,7 +79,7 @@ export default class SentryView extends CMMNElementView {
                 if (style.isDefault && onPart.standardEvent == defaultTransition) {
                     connector.label = ''
                 } else {
-                    connector.label = onPart.standardEvent;
+                    connector.label = onPart.standardEvent.toString();
                 }
             }
         })
@@ -351,7 +352,7 @@ export default class SentryView extends CMMNElementView {
      */
     __connectElement(target) {
         if (target.isCaseFileItem) {
-            this.setCaseFileItemOnPart(target, 'create');
+            this.setCaseFileItemOnPart(target, CaseFileItemTransition.Create);
         } else if (target.isPlanItem) {
             this.setPlanItemOnPart(target, target.definition.defaultTransition);
         } else if (target.isCriterion) {

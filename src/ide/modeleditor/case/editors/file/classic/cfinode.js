@@ -1,5 +1,6 @@
 import $ from "jquery";
 import CaseFileItemDef, { CaseFileItemCollection } from "../../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import Multiplicity from "../../../../../../repository/definition/type/multiplicity";
 import Util from "../../../../../../util/util";
 import HtmlUtil from "../../../../../util/htmlutil";
 import Images from "../../../../../util/images/images";
@@ -55,12 +56,7 @@ export default class CFINode {
             </div>
             <div class="select-container">
                 <select class="selectMultiplicity">
-                    <option value="ExactlyOne">[1]</option>
-                    <option value="ZeroOrOne">[0..1]</option>
-                    <option value="ZeroOrMore">[0..*]</option>
-                    <option value="OneOrMore">[1..*]</option>
-                    <option value="Unspecified">[*]</option>
-                    <option value="Unknown">[?]</option>
+                    ${Multiplicity.values.map(m => '<option value="' + m.value + '">' + m.label + '</option>')}
                 </select>
             </div>
             <div class="select-container">
@@ -75,7 +71,7 @@ export default class CFINode {
         const selectDefinitionRef = this.divCFIDetails.find('.selectDefinitionRef');
 
         inputName.val(this.definition.name);
-        selectMultiplicity.val(this.definition.multiplicity);
+        selectMultiplicity.val(this.definition.multiplicity.toString());
         selectDefinitionRef.val(this.definition.definitionRef);
 
         this.divCFIDetails.on('click', e => {
@@ -119,7 +115,7 @@ export default class CFINode {
             this.case.editor.completeUserAction();
         });
         selectMultiplicity.on('change', () => {
-            this.definition.multiplicity = selectMultiplicity.value;
+            this.definition.multiplicity = Multiplicity.parse(selectMultiplicity.val());
             this.case.editor.completeUserAction();
         });
         selectMultiplicity.on('focus', () => this.editor.selectCFINode(this));

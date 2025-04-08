@@ -2,6 +2,7 @@ import Util from "../../../util/util";
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
+import Multiplicity from "./multiplicity";
 import SchemaPropertyDefinition from "./schemapropertydefinition";
 import TypeDefinition from "./typedefinition";
 
@@ -13,7 +14,7 @@ export default class SchemaDefinition extends ElementDefinition<TypeDefinition> 
         this.properties = this.parseElements('property', SchemaPropertyDefinition);
     }
 
-    createChildProperty(name: string = '', type = '', multiplicity = 'ExactlyOne', isBusinessIdentifier = false): SchemaPropertyDefinition {
+    createChildProperty(name: string = '', type = '', multiplicity = Multiplicity.ExactlyOne, isBusinessIdentifier = false): SchemaPropertyDefinition {
         const property: SchemaPropertyDefinition = this.createDefinition(SchemaPropertyDefinition);
         property.name = name;
         property.type = type;

@@ -9,11 +9,13 @@ import EntryCriterionDefinition from "../sentry/entrycriteriondefinition";
 import ExitCriterionDefinition from "../sentry/exitcriteriondefinition";
 import ReactivateCriterionDefinition from "../sentry/reactivatecriteriondefinition";
 import ItemControlDefinition from "./itemcontroldefinition";
+import PlanItemTransition from "./planitemtransition";
 import ApplicabilityRuleReference from "./planning/applicabilityrulereference";
 import PlanningTableDefinition from "./planning/planningtabledefinition";
 import StageDefinition from "./stagedefinition";
 import FourEyesDefinition from "./task/workflow/foureyesdefinition";
 import RendezVousDefinition from "./task/workflow/rendezvousdefinition";
+import TaskStageDefinition from "./taskstagedefinition";
 
 export default class PlanItem extends CMMNElementDefinition {
     private applicabilityRuleRefs: ReferenceSet<ApplicabilityRuleReference>;
@@ -53,10 +55,6 @@ export default class PlanItem extends CMMNElementDefinition {
 
     get isDiscretionary(): boolean {
         return this.parent instanceof PlanningTableDefinition;
-    }
-
-    get defaultTransition(): string {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     get itemControl() {
@@ -188,69 +186,21 @@ export default class PlanItem extends CMMNElementDefinition {
     /**
      * Returns a list of transitions valid for this type of plan item definition.
      */
-    get transitions(): string[] {
+    get transitions(): PlanItemTransition[] {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    /**
+     * Returns the default transition for this type of PlanItem
+     */
+    get defaultTransition(): PlanItemTransition {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     /**
      * Returns the entry transition for this type of plan item definition (Task/Stage => Start, Event/Milestone => Occur)
      */
-    get entryTransition(): string {
+    get entryTransition(): PlanItemTransition {
         throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-}
-
-/**
- * Simple helper class to re-use logic across stages and tasks
- */
-export class TaskStageDefinition extends PlanItem {
-    planningTable?: PlanningTableDefinition;
-    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
-        super(importNode, caseDefinition, parent);
-        this.planningTable = this.parseElement('planningTable', PlanningTableDefinition);
-    }
-
-    getPlanningTable() {
-        if (!this.planningTable) {
-            this.planningTable = super.createDefinition(PlanningTableDefinition);
-        }
-        return this.planningTable;
-    }
-
-    get isTask() {
-        return false;
-    }
-
-    get isStage() {
-        return false;
-    }
-
-    get transitions() {
-        return ['complete', 'create', 'disable', 'enable', 'exit', 'fault', 'manualStart', 'parentResume', 'parentSuspend', 'reactivate', 'reenable', 'resume', 'start', 'suspend', 'terminate'];
-    }
-
-    get defaultTransition() {
-        return 'complete';
-    }
-
-    get entryTransition() {
-        return 'start';
-    }
-}
-
-/**
- * Simple helper class to re-use logic across milestones and event listeners
- */
-export class MilestoneEventListenerDefinition extends PlanItem {
-    get transitions(): string[] {
-        return ['occur', 'create', 'reactivate', 'resume', 'suspend', 'terminate'];
-    }
-
-    get defaultTransition() {
-        return 'occur';
-    }
-
-    get entryTransition() {
-        return 'occur';
     }
 }

@@ -71,10 +71,11 @@ router.post('/save/*', xmlParser, async function (req: Request, res: Response, _
 /**
  * Rename a file in the repository
  */
-router.put('/rename/:fileName', xmlParser, async function (req: Request, res: Response, _next) {
+router.put('/rename/*', xmlParser, async function (req: Request, res: Response, _next) {
     // Note: this code takes the new name from the query parameter ?newName=
     try {
-        const fileName = req.params.fileName;
+        const fileName = req.params[0];
+        logger.printAction(`Rename has filename: ${fileName}`)
         const newName = req.query.newName?.toString() ?? (() => { throw new Error('newName query parameter is required'); })();
         const newContent = req.body;
         logger.printAction(`RENAME /${fileName} to /${newName}`);
@@ -93,7 +94,7 @@ router.delete('/delete/*', async function (req: Request, res: Response, _next) {
     try {
         const fileName = req.params[0];
         logger.printAction(`DELETE /${fileName}`);
-        await res.json(storage.deleteModel(fileName));
+        res.json(await storage.deleteModel(fileName));
     } catch (err) {
         console.error(err);
         res.status(500).send(err);

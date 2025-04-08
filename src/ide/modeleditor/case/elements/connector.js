@@ -98,7 +98,7 @@ export default class Connector extends CanvasElement {
     __setJointLabel(text) {
         this.link.label(0, {
             attrs: {
-                text: { text: text, 'font-size': 'smaller' }
+                text: { text, 'font-size': 'smaller' }
             }
         });
     }
@@ -126,7 +126,7 @@ export default class Connector extends CanvasElement {
         this.formerLabel = this.label;
         if (this.label || ! this.criterion) return;
         const onPart = this.criterion.__getOnPart(this);
-        if (onPart) this.__setJointLabel(onPart.standardEvent);
+        if (onPart) this.__setJointLabel(onPart.standardEvent.toString());
     }
 
     mouseLeave() {

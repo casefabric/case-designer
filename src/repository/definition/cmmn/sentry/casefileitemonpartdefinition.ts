@@ -3,12 +3,18 @@ import ElementDefinition from "../../elementdefinition";
 import ModelDefinition from "../../modeldefinition";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
+import CaseFileItemTransition from "../casefile/casefileitemtransition";
 import CriterionDefinition from "./criteriondefinition";
 import OnPartDefinition from "./onpartdefinition";
+import StandardEvent from "./standardevent";
 
 export default class CaseFileItemOnPartDefinition extends OnPartDefinition<CaseFileItemDef> {
-    constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CriterionDefinition) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: CriterionDefinition) {
         super(importNode, caseDefinition, parent);
+    }
+    
+    parseStandardEvent(value: string): StandardEvent {
+        return CaseFileItemTransition.parse(value);
     }
 
     updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {

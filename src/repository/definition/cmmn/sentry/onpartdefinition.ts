@@ -6,15 +6,24 @@ import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
 import PlanItem from "../caseplan/planitem";
 import CriterionDefinition from "./criteriondefinition";
+import StandardEvent from "./standardevent";
 
 export default class OnPartDefinition<T extends CaseFileItemDef | PlanItem> extends UnnamedCMMNElementDefinition {
-    standardEvent: string;
+    standardEvent: StandardEvent;
     sourceRef: InternalReference<T>;
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CriterionDefinition) {
         super(importNode, caseDefinition, parent);
-        this.standardEvent = this.parseElementText('standardEvent', '');
+        this.standardEvent = this.parseStandardEvent(this.parseElementText('standardEvent', ''));
         this.sourceRef = this.parseInternalReference('sourceRef');
+    }
+
+    parseStandardEvent(value: string): StandardEvent {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    get description(): string {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
     get source(): T | undefined {
@@ -35,6 +44,6 @@ export default class OnPartDefinition<T extends CaseFileItemDef | PlanItem> exte
 
     createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         super.createExportNode(parentNode, tagName, 'sourceRef', propertyNames);
-        XML.createTextChild(XML.createChildElement(this.exportNode, 'standardEvent'), this.standardEvent);
+        XML.createTextChild(XML.createChildElement(this.exportNode, 'standardEvent'), this.standardEvent.toString());
     }
 }

@@ -1,5 +1,6 @@
 import $ from "jquery";
 import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
+import CaseFileItemTransition from "../../../../../repository/definition/cmmn/casefile/casefileitemtransition";
 import PlanItem from "../../../../../repository/definition/cmmn/caseplan/planitem";
 import CaseFileItemOnPartDefinition from "../../../../../repository/definition/cmmn/sentry/casefileitemonpartdefinition";
 import OnPartDefinition from "../../../../../repository/definition/cmmn/sentry/onpartdefinition";
@@ -131,7 +132,6 @@ export default class SentryProperties extends Properties {
         return html;
     }
 
-
     /**
      * Changes the standard event within the onPart (if one is given)
      * @param {JQuery.ChangeEvent} e 
@@ -141,14 +141,14 @@ export default class SentryProperties extends Properties {
     changeStandardEvent(e, onPart, connector) {
         if (onPart) {
             const selectedStandardEvent = e.currentTarget.selectedOptions[0];
-            const newStandardEvent = selectedStandardEvent.value;
+            const newStandardEvent = onPart.parseStandardEvent(selectedStandardEvent.value);
             if (connector) {
                 // If there is a connector, check the label rendering style, and optionally change the label.
                 const style = connector.case.diagram.connectorStyle
                 if (style.isNone || (style.isDefault && onPart.source.defaultTransition == newStandardEvent)) {
                     connector.label = '';
                 } else {
-                    connector.label = newStandardEvent;
+                    connector.label = newStandardEvent.toString();
                 }
             }
             this.change(onPart, 'standardEvent', newStandardEvent);
@@ -299,7 +299,7 @@ export default class SentryProperties extends Properties {
                     if (style.isNone || (style.isDefault && onPart.source.defaultTransition == onPart.standardEvent)) {
                         connector.label = '';
                     } else {
-                        connector.label = onPart.standardEvent;
+                        connector.label = onPart.standardEvent.toString();
                     }
                     this.show();
                 } else if (connector) {
@@ -308,18 +308,7 @@ export default class SentryProperties extends Properties {
             }
             this.done();
         });
-        html.find('#hideShowLabel').on('change', e => {
-            if (!onPart) { // Can only set a connector if there is an onPart
-                if (e.currentTarget.checked) e.currentTarget.checked = false;
-                return;
-            }
-            if (connector) {
-                // Hide/show the label with the standard event
-                const checked = e.currentTarget.checked;
-                connector.label = checked ? onPart.standardEvent : '';
-            }
-            this.done();
-        });
+        html.find('#hideShowLabel').on('change', e => this.changeLabelVisibility(e, onPart, connector));
         return html;
     }
 
@@ -359,7 +348,7 @@ export default class SentryProperties extends Properties {
     getCaseFileItemStandardEvents(onPart) {
         if (onPart && onPart.source) {
             const isTransitionSelected = transition => transition == onPart.standardEvent ? 'selected="true"' : '';
-            return CaseFileItemDef.transitions.map(t => `<option value="${t}" ${isTransitionSelected(t)}>${t}</option>`).join('');
+            return CaseFileItemTransition.values.map(t => `<option value="${t}" ${isTransitionSelected(t)}>${t}</option>`).join('');
         } else {
             return '<option></option><option>first select a case file item item</option>';
         }
@@ -432,19 +421,22 @@ export default class SentryProperties extends Properties {
             }
         });
 
-        html.find('#hideShowLabel').on('change', e => {
-            if (!onPart) { // Can only set a connector if there is an onPart
-                if (e.currentTarget.checked) e.currentTarget.checked = false;
-                return;
-            }
-            if (connector) {
-                // Hide/show the label with the standard event
-                const checked = e.currentTarget.checked;
-                connector.label = checked ? onPart.standardEvent : '';
-            }
-            this.done();
-        });
+        html.find('#hideShowLabel').on('change', e => this.changeLabelVisibility(e, onPart, connector));
         return html;
+    }
+
+    changeLabelVisibility(e, onPart, connector) {
+        if (!onPart) { // Can only set a connector if there is an onPart
+            if (e.currentTarget.checked) e.currentTarget.checked = false;
+            return;
+        }
+        if (connector) {
+            // Hide/show the label with the standard event
+            const checked = e.currentTarget.checked;
+            connector.label = checked ? onPart.standardEvent.toString() : '';
+        }
+        this.done();
+
     }
 
     /**
@@ -463,7 +455,7 @@ export default class SentryProperties extends Properties {
 
         const newOnPart = onPart ? onPart : this.cmmnElement.definition.createCaseFileItemOnPart();
         if (!onPart) {
-            newOnPart.standardEvent = 'create';
+            newOnPart.standardEvent = CaseFileItemTransition.Create;
         }
         if (cfi.id !== currentSourceRef && connector) {
             connector.remove();

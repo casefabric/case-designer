@@ -2,6 +2,7 @@ import Util from "../../../util/util";
 import { Element } from "../../../util/xml";
 import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
 import ReferableElementDefinition from "../referableelementdefinition";
+import Multiplicity from "./multiplicity";
 import SchemaDefinition from "./schemadefinition";
 import TypeDefinition from "./typedefinition";
 import TypeReference from "./typereference";
@@ -9,7 +10,7 @@ import TypeReference from "./typereference";
 export default class SchemaPropertyDefinition extends ReferableElementDefinition<TypeDefinition> {
     private _type: TypeReference;
     format: string;
-    multiplicity: string;
+    multiplicity: Multiplicity;
     isBusinessIdentifier: boolean;
     schema?: SchemaDefinition;
 
@@ -21,7 +22,7 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
         super(importNode, modelDefinition, parent);
         this._type = this.parseReference('type', TypeReference);
         this.format = this.parseAttribute('format', '');
-        this.multiplicity = this.parseAttribute('multiplicity', 'ExactlyOne');
+        this.multiplicity = this.parseTypedAttribute('multiplicity', Multiplicity.parse);
         this.isBusinessIdentifier = this.parseBooleanAttribute('isBusinessIdentifier', false);
         if (this.type === 'object') {
             this.schema = this.parseElement(SchemaDefinition.TAG, SchemaDefinition);
@@ -30,7 +31,7 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
 
     get isNew() {
         // A property is new if it has all default values
-        return this.name === '' && this.type === '' && this.format === '' && this.multiplicity === 'ExactlyOne' && this.isBusinessIdentifier !== true;
+        return this.name === '' && this.type === '' && this.format === '' && this.multiplicity === Multiplicity.ExactlyOne && this.isBusinessIdentifier !== true;
     }
     
     getCaseFileItemReferences(): CaseFileItemTypeDefinition[] {
@@ -119,32 +120,32 @@ export default class SchemaPropertyDefinition extends ReferableElementDefinition
             }
         }
         switch (this.multiplicity) {
-            case 'ExactlyOne':
+            case Multiplicity.ExactlyOne:
                 // Required property
                 required.push(this.name);
                 break;
-            case 'ZeroOrOne':
+            case Multiplicity.ZeroOrOne:
                 // Optional property
                 jsonProperty.minItems = 0;
                 jsonProperty.maxItems = 1;
                 break;
-            case 'ZeroOrMore':
+            case Multiplicity.ZeroOrMore:
                 // Array with optional items
                 // Array items will have the type of the property
                 this.setJSONArrayItemType(jsonProperty, 0);
                 break;
-            case 'OneOrMore':
+            case Multiplicity.OneOrMore:
                 // Array with at least on required item
                 required.push(this.name);
                 // Array items will have the type of the property
                 this.setJSONArrayItemType(jsonProperty, 1);
                 break;
-            case 'Unspecified':
+            case Multiplicity.Unspecified:
                 // Array with unspecified number of items
                 // Array items will have the type of the property
                 this.setJSONArrayItemType(jsonProperty);
                 break;
-            case 'Unknown':
+            case Multiplicity.Unknown:
                 break;
         }
         return jsonProperty;

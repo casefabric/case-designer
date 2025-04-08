@@ -60,7 +60,7 @@ class IndexableFile {
             const modulePath = this.relativeName.replace(SCRIPT_FILE_EXTENSIONS, '');
             const orderedExportStatements = this.exportStatements.sort((e1, e2) => e1.name.localeCompare(e2.name));
 
-            return `export { ${orderedExportStatements.map(exp => exp.toString()).join(", ")} } from "${modulePath}";\n`;
+            return `export { ${orderedExportStatements.map(exp => exp.toString()).join(", ")} } from "${modulePath}";\r\n`;
         }
     }
 }
