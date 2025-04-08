@@ -1,0 +1,19 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <case id="validation/emptysubcase.case" name="validation/emptysubcase" expressionLanguage="spel">
+        <casePlanModel id="cm__OOfWU_0" name="validation/emptysubcase" autoComplete="true"/>
+        <caseRoles/>
+        <textAnnotation id="_OOfWU_0">
+            <text><![CDATA[This case is entirely empty - except for this textbox]]></text>
+        </textAnnotation>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape name="validation/emptysubcase" cmmnElementRef="cm__OOfWU_0">
+                <Bounds x="20" y="20" width="800" height="500"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_OOfWU_0">
+                <Bounds x="220" y="190" width="300" height="150"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>

@@ -1,0 +1,43 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="Greeting" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="Greeting.type">
+        <property name="Message" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="From" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="To" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+    </caseFileItemDefinition>
+    <case id="validation/roles.case" name="validation/roles" expressionLanguage="spel">
+        <caseFileModel cafienne:typeRef="Greeting.type"/>
+        <casePlanModel id="cm__KiHvE_0" name="validation/roles" autoComplete="true">
+            <planItem id="_KiHvE_1" name="HumanTask_0" definitionRef="ht__KiHvE_1"/>
+            <planItem id="_KiHvE_7" name="UserEvent_0" definitionRef="ue__KiHvE_7"/>
+            <planningTable id="_KiHvE_10">
+                <discretionaryItem id="_KiHvE_8" name="Stage_0" definitionRef="s__KiHvE_8" authorizedRoleRefs="_KiHvE_3"/>
+            </planningTable>
+            <humanTask id="ht__KiHvE_1" name="HumanTask_0" isBlocking="true" performerRef="_KiHvE_3"/>
+            <userEvent id="ue__KiHvE_7" name="UserEvent_0" authorizedRoleRefs="_KiHvE_4 _KiHvE_3"/>
+            <stage id="s__KiHvE_8" name="Stage_0" autoComplete="true"/>
+        </casePlanModel>
+        <caseRoles>
+            <role id="_KiHvE_31" name="RoleA"/>
+            <role id="_KiHvE_4" name="RoleB"/>
+        </caseRoles>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape name="validation/roles" cmmnElementRef="cm__KiHvE_0">
+                <Bounds x="20" y="20" width="800" height="500"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_KiHvE_1">
+                <Bounds x="70" y="90" width="140" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_KiHvE_7">
+                <Bounds x="260" y="110" width="32" height="32"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_KiHvE_8">
+                <Bounds x="350" y="80" width="420" height="140"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_KiHvE_10">
+                <Bounds x="300" y="33" width="24" height="16"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>
