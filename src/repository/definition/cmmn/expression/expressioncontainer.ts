@@ -41,7 +41,7 @@ export default abstract class ExpressionContainer extends UnnamedCMMNElementDefi
      * @returns {ExpressionDefinition}
      */
     get expression() {
-        if (! this._expression) {
+        if (!this._expression) {
             this._expression = super.createDefinition(ExpressionDefinition);
         }
         return this._expression;

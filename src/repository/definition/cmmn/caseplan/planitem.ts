@@ -1,5 +1,6 @@
 import Util from "../../../../util/util";
 import { Element } from "../../../../util/xml";
+import Validator from "../../../validate/validator";
 import CMMNElementDefinition from "../../cmmnelementdefinition";
 import { ReferenceSet } from "../../references/referenceset";
 import CaseDefinition from "../casedefinition";
@@ -49,6 +50,24 @@ abstract class PlanItem extends CMMNElementDefinition {
         this.authorizedRoleRefs = this.parseReferenceSet('authorizedRoleRefs');
         this.fourEyes = this.parseExtension(FourEyesDefinition);
         this.rendezVous = this.parseExtension(RendezVousDefinition);
+    }
+
+    validate(validator: Validator): void {
+        super.validate(validator);
+        validator.mustHaveName(this);
+        // Validate entry criteria availability when this is a repeating element.
+        if (this.itemControl.repetitionRule && this.entryCriteria.length > 0) {
+            if (this.entryCriteria.filter(criterion => criterion.caseFileItemOnParts.length > 0 || criterion.planItemOnParts.length > 0).length === 0) {
+                validator.raiseError(this, `${this} has a repetition rule defined, but no entry criteria with at least one on part. This is mandatory.`);
+            }
+        }
+
+        if (this.isDiscretionary) {
+            // Check that applicability rules exist.
+            this.applicabilityRuleRefs.references.forEach((reference, count) => {
+                if (reference.isInvalid) validator.raiseError(this, `The ${Util.ordinal_suffix_of(count + 1)} applicability rule in ${this} has an invalid reference ${reference.value}`)
+            });
+        }
     }
 
     get isDiscretionary(): boolean {
