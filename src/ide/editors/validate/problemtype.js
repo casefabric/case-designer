@@ -1,4 +1,4 @@
-﻿import Images from "../ide/util/images/images";
+﻿import Images from "../../util/images/images";
 import Problem from "./problem";
 import ValidateForm from "./validateform";
 
