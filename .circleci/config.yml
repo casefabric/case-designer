@@ -1,117 +1,5 @@
 version: 2.1
-jobs:
-  branch-build-to-snapshot:
-    resource_class: large
-    working_directory: ~/cafienne-ide
-    docker:
-      - image: cimg/node:22.2.0
-    steps:
-      - checkout
-      - run:
-          name: Installing dependencies
-          command: |
-            yarn install
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build docker image
-          command: |
-            echo "Building docker image cafienne/ide:snapshot"
-            docker build -t cafienne/ide:snapshot .
-      - run:
-          name: Push docker image 'cafienne/ide:snapshot'
-          command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            echo "Publishing image 'cafienne/ide:snapshot' to docker hub"
-            docker push cafienne/ide:snapshot
-
-  main-build-to-latest:
-    resource_class: large
-    working_directory: ~/cafienne-ide
-    docker:
-      - image: cimg/node:22.2.0
-    steps:
-      - checkout
-      - run:
-          name: Installing dependencies
-          command: |
-            yarn install
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build docker image
-          command: |
-            echo "Building docker image cafienne/ide:latest"
-            docker build -t cafienne/ide:latest .
-      - run:
-          name: Push docker image 'cafienne/ide:latest'
-          command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            echo "Publishing image 'cafienne/ide:latest' to docker hub"
-            docker push cafienne/ide:latest
-
-  release-build:
-    resource_class: large
-    working_directory: ~/cafienne-ide
-    docker:
-      - image: cimg/node:22.2.0
-    steps:
-      - checkout
-      - run:
-          name: Check for version TAG
-          command: |
-            echo `git describe --tags --exact-match` > ./version.txt
-            cat ./version.txt
-            TAG=$(cat ./version.txt)
-            printenv
-      - run:
-          name: Installing dependencies
-          command: |
-            yarn install
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build docker image
-          command: |
-            docker build -t cafienne/ide:$CIRCLE_TAG .
-      - run:
-          name: Push docker image
-          command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            echo "Publishing image 'cafienne/ide:$CIRCLE_TAG' to docker hub"
-            docker push cafienne/ide:$CIRCLE_TAG
-
-  deprecated-node-8-build:
-    working_directory: ~/cafienne-ide
-    docker:
-      - image: cimg/node:8.17.0
-    steps:
-      - checkout
-      - run:
-          name: Giving permissions
-          command: sudo chmod -R 777 ./
-      - run:
-          name: Installing dependencies
-          command: |
-            npm install
-            sudo npm install bower -g
-            bower install
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build docker image
-          command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            docker build -t cafienne/ide:deprecated-node-8 .
-      - run:
-          name: Push docker image
-          command: |
-            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-            echo "Publishing image 'cafienne/ide:deprecated-node-8' to docker hub"
-            docker push cafienne/ide:deprecated-node-8
-
 workflows:
-  version: 2
   ci:
     jobs:
       - branch-build-to-snapshot:
@@ -128,17 +16,104 @@ workflows:
             branches:
               only:
                 - main
-      - release-build:
-          context: automation-context
-          filters:
-            tags:
-              ignore: deprecated-node8
-            branches:
-              ignore: /.*/
-      - deprecated-node-8-build:
-          context: automation-context
-          filters:
-            tags:
-              only: deprecated-node8
-            branches:
-              ignore: /.*/
+
+jobs:
+  branch-build-to-snapshot:
+    machine:
+      image: ubuntu-2404:2024.11.1
+      docker_layer_caching: true
+    resource_class: large
+    working_directory: ~/cafienne-ide
+    steps:
+      - build-and-publish:
+          tag: cafienne/ide:snapshot
+
+  main-build-to-latest:
+    machine:
+      image: ubuntu-2404:2024.11.1
+      docker_layer_caching: true
+    resource_class: large
+    working_directory: ~/cafienne-ide
+    steps:
+      - build-and-publish:
+          tag: cafienne/ide:latest
+
+commands:
+  install:
+    steps:
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-v3-{{ checksum "yarn.lock" }}
+            - yarn-packages-v3-
+      - run:
+          name: Installing dependencies
+          command: |
+            yarn install --immutable
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-v3-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+  build:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run:
+          name: Yarn build
+          command: |
+            yarn build
+      - run:
+          name: Build docker image
+          command: |
+            echo "Building docker image <<parameters.tag>>"
+            pwd
+            ls -l dist
+            docker build -t <<parameters.tag>> .
+  test:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run:
+          name: Spin up docker image
+          command: |
+            chmod 777 ./repository
+            chmod 777 ./repository_deploy
+            docker run --pull never --name case_designer -d -p 3081:2081 -v ./repository:/usr/src/app/repository -v ./repository_deploy:/usr/src/app/repository_deploy <<parameters.tag>>
+      - run:
+          name: Docker logs
+          when: on_fail
+          command: |
+            docker logs case_designer
+      - run:
+          name: Test docker image
+          command: |
+            yarn test
+      - run:
+          name: Docker logs
+          when: on_fail
+          command: |
+            docker logs case_designer
+      - store_test_results:
+          path: ./dist/test-results
+      - store_artifacts:
+          path: ./dist/test-results
+  build-and-publish:
+    parameters:
+      tag:
+        type: string
+    steps:
+      - checkout
+      - install
+      - build:
+          tag: <<parameters.tag>>
+      - test:
+          tag: <<parameters.tag>>
+      - run:
+          name: Push docker image '<<parameters.tag>>'
+          command: |
+            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+            echo "Publishing image '<<parameters.tag>>' to docker hub"
+            docker push <<parameters.tag>>

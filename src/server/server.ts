@@ -154,5 +154,3 @@ export function startServer(inTest: boolean = false, port: number = 2081) {
         console.log(`Cafienne IDE Server started (in ${startCompleted.getTime() - startMoment.getTime()}ms) on http://localhost:${serverConfig.port}\n`);
     });
 }
-
-startServer();

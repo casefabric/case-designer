@@ -70,7 +70,7 @@ const ideResolvers = {
 module.exports = [
 { // server
     entry: {
-        server: './src/server/server.ts'
+            server: './src/server/startserver.ts'
     },
     output: {
         filename: 'server.js',

@@ -13,7 +13,7 @@ export const config: WebdriverIO.Config = {
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
     tsConfigPath: './test/tsconfig.json',
-    
+
     //
     // ==================
     // Specify Test Files
@@ -118,7 +118,7 @@ export const config: WebdriverIO.Config = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: 'mocha',
-    
+
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
@@ -159,9 +159,11 @@ export const config: WebdriverIO.Config = {
      * @param {object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-     onPrepare: function (config, capabilities) {
-        this.server = startServer(true, 3081);
-     },
+    onPrepare: function (config, capabilities) {
+        if (process.env.CIRCLECI !== "true") {
+            this.server = startServer(true, 3081);
+        }
+    },
     /**
      * Gets executed before a worker process is spawned and can be used to initialize specific service
      * for that worker as well as modify runtime environments in an async fashion.
