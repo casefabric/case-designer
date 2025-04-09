@@ -9,7 +9,7 @@ export default class LocalTypeDefinition {
 
     constructor(public editor: TypeEditor, public file: TypeFile, public root?: MainTypeDefinition) {
         if (! file.definition) {
-            throw new Error('We need a definition for this');
+            throw new Error('We need a definition for file ' + file);
         }
         this.definition = file.definition;
     }
