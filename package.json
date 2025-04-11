@@ -41,6 +41,8 @@
   "scripts": {
     "clean": "shx rm -rf ./dist",
     "rebuild-index": "node ./indexgenerator/generate-index.mjs",
+    "test-compile": "npm run build & node ./dist/repository/compile.js",
+    "compile": "node ./dist/repository/compile.js",
     "build": "npm run clean & npm run rebuild-index & webpack",
     "watch": "npm run clean & set DEV_MODE=true & webpack",
     "go": "set LOG_TRAFFIC=actions & node ./dist/server/server.js",

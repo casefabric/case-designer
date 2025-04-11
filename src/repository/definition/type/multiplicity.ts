@@ -15,7 +15,6 @@ export default class Multiplicity extends AttributeDefinition {
     static readonly Unknown = new Multiplicity('Unknown', '[?]');
 
     static parse(value: string): Multiplicity {
-        console.log("Parsing Multiplicity for value " + value)
         const m = list.find(m => m.value === value);
         return m !== undefined ? m : new Multiplicity(value, 'Invalid', false); ``
     }

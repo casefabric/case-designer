@@ -1,0 +1,62 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="test_cfi_def_01" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="test_cfi_def_01.cfid">
+        <property name="cfidefprop_01" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="cfidefprop_02" type="http://www.omg.org/spec/CMMN/PropertyType/boolean"/>
+        <property name="cfidefprop_03" type="http://www.omg.org/spec/CMMN/PropertyType/date"/>
+    </caseFileItemDefinition>
+    <case id="test_casemodel_parameters.case" name="test_casemodel_parameters" expressionLanguage="spel">
+        <documentation textFormat="text/plain">
+            <text><![CDATA[Case model for testing all options in a case]]></text>
+        </documentation>
+        <caseFileModel>
+            <caseFileItem id="cfi_csARK_0" name="cfi_1" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.cfid"/>
+        </caseFileModel>
+        <casePlanModel id="cm_test_casemodel_parameters.case_test_casemodel_parameters_0" name="test_casemodel_parameters" autoComplete="true"/>
+        <caseRoles/>
+        <input id="csARK_inCPs_0" name="case_input_parameter_01" bindingRef="cfi_csARK_0">
+            <bindingRefinement>
+                <body><![CDATA[
+                
+                    expression
+multiple lines
+                
+            ]]></body>
+            </bindingRefinement>
+        </input>
+        <input id="csARK_inCPs_1" name="case_input_parameter_02">
+            <bindingRefinement>
+                <body><![CDATA[expression]]></body>
+            </bindingRefinement>
+        </input>
+        <input id="csARK_inCPs_2" name="ht_input_parameter_03"/>
+        <output id="csARK_outCPs_0" name="case_output_parameter_01"/>
+        <output id="csARK_outCPs_1" name="case_output_parameter_02" bindingRef="cfi_csARK_0">
+            <bindingRefinement>
+                <body><![CDATA[
+                
+                    expression
+multiplelines
+                
+            ]]></body>
+            </bindingRefinement>
+        </output>
+        <output id="csARK_outCPs_2" name="case_output_parameter_03"/>
+        <extensionElements mustUnderstand="false">
+            <cafienne:start-case-model xmlns:cafienne="org.cafienne">{
+  "schema":{
+    "title": "",
+    "type": "object",
+    "properties":{
+    }
+  }
+}</cafienne:start-case-model>
+        </extensionElements>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape cmmnElementRef="cm_test_casemodel_parameters.case_test_casemodel_parameters_0">
+                <Bounds x="10" y="10" width="889" height="806"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>

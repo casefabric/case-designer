@@ -13,7 +13,9 @@ export default class XML {
             return undefined;
         }
 
-        if (xml instanceof Document) {
+        if (typeof(XMLDocument) !== 'undefined' && xml instanceof XMLDocument) {
+            return xml;
+        } else if (xml instanceof Document) {
             return xml;
         } else if (xml instanceof Node) {
             return xml.ownerDocument;

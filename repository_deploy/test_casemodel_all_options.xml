@@ -675,7 +675,7 @@ multiplelines
         <output id="_CGna_process_output_parameter_02" name="process_output_parameter_02"/>
         <output id="_ccHd_process_output_parameter_03" name="process_output_parameter_03"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
                 <testnode options="all">All process options</testnode>
             </cafienne:implementation>
         </extensionElements>

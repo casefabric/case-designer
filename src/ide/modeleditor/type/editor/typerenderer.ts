@@ -18,6 +18,9 @@ import PropertyUsage from "./propertyusage";
 import TypeEditor from "./typeeditor";
 import TypeSelector from "./typeselector";
 
+const expandSign = '&nbsp>&nbsp';
+const collapseSign = '&nbsp--&nbsp';
+
 export default class TypeRenderer {
 
     /**
@@ -277,6 +280,7 @@ export class PropertyRenderer extends TypeRenderer {
             `<div>
                 <div class='property-container' title="${this.path}">
                     <div class="input-name-container">
+                        <label class="btnCollapse" style="display:none;width:12px" expanded="0">${collapseSign}</label>
                         <img class="cfi-icon" src="${Shapes.CaseFileItem}"></img>
                         <input class="inputPropertyName"  type="text" readonly value="${this.property.name}" />
                         <div class="action-icon-container">
@@ -344,6 +348,27 @@ export class PropertyRenderer extends TypeRenderer {
             e.stopPropagation();
             this.editor.selectPropertyRenderer(this);
         });
+
+        const cb = this.htmlContainer.find('.btnCollapse');
+        const sc = this.htmlContainer.find('>.schema-container');
+        this.htmlContainer.find('.btnCollapse').on('click', e => {
+            const plus = cb.attr('expanded') === '0' ? '1' : '0';
+            const newSign = plus === '1' ? expandSign : collapseSign;
+            cb.html(newSign);
+            cb.attr('expanded', plus);
+            this.renderContainer();
+        });
+    }
+
+    renderContainer() {
+        if (!this.htmlContainer) return;
+        const cb = this.htmlContainer.find('.btnCollapse');
+        const sc = this.htmlContainer.find('>.schema-container');
+        if (cb.attr('expanded') === '1') {
+            sc.css('display', 'none');
+        } else {
+            sc.css('display', 'block');
+        }
     }
 
     inputNameBlurHandler() {
@@ -369,9 +394,11 @@ export class PropertyRenderer extends TypeRenderer {
         this.htmlContainer.find('.selectType').attr('title', '');
         this.renderComplexOrPrimitiveTypeStyle();
         if (this.property.isComplexType) {
+            this.htmlContainer.find('.btnCollapse').css('display', '');
             if (this.property.type === 'object' && this.property.schema) {
                 this.schemaRenderer = new SchemaRenderer(this.editor, this, schemaContainer, this.localType, this.property.schema);;
                 this.schemaRenderer.render();
+
             } else {
                 const typeRef = this.property.typeRef;
                 const typeFile = this.ide.repository.getTypes().find(type => type.fileName === typeRef);
@@ -392,6 +419,7 @@ export class PropertyRenderer extends TypeRenderer {
                     }
                 }
             }
+            this.renderContainer();
         }
     }
 
