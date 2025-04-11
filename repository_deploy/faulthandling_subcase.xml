@@ -1,6 +1,6 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="case_faulthandling_subcase" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_faulthandling_subcase.type"/>
     <caseFileItemDefinition name="data" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="data.type"/>
+    <caseFileItemDefinition name="case_faulthandling_subcase" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_faulthandling_subcase.type"/>
     <case id="faulthandling_subcase.case" name="faulthandling_subcase" expressionLanguage="spel">
         <caseFileModel cafienne:typeRef="case_faulthandling_subcase.type">
             <caseFileItem id="data" name="data" multiplicity="ExactlyOne" definitionRef="data.type"/>

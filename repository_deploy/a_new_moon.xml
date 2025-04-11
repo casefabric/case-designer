@@ -1,14 +1,10 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="Response" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="Helloworld_type_Response.object">
-        <property name="Message" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
-        <property name="SomeBoolean" type="http://www.omg.org/spec/CMMN/PropertyType/boolean"/>
-    </caseFileItemDefinition>
-    <caseFileItemDefinition name="HelloWorld" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="Helloworld.type"/>
     <caseFileItemDefinition name="Greeting" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="Greeting.type">
         <property name="Message" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
         <property name="From" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
         <property name="To" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
     </caseFileItemDefinition>
+    <caseFileItemDefinition name="HelloWorld" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="Helloworld.type"/>
     <case id="a_new_moon.case" name="a_new_moon" expressionLanguage="spel">
         <caseFileModel cafienne:typeRef="Helloworld.type">
             <caseFileItem id="Greeting" name="Greeting" multiplicity="ExactlyOne" definitionRef="Greeting.type"/>

@@ -1,10 +1,10 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="case_testTimerEvent" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_testTimerEvent.type"/>
     <caseFileItemDefinition name="test_cfi_def_01" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="test_cfi_def_01.type">
         <property name="cfidefprop_01" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
         <property name="cfidefprop_02" type="http://www.omg.org/spec/CMMN/PropertyType/boolean"/>
         <property name="cfidefprop_03" type="http://www.omg.org/spec/CMMN/PropertyType/date"/>
     </caseFileItemDefinition>
+    <caseFileItemDefinition name="case_testTimerEvent" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_testTimerEvent.type"/>
     <case id="testTimerEvent.case" name="testTimerEvent" expressionLanguage="spel">
         <caseFileModel cafienne:typeRef="case_testTimerEvent.type">
             <caseFileItem id="CFI" name="CFI" multiplicity="ExactlyOne" definitionRef="test_cfi_def_01.type"/>

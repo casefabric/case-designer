@@ -1,6 +1,6 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="case_four_eyes" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_four_eyes.type"/>
     <caseFileItemDefinition name="root" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="root.type"/>
+    <caseFileItemDefinition name="case_four_eyes" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_four_eyes.type"/>
     <case id="four_eyes.case" name="four_eyes" expressionLanguage="spel">
         <caseFileModel cafienne:typeRef="case_four_eyes.type">
             <caseFileItem id="file" name="file" multiplicity="ExactlyOne" definitionRef="root.type"/>

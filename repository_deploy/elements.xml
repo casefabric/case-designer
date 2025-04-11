@@ -1,6 +1,6 @@
 <definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
-    <caseFileItemDefinition name="case_elements" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_elements.type"/>
     <caseFileItemDefinition name="root" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="root.type"/>
+    <caseFileItemDefinition name="case_elements" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="case_elements.type"/>
     <case id="elements.case" name="elements" expressionLanguage="spel">
         <caseFileModel cafienne:typeRef="case_elements.type">
             <caseFileItem id="casefileitem" name="casefileitem" multiplicity="ExactlyOne" definitionRef="root.type"/>
