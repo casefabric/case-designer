@@ -2548,7 +2548,7 @@ TravelRequest.TravelDetails.Destination[0].Country == "US"]]></body>
         <input id="approval" name="approval"/>
         <output id="purchaseorder" name="purchaseorder"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition">
                 <url>http://localhost:8380/allocatefunds</url>
                 <method>POST</method>
                 <post-content>{"travelrequest": "${travelrequest}", "approval": "${approval}"}</post-content>
@@ -2575,7 +2575,7 @@ TravelRequest.TravelDetails.Destination[0].Country == "US"]]></body>
         <input id="taskId" name="taskId"/>
         <input id="caseId" name="caseId"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition">
                 <smtp-server>mailcatcher</smtp-server>
                 <smtp-port>1025</smtp-port>
                 <subject>Travel Approval request</subject>
@@ -2760,7 +2760,7 @@ Hidden text
         <input id="fromName" name="fromName"/>
         <input id="fromAddress" name="fromAddress"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition">
                 <smtp-server>mailcatcher</smtp-server>
                 <smtp-port>1025</smtp-port>
                 <subject>Please arrange travel requirements for ${fromName}</subject>
@@ -2950,11 +2950,11 @@ Hidden text
         <input id="approval" name="approval"/>
         <output id="travelorder" name="travelorder"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.report.PDFReportDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.report.PDFReportDefinition">
                 <reportData name="travelrequest"/>
                 <parameterMapping sourceRef="pdfReportData" targetRef="travelorder"/>
                 <reportXml>
-                    <jasperReport xmlns="org.cafienne" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TravelOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e4d27db8-a600-4706-acb5-9111e04beecf">
+                    <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TravelOrder" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e4d27db8-a600-4706-acb5-9111e04beecf">
                         <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
                         <style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
                         <style name="Sans_Bold" fontName="DejaVu Sans" fontSize="11" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -3238,7 +3238,7 @@ Hidden text
         <input id="toAddress" name="toAddress"/>
         <input id="filename" name="filename"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition">
                 <smtp-server>mailcatcher</smtp-server>
                 <smtp-port>1025</smtp-port>
                 <subject>Your Travel approval document</subject>
@@ -3440,7 +3440,7 @@ div[style*="margin: 16px 0;"] { margin: 0 !important; }
         <input id="toName" name="toName"/>
         <input id="toAddress" name="toAddress"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.smtp.SMTPCallDefinition">
                 <smtp-server>mailcatcher</smtp-server>
                 <smtp-port>1025</smtp-port>
                 <subject>Your Travel request has been ${approvalStatus}</subject>
@@ -3652,7 +3652,7 @@ Hidden text
         <output id="theaterDestination" name="theaterDestination"/>
         <output id="travellers_requirements" name="traveller_requirements"/>
         <extensionElements mustUnderstand="false">
-            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" xmlns="org.cafienne">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition">
                 <url>http://demo1776471.mockable.io/travelrequirements</url>
                 <method>POST</method>
                 <post-content>{"destinationCountry": "${destinationCountry}", "travellers": "${travellers}"}</post-content>

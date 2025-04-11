@@ -1,0 +1,22 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="root" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="root.cfid"/>
+    <case id="testCaseFile.case" name="testCaseFile" expressionLanguage="spel">
+        <caseFileModel>
+            <caseFileItem id="_ZDMuS_4" name="Root" multiplicity="ExactlyOne" definitionRef="root.cfid">
+                <children>
+                    <caseFileItem id="_ZDMuS_6" name="Child" multiplicity="ExactlyOne" definitionRef="root.cfid"/>
+                </children>
+            </caseFileItem>
+            <caseFileItem id="_ZDMuS_5" name="AnotherRoot" multiplicity="ExactlyOne"/>
+        </caseFileModel>
+        <casePlanModel id="cm_testCaseFile.case_0" name="testCaseFile" autoComplete="true"/>
+        <caseRoles/>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape cmmnElementRef="cm_testCaseFile.case_0">
+                <Bounds x="10" y="10" width="893" height="824"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>
