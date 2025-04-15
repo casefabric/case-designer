@@ -96,15 +96,25 @@ commands:
           when: on_fail
           command: |
             docker logs case_designer
+      - run:
+          name: Test compilation
+          command: |
+            yarn run test-compile
       - store_test_results:
           path: ./dist/test-results
       - store_artifacts:
           path: ./dist/test-results
+      - store_artifacts:
+          path: ./dist/deploy_for_compare
   build-and-publish:
     parameters:
       tag:
         type: string
     steps:
+      - run:
+            name: config CRLF for git
+            command: |
+              git config --global core.autocrlf true
       - checkout
       - install
       - build:

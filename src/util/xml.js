@@ -13,7 +13,7 @@ export default class XML {
             return undefined;
         }
 
-        if (typeof(XMLDocument) !== 'undefined' && xml instanceof XMLDocument) {
+        if (typeof (XMLDocument) !== 'undefined' && xml instanceof XMLDocument) {
             return xml;
         } else if (xml instanceof Document) {
             return xml;
@@ -286,6 +286,7 @@ export default class XML {
 
         return xmlformatter(text, {
             collapseContent: true,
+            lineSeparator: "\r\n"
         });
     }
 }
