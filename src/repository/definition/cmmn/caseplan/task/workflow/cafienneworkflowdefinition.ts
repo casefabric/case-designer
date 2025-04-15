@@ -1,6 +1,7 @@
 import { Element } from "../../../../../../util/xml";
 import CaseDefinition from "../../../../cmmn/casedefinition";
 import ParameterMappingDefinition from "../../../../cmmn/contract/parametermappingdefinition";
+import CMMNElementDefinition from "../../../../cmmnelementdefinition";
 import CafienneImplementationDefinition from "../../../../extensions/cafienneimplementationdefinition";
 import HumanTaskModelDefinition from "../../../../humantask/humantaskmodeldefinition";
 import ProcessModelDefinition from "../../../../process/processmodeldefinition";
@@ -9,7 +10,7 @@ import HumanTaskDefinition from "../humantaskdefinition";
 import AssignmentDefinition from "./assignmentdefinition";
 import DueDateDefinition from "./duedatedefinition";
 
-export default class CafienneWorkflowDefinition extends CafienneImplementationDefinition<CaseDefinition> {
+export default class CafienneWorkflowDefinition extends CMMNElementDefinition {
     humanTaskRef: ExternalReference<HumanTaskModelDefinition>;
     validatorRef: ExternalReference<ProcessModelDefinition>;
     mappings: ParameterMappingDefinition[];
@@ -20,8 +21,8 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
         this.humanTaskRef = this.parseReference('humanTaskRef');
         this.validatorRef = this.parseReference('validatorRef');
         this.mappings = this.parseElements('parameterMapping', ParameterMappingDefinition);
-        this.assignment = this.parseElement((AssignmentDefinition as any).TAG, AssignmentDefinition);
-        this.dueDate = this.parseElement((DueDateDefinition as any).TAG, DueDateDefinition);
+        this.assignment = this.parseElement(AssignmentDefinition.TAG, AssignmentDefinition);
+        this.dueDate = this.parseElement(DueDateDefinition.TAG, DueDateDefinition);
     }
 
     resolvedExternalReferences() {
@@ -34,7 +35,7 @@ export default class CafienneWorkflowDefinition extends CafienneImplementationDe
 
     createExportNode(parentNode: Element) {
         if (this.mappings.length > 0 || this.humanTaskRef.nonEmpty || this.assignment || this.dueDate || this.validatorRef.nonEmpty) {
-            super.createExtensionNode(parentNode, (CafienneImplementationDefinition as any).TAG, 'humanTaskRef', 'validatorRef', 'mappings', 'assignment', 'dueDate');
+            super.createExtensionNode(parentNode, CafienneImplementationDefinition.TAG, 'humanTaskRef', 'validatorRef', 'mappings', 'assignment', 'dueDate');
         }
     }
 }
