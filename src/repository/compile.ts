@@ -41,7 +41,7 @@ function newConsoleGroup(msg: string) {
 
         const cases = repository.getCases();
         if (args.length === 0) {
-            newConsoleGroup("Deploying entire repository")
+            newConsoleGroup("Deploying entire repository to " + path.resolve(config.deploy));
             for (const $case of cases) {
                 await compileAndWrite($case, fileStorage);
             }
@@ -63,7 +63,7 @@ function newConsoleGroup(msg: string) {
             return option !== undefined;
         });
         console.groupEnd();
-        newConsoleGroup("Deploying " + models.length + " cases")
+        newConsoleGroup("Deploying " + models.length + " cases to " + path.resolve(config.deploy));
 
         for (const model of models) {
             await compileAndWrite(model, fileStorage);
@@ -81,7 +81,7 @@ async function compileAndWrite(caseFile: CaseFile, fileStorage: FileStorage) {
     const definitionSet = new Definitions(caseFile.definition!);
     var content = definitionSet.contents();
     if (typeof content === 'string' && !content.endsWith('\n')) {
-        content = content + '\n';
+        content = content + '\r\n';
     }
     logging = true;
 

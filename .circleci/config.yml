@@ -71,6 +71,10 @@ commands:
             pwd
             ls -l dist
             docker build -t <<parameters.tag>> .
+      - run:
+          name: Package repository library
+          command: |
+            yarn package
   test:
     parameters:
       tag:
@@ -96,15 +100,29 @@ commands:
           when: on_fail
           command: |
             docker logs case_designer
+      - run:
+          name: Test compilation
+          command: |
+            yarn run test-compile
       - store_test_results:
           path: ./dist/test-results
       - store_artifacts:
           path: ./dist/test-results
+      - store_artifacts:
+          path: ./dist/deploy_for_compare
+      - run:
+          name: Test repository library
+          command: |
+            yarn run test-repository-library
   build-and-publish:
     parameters:
       tag:
         type: string
     steps:
+      - run:
+            name: config CRLF for git
+            command: |
+              git config --global core.autocrlf true
       - checkout
       - install
       - build:
