@@ -71,6 +71,10 @@ commands:
             pwd
             ls -l dist
             docker build -t <<parameters.tag>> .
+      - run:
+          name: Package repository library
+          command: |
+            yarn package
   test:
     parameters:
       tag:
@@ -106,6 +110,10 @@ commands:
           path: ./dist/test-results
       - store_artifacts:
           path: ./dist/deploy_for_compare
+      - run:
+          name: Test repository library
+          command: |
+            yarn run test-repository-library
   build-and-publish:
     parameters:
       tag:
