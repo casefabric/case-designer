@@ -10,7 +10,7 @@ export default class AssignmentDefinition extends ExpressionContainer {
         super(importNode, caseDefinition, parent);
     }
 
-    get expressionTagName() {
+    protected expressionTagName() {
         return 'condition';
     }
 

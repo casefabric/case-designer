@@ -5,7 +5,7 @@ import PlanningTableDefinition from "./planning/planningtabledefinition";
 import TaskStageDefinition from "./taskstagedefinition";
 
 export default class UserEventDefinition extends EventListenerDefinition {
-    static get infix() {
+    protected infix() {
         return 'ue';
     }
 

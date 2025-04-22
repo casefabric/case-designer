@@ -1,9 +1,9 @@
 import HumanTaskFile from "../../serverfile/humantaskfile";
-import ModelDefinition from "../modeldefinition";
+import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
 import { IMPLEMENTATION_TAG } from "../xmlserializable";
 import HumanTaskImplementationDefinition from "./humantaskimplementationdefinition";
 
-export default class HumanTaskModelDefinition extends ModelDefinition {
+export default class HumanTaskModelDefinition extends ParameterizedModelDefinition {
     private _implementation?: HumanTaskImplementationDefinition;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.

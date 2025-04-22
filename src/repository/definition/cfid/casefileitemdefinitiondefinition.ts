@@ -27,16 +27,6 @@ export default class CaseFileDefinitionDefinition extends ModelDefinition {
         this.properties = this.parseElements('property', PropertyDefinition)
     }
 
-    get inputParameters() {
-        console.warn('Case file has no input/output contract');
-        return [];
-    }
-
-    get outputParameters() {
-        console.warn('Case file has no input/output contract');
-        return [];
-    }
-
     toXML() {
         return super.exportModel('caseFileItemDefinition', 'id', 'name', 'definitionType', 'structureRef', 'importRef', 'properties');
     }

@@ -4,7 +4,7 @@ import PlanItemTransition from "./planitemtransition";
 /**
  * Simple helper class to re-use logic across milestones and event listeners
  */
-export default class MilestoneEventListenerDefinition extends PlanItem {
+export default abstract class MilestoneEventListenerDefinition extends PlanItem {
     get transitions() {
         return MilestoneEventListenerTransition.values;
     }

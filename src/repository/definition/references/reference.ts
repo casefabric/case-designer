@@ -1,7 +1,7 @@
 import XMLSerializable from "../xmlserializable";
 import ReferencingAttribute from "./referencingattribute";
 
-export default class Reference extends ReferencingAttribute {
+export default abstract class Reference extends ReferencingAttribute {
     constructor(element: XMLSerializable, ref: string) {
         super(element, ref);
     }

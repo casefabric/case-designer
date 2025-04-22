@@ -7,7 +7,7 @@ import TaskDefinition from "./taskdefinition";
 
 export default class CaseTaskDefinition extends TaskDefinition {
     caseRef: ExternalReference<CaseDefinition>;
-    static get infix(): string {
+    protected infix(): string {
         return 'ct';
     }
 

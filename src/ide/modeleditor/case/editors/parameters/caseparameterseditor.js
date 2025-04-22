@@ -34,15 +34,15 @@ export default class CaseParametersEditor extends StandardForm {
     </div>
 </div>`);
         const inputMappingsContainer = this.htmlContainer.find('.input-parameters');
-        this.inputParameters = new InputParametersControl(this, inputMappingsContainer);
+        this.inputParametersControl = new InputParametersControl(this, inputMappingsContainer);
         const outputMappingsContainer = this.htmlContainer.find('.output-parameters');
-        this.outputParameters = new OutputParametersControl(this, outputMappingsContainer);
+        this.outputParametersControl = new OutputParametersControl(this, outputMappingsContainer);
         this.splitter = new BottomSplitter(this.htmlContainer.find('.parameterscontainer'), 200, 100);
     }
 
     renderData() {
-        this.inputParameters.renderTable();
-        this.outputParameters.renderTable();
+        this.inputParametersControl.renderTable();
+        this.outputParametersControl.renderTable();
     }
 
     refresh() {
@@ -55,10 +55,10 @@ export default class CaseParametersEditor extends StandardForm {
      * validates this
      */
     validate() {
-        if (this.inputParameters) {
+        if (this.inputParametersControl) {
             // TODO: validation belongs in the definition side of the house.
-            this.inputParameters.validate();
-            this.outputParameters.validate();    
+            this.inputParametersControl.validate();
+            this.outputParametersControl.validate();    
         }
     }
 }

@@ -1,10 +1,10 @@
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import CafienneImplementationDefinition from "../extensions/cafienneimplementationdefinition";
-import ModelDefinition from "../modeldefinition";
+import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
 import ReferableElementDefinition from "../referableelementdefinition";
 
-export default class ParameterDefinition<M extends ModelDefinition> extends ReferableElementDefinition<M> {
+export default class ParameterDefinition<M extends ParameterizedModelDefinition> extends ReferableElementDefinition<M> {
     required: boolean = false;
     isNew: boolean;
     constructor(importNode: Element, caseDefinition: M, parent: ElementDefinition<M>) {
