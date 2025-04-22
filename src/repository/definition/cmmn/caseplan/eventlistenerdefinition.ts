@@ -1,4 +1,4 @@
 import MilestoneEventListenerDefinition from "./milestoneeventlistenerdefinition";
 
-export default class EventListenerDefinition extends MilestoneEventListenerDefinition {
+export default abstract class EventListenerDefinition extends MilestoneEventListenerDefinition {
 }

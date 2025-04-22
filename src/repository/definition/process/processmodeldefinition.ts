@@ -1,9 +1,9 @@
 import ProcessFile from "../../serverfile/processfile";
 import ParameterDefinition from "../contract/parameterdefinition";
-import ModelDefinition from "../modeldefinition";
+import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
 import ProcessImplementationDefinition from "./processimplementationdefinition";
 
-export default class ProcessModelDefinition extends ModelDefinition {
+export default class ProcessModelDefinition extends ParameterizedModelDefinition {
     input: ParameterDefinition<ProcessModelDefinition>[] = [];
     output: ParameterDefinition<ProcessModelDefinition>[] = [];
     implementation?: ProcessImplementationDefinition;

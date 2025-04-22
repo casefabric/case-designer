@@ -7,7 +7,7 @@ import PlanningTableDefinition from "./planning/planningtabledefinition";
 /**
  * Simple helper class to re-use logic across stages and tasks
  */
-export default class TaskStageDefinition extends PlanItem {
+export default abstract class TaskStageDefinition extends PlanItem {
     planningTable?: PlanningTableDefinition;
     constructor(importNode: Element,
         caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {

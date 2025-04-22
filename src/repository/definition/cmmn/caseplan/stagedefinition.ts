@@ -14,7 +14,7 @@ export default class StageDefinition extends TaskStageDefinition {
     autoComplete: boolean;
     planItems: PlanItem[];
 
-    static get infix() {
+    protected infix() {
         return 'st';
     }
 

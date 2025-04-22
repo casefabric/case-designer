@@ -10,7 +10,7 @@ import CafienneWorkflowDefinition from "./workflow/cafienneworkflowdefinition";
 export default class HumanTaskDefinition extends TaskDefinition {
     performerRef: CaseRoleReference;
     workflow: CafienneWorkflowDefinition;
-    static get infix() {
+    protected infix() {
         return 'ht';
     }
 

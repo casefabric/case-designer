@@ -2,7 +2,6 @@ import Util from "../../util/util";
 import XML, { Document, Element } from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
-import ParameterDefinition from "./contract/parameterdefinition";
 import ElementDefinition from "./elementdefinition";
 import TypeCounter from "./typecounter";
 import XMLSerializable from "./xmlserializable";
@@ -10,7 +9,7 @@ import XMLSerializable from "./xmlserializable";
 /**
  * A ModelDefinition is the base class of a model, such as CaseDefinition, ProcessDefinition, HumanTaskDefinition, CaseFileDefinitionDefinition 
  */
-export default class ModelDefinition extends XMLSerializable {
+export default abstract class ModelDefinition extends XMLSerializable {
     modelDefinition: this;
     private __documentation?: CMMNDocumentationDefinition<this>;
     private __migrated: boolean = false;
@@ -117,28 +116,6 @@ export default class ModelDefinition extends XMLSerializable {
     }
 
     /**
-     * A ModelDefinition must have input parameters.
-     */
-    get inputParameters(): ParameterDefinition<ModelDefinition>[] {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    /**
-     * A ModelDefinition must have output parameters.
-     */
-    get outputParameters(): ParameterDefinition<ModelDefinition>[] {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    findInputParameter(identifier: string) {
-        return this.inputParameters.find(p => p.hasIdentifier(identifier));
-    }
-
-    findOutputParameter(identifier: string) {
-        return this.outputParameters.find(p => p.hasIdentifier(identifier));
-    }
-
-    /**
      * Informs all elements in the model definition about the removal of the element
      */
     removeDefinitionElementReferences<M extends ModelDefinition>(removedElement: ElementDefinition<M>) {
@@ -212,9 +189,7 @@ export default class ModelDefinition extends XMLSerializable {
         return xmlDocument;
     }
 
-    toXML(): Document {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
+    abstract toXML(): Document;
 
     toXMLString(): string {
         return XML.prettyPrint(this.toXML());

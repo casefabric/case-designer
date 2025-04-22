@@ -4,7 +4,7 @@ import ExpressionContainer from "../../../expression/expressioncontainer";
 export default class DueDateDefinition extends ExpressionContainer {
     static TAG = 'duedate';
 
-    get expressionTagName() {
+    protected expressionTagName() {
         return 'condition';
     }
 

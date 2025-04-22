@@ -2,14 +2,14 @@
 
 import $ from "jquery";
 import ParameterDefinition from "../../../repository/definition/contract/parameterdefinition";
-import ModelDefinition from "../../../repository/definition/modeldefinition";
+import ParameterizedModelDefinition from "../../../repository/definition/parameterizedmodeldefinition";
 import Util from "../../../util/util";
 import HtmlUtil from "../../util/htmlutil";
 import ModelEditor from "../modeleditor";
 
 export default class ModelParameters {
     html: JQuery<HTMLElement>;
-    parameters: ParameterDefinition<ModelDefinition>[] = [];
+    parameters: ParameterDefinition<ParameterizedModelDefinition>[] = [];
     /**
      * This object handles the input and output parameters of task model editor.
      * 
@@ -40,7 +40,7 @@ export default class ModelParameters {
         this.htmlContainer.append(this.html);
     }
 
-    renderParameters(parameters: ParameterDefinition<ModelDefinition>[]) {
+    renderParameters(parameters: ParameterDefinition<ParameterizedModelDefinition>[]) {
         // First clean the old content
         HtmlUtil.clearHTML(this.html.find('tbody'));
 
@@ -52,7 +52,7 @@ export default class ModelParameters {
         this.addParameter();
     }
 
-    changeParameter(html: JQuery<HTMLElement>, parameter: ParameterDefinition<ModelDefinition>, name: string, id: string) {
+    changeParameter(html: JQuery<HTMLElement>, parameter: ParameterDefinition<ParameterizedModelDefinition>, name: string, id: string) {
         if (parameter.isNew) {
             // No longer transient parameter
             parameter.isNew = false;
@@ -70,7 +70,7 @@ export default class ModelParameters {
         this.editor.completeUserAction();
     }
 
-    addParameter(parameter?: ParameterDefinition<ModelDefinition>) {
+    addParameter(parameter?: ParameterDefinition<ParameterizedModelDefinition>) {
         if (parameter === undefined) {
             // create a new, empty parameter at the end of the table
             parameter = this.editor.file?.definition?.createDefinition(ParameterDefinition);

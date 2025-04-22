@@ -3,7 +3,7 @@ import TextAnnotationDefinition from "../artifact/textannotation";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import Dimensions from "../dimensions/dimensions";
 import Migrator from "../migration/cmmn/migrator";
-import ModelDefinition from "../modeldefinition";
+import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
 import ExternalReference from "../references/externalreference";
 import CaseFileDefinition from "./casefile/casefiledefinition";
 import CasePlanDefinition from "./caseplan/caseplandefinition";
@@ -12,7 +12,7 @@ import CaseTeamDefinition from "./caseteam/caseteamdefinition";
 import CaseParameterDefinition from "./contract/caseparameterdefinition";
 import StartCaseSchemaDefinition from "./startcaseschemadefinition";
 
-export default class CaseDefinition extends ModelDefinition {
+export default class CaseDefinition extends ParameterizedModelDefinition {
     private _caseFile?: CaseFileDefinition;
     private _casePlan?: CasePlanDefinition;
     private _caseTeam?: CaseTeamDefinition;

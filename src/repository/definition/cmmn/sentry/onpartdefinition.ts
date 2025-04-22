@@ -8,7 +8,7 @@ import PlanItem from "../caseplan/planitem";
 import CriterionDefinition from "./criteriondefinition";
 import StandardEvent from "./standardevent";
 
-export default class OnPartDefinition<T extends CaseFileItemDef | PlanItem> extends UnnamedCMMNElementDefinition {
+export default abstract class OnPartDefinition<T extends CaseFileItemDef | PlanItem> extends UnnamedCMMNElementDefinition {
     standardEvent: StandardEvent;
     sourceRef: InternalReference<T>;
 
@@ -18,13 +18,7 @@ export default class OnPartDefinition<T extends CaseFileItemDef | PlanItem> exte
         this.sourceRef = this.parseInternalReference('sourceRef');
     }
 
-    parseStandardEvent(value: string): StandardEvent {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
-
-    get description(): string {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
-    }
+    abstract parseStandardEvent(value: string): StandardEvent;
 
     get source(): T | undefined {
         return this.sourceRef.getDefinition();

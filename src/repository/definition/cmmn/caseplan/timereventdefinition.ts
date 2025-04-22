@@ -15,7 +15,8 @@ export default class TimerEventDefinition extends EventListenerDefinition {
     timerExpression?: ExpressionDefinition;
     planItemStartTrigger?: PlanItemStartTrigger;
     caseFileItemStartTrigger?: CaseFileItemStartTrigger;
-    static get infix() {
+
+    protected infix() {
         return 'tmr';
     }
 

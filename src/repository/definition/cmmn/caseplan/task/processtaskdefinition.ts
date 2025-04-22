@@ -8,7 +8,7 @@ import TaskDefinition from "./taskdefinition";
 
 export default class ProcessTaskDefinition extends TaskDefinition {
     processRef: ExternalReference<ProcessModelDefinition>;
-    static get infix() {
+    protected infix() {
         return 'pt';
     }
 
