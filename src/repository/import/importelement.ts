@@ -7,7 +7,7 @@ import CaseFile from "../serverfile/casefile";
 import ServerFile from "../serverfile/serverfile";
 import Importer from "./importer";
 
-abstract class ImportElement {
+export default abstract class ImportElement {
     repository: Repository;
 
     constructor(public importer: Importer, public fileName: string, public xmlElement: Element) {
@@ -82,5 +82,3 @@ export class TypeImporter extends ImportElement {
         return this.repository.createTypeFile(this.fileName, "");
     }
 }
-
-export default ImportElement;

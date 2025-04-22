@@ -5,7 +5,7 @@ import CaseDefinition from "../../../casedefinition";
 import PlanItem from "../../planitem";
 import PlanItemReference from "../planitemreference";
 
-abstract class TaskPairingDefinition extends CMMNExtensionDefinition<CaseDefinition> {
+export default abstract class TaskPairingDefinition extends CMMNExtensionDefinition<CaseDefinition> {
     references: PlanItemReference[];
     private _present: boolean = false;
 
@@ -77,5 +77,3 @@ abstract class TaskPairingDefinition extends CMMNExtensionDefinition<CaseDefinit
         Util.removeFromArray(this.references, this.references.find(ref => ref.is(item)));
     }
 }
-
-export default TaskPairingDefinition;

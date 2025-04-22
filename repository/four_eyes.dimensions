@@ -27,9 +27,6 @@
         <CMMNShape cmmnElementRef="pi_ht__mlHqQ_4">
             <Bounds x="320" y="540" width="140" height="80"/>
         </CMMNShape>
-        <CMMNShape cmmnElementRef="_mlHqQ_55">
-            <Bounds x="80" y="490" width="140" height="80"/>
-        </CMMNShape>
         <CMMNEdge sourceCMMNElementRef="pi_ht__mlHqQ_3" targetCMMNElementRef="pi_ht__mlHqQ_1"/>
         <CMMNEdge sourceCMMNElementRef="pi_ht__mlHqQ_0" targetCMMNElementRef="pi_ht__mlHqQ_3"/>
         <CMMNEdge sourceCMMNElementRef="pi_ht__mlHqQ_0" targetCMMNElementRef="pi_ht__mlHqQ_2"/>

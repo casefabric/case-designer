@@ -16,7 +16,7 @@ export const CAFIENNE_NAMESPACE = 'org.cafienne';
 export const CAFIENNE_PREFIX = 'xmlns:cafienne';
 export const IMPLEMENTATION_TAG = 'cafienne:implementation';
 
-abstract class XMLSerializable {
+export default abstract class XMLSerializable {
     private _name: string = '';
     private _id: string = '';
     readonly externalReferences = new ExternalReferenceList(this);
@@ -397,5 +397,3 @@ abstract class XMLSerializable {
         console.groupEnd();
     }
 }
-
-export default XMLSerializable;

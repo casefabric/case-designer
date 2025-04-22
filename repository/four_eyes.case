@@ -43,7 +43,6 @@
                 </four_eyes>
             </extensionElements>
         </humanTask>
-        <caseTask id="_mlHqQ_55" name="HelloWorld" isBlocking="true" caseRef="helloworld.case"/>
     </casePlanModel>
     <caseRoles/>
     <textAnnotation id="_mlHqQ_47">

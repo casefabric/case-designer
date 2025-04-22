@@ -1,6 +1,6 @@
 import XMLSerializable from "../xmlserializable";
 
-abstract class ReferencingAttribute {
+export default abstract class ReferencingAttribute {
     constructor(protected element: XMLSerializable, protected ref: string, public attributeName?: string) {
     }
 
@@ -27,5 +27,3 @@ abstract class ReferencingAttribute {
         }
     }
 }
-
-export default ReferencingAttribute;
