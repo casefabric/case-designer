@@ -34,18 +34,18 @@ class IndexableFile {
     }
 
     findDefaultExport() {
-        const DEFAULT_EXPORTS = /export\s+(default\s+)(class\s+|interface\s+|(async\s+)?function\s+)?(\w+)/g;
+        const DEFAULT_EXPORTS = /export\s+(default\s+)((abstract\s+)?(class\s+|interface\s+)|(async\s+)?function\s+)?(\w+)/g;
         const defaultMatch = DEFAULT_EXPORTS.exec(this.fileContent);
         if (defaultMatch !== null) {
-            this.exportStatements.push(new Export(defaultMatch[4], true));
+            this.exportStatements.push(new Export(defaultMatch[defaultMatch.length - 1], true));
         }
     }
 
     findOtherExports() {
-        const OTHER_EXPORTS = /export\s+(class|interface|(async\s+)?function)\s+(\w+)/g;
+        const OTHER_EXPORTS = /export\s+((abstract\s+)?class|interface|(async\s+)?function)\s+(\w+)/g;
         let match;
         while ((match = OTHER_EXPORTS.exec(this.fileContent)) !== null) {
-            this.exportStatements.push(new Export(match[3]));
+            this.exportStatements.push(new Export(match[match.length - 1]));
         }
     }
 
