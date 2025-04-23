@@ -9,7 +9,6 @@ import Validator from "../../../../repository/validate/validator";
 import Util from "../../../../util/util";
 import Debugger from "../../../debugger/debugger";
 import DragData from "../../../dragdrop/dragdata";
-import ClassicValidator from "../../../editors/validate/classicvalidator";
 import ValidateForm from "../../../editors/validate/validateform";
 import RightSplitter from "../../../splitter/rightsplitter";
 import HtmlUtil from "../../../util/htmlutil";
@@ -121,8 +120,6 @@ export default class CaseView {
             this.graph.addCells(jointElements);
             this.casePlanModel.refreshView();
         }
-        // create object for validation of CMMN schema
-        this.validator = new ClassicValidator(this);
 
         const end = new Date();
         console.log(`Case '${this.caseDefinition.file.fileName}' loaded in ${((end - now) / 1000)} seconds`)
@@ -474,34 +471,6 @@ export default class CaseView {
     get typeDescription() {
         return 'CaseView';
     };
-
-    /**
-     * validates the case and it's content
-     */
-    validate() {
-        if (!this.casePlanModel) {
-            this.validator.raiseProblem(this.id, 17, [this.name]);
-        }
-
-        //validate editors
-        this.cfiEditor.validate();
-        this.rolesEditor.validate();
-        this.caseParametersEditor.validate();
-
-        //loop all elements in case
-        this.items.forEach(cmmnElement => cmmnElement.__validate());
-    };
-
-    /**
-     * Raises an issue found during validation. The context in which the issue has occured and the issue number must be passed, 
-     * along with some parameters that are used to provide a meaningful description of the issue
-     * @param {*} context
-     * @param {Number} number 
-     * @param {Array<String>} parameters 
-     */
-    raiseEditorIssue(context, number, parameters) {
-        this.validator.raiseProblem(context.id, number, parameters);
-    }
 
     //!!!! return true when the graph/background can have an element with elementType as parent
     __canHaveAsChild(elementType) {

@@ -50,17 +50,6 @@ export default class CaseParametersEditor extends StandardForm {
             this.renderForm();
         }
     }
-
-    /** 
-     * validates this
-     */
-    validate() {
-        if (this.inputParametersControl) {
-            // TODO: validation belongs in the definition side of the house.
-            this.inputParametersControl.validate();
-            this.outputParametersControl.validate();    
-        }
-    }
 }
 
 class ParametersControl extends TableRenderer {
@@ -72,15 +61,6 @@ class ParametersControl extends TableRenderer {
     constructor(editor, htmlParent) {
         super(editor.case, htmlParent);
         this.editor = editor;
-    }
-
-    /** 
-     * validates this
-     */
-    validate() {
-        const description = this.constructor.name.split('ParametersControl')[0] + ' Case Parameter';
-        // Throw a problem for each parameter that does not have a name
-        this.parameters.filter(p => !p.name).forEach(p => this.case.raiseEditorIssue(p, 1, [description, this.case.name, p.bindingRef.value]));
     }
 
     /**
