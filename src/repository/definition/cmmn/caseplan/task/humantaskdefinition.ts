@@ -25,6 +25,10 @@ export default class HumanTaskDefinition extends TaskDefinition {
     validate(validator: Validator): void {
         super.validate(validator);
 
+        if (this.performerRef.isInvalid) {
+            validator.raiseError(this, `${this} has an invalid role reference '${this.performerRef}'`)
+        }
+
         // validate TaskPairing
         if (this.rendezVous && this.fourEyes) {
             let counterparts = this.rendezVous.references;

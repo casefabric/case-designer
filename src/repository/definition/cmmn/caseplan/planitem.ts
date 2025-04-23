@@ -62,6 +62,11 @@ abstract class PlanItem extends CMMNElementDefinition {
             }
         }
 
+        // Check validity of authorized roles (happens both on discretionary elements and on user events)
+        this.authorizedRoleRefs.references.forEach((reference, count) => {
+            if (reference.isInvalid) validator.raiseError(this, `The ${Util.ordinal_suffix_of(count + 1)} authorized role in ${this} has an invalid reference ${reference.value}`)
+        });
+
         if (this.isDiscretionary) {
             // Check that applicability rules exist.
             this.applicabilityRuleRefs.references.forEach((reference, count) => {
