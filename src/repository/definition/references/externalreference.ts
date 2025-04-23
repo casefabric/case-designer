@@ -28,12 +28,16 @@ export default class ExternalReference<M extends ModelDefinition> extends Refere
         return this.fileName;
     }
 
+    get isInvalid(): boolean {
+        return this.nonEmpty && this._file === undefined;
+    }
+
     /**
      * Overridable method to load a file for the reference
      */
     protected loadFile() {
         this._file = this.element.loadFile(this.fileName);
-        if (this.nonEmpty && this._file === undefined) {
+        if (this.isInvalid) {
             console.warn(this.element + ": Did not receive a file for " + this.fileName);
             return;
         }
