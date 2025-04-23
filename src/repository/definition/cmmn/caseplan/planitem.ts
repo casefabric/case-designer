@@ -8,7 +8,7 @@ import CriterionDefinition from "../sentry/criteriondefinition";
 import EntryCriterionDefinition from "../sentry/entrycriteriondefinition";
 import ExitCriterionDefinition from "../sentry/exitcriteriondefinition";
 import ReactivateCriterionDefinition from "../sentry/reactivatecriteriondefinition";
-import ItemControlDefinition from "./itemcontroldefinition";
+import ItemControlDefinition from "./itemcontrol/itemcontroldefinition";
 import PlanItemTransition from "./planitemtransition";
 import ApplicabilityRuleReference from "./planning/applicabilityrulereference";
 import PlanningTableDefinition from "./planning/planningtabledefinition";

@@ -1,5 +1,5 @@
 import $ from "jquery";
-import ConstraintDefinition from "../../../../../repository/definition/cmmn/caseplan/constraintdefinition";
+import ItemControlRuleDefinition from "../../../../../repository/definition/cmmn/caseplan/itemcontrol/itemcontrolruledefinition";
 import CaseRoleReference from "../../../../../repository/definition/cmmn/caseteam/caserolereference";
 import { ReferenceSet } from "../../../../../repository/definition/references/referenceset";
 import Util from "../../../../../util/util";
@@ -29,7 +29,7 @@ export default class PlanItemProperties extends Properties {
     addRuleBlock(ruleName, title, imageURL, label1, label2 = label1, defaultValue = 'true') {
         const element = this.cmmnElement.definition;
         const ruleAcronym = label1.split(' ').map(part => part.substring(0, 3)).join('. ');
-        /** @type {ConstraintDefinition} */
+        /** @type {ItemControlRuleDefinition} */
         const rule = element.planItemControl ? element.planItemControl[ruleName] : undefined;
         const ruleAvailable = rule ? true : false;
         const contextName = rule ? rule.contextRef.name : '';

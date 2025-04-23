@@ -1,6 +1,6 @@
 import ExpressionContainer from "../expression/expressioncontainer";
 
-export default class ConstraintDefinition extends ExpressionContainer {
+export default abstract class ConstraintDefinition extends ExpressionContainer {
     protected expressionTagName() {
         return 'condition';
     }
