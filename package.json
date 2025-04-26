@@ -49,6 +49,7 @@
     "clean": "shx rm -rf ./dist",
     "rebuild-index": "node ./indexgenerator/generate-index.mjs",
     "test-compile": "cross-env MODELER_DEPLOY_PATH=./dist/deploy_for_compare node ./dist/repository/compile.js && npm run compare-compilation-result",
+    "compile": "cross-env node ./dist/repository/compile.js",
     "build-and-compile": "npm run build && npm run test-compile",
     "build": "npm run clean && npm run rebuild-index && webpack",
     "watch": "npm run clean && cross-env DEV_MODE=true webpack",
