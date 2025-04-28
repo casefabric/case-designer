@@ -8,11 +8,15 @@
 }
 
 .caseteam-editor .caseteam-select div img,
-input {
+select,
+input,
+label {
     margin-left: 2px;
+    margin-bottom: 2px;
 }
 
-.caseteam-editor .caseteam-select div input {
+.caseteam-editor .caseteam-select div select,
+input {
     padding: 4px;
 }
 
@@ -22,7 +26,12 @@ input {
     border-bottom: 2px solid #DDDDDDDD;
 }
 
-.caseteam-grid {
+.caseteam-editor .caseteam-select img {
+    width: 16px;
+    height: 16px;
+}
+
+.caseteam-editor .caseteam-grid {
     display: grid;
     grid-template-columns: 20px 200px auto;
     column-gap: 6px;

@@ -3,6 +3,8 @@ import $ from "jquery";
 import CaseTeamModelDefinition from "../../../../../repository/definition/caseteam/caseteammodeldefinition";
 import CaseDefinition from "../../../../../repository/definition/cmmn/casedefinition";
 import CaseTeamDefinition from "../../../../../repository/definition/cmmn/caseteam/caseteamdefinition";
+import ModelDefinition from "../../../../../repository/definition/modeldefinition";
+import ServerFile from "../../../../../repository/serverfile/serverfile";
 import XML from "../../../../../util/xml";
 import CreateNewModelDialog from "../../../../createnewmodeldialog";
 import MovableEditor from "../../../../editors/movableeditor";
@@ -35,6 +37,16 @@ export default class CaseTeamEditor extends MovableEditor {
         this.renderData();
     }
 
+    private get removeTooltip(): string {
+        const teamFile = this.caseTeam.caseTeamRef.file;
+        if (teamFile) {
+            const usage = teamFile.usage.filter((file: ServerFile<ModelDefinition>) => file.definition?.id !== this.case.caseDefinition.id);
+            return `Remove team...\nTeam ${teamFile.name} is used in ${usage.length} other model${usage.length === 1 ? '' : 's'}\n${usage.length ? usage.map((u: any) => '- ' + u.fileName).join('\n') : ''}`;
+        } else {
+            return 'Remove team...';
+        }
+    }
+
     renderHead() {
         this.html = $(
             `<div element="Case Team Editor" class="basicbox basicform properties caseteam-editor">
@@ -52,6 +64,8 @@ export default class CaseTeamEditor extends MovableEditor {
                         <div class="team-management" title="Select a case team with roles which can be assigned to any task in this Case Plan">
                             <label>Case Team</label>
                             <select class="selectTeam"/>
+                            <img class="rename-team" title="Rename team..." src="${Images.Rename}" />
+                            <img class="remove-team" title="Remove team..." src="${Images.Delete}" />
                             <br/>
                             <br/>
                             <span style="display: inline-block; width: 100%;">
@@ -81,6 +95,8 @@ export default class CaseTeamEditor extends MovableEditor {
         // Event handlers for modern team
         const teamSelector = this.html.find('.selectTeam');
         new CaseTeamSelector(this.case.editor.ide.repository, teamSelector, this.caseTeam.caseTeamRef.toString(), (newTeamRef: string) => this.updateCaseTeamReference(newTeamRef), [{ option: '&lt;new&gt;', value: '<new>' }]);
+        this.html.find('.rename-team').on('click', () => this.renameTeam());
+        this.html.find('.remove-team').on('click', () => this.removeTeam());
         this.html.find('.teamDocumentation').on('change', (e) => {
             this.caseTeam.documentation.text = (e.currentTarget as HTMLInputElement).value;
             this.saveCaseTeam();
@@ -99,6 +115,7 @@ export default class CaseTeamEditor extends MovableEditor {
 
         this.html.find('.selectTeam').val(this.caseTeam.caseTeamRef.toString());
         this.html.find('.teamDocumentation').val(this.caseTeam.documentation.text);
+        this.html.find('.removeteam').attr('title', this.removeTooltip);
 
         if (this.caseTeam.isOldStyle || !this.caseTeam.caseTeamRef.isEmpty) {
             this.caseTeam.roles.forEach(role => new CaseRoleEditor(this, this.htmlContainer, role));
@@ -138,6 +155,16 @@ export default class CaseTeamEditor extends MovableEditor {
 
         // And finally: refresh the screen
         this.renderData();
+    }
+
+    async renameTeam(): Promise<void> {
+        if (!this.caseTeam.caseTeamRef.file) return;
+        await this.modelEditor.ide.repositoryBrowser.rename(this.caseTeam.caseTeamRef.file);
+    }
+
+    async removeTeam(): Promise<void> {
+        if (!this.caseTeam.caseTeamRef.file) return;
+        await this.modelEditor.ide.repositoryBrowser.delete(this.caseTeam.caseTeamRef.file, this.case.caseDefinition);
     }
 
     updateCaseTeamReference(caseTeamRef: string) {
