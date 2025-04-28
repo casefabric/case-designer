@@ -98,6 +98,7 @@ export { default as Multiplicity } from "./repository/definition/type/multiplici
 export { default as SchemaDefinition } from "./repository/definition/type/schemadefinition";
 export { default as SchemaPropertyDefinition } from "./repository/definition/type/schemapropertydefinition";
 export { default as TypeDefinition } from "./repository/definition/type/typedefinition";
+export { default as TypeDefinitionElement } from "./repository/definition/type/typedefinitionelement";
 export { default as TypeReference } from "./repository/definition/type/typereference";
 export { default as TypeCounter } from "./repository/definition/typecounter";
 export { default as UnnamedCMMNElementDefinition } from "./repository/definition/unnamedcmmnelementdefinition";

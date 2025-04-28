@@ -1,5 +1,6 @@
 ﻿import $ from "jquery";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import TypeDefinitionElement from "../../../../repository/definition/type/typedefinitionelement";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import XML from "../../../../util/xml";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
@@ -11,7 +12,9 @@ import CaseView from "../../case/elements/caseview";
 import ModelSourceEditor from "../../xmleditor/modelsourceeditor";
 import TypeModelEditor from "../typemodeleditor";
 import MainTypeDefinition from "./maintypedefinition";
-import TypeRenderer, { PropertyRenderer, SchemaRenderer } from "./typerenderer";
+import PropertyRenderer from "./propertyrenderer";
+import SchemaRenderer from "./schemarenderer";
+import TypeRenderer from "./typerenderer";
 
 export default class TypeEditor {
     viewSourceEditor: ModelSourceEditor;
@@ -263,7 +266,7 @@ export default class TypeEditor {
         }
     }
 
-    removeEmptyPropertyRenderers(renderer: TypeRenderer | undefined = this.renderer) {
+    removeEmptyPropertyRenderers(renderer: TypeRenderer<TypeDefinitionElement> | undefined = this.renderer) {
         renderer?.children.forEach(r => {
             this.removeEmptyPropertyRenderers(r);
             if (r instanceof PropertyRenderer) {

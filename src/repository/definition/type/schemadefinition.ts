@@ -5,11 +5,12 @@ import ModelDefinition from "../modeldefinition";
 import Multiplicity from "./multiplicity";
 import SchemaPropertyDefinition from "./schemapropertydefinition";
 import TypeDefinition from "./typedefinition";
+import TypeDefinitionElement from "./typedefinitionelement";
 
-export default class SchemaDefinition extends ElementDefinition<TypeDefinition> {
+export default class SchemaDefinition extends TypeDefinitionElement {
     static TAG: string = 'schema';
     properties: SchemaPropertyDefinition[];
-    constructor(importNode: Element, public modelDefinition: TypeDefinition, public parent: ElementDefinition<TypeDefinition>) {
+    constructor(importNode: Element, public modelDefinition: TypeDefinition, public parent: TypeDefinitionElement) {
         super(importNode, modelDefinition, parent);
         this.properties = this.parseElements('property', SchemaPropertyDefinition);
     }

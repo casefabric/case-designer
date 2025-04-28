@@ -7,7 +7,7 @@ import CaseFile from "../../../../repository/serverfile/casefile";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import Util from "../../../../util/util";
 import CaseModelEditor from "../../case/casemodeleditor";
-import { PropertyRenderer } from "./typerenderer";
+import PropertyRenderer from "./propertyrenderer";
 
 export default class PropertyUsage {
     static checkPropertyDeletionAllowed(renderer: PropertyRenderer) {
