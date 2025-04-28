@@ -1,4 +1,5 @@
 ﻿﻿import $ from "jquery";
+import XMLSerializable from "../../../repository/definition/xmlserializable";
 import Remark from "../../../repository/validate/remark";
 import Validator from "../../../repository/validate/validator";
 import CaseView from "../../modeleditor/case/elements/caseview";
@@ -9,18 +10,17 @@ import StandardForm from "../standardform";
 import ValidationSettings from "./validationsettings";
 
 export default class ValidateForm extends StandardForm {
-    /** @returns {ValidationSettings} */
-    static get Settings() {
+    private containers: JQuery<HTMLElement>;
+    private static _settings: ValidationSettings;
+
+    static get Settings(): ValidationSettings {
         if (!ValidateForm._settings) {
             ValidateForm._settings = Object.assign(new ValidationSettings, Settings.validations);
         }
         return ValidateForm._settings;
     }
 
-    /**
-     * @param {CaseView} cs
-     */
-    constructor(cs) {
+    constructor(cs: CaseView) {
         super(cs, '');
         this.html = $(
             `<div class="basicbox basicform" id="validateformid">
@@ -93,24 +93,21 @@ export default class ValidateForm extends StandardForm {
         const wBody = this.case.editor.html.width();
         const hBody = this.case.editor.html.height();
 
+        if (!wBody || !hBody || !wForm || !hForm) return;
+
         this.html.css('left', wBody - wForm - 30);
         this.html.css('top', hBody - hForm - 30);
     }
 
     onShow() {
         ValidateForm.Settings.visible = true;
-        // this.showProblemsInForm();
     }
 
     onHide() {
         ValidateForm.Settings.visible = false;
     }
 
-    /**
-     * 
-     * @param {Validator} validator 
-     */
-    loadRemarks(validator) {
+    loadRemarks(validator: Validator) {
         if (ValidateForm.Settings.visible) {
             this.show();
         } else {
@@ -133,9 +130,8 @@ export default class ValidateForm extends StandardForm {
 
     /**
      * fills the html problem container with the created problems, first show errors then warnings
-     * @param {Validator} validator 
      */
-    showProblemsInForm(validator) {
+    showProblemsInForm(validator: Validator) {
         // Clear the old problems in the form
         HtmlUtil.clearHTML(this.containers);
         // validator.problems.forEach(p => this.addProblemRow(p));
@@ -149,23 +145,22 @@ export default class ValidateForm extends StandardForm {
         const iWarnings = validator.warnings.length;
         const iHidden = iErrors + iWarnings - this.html.find('.problemrow').length;
 
-        this.html.find('#validateheadernoerrorsid').html(iErrors);
-        this.html.find('#validateheadernowarningsid').html(iWarnings);
-        this.html.find('#validateheadernohiddenid').html(iHidden);
+        this.html.find('#validateheadernoerrorsid').html('' + iErrors);
+        this.html.find('#validateheadernowarningsid').html('' + iWarnings);
+        this.html.find('#validateheadernohiddenid').html('' + iHidden);
     }
 
     /**
      * create a html str for a problem and adds it to the problemContainer
      * problem     : object having the problem properties
-     * @param {Remark} remark
      */
-    addProblemRow(remark) {
+    addProblemRow(remark: Remark<XMLSerializable>) {
         const link = remark.modelDefinition === this.case.caseDefinition ? '' : '#' + remark.modelDefinition.file.fileName;
         const html = $(`<div class="problemrow">
             <div class="problemmodel">
-                <a href="${'#' + remark.modelDefinition.file.fileName}">${remark.element.modelDefinition.file.fileName}</a>
+                <a href="${'#' + remark.modelDefinition.file.fileName}">${remark.modelDefinition.file.fileName}</a>
             </div>
-            <div class="problemtype" title="${remark.number || 0}">
+            <div class="problemtype">
                 <img src="${remark.isError() ? Images.Error : Images.Warning}"></img>
             </div>
             <div class="problemdescription">

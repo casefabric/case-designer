@@ -2,6 +2,8 @@ import Settings from "../../settings/settings";
 
 export default class ValidationSettings {
 
+    private _visible: boolean = false;
+
     get visible() {
         return this._visible;
     }
