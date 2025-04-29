@@ -1,4 +1,5 @@
 import CaseFile from "../../serverfile/casefile";
+import Validator from "../../validate/validator";
 import TextAnnotationDefinition from "../artifact/textannotation";
 import CMMNElementDefinition from "../cmmnelementdefinition";
 import Dimensions from "../dimensions/dimensions";
@@ -64,6 +65,13 @@ export default class CaseDefinition extends ParameterizedModelDefinition {
 
     hasCasePlan() {
         return this._casePlan !== undefined;
+    }
+
+    validate(validator: Validator) {
+        super.validate(validator);
+        // TODO: Check input / output parameters
+        validator.mustExist(this, this._caseFile, 'case file');
+        validator.mustExist(this, this._casePlan, 'case plan');
     }
 
     /**

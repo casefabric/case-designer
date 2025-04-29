@@ -1,0 +1,329 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="Greeting" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="greeting.cfid">
+        <property name="Message" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="To" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="From" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+    </caseFileItemDefinition>
+    <caseFileItemDefinition name="Response" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="response.cfid">
+        <property name="Message" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="Date" type="http://www.omg.org/spec/CMMN/PropertyType/date"/>
+        <property name="Time" type="http://www.omg.org/spec/CMMN/PropertyType/time"/>
+        <property name="SomeBoolean" type="http://www.omg.org/spec/CMMN/PropertyType/boolean"/>
+    </caseFileItemDefinition>
+    <caseFileItemDefinition name="validation/invalidcase" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="validation/invalidcase.type"/>
+    <case id="validation/invalidcase.case" name="validation/invalidcase" expressionLanguage="spel">
+        <caseFileModel cafienne:typeRef="validation/invalidcase.type"/>
+        <casePlanModel id="cm__ekJWw_0" name="validation/invalidcase" autoComplete="true">
+            <planItem id="pi_ct__ekJWw_1" name="HelloWorld" definitionRef="ct__ekJWw_1"/>
+            <planItem id="pi_ct__ekJWw_0" name="emptysubcase" definitionRef="ct__ekJWw_0">
+                <entryCriterion id="crit__ekJWw_0" sentryRef="s_crit__ekJWw_0"/>
+                <itemControl id="_ekJWw_0">
+                    <repetitionRule id="_ekJWw_1">
+                        <condition id="_ekJWw_2">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </repetitionRule>
+                </itemControl>
+            </planItem>
+            <planItem id="pi_ms__ekJWw_0" name="Milestone_0" definitionRef="ms__ekJWw_0">
+                <itemControl id="_ekJWw_6">
+                    <repetitionRule id="_ekJWw_7">
+                        <condition id="_ekJWw_8">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </repetitionRule>
+                </itemControl>
+            </planItem>
+            <planItem id="pi_pt__ekJWw_0" name="ProcessTask_0" definitionRef="pt__ekJWw_0"/>
+            <planItem id="_ekJWw_13" name="HumanTask_0" definitionRef="ht__ekJWw_13">
+                <itemControl id="_ekJWw_14">
+                    <requiredRule id="_ekJWw_19">
+                        <condition id="_ekJWw_20">
+                            <body><![CDATA[]]></body>
+                        </condition>
+                    </requiredRule>
+                    <manualActivationRule id="_ekJWw_17">
+                        <condition id="_ekJWw_18">
+                            <body><![CDATA[]]></body>
+                        </condition>
+                    </manualActivationRule>
+                </itemControl>
+            </planItem>
+            <sentry id="s_crit__ekJWw_0"/>
+            <caseTask id="ct__ekJWw_1" name="HelloWorld" isBlocking="true" caseRef="helloworld.case"/>
+            <caseTask id="ct__ekJWw_0" name="emptysubcase" isBlocking="true" caseRef="validation/emptysubcase.case"/>
+            <milestone id="ms__ekJWw_0" name="Milestone_0"/>
+            <processTask id="pt__ekJWw_0" name="ProcessTask_0" isBlocking="true"/>
+            <humanTask id="ht__ekJWw_13" name="HumanTask_0" isBlocking="true"/>
+        </casePlanModel>
+        <caseRoles/>
+    </case>
+    <case id="helloworld.case" name="HelloWorld" expressionLanguage="spel">
+        <documentation textFormat="text/plain">
+            <text><![CDATA[Hello World]]></text>
+        </documentation>
+        <caseFileModel>
+            <caseFileItem id="cfi_csVQy_0" name="Greeting" multiplicity="ExactlyOne" definitionRef="greeting.cfid"/>
+            <caseFileItem id="cfi_csVQy_1" name="Response" multiplicity="ExactlyOne" definitionRef="response.cfid"/>
+        </caseFileModel>
+        <casePlanModel id="cm_HelloWorld.case_HelloWorld_0" name="HelloWorld" autoComplete="true">
+            <planItem id="cm_csVQy_167" name="Receive Greeting and Send response" definitionRef="ht_cm_csVQy_167">
+                <documentation textFormat="text/plain">
+                    <text><![CDATA[Receive Greeting and Send response]]></text>
+                </documentation>
+            </planItem>
+            <planItem id="cm_cs3hg_196" name="Read response" definitionRef="ht_cm_cs3hg_196">
+                <entryCriterion id="_nTPPc_0" name="EntryCriterion_0" sentryRef="s__nTPPc_0"/>
+            </planItem>
+            <sentry id="s__nTPPc_0">
+                <planItemOnPart id="ref_id_cm_csVQy_167" sourceRef="cm_csVQy_167">
+                    <standardEvent>complete</standardEvent>
+                </planItemOnPart>
+            </sentry>
+            <humanTask id="ht_cm_csVQy_167" name="Receive Greeting and Send response" isBlocking="true">
+                <inputs id="inTP_cm_cs2F1_174_1" name="Greeting" bindingRef="cfi_csVQy_0"/>
+                <outputs id="outTP_cm_cs2F1_174_1" name="Response" bindingRef="cfi_csVQy_1"/>
+                <extensionElements mustUnderstand="false">
+                    <cafienne:implementation name="SendResponse" xmlns:cafienne="org.cafienne" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition" humanTaskRef="sendresponse.humantask">
+                        <documentation textFormat="text/plain">
+                            <text><![CDATA[Sends a response back to the initiator of the hello world case]]></text>
+                        </documentation>
+                        <input id="Greeting" name="Greeting"/>
+                        <output id="Response" name="Response"/>
+                        <task-model>{
+  "schema" : {
+    "title" : "You have received a greeting",
+    "type" : "object",
+    "required" : [
+      "Response"
+    ],
+    "properties" : {
+      "Greeting" : {
+        "title" : " ",
+        "type" : "object",
+        "properties" : {
+          "Message" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Response" : {
+        "title" : "Your response",
+        "type" : "object",
+        "properties" : {
+          "Message" : {
+            "type" : "string",
+            "title" : "Your response message"
+          },
+          "Date" : {
+            "type" : "string",
+            "format" : "date",
+            "title" : "Pick a date"
+          },
+          "Time" : {
+            "type" : "string",
+            "format" : "time",
+            "title" : "Pick a time"
+          },
+          "SomeBoolean" : {
+            "type" : "boolean",
+            "title" : "Check this"
+          }
+        }
+      }
+    }
+  },
+  "uiSchema" : {
+    "ui:order": [ "Greeting", "Response" ],
+    "Greeting" : {
+      "Message" : {
+        "ui:widget" : "textarea",
+        "ui:readonly" : true
+      },
+      "To" : {
+        "ui:readonly" : true
+      }
+    },
+    "Response" : {
+      "Message" : {
+        "ui:widget" : "textarea"
+      }
+    }
+  }
+}</task-model>
+                        <parameterMapping id="inPM_cm_cshJq_4_0" sourceRef="inTP_cm_cs2F1_174_1" targetRef="Greeting"/>
+                        <parameterMapping id="outPM_cm_csuYs_174_0" sourceRef="Response" targetRef="outTP_cm_cs2F1_174_1"/>
+                        <assignment id="_nTPPc_3" contextRef="cfi_csVQy_0">
+                            <condition id="_nTPPc_4">
+                                <body><![CDATA[Greeting.To]]></body>
+                            </condition>
+                        </assignment>
+                        <duedate id="_nTPPc_9">
+                            <condition id="_nTPPc_10">
+                                <body><![CDATA[T(java.time.Instant).now()]]></body>
+                            </condition>
+                        </duedate>
+                    </cafienne:implementation>
+                </extensionElements>
+            </humanTask>
+            <humanTask id="ht_cm_cs3hg_196" name="Read response" isBlocking="true">
+                <inputs id="inTP_cm_cs3hg_196_0" name="Response" bindingRef="cfi_csVQy_1"/>
+                <extensionElements mustUnderstand="false">
+                    <cafienne:implementation name="ReadResponse" xmlns:cafienne="org.cafienne" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition" humanTaskRef="readresponse.humantask">
+                        <documentation textFormat="text/plain">
+                            <text><![CDATA[Read Response]]></text>
+                        </documentation>
+                        <input id="Response" name="Response"/>
+                        <task-model>{
+  "schema": {
+    "title": "Read response",
+    "type": "object",
+    "properties": {
+      "Response": {
+        "title": "Your response",
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string",
+            "title": "Your response message"
+          },
+          "Date": {
+            "type": "string",
+            "format": "date",
+            "title": "Pick a date"
+          },
+          "Time": {
+            "type": "string",
+            "format": "time",
+            "title": "Pick a time"
+          },
+          "SomeBoolean": {
+            "type": "boolean",
+            "title": "Check this"
+          }
+        }
+      }
+    }
+  },
+  "uiSchema": {
+    "Message": {
+      "ui:widget": "textarea"
+    }
+  }
+}</task-model>
+                        <parameterMapping id="inPM_cm_cs3hg_196_0" sourceRef="inTP_cm_cs3hg_196_0" targetRef="Response"/>
+                        <assignment id="_nTPPc_12" contextRef="cfi_csVQy_0">
+                            <condition id="_nTPPc_13">
+                                <body><![CDATA[Greeting.From]]></body>
+                            </condition>
+                        </assignment>
+                        <duedate id="_nTPPc_14">
+                            <condition id="_nTPPc_15">
+                                <body><![CDATA[T(java.time.Instant).now()]]></body>
+                            </condition>
+                        </duedate>
+                    </cafienne:implementation>
+                </extensionElements>
+            </humanTask>
+        </casePlanModel>
+        <caseRoles>
+            <role id="role_csT3f_0" name="ADMIN">
+                <documentation textFormat="text/plain">
+                    <text><![CDATA[admin of the world]]></text>
+                </documentation>
+            </role>
+        </caseRoles>
+        <input id="csVQy_inCPs_0" name="Greeting" bindingRef="cfi_csVQy_0"/>
+        <extensionElements mustUnderstand="false">
+            <cafienne:start-case-model xmlns:cafienne="org.cafienne">{
+  "schema": {
+    "title": "Greeting",
+    "type": "object",
+    "required": [
+      "Greeting"
+    ],
+    "properties": {
+      "Greeting": {
+        "title": "Your greeting to the World",
+        "type": "object",
+        "properties": {
+          "Message": {
+            "type": "string",
+            "title": "Your message"
+          },
+          "To": {
+            "type": "string",
+            "title": "To whom?"
+          },
+          "From": {
+            "type": "string",
+            "title": "From",
+            "default": "$CURRENT_USER"
+          }
+        }
+      }
+    }
+  },
+  "uiSchema": {
+    "Greeting": {
+      "Message": {"ui:widget": "textarea"},
+      "To" :  {"ui:widget": "user-selector", "multiSelect" : false, "role" : "Receiver"},
+      "From" :  {"ui:widget": "user-selector", "multiSelect" : false, "role" : "Sender"}
+    }
+  }
+}</cafienne:start-case-model>
+        </extensionElements>
+    </case>
+    <case id="validation/emptysubcase.case" name="validation/emptysubcase" expressionLanguage="spel">
+        <caseFileModel/>
+        <casePlanModel id="cm__OOfWU_0" name="validation/emptysubcase" autoComplete="true"/>
+        <caseRoles/>
+        <textAnnotation id="_OOfWU_0">
+            <text><![CDATA[This case is entirely empty - except for this textbox]]></text>
+        </textAnnotation>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape name="validation/invalidcase" cmmnElementRef="cm__ekJWw_0">
+                <Bounds x="30" y="20" width="800" height="500"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="pi_ct__ekJWw_0">
+                <Bounds x="450" y="310" width="140" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="crit__ekJWw_0">
+                <Bounds x="444" y="340" width="12" height="20"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="pi_ct__ekJWw_1">
+                <Bounds x="120" y="130" width="140" height="110"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="pi_ms__ekJWw_0">
+                <Bounds x="140" y="350" width="100" height="40"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="pi_pt__ekJWw_0">
+                <Bounds x="580" y="150" width="140" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_ekJWw_13">
+                <Bounds x="340" y="100" width="140" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="cm_HelloWorld.case_HelloWorld_0">
+                <Bounds x="20" y="10" width="626" height="330"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="cm_csVQy_167">
+                <Bounds x="90" y="90" width="130" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="cm_cs3hg_196">
+                <Bounds x="340" y="90" width="130" height="80"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_nTPPc_0">
+                <Bounds x="334" y="120" width="12" height="20"/>
+            </CMMNShape>
+            <CMMNEdge sourceCMMNElementRef="cm_csVQy_167" targetCMMNElementRef="_nTPPc_0"/>
+            <CMMNShape name="validation/emptysubcase" cmmnElementRef="cm__OOfWU_0">
+                <Bounds x="20" y="20" width="800" height="500"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_OOfWU_0">
+                <Bounds x="220" y="190" width="300" height="150"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>

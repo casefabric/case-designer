@@ -1,0 +1,27 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="Empty" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="validation/types_type_Empty.object"/>
+    <caseFileItemDefinition name="" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="validation/types_type_.object"/>
+    <caseFileItemDefinition name="validation/types" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="validation/types.type">
+        <property name="Undefined" type="http://www.omg.org/spec/CMMN/PropertyType/"/>
+        <property name="UnavailableArrayType" type="http://www.omg.org/spec/CMMN/PropertyType/unavailable_array.type"/>
+        <property name="InvalidMultiplicity" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+        <property name="MissingMultiplicity" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+    </caseFileItemDefinition>
+    <caseFileItemDefinition name="root" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="root.type"/>
+    <case id="validation/types.case" name="validation/types" expressionLanguage="spel">
+        <caseFileModel cafienne:typeRef="validation/types.type">
+            <caseFileItem id="Root" name="Root" multiplicity="ExactlyOne" definitionRef="root.type"/>
+            <caseFileItem id="Empty" name="Empty" multiplicity="ExactlyOne" definitionRef="validation/types_type_Empty.object"/>
+            <caseFileItem id="" name="" multiplicity="ExactlyOne" definitionRef="validation/types_type_.object"/>
+        </caseFileModel>
+        <casePlanModel id="cm__xamEQ_0" name="validation/types" autoComplete="true"/>
+        <caseRoles/>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape name="validation/types" cmmnElementRef="cm__xamEQ_0">
+                <Bounds x="20" y="20" width="800" height="500"/>
+            </CMMNShape>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>

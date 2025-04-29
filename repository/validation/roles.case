@@ -1,0 +1,14 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="validation/roles.case" name="validation/roles" expressionLanguage="spel" guid="_KiHvE">
+    <caseFileModel typeRef="Greeting.type"/>
+    <casePlanModel id="cm__KiHvE_0" name="validation/roles" autoComplete="true">
+        <humanTask id="_KiHvE_1" name="HumanTask_0" isBlocking="true" performerRef="_KiHvE_3"/>
+        <userEvent id="_KiHvE_7" name="UserEvent_0" authorizedRoleRefs="_KiHvE_4 _KiHvE_3"/>
+        <planningTable id="_KiHvE_10">
+            <stage id="_KiHvE_8" name="Stage_0" authorizedRoleRefs="_KiHvE_3" autoComplete="true"/>
+        </planningTable>
+    </casePlanModel>
+    <caseRoles>
+        <role id="_KiHvE_31" name="RoleA"/>
+        <role id="_KiHvE_4" name="RoleB"/>
+    </caseRoles>
+</case>

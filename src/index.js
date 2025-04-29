@@ -13,7 +13,8 @@ export { default as CaseFileItemTypeDefinition } from "./repository/definition/c
 export { default as CasePlanDefinition, CasePlanTransition } from "./repository/definition/cmmn/caseplan/caseplandefinition";
 export { default as ConstraintDefinition } from "./repository/definition/cmmn/caseplan/constraintdefinition";
 export { default as EventListenerDefinition } from "./repository/definition/cmmn/caseplan/eventlistenerdefinition";
-export { default as ItemControlDefinition } from "./repository/definition/cmmn/caseplan/itemcontroldefinition";
+export { default as ItemControlDefinition } from "./repository/definition/cmmn/caseplan/itemcontrol/itemcontroldefinition";
+export { default as ItemControlRuleDefinition, ManualActivationRuleDefinition, RepetitionRuleDefinition, RequiredRuleDefinition } from "./repository/definition/cmmn/caseplan/itemcontrol/itemcontrolruledefinition";
 export { default as MilestoneDefinition } from "./repository/definition/cmmn/caseplan/milestonedefinition";
 export { default as MilestoneEventListenerDefinition, MilestoneEventListenerTransition } from "./repository/definition/cmmn/caseplan/milestoneeventlistenerdefinition";
 export { default as PlanItem } from "./repository/definition/cmmn/caseplan/planitem";
@@ -80,6 +81,7 @@ export { default as CasePlanMigrator } from "./repository/definition/migration/c
 export { default as SentryMigrator } from "./repository/definition/migration/cmmn/plan/sentrymigrator";
 export { default as CaseTeamMigrator } from "./repository/definition/migration/cmmn/team/caseteammigrator";
 export { default as ModelDefinition } from "./repository/definition/modeldefinition";
+export { default as ParameterizedModelDefinition } from "./repository/definition/parameterizedmodeldefinition";
 export { default as ProcessImplementationDefinition } from "./repository/definition/process/processimplementationdefinition";
 export { default as ProcessModelDefinition } from "./repository/definition/process/processmodeldefinition";
 export { default as ReferableElementDefinition } from "./repository/definition/referableelementdefinition";
@@ -117,5 +119,9 @@ export { default as ServerFile } from "./repository/serverfile/serverfile";
 export { default as TypeFile } from "./repository/serverfile/typefile";
 export { default as FileStorage } from "./repository/storage/filestorage";
 export { default as LocalFileStorage } from "./repository/storage/localfilestorage";
+export { default as Error } from "./repository/validate/error";
+export { default as Remark } from "./repository/validate/remark";
+export { default as Validator } from "./repository/validate/validator";
+export { default as Warning } from "./repository/validate/warning";
 export { default as Util } from "./util/util";
 export { default as XML } from "./util/xml";

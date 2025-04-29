@@ -19,6 +19,8 @@ export default abstract class Reference extends ReferencingAttribute {
         }
     }
 
+    abstract get isInvalid(): boolean;
+
     resolve() {
     }
 }

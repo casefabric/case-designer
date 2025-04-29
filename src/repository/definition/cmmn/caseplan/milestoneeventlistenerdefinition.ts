@@ -1,3 +1,4 @@
+import Validator from "../../../validate/validator";
 import PlanItem from "./planitem";
 import PlanItemTransition from "./planitemtransition";
 
@@ -5,6 +6,14 @@ import PlanItemTransition from "./planitemtransition";
  * Simple helper class to re-use logic across milestones and event listeners
  */
 export default abstract class MilestoneEventListenerDefinition extends PlanItem {
+    validate(validator: Validator): void {
+        super.validate(validator);
+        // Cannot have exit criteria
+        if (this.exitCriteria.length > 0) {
+            validator.raiseError(this, `${this} cannot have exit criteria defined`);
+        }        
+    }
+
     get transitions() {
         return MilestoneEventListenerTransition.values;
     }

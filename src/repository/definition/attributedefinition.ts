@@ -1,5 +1,5 @@
 
-export default class AttributeDefinition {
+export default abstract class AttributeDefinition {
     constructor(public readonly value: string, valid: boolean = true, private list: AttributeDefinition[]) {
         if (valid) list.push(this);
     }

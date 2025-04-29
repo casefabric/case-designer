@@ -9,8 +9,7 @@ import PlanningTableDefinition from "./planning/planningtabledefinition";
  */
 export default abstract class TaskStageDefinition extends PlanItem {
     planningTable?: PlanningTableDefinition;
-    constructor(importNode: Element,
-        caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
+    constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: TaskStageDefinition | PlanningTableDefinition) {
         super(importNode, caseDefinition, parent);
         this.planningTable = this.parseElement('planningTable', PlanningTableDefinition);
     }

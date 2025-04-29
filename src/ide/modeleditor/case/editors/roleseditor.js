@@ -30,14 +30,6 @@ export default class RolesEditor extends TableEditor {
     addRenderer(role = undefined) {
         return new RoleRenderer(this, role);
     }
-
-    /**
-     * validates this
-     */
-    validate() {
-        // Throw an error for each role that has no name
-        this.data.filter(role => !role.name).forEach(role => this.raiseEditorIssue(role, 1, ['role', this.case.name, role.documentation.text]));
-    }
 }
 
 export class RoleRenderer extends RowEditor {

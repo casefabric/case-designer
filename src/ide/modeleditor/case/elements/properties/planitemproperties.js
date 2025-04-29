@@ -1,7 +1,6 @@
 import $ from "jquery";
-import ConstraintDefinition from "../../../../../repository/definition/cmmn/caseplan/constraintdefinition";
+import ItemControlRuleDefinition from "../../../../../repository/definition/cmmn/caseplan/itemcontrol/itemcontrolruledefinition";
 import CaseRoleReference from "../../../../../repository/definition/cmmn/caseteam/caserolereference";
-import { ReferenceSet } from "../../../../../repository/definition/references/referenceset";
 import Util from "../../../../../util/util";
 import HtmlUtil from "../../../../util/htmlutil";
 import Images from "../../../../util/images/images";
@@ -29,7 +28,7 @@ export default class PlanItemProperties extends Properties {
     addRuleBlock(ruleName, title, imageURL, label1, label2 = label1, defaultValue = 'true') {
         const element = this.cmmnElement.definition;
         const ruleAcronym = label1.split(' ').map(part => part.substring(0, 3)).join('. ');
-        /** @type {ConstraintDefinition} */
+        /** @type {ItemControlRuleDefinition} */
         const rule = element.planItemControl ? element.planItemControl[ruleName] : undefined;
         const ruleAvailable = rule ? true : false;
         const contextName = rule ? rule.contextRef.name : '';
@@ -137,16 +136,19 @@ export default class PlanItemProperties extends Properties {
     /**
      * Returns a HTML string with a select that has all case roles in it.
      * Sets the role with currentRoleId as selected if it is set.
-     * @param {String} currentRoleId 
+     * @param {CaseRoleReference} selectedRole 
      * @param {String} buttonClass
      */
-    getRolesAsHTMLSelect(currentRoleId, buttonClass) {
-        const existingRolesAsOptions = this.case.caseDefinition.caseTeam.roles.map(role => `<option value="${role.id}" ${role.id == currentRoleId ? ' selected' : ''}>${role.name}</option>`).join('');
+    getRolesAsHTMLSelect(selectedRole, buttonClass) {
+        const isSelected = caseRole => selectedRole !== undefined && selectedRole.value === caseRole.id;
+        const existingRolesAsOptions = this.case.caseDefinition.caseTeam.roles.map(role => `<option value="${role.id}" ${isSelected(role) ? ' selected' : ''}>${role.name}</option>`).join('');
+        const invalidRoleOption = selectedRole && selectedRole.nonEmpty && !selectedRole.getDefinition() ? `<option value="${selectedRole.value}" selected>${selectedRole.value}</option>` : '';
         return `<div class="role-selector">
                     <span>
-                        <select>
+                        <select ${invalidRoleOption ? ' title="Invalid role reference" style="color:red"' : ''}>
                             <option value="">select a role ...</option>
                             ${existingRolesAsOptions}
+                            ${invalidRoleOption}
                         </select>
                     </span>
                     <button class="${buttonClass}"></button>
@@ -162,19 +164,13 @@ export default class PlanItemProperties extends Properties {
     /**
      * Adds a role. Can be undefined, in which case an empty row is added.
      * Also adds the required event handlers to the html.
-     * @param {ReferenceSet<CaseRoleReference>} authorizedRoles 
      * @param {JQuery<HTMLElement>} parentHTML 
      * @param {CaseRoleReference} role 
      */
     addAuthorizedRoleField(parentHTML, role = undefined) {
-        if (role && !role.name) {
-            // We need not render empty roles, but it is actually pretty weird if it happens, so putting a warning log
-            console.warn("Unexpected empty role name while rendering properties of " + this.cmmnElement.definition);
-            return;
-        }
         const authorizedRoles = this.cmmnElement.definition.authorizedRoleRefs;
-        const roleId = role ? role.id : '';
-        const html = $(this.getRolesAsHTMLSelect(role ? role.id : '', 'deleteRoleButton'));
+        const roleId = role ? role.value : '';
+        const html = $(this.getRolesAsHTMLSelect(role, 'deleteRoleButton'));
         html.attr('id', roleId);
         html.find('select').on('change', e => {
             const newRoleId = $(e.target).val().toString();

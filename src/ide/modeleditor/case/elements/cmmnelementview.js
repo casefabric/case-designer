@@ -2,9 +2,11 @@ import { shapes, util } from "jointjs";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import { CMMNDocumentationDefinition } from "../../../../repository/definition/elementdefinition";
+import Remark from "../../../../repository/validate/remark";
 import Util from "../../../../util/util";
 import HtmlUtil from "../../../util/htmlutil";
 import Grid from "../grid";
+import Highlighter from "../highlighter";
 import Marker from "../marker";
 import Resizer from "../resizer";
 import CanvasElement from "./canvaselement";
@@ -275,6 +277,14 @@ export default class CMMNElementView extends CanvasElement {
     }
 
     /**
+     * 
+     * @param {Remark} remark 
+     */
+    highlight(remark) {
+        // this.highlighter.refresh(remark);
+    }
+
+    /**
      * Returns the "nice" type description of this CMMN Element.
      * Sub classes must implement this, otherwise an error is thrown.
      * @returns {String}
@@ -341,6 +351,17 @@ export default class CMMNElementView extends CanvasElement {
             this._marker = new Marker(this);
         }
         return this._marker;
+    }
+
+    get highlighter() {
+        if (! this._highlighter) {
+            this._highlighter = new Highlighter(this);
+        }
+        return this._highlighter;
+    }
+
+    deleteHighlighter() {
+        if (this._highlighter) this.highlighter.delete();
     }
 
     deleteMarker() {
@@ -512,6 +533,7 @@ export default class CMMNElementView extends CanvasElement {
     deleteSubViews() {
         this.deleteResizer();
         this.deleteMarker();
+        this.deleteHighlighter();
         this.deleteHalo();
         this.deletePropertiesView();
     }
@@ -628,24 +650,6 @@ export default class CMMNElementView extends CanvasElement {
      * Hook for sentries to override.
      */
     updateConnectorLabels() {        
-    }
-
-    /**
-     * validate: all steps to check this element
-     */
-    __validate() { }
-
-    /**
-     * Raises a validation error/warning with the Case
-     * @param {Number} number 
-     * @param {Array<String>} parameters 
-     */
-    raiseValidationIssue(number, parameters = []) {
-        if (parameters.length == 0) { // Default parameters are element name and case name
-            parameters.push(this.name);
-            parameters.push(this.case.name);
-        }
-        this.case.validator.raiseProblem(this.id, number, parameters);
     }
 
     /**

@@ -19,6 +19,10 @@ export default class InternalReference<I extends ElementDefinition<ModelDefiniti
         return this.target;
     }
 
+    get isInvalid(): boolean {
+        return this.nonEmpty && this.target === undefined;
+    }
+
     get id() {
         return this.target ? this.target.id : this.value;
     }
