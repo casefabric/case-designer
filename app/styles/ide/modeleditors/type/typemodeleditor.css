@@ -224,7 +224,7 @@
 .type-editor .property-container {
     display: grid;
     grid-column-gap: 10px;
-    grid-template-columns: auto 100px 50px 50px;
+    grid-template-columns: auto 180px 50px 50px;
     border-bottom: 1px solid #eee;
 }
 
