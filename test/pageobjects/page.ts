@@ -1,4 +1,4 @@
-import { browser } from '@wdio/globals'
+import { browser } from '@wdio/globals';
 
 /**
 * main page object containing all methods, selectors and functionality
@@ -8,10 +8,12 @@ export default class Page {
     /**
     * Opens a sub page of the page
     */
-    public open(model?: string) {
-        if (model === undefined) {
-            return browser.url(`http://localhost:3081/`)
+    public async open(model: string | undefined) {
+        if (model == undefined) {
+            await browser.url(`http://localhost:3081/`);
         }
-        return browser.url(`http://localhost:3081/#${model}`)
+        else {
+            await browser.url(`http://localhost:3081/#${model}`);
+        }
     }
 }

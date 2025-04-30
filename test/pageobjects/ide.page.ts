@@ -1,4 +1,4 @@
-import { $ } from '@wdio/globals';
+import { $, expect } from '@wdio/globals';
 import Page from "./page";
 
 export class IDEPage extends Page {
@@ -10,6 +10,17 @@ export class IDEPage extends Page {
     }
     public get modelList() {
         return $('.divModelList');
+    }
+
+    public async open(model?: string): Promise<void> {
+        await super.open(model);
+        await this.modelList.waitForDisplayed();
+    }
+    async expectWarning(message: string) {
+        await expect($('.alert-danger')).toHaveText(expect.stringContaining(message));
+    }
+    async closeWarning() {
+        await $('.messagebox button.close').click();
     }
 }
 

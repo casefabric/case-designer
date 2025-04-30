@@ -81,6 +81,10 @@ commands:
         type: string
     steps:
       - run:
+          name: Test compilation
+          command: |
+            yarn run test-compile
+      - run:
           name: Spin up docker image
           command: |
             chmod 777 ./repository
@@ -100,10 +104,6 @@ commands:
           when: on_fail
           command: |
             docker logs case_designer
-      - run:
-          name: Test compilation
-          command: |
-            yarn run test-compile
       - store_test_results:
           path: ./dist/test-results
       - store_artifacts:
