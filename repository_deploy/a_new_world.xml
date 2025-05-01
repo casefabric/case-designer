@@ -157,7 +157,12 @@
                 </extensionElements>
             </humanTask>
         </casePlanModel>
-        <caseRoles/>
+        <caseRoles cafienne:caseTeamRef="world.caseteam">
+            <role id="cr__PLjS8_0" name="Mountain"/>
+            <role id="cr__PLjS8_1" name="River"/>
+            <role id="cr__PLjS8_3" name="Forest"/>
+            <role id="cr__PLjS8_4" name="Village"/>
+        </caseRoles>
         <input id="_U6HlD_1" name="Greeting" bindingRef="Greeting"/>
     </case>
     <CMMNDI>

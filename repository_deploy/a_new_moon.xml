@@ -20,7 +20,9 @@
             <caseFileItem id="AnotherGreeting" name="AnotherGreeting" multiplicity="ExactlyOne" definitionRef="Greeting.type"/>
         </caseFileModel>
         <casePlanModel id="cm__lqS7a_0" name="a_new_moon" autoComplete="true"/>
-        <caseRoles/>
+        <caseRoles cafienne:caseTeamRef="moon.caseteam">
+            <role id="cr__5yqOC_0" name="Rock"/>
+        </caseRoles>
     </case>
     <CMMNDI>
         <CMMNDiagram>

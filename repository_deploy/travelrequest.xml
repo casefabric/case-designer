@@ -2126,7 +2126,7 @@ TravelRequest.TravelDetails.Destination[0].Country == "US"]]></body>
                 </extensionElements>
             </humanTask>
         </casePlanModel>
-        <caseRoles>
+        <caseRoles cafienne:caseTeamRef="case_travelrequest.caseteam">
             <role id="role_csKsD_0" name="Approver">
                 <documentation textFormat="text/plain">
                     <text><![CDATA[Approver of the Travel Request]]></text>

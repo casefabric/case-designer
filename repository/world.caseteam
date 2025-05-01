@@ -1,0 +1,6 @@
+<caseteam xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="world.caseteam" name="world">
+    <role id="cr__PLjS8_0" name="Mountain"/>
+    <role id="cr__PLjS8_1" name="River"/>
+    <role id="cr__PLjS8_3" name="Forest"/>
+    <role id="cr__PLjS8_4" name="Village"/>
+</caseteam>
