@@ -4,7 +4,7 @@ import CaseDefinition from "../casedefinition";
 import CaseTeamDefinition from "./caseteamdefinition";
 
 export default class CaseRoleDefinition extends CMMNElementDefinition {
-    constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CaseTeamDefinition) {
+    constructor(importNode: Element, public caseDefinition: CaseDefinition, parent: CaseTeamDefinition) {
         super(importNode, caseDefinition, parent);
     }
 
