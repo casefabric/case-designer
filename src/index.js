@@ -84,7 +84,6 @@ export { default as ModelDefinition } from "./repository/definition/modeldefinit
 export { default as ParameterizedModelDefinition } from "./repository/definition/parameterizedmodeldefinition";
 export { default as ProcessImplementationDefinition } from "./repository/definition/process/processimplementationdefinition";
 export { default as ProcessModelDefinition } from "./repository/definition/process/processmodeldefinition";
-export { default as ReferableElementDefinition } from "./repository/definition/referableelementdefinition";
 export { default as ExternalReference } from "./repository/definition/references/externalreference";
 export { default as InternalReference } from "./repository/definition/references/internalreference";
 export { default as Reference } from "./repository/definition/references/reference";

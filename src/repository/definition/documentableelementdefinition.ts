@@ -2,9 +2,8 @@ import XML, { Element } from "../../util/xml";
 import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
-import ReferableElementDefinition from "./referableelementdefinition";
 
-export default class DocumentableElementDefinition<M extends ModelDefinition> extends ReferableElementDefinition<M> {
+export default class DocumentableElementDefinition<M extends ModelDefinition> extends ElementDefinition<M> {
     private __documentation?: CMMNDocumentationDefinition<M>;
     /**
      * Creates an XML element that can be referred to by the value of the name or id attribute of the underlying XML element.

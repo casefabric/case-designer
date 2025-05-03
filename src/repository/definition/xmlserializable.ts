@@ -44,8 +44,8 @@ export default abstract class XMLSerializable {
         return this._id;
     }
 
-    set id(name) {
-        this._id = name;
+    set id(id) {
+        this._id = id;
     }
 
     get name() {
