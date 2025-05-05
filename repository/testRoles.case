@@ -43,18 +43,5 @@
             </humanTask>
         </planningTable>
     </casePlanModel>
-    <caseRoles>
-        <role id="_3GznZ_4" name="Role1">
-            <documentation textFormat="text/plain">
-                <text><![CDATA[Role ABC]]></text>
-            </documentation>
-        </role>
-        <role id="_3GznZ_5" name="Role2">
-            <documentation textFormat="text/plain">
-                <text><![CDATA[Role 2]]></text>
-            </documentation>
-        </role>
-        <role id="_3GznZ_6" name="Role 3"/>
-        <role id="_3GznZ_7" name="Role - With - Character"/>
-    </caseRoles>
+    <caseRoles caseTeamRef="case_testRoles.caseteam"/>
 </case>

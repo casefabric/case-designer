@@ -58,7 +58,7 @@ class CaseOutputParametersHaloItem extends HaloClickItem {
 
 class CaseRolesHaloItem extends HaloClickItem {
     constructor(halo) {
-        super(halo, Images.Roles, 'Edit case team', e => this.halo.element.case.rolesEditor.show());
+        super(halo, Images.Roles, 'Edit case team', e => this.halo.element.case.teamEditor.show());
     }
 }
 

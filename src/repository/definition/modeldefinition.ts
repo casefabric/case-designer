@@ -11,7 +11,7 @@ import XMLSerializable from "./xmlserializable";
  */
 export default abstract class ModelDefinition extends XMLSerializable {
     modelDefinition: this;
-    private __documentation?: CMMNDocumentationDefinition<this>;
+    private __documentation?: CMMNDocumentationDefinition;
     private __migrated: boolean = false;
     private static getImportNode(file: ServerFile<ModelDefinition>): Element {
         if (!file.xml) {

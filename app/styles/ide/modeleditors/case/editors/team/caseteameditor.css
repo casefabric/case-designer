@@ -1,0 +1,53 @@
+.caseteam-editor {
+    min-width: 600px;
+    min-height: 300px;
+}
+
+.caseteam-editor .formbody {
+    padding: 10px;
+}
+
+.caseteam-editor .caseteam-select div img,
+select,
+input,
+label {
+    margin-left: 2px;
+    margin-bottom: 2px;
+}
+
+.caseteam-editor .caseteam-select div select,
+input {
+    padding: 4px;
+}
+
+.caseteam-editor .caseteam-select div {
+    padding: 10px;
+    padding-left: 23px;
+    border-bottom: 2px solid #DDDDDDDD;
+}
+
+.caseteam-editor .caseteam-select img {
+    width: 16px;
+    height: 16px;
+}
+
+.caseteam-editor .caseteam-grid {
+    display: grid;
+    grid-template-columns: 20px 200px auto;
+    column-gap: 6px;
+    margin-top: 10px;
+}
+
+.caseteam-editor .formbody .formcontainer .caseteam-grid input {
+    padding: 4px;
+}
+
+.caseteam-editor .formbody .formcontainer .caseteam-grid .btnDelete {
+    border: none;
+}
+
+.caseteam-editor .formbody .formcontainer .caseteam-grid .btnDelete img {
+    margin-top: 4px;
+    height: 16px;
+    width: 16px;
+}

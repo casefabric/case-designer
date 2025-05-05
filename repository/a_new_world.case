@@ -24,6 +24,6 @@
             </extensionElements>
         </humanTask>
     </casePlanModel>
-    <caseRoles/>
+    <caseRoles caseTeamRef="world.caseteam"/>
     <input id="_U6HlD_1" name="Greeting" bindingRef="Greeting"/>
 </case>

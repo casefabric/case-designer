@@ -52,7 +52,7 @@ export default class CasePlanProperties extends StageProperties {
                                 <button class="btnCaseSchemaEditor">Edit Schema</button>
                             </div>
                         </div>`);
-        html.find('.btnCaseRolesEditor').on('click', e => this.cmmnElement.case.rolesEditor.show());
+        html.find('.btnCaseRolesEditor').on('click', e => this.cmmnElement.case.teamEditor.show());
         html.find('.btnCaseSchemaEditor').on('click', e => this.cmmnElement.case.startCaseEditor.show());
         this.htmlContainer.append(html);
         return html;

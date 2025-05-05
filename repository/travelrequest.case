@@ -424,23 +424,7 @@ TravelRequest.TravelDetails.Destination[0].Country == "US"]]></body>
             </humanTask>
         </planningTable>
     </casePlanModel>
-    <caseRoles>
-        <role id="role_csKsD_0" name="Approver">
-            <documentation textFormat="text/plain">
-                <text><![CDATA[Approver of the Travel Request]]></text>
-            </documentation>
-        </role>
-        <role id="role_csKsD_2" name="PersonalAssistant">
-            <documentation textFormat="text/plain">
-                <text><![CDATA[Personal Assistant]]></text>
-            </documentation>
-        </role>
-        <role id="role_csKsD_1" name="Requestor">
-            <documentation textFormat="text/plain">
-                <text><![CDATA[Requestor of the Travel Request]]></text>
-            </documentation>
-        </role>
-    </caseRoles>
+    <caseRoles caseTeamRef="case_travelrequest.caseteam"/>
     <input id="cs9Q0_inCPs_0" name="TravelRequest" bindingRef="TravelRequest"/>
     <extensionElements mustUnderstand="false">
         <cafienne:start-case-model xmlns:cafienne="org.cafienne">{

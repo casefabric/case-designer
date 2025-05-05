@@ -198,4 +198,70 @@ export default class RepositoryBrowser {
         this.searchBox.val('');
         this.accordion.find('div').css('display', 'block');
     }
+
+    async delete(file: ServerFile<ModelDefinition>, fromModel:ModelDefinition | undefined = undefined) {
+        const usage = fromModel 
+                            ? file.usage.filter(x => x.definition?.id != fromModel.id)
+                            : file.usage;
+
+        if (usage.length) {
+            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${usage.length} other model${usage.length == 1 ? '' : 's'}<p/>` +
+                `${usage.length ? usage.map(u => '- ' + u.fileName).join('<p/>') : ''}`);
+        } else {
+            const text = `Are you sure you want to delete '${file.fileName}'?`;
+            if (confirm(text) === true) {
+                await this.ide.repository.delete(file.fileName);
+                // Tell editor registry to remove any editors for this file.
+                this.ide.editorRegistry.remove(file.fileName);
+            }
+        }
+    }
+
+    async rename(file: ServerFile<ModelDefinition>) {
+        const prompter = (previousProposal: string = ''): string | null => {
+            const warningMsg = previousProposal !== file.name ? `\n   ${file.fileType} '${previousProposal}' already exists` : '';
+            const text = `Specify a new name for ${file.fileType} '${file.name}'${warningMsg}`;
+            const newName = prompt(text, previousProposal);
+            if (newName && newName !== file.name && this.ide.repository.hasFile(newName + '.' + file.fileType)) {
+                return prompter(newName)
+            } else {
+                return newName;
+            }
+        }
+        // const text = `Specify a new name for ${this.type} '${file.name}'`;
+        const newName = prompter(file.name);
+        if (!newName) {
+            // User canceled the rename action.
+            return;
+        }
+        const oldName = file.name;
+        const oldFileName = file.fileName;
+        if (newName == oldName) {
+            // No need to update any information to the client, it is simply the same name
+            return;
+        } else {
+            if (this.isValidEntryName(newName)) {
+                const newFileName = newName + '.' + file.fileType;
+                if (this.ide.repository.hasFile(newFileName)) {
+                    this.ide.danger(`Cannot rename ${file.fileName} to ${newFileName} as that name already exists`, 3000);
+                    return;
+                }
+                await file.rename(newFileName);
+                // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
+                if (this.currentFileName === oldFileName) {
+                    window.location.hash = newFileName;
+                    if (this.ide.editorRegistry.currentEditor) {
+                        this.ide.editorRegistry.currentEditor.refresh();
+                    }
+                }
+                file.usage.forEach(usingFile => {
+                    const editor = this.ide.editorRegistry.editors.find(editor => editor.file === usingFile);
+                    if (editor) {
+                        editor.refresh();
+                    }
+                });
+            }
+        }
+        
+    }
 }

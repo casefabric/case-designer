@@ -133,7 +133,7 @@
             <userEvent id="ue__3GznZ_0" name="UserEvent_0 "/>
             <humanTask id="ht__3GznZ_2" name="HumanTask_2" isBlocking="true"/>
         </casePlanModel>
-        <caseRoles>
+        <caseRoles cafienne:caseTeamRef="case_testRoles.caseteam">
             <role id="_3GznZ_4" name="Role1">
                 <documentation textFormat="text/plain">
                     <text><![CDATA[Role ABC]]></text>

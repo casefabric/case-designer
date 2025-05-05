@@ -1,0 +1,3 @@
+<caseteam xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="moon.caseteam" name="moon">
+    <role id="cr__5yqOC_0" name="Rock"/>
+</caseteam>

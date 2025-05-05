@@ -18,7 +18,7 @@ import FourEyesDefinition from "./task/workflow/foureyesdefinition";
 import RendezVousDefinition from "./task/workflow/rendezvousdefinition";
 import TaskStageDefinition from "./taskstagedefinition";
 
-abstract class PlanItem extends CMMNElementDefinition {
+export default abstract class PlanItem extends CMMNElementDefinition {
     private applicabilityRuleRefs: ReferenceSet<ApplicabilityRuleReference>;
     public authorizedRoleRefs: ReferenceSet<CaseRoleReference>;
 
@@ -220,5 +220,3 @@ abstract class PlanItem extends CMMNElementDefinition {
      */
     abstract get entryTransition(): PlanItemTransition;
 }
-
-export default PlanItem;
