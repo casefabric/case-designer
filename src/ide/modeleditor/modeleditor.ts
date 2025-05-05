@@ -21,7 +21,7 @@ export default class ModelEditor {
         this._html = $(
 `<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
     <div class="model-editor-header">
-        <label>${this.label}</label>
+        <label class="fileNamelabel">${this.label}</label>
         <div class="refreshButton" title="Refresh">
             <img src="${Images.Refresh}" />
         </div>
@@ -223,6 +223,7 @@ export default class ModelEditor {
     async refresh() {
         console.groupCollapsed(`Reloading editor of ${this.file}`);
         await this.file.reload().then(() => {
+            this._html.find(".fileNamelabel").text(this.label);
             console.groupEnd();
             this.loadModel();
         }).catch(error => {
