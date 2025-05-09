@@ -2,19 +2,20 @@ import Util from "../util/util";
 import ModelDefinition from "./definition/modeldefinition";
 import Definitions from "./deploy/definitions";
 import CaseFile from "./serverfile/casefile";
+import CaseTeamFile from "./serverfile/caseteamfile";
 import CFIDFile from "./serverfile/cfidfile";
 import DimensionsFile from "./serverfile/dimensionsfile";
 import HumanTaskFile from "./serverfile/humantaskfile";
 import Metadata from "./serverfile/metadata";
 import ProcessFile from "./serverfile/processfile";
 import ServerFile from "./serverfile/serverfile";
-import CaseTeamFile from "./serverfile/caseteamfile";
 import TypeFile from "./serverfile/typefile";
 import FileStorage from "./storage/filestorage";
 
 export default class Repository {
     public readonly list: Array<ServerFile<ModelDefinition>> = [];
     listeners: (() => void)[] = [];
+    private actionStartTime: number = 0;
 
     /**
      * This object handles the interaction with the backend to load and save the various types of models.
@@ -23,6 +24,10 @@ export default class Repository {
      * their last modified status.
      */
     constructor(public storage: FileStorage) {
+    }
+
+    startAction() {
+        this.actionStartTime = Date.now();
     }
 
     /**
@@ -152,20 +157,6 @@ export default class Repository {
     }
 
     /**
-     * Invokes the backend to return a new copy of the list of models.
-     * Optional callback that will be invoked after model list has been retrieved
-     */
-    async listModels(): Promise<void> {
-        try {
-            const files = await this.storage.listModels();
-            await this.updateFileList(files.map(Metadata.from));
-        } catch (error: any) {
-            console.error(error); // Actually also other errors may occur, therefore also logging the stacktrace
-            throw 'Could not fetch the list of models: ' + error.toString();
-        };
-    }
-
-    /**
      * @param file a ServerFile instance or a file name
      * @returns true if the file already exists, or if a file with the same name and of the same type already exists in the repository list
      */
@@ -180,6 +171,23 @@ export default class Repository {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Reload the list of models.
+     */
+    async listModels(): Promise<void> {
+        try {
+            this.startAction();
+            // Fetch the content and update the local list with the most recent 'lastModified' information from the server.
+            // This includes a full list of the filenames of all models in the server, as well as the lastModified timestamp
+            // of each file in the server. Based on this, the locally cached contents is removed if it is stale.                   
+            const files = await this.storage.listModels();
+            await this.updateMetadata(files.map(Metadata.from), true);
+        } catch (error: any) {
+            console.error(error); // Actually also other errors may occur, therefore also logging the stacktrace
+            throw 'Could not fetch the list of models: ' + error.toString();
+        };
     }
 
     async updateMetadata(newServerFileList: Array<Metadata>, parseFiles = false): Promise<void> {
@@ -233,18 +241,12 @@ export default class Repository {
         this.list.sort((f1, f2) => f1.fileName.toLowerCase().localeCompare(f2.fileName.toLowerCase()))
 
         // Tell the rest of the world
-        console.log("Informing " + this.listeners.length + " listeners about the new metadata")
-        this.listeners.forEach(listener => listener());
+        console.log("Informing " + this.listeners.length + " listeners about the new metadata");
+        const now = Date.now();
+        this.listeners.map(listener => listener());
+        const elapsed = Date.now() - now;
+        console.log(logMessage + " with " + this.list.length + " files completed in " + (Date.now() - this.actionStartTime) + " ms (" + elapsed + " ms for "+ this.listeners.length + " listeners)");
         console.groupEnd();
-    }
-
-    /**
-     * Updates the cache with the most recent 'lastModified' information from the server.
-     * This includes a full list of the filenames of all models in the server, as well as the lastModified timestamp
-     * of each file in the server. Based on this, the locally cached contents is removed if it is stale.
-     */
-    async updateFileList(newServerFileList: Array<Metadata>): Promise<void> {
-        await this.updateMetadata(newServerFileList, true);
     }
 
     /**

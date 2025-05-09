@@ -4,27 +4,44 @@ import Error from "./error";
 import Remark from "./remark";
 import Warning from "./warning";
 
+class Printer {
+    private enabled: boolean = true;
+
+    startGroup(msg: string) {
+        if (this.enabled) console.groupCollapsed(msg);
+    }
+
+    log(msg: string) {
+        if (this.enabled) console.log(msg);
+    }
+
+    closeGroup() {
+        if (this.enabled) console.groupEnd();
+    }
+}
+
 export default class Validator {
     private remarks: Remark<XMLSerializable>[] = [];
     private models: ModelDefinition[];
+    private printer: Printer = new Printer();
     constructor(public readonly model: ModelDefinition) {
         this.models = [model, ...model.dependencies()]
     }
 
     run() {
-        console.groupCollapsed(`Starting validations for ${this.model}`);
+        this.printer.startGroup(`Running validations for ${this.model}`);
         this.models.forEach(model => {
-            console.groupCollapsed(`Running validations for ${model}`);
+            this.printer.startGroup(`Running validations for ${model}`);
             model.elements.forEach(element => element.validate(this))
-            console.groupEnd();
+            this.printer.closeGroup();
         });
-        console.groupEnd();
-        console.log(`Validation resulted in ${this.remarks.length} remarks\n${this.remarks.map((r, i) => `${i + 1} - ${r}`).join('\n')}`);
+        this.printer.log(`Validation resulted in ${this.remarks.length} remarks\n${this.remarks.map((r, i) => `${i + 1} - ${r}`).join('\n')}`);
+        this.printer.closeGroup();
         return this;
     }
 
     add(remark: Remark<XMLSerializable>) {
-        console.log(`Adding ${remark}`);
+        this.printer.log(`Adding ${remark}`);
         this.remarks.push(remark);
     }
 
@@ -35,7 +52,7 @@ export default class Validator {
     }
 
     mustHaveName(element: XMLSerializable) {
-        if (! element.name) {
+        if (!element.name) {
             this.raiseError(element, `${element} must have a name`);
         }
     }

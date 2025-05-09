@@ -82,7 +82,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     }
 
     removeDefinition() {
-        console.groupCollapsed(`Removing ${this} ${this.childDefinitions.length ? 'and ' + this.childDefinitions.length + ' children' : ''}`)
+        console.groupCollapsed(`${this.modelDefinition.file.fileName}: removing ${this} ${this.childDefinitions.length ? 'and ' + this.childDefinitions.length + ' children' : ''}`)
         this.removeChildDefinitions();
         console.groupEnd();
     }
