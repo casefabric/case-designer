@@ -191,6 +191,7 @@ export default class Repository {
     }
 
     async updateMetadata(newServerFileList: Array<Metadata>, parseFiles = false): Promise<void> {
+        const startUpdate = Date.now();
         const isReloading = this.list.length > 0;
         const logMessage = parseFiles ? 'Loading repository contents' : 'Updating repository metadata';
         console.groupCollapsed(logMessage);
@@ -245,7 +246,7 @@ export default class Repository {
         const now = Date.now();
         this.listeners.map(listener => listener());
         const elapsed = Date.now() - now;
-        console.log(logMessage + " with " + this.list.length + " files completed in " + (Date.now() - this.actionStartTime) + " ms (" + elapsed + " ms for "+ this.listeners.length + " listeners)");
+        console.log(logMessage + " with " + this.list.length + " files completed in " + (Date.now() - this.actionStartTime) + " ms (" + (now - startUpdate) + " ms for parsing content, and " + elapsed + " ms for "+ this.listeners.length + " listeners)");
         console.groupEnd();
     }
 

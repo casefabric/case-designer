@@ -1,8 +1,8 @@
 import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
+import RepositoryBrowser from "../browser/repositorybrowser";
 import CreateNewModelDialog from "../createnewmodeldialog";
 import IDE from "../ide";
-import RepositoryBrowser from "../repositorybrowser";
 import ModelEditor from "./modeleditor";
 
 export default abstract class ModelEditorMetadata {
