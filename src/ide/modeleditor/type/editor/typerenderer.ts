@@ -16,7 +16,7 @@ import TypeModelEditorMetadata from "../typemodeleditormetadata";
 import LocalTypeDefinition from "./localtypedefinition";
 import PropertyUsage from "./propertyusage";
 import TypeEditor from "./typeeditor";
-import TypeSelector from "./typeselector";
+import TypeSelector, { TypeOption } from "./typeselector";
 
 const expandSign = '&nbsp>&nbsp';
 const collapseSign = '&nbsp--&nbsp';
@@ -258,18 +258,8 @@ export class PropertyRenderer extends TypeRenderer {
         }
     }
 
-    delete() {
-        if (this.typeSelector) {
-            this.typeSelector.delete();
-        }
-        super.delete();
-    }
-
     refresh() {
         HtmlUtil.clearHTML(this.htmlContainer);
-        if (this.typeSelector) {
-            this.typeSelector.delete();
-        }
         this.render();
     }
 
@@ -316,7 +306,7 @@ export class PropertyRenderer extends TypeRenderer {
         this.htmlContainer.find('.add-sibling-icon').on('click', e => this.editor.addSibling(e, this));
         this.htmlContainer.find('.delete-icon').on('click', e => this.removeProperty());
 
-        this.typeSelector = new TypeSelector(this.editor.ide.repository, this.htmlContainer.find('.selectType'), this.property.cmmnType, (typeRef: string) => this.changeType(typeRef), true, [{ option: '&lt;new&gt;', value: '<new>' }]);
+        this.typeSelector = new TypeSelector(this.editor.ide.repository, this.htmlContainer.find('.selectType'), this.property.cmmnType, (typeRef: string) => this.changeType(typeRef), true, [TypeOption.NEW]);
         this.htmlContainer.find('.selectMultiplicity').on('change', e => this.changeProperty('multiplicity', Multiplicity.parse((e.currentTarget as any).value)));
         this.htmlContainer.find('.selectMultiplicity').val(this.property.multiplicity.toString());
         this.htmlContainer.find('.checkboxBusinessIdentifier').on('change', e => this.changeProperty('isBusinessIdentifier', (e.currentTarget as any).checked));

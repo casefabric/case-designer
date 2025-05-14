@@ -2,52 +2,45 @@ import Repository from "../../../../repository/repository";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import HtmlUtil from "../../../util/htmlutil";
 
-export type Option = {
-    option: string,
-    value: string
+export class TypeOption {
+    /**
+     * Creates a new, empty option.
+     */
+    static get EMPTY() { return new TypeOption('') }
+    /**
+     * Creates an option with the value '&lt;new&gt;'.
+     */
+    static get NEW() { return new TypeOption('&lt;new&gt;', '<new>') }
+
+    /**
+     * Construct an option that refers to a type.
+     * @param value The value of the option ("typeRef")
+     * @param label The label of the option
+     */
+    constructor(public value: string, public label?: string) {
+        if (!label) {
+            this.label = value;
+        }
+    }
+
+    html() {
+        return `<option value="${this.value}">${this.label}</option>`;
+    }
 }
 
 export default class TypeSelector {
     typeFiles: TypeFile[];
-    listRefresher: (typeRef?: string, additionalOptions?: Option[]) => void;
 
-    constructor(public repository: Repository, public htmlParent: JQuery<HTMLElement>, public typeRef: string, private callback: Function, public hasPrimitiveTypes = false, public additionalOptions: Option[] = []) {
+    constructor(public repository: Repository, public htmlParent: JQuery<HTMLElement>, public typeRef: string, private callback: Function, public hasPrimitiveTypes = false, public additionalOptions: TypeOption[] = []) {
         this.typeFiles = this.repository.getTypes();
-        this.loadOptions();
-        this.listRefresher = (typeRef = this.typeRef, additionalOptions: Option[] = this.additionalOptions) => {
-            // This listRefresher will be executed on each change in the entire repository content 
-            // This listRefresher can also be invoked to trigger a refresh after a change
-            // Refresh of the HTML content will only occur when a real change is detected
-            let refreshOptionsRequired = false;
-            const newTypeRef = typeRef;
-            const newAdditionalOptions = additionalOptions;
-            const newFiles = this.repository.getTypes();
-
-            if (newTypeRef !== this.typeRef) {
-                // Detected a change in the current selected type
-                this.typeRef = newTypeRef;
-                refreshOptionsRequired = true;
-            }
-            if (JSON.stringify(newAdditionalOptions) !== JSON.stringify(this.additionalOptions)) {
-                // Detected a change in the specified additional options
-                this.additionalOptions = newAdditionalOptions;
-                refreshOptionsRequired = true;
-            }
-            if (JSON.stringify(newFiles.map(file => file.fileName)) !== JSON.stringify(this.typeFiles.map(file => file.fileName))) {
-                // Detected a change in repository content
-                this.typeFiles = newFiles;
-                refreshOptionsRequired = true;
-            }
-            if (refreshOptionsRequired) {
-                this.loadOptions();
-            }
-        }
-        this.repository.onListRefresh(this.listRefresher);
+        // For now only render the selected option. Other options will only be rendered on focus
+        this.getOptions().filter(option => option.value === this.typeRef).forEach(option => this.htmlParent.html(option.html()));
+        this.htmlParent.on('focus', e => this.loadOptions());
     }
 
     loadOptions() {
         HtmlUtil.clearHTML(this.htmlParent);
-        this.htmlParent.html(this.getOptions());
+        this.htmlParent.html(this.getOptions().map(option => option.html()).join(''));
         this.htmlParent.val(this.typeRef);
         this.htmlParent.on('change', e => {
             this.typeRef = '' + this.htmlParent.val();
@@ -55,50 +48,37 @@ export default class TypeSelector {
         });
     }
 
-    loadRepositoryTypes() {
-        return this.typeFiles;
-    }
-
-    delete() {
-        if (this.listRefresher) {
-            this.repository.removeListRefreshCallback(this.listRefresher);
-        }
-    }
-
-    getPrimitiveOptions() {
-        if (this.hasPrimitiveTypes) {
-            return `<option value=""></option>
-            <option value="string">string</option>
-            <option value="integer">integer</option>
-            <option value="number">number</option>
-            <option value="boolean">boolean</option>
-            <option value="time">time</option>
-            <option value="date">date</option>
-            <option value="date-time">date-time</option>
-<!-- These elements not (yet) supported
-
-            <option value="gYear">year</option>
-            <option value="gYearMonth">month</option>
-            <option value="gMonthDay">day</option>
-            <option value="gDay">week day</option>
-            <option value="duration">duration</option>
-            <option value="hexBinary">hex binary</option>
-            <option value="base64Binary">base64 binay</option>
--->
-            <option value="uri">any URI</option>
-            <option value="QName">QName</option>
-            <option value="object">object</option>`;
-        } else {
-            return '';
-        }
-    }
-
-    getOptions() {
+    private getOptions() {
         // Create options in this order:
         // - Empty
         // - All primitive types (optional)
         // - All additional options (if specified)
         // - All types in repository
-        return `${this.getPrimitiveOptions()}<option value=""></option>${this.additionalOptions.map(o => `<option value="${o.value}">${o.option}</option>`)}${this.typeFiles.map(type => `<option value="${type.fileName}">${type.name}</option>`)}`
+        return [...(this.hasPrimitiveTypes? primitiveOptions : []), TypeOption.EMPTY, ...this.additionalOptions, ...this.typeFiles.map(typeFile => new TypeOption(typeFile.fileName, typeFile.name))];
     }
 }
+
+const primitiveOptions = [
+    TypeOption.EMPTY
+    , new TypeOption('string')
+    , new TypeOption('integer')
+    , new TypeOption('number')
+    , new TypeOption('boolean')
+    , new TypeOption('time')
+    , new TypeOption('date')
+    , new TypeOption('date-time')
+
+    // These elements not (yet) supported
+    // , new TypeOption('gYear')
+    // , new TypeOption('gYearMonth')
+    // , new TypeOption('gMonthDay')
+    // , new TypeOption('gDay')
+    // , new TypeOption('duration')
+    // , new TypeOption('hexBinary')
+    // , new TypeOption('base64Binary')
+    // , 
+
+    , new TypeOption('uri', 'any URI')
+    , new TypeOption('QName')
+    , new TypeOption('object')
+];

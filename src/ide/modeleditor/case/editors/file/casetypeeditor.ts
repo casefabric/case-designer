@@ -63,10 +63,7 @@ export default class CaseTypeEditor {
      */
     delete() {
         this.typeEditor.delete();
-        if (this.typeSelector) {
-            this.typeSelector.delete();
-        }
-        if (this.htmlContainer) HtmlUtil.clearHTML(this.htmlContainer);
+        HtmlUtil.clearHTML(this.htmlContainer);
     }
 
     get typeRef() {

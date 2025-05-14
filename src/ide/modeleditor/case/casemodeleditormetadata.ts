@@ -9,7 +9,7 @@ import IDE from "../../ide";
 import Icons from "../../util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
-import CreateNewCaseModelDialog from "./createnewcasemodeldialog";
+import CreateNewCaseModelDialog, { CreateCase } from "./createnewcasemodeldialog";
 import Grid from "./grid";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
@@ -46,7 +46,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         const filetype = this.fileType;
         const text = `Create a new ${this.toString()}`;
         const dialog = new CreateNewCaseModelDialog(this.ide, text);
-        dialog.showModalDialog(async (newModelInfo: any) => {
+        dialog.showModalDialog(async (newModelInfo: CreateCase) => {
             if (!this.ide) return;
 
             if (newModelInfo) {
