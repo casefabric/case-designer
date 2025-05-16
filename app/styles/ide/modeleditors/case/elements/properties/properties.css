@@ -7,7 +7,7 @@
 
 .properties {
     background-color: #f5f5f5;
-    width: 180px;
+    width: 240px;
 }
 
 .properties-footer {
@@ -100,8 +100,7 @@
     margin-top: -6px;
 }
 
-.btnParameterMapping {
-    margin: 5px;
+.properties-container .btnParameterMapping {
     left: 4px;
 }
 
@@ -127,6 +126,17 @@
 .properties-container .propertyBlock img {
     width: 20px;
     height: 20px;
+}
+
+.properties-container .modelselect img {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+.properties-container .modelselect input {
+    height: 20px;
+    width: 180px;
 }
 
 .cmmn-element-id {

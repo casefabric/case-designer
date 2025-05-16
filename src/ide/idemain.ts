@@ -31,7 +31,7 @@ import "@styles/ide/modeleditors/case/elements/properties/sentryproperties.css";
 import "@styles/ide/modeleditors/case/elements/properties/stageproperties.css";
 import "@styles/ide/modeleditors/case/elements/properties/timereventproperties.css";
 import "@styles/ide/modeleditors/case/elements/elements.css";
-import "@styles/ide/modeleditors/case/editors/cfiselector.css";
+import "@styles/ide/modeleditors/case/editors/modelselectordialog.css";
 import "@styles/ide/modeleditors/case/editors/file/classic/casefileitemseditor.css";
 import "@styles/ide/modeleditors/type/typemodeleditor.css";
 import "@styles/ide/editors/tableeditor.css";

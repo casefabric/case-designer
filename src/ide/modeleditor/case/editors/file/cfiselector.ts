@@ -16,15 +16,15 @@ export default class CFISelector extends Dialog {
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
         const htmlDialog = $(`
-            <form class="cfi-selector">
-                <div class="cfi-tree"></div>
+            <form class="model-selector">
+                <div class="tree"></div>
                 <br/>
                 <input type="submit" class='buttonOk' value="OK"/>
                 <button class='buttonCancel'>Cancel</button>
             </form>
         `);
         dialogHTML.append(htmlDialog);
-        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.cfi-tree')));
+        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.tree')));
         dialogHTML.find('.buttonOk').on('click', e => this.ok());
         dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
     }
@@ -37,23 +37,23 @@ export default class CFISelector extends Dialog {
             }
         }
         const html = $(
-        `<div class='cfi-container'>
-            <div class='cfi-summary'>
-                <img class="cfi-icon" src="${Shapes.CaseFileItem}" />
+        `<div>
+            <div class='summary'>
+                <img class="icon" src="${Shapes.CaseFileItem}" />
                 ${item.name}
             </div>
-            <div class="cfi-children-tree"></div>
+            <div class="children-tree"></div>
         </div>`);
         container?.append(html);
-        html.find('.cfi-summary').on('click', e => {
-            container.find('.cfi-selected').removeClass('cfi-selected');
+        html.find('.summary').on('click', e => {
+            container.find('.selected-model').removeClass('selected-model');
             this.selectedItem = item;
-            $(e.target).addClass('cfi-selected');
+            $(e.target).addClass('selected-model');
         });
-        html.find('.cfi-summary').on('dblclick', e => {
+        html.find('.summary').on('dblclick', e => {
             this.ok();
         });
-        const divChildren = html.find('.cfi-children-tree');
+        const divChildren = html.find('.children-tree');
         item.children.forEach(cfi => this.renderCaseFileItem(cfi, divChildren));
     }
 

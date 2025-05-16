@@ -28,8 +28,8 @@ export default class ProcessTaskView extends TaskView {
         this.definition = definition;
     }
 
-    getImplementationList() {
-        return this.editor.ide.repository.getProcesses();
+    get implementationType() {
+        return 'process';
     }
 
     /**

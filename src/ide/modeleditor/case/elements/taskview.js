@@ -34,11 +34,19 @@ export default class TaskView extends TaskStageView {
     }
 
     /**
+     * Returns the type of models that can serve as an implementation for this task.
+     * @returns {string}
+     */
+    get implementationType() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+   
+    /**
      * Returns the list of models that can serve as an implementation for this task.
      * @returns {Array<ServerFile>}
      */
     getImplementationList() {
-        throw new Error('This method must be implemented in ' + this.constructor.name);
+        return this.editor.ide.repository.list.filter(file => file.fileType == this.implementationType);
     }
 
     createProperties() {

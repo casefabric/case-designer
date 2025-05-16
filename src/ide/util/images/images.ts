@@ -1,5 +1,6 @@
 import autoCompleteImageUrl from '../../../../app/images/autocompletedecorator_32.png';
-import closeImageUrl from '../../../../app/images/close_32.png';
+import closeWhiteImageUrl from '../../../../app/images/close_32.png';
+import closeBlackImageUrl from '../../../../app/images/close_black_32.png';
 import DebugImageUrl from '../../../../app/images/debug.png';
 import deleteImageUrl from '../../../../app/images/delete_32.png';
 import delete64ImageUrl from '../../../../app/images/delete_64.png';
@@ -67,7 +68,8 @@ export default class Images {
     static Required = requiredImageUrl;
     static AutoComplete = autoCompleteImageUrl;
     static Minus = minusImageUrl;
-    static Close = closeImageUrl;
+    static Close = closeWhiteImageUrl;
+    static CloseBlack = closeBlackImageUrl;
     static Delete = deleteImageUrl;
     static DeleteBig = delete64ImageUrl;
     static DoubleUp = doubleUpImageUrl;

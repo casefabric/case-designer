@@ -1,4 +1,5 @@
 import $ from "jquery";
+import ModelSelectorDialog from "../../../../editors/modelselectordialog";
 import Images from "../../../../util/images/images";
 import TaskView from "../taskview";
 import TaskStageProperties from "./taskstageproperties";
@@ -19,37 +20,34 @@ export default class TaskProperties extends TaskStageProperties {
     addModelImplementation() {
         const repositoryBrowser = this.cmmnElement.case.editor.ide.repositoryBrowser;
         const taskDefinition = this.task.definition;
-        const implementation = taskDefinition.implementationRef ? taskDefinition.implementationRef : '';
+        const implementationFile = taskDefinition.implementationModel?.file;
 
-        const options = this.task.getImplementationList().map(model => `<option value="${model.fileName}" ${model.fileName == implementation?" selected":""}>${model.name}</option>`).join('');
         const html = $(`<div class="propertyBlock">
                             <label>Implementation</label>
-                            <div class="properties_filefield">
-                                <div>
-                                    <select>
-                                        <option value="">${implementation ? '... remove '+implementation : ''}</option>
-                                        <option value="__new__">create new implementation ...</option>
-                                        ${options}
-                                    </select>
-                                </div>
+                            <div class="modelselect">
+                                <input style='cursor: text; pointer-events: none' disabled id="modelImplementation" type="text" value="${implementationFile ? implementationFile.name : ''}"></input>
+                                <img id="zoomButton"src="${Images.ZoomIn}"></img>
+                                <img id="removeButton"src="${Images.CloseBlack}"></img>
+                            </div>
                             </div>
                         </div>`);
-        html.find('select').on('change', e => {
-            const reference = e.target.value;
-            const model = this.task.getImplementationList().find(model => model.fileName == reference);
-            if (model) {
-                this.task.changeTaskImplementation(model);
-            } else if (reference == '__new__') {
-                this.task.generateNewTaskImplementation();
-            } else {
+        html.find('.modelselect').on('click', e => {
+            new ModelSelectorDialog(this.task.editor.ide, 'Select a model to be used as task implementation', this.task.implementationType, implementationFile)
+                .showModalDialog(file /** @type {ServerFile<ModelDefinition>}*/ => {
+                    if (file) {
+                        this.task.changeTaskImplementation(file);
+                    }
+                });
+        });
+        html.find('#removeButton').on('click',
+            e => {
                 // if (confirm("Do you want to remove the mappings too?")) {
                 //     console.log("Removing mappings too...")
                 // }
-                this.change(taskDefinition, 'implementationRef', e.target.value);
+                this.change(taskDefinition, 'implementationRef', '');
                 this.clear();
                 this.renderForm();
-            }
-        });
+            });
         // Also make the html a drop target for drag/dropping elements from the repository browser
         html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData.file), dragData => this.task.supportsFileTypeAsImplementation(dragData)));
         html.on('pointerout', e => repositoryBrowser.removeDropHandler());
@@ -61,13 +59,13 @@ export default class TaskProperties extends TaskStageProperties {
         const taskDefinition = this.task.definition;
         const implementation = taskDefinition.validatorRef ? taskDefinition.validatorRef : '';
 
-        const options = this.case.editor.ide.repository.getProcesses().map(model => `<option value="${model.fileName}" ${model.fileName == implementation?" selected":""}>${model.name}</option>`).join('');
+        const options = this.case.editor.ide.repository.getProcesses().map(model => `<option value="${model.fileName}" ${model.fileName == implementation ? " selected" : ""}>${model.name}</option>`).join('');
         const html = $(`<div class="propertyBlock" title="Select a web service to be invoked to validate task output">
                             <label>Task Output Validator</label>
                             <div class="properties_filefield">
                                 <div>
                                     <select>
-                                        <option value="">${implementation ? '... remove '+implementation : ''}</option>
+                                        <option value="">${implementation ? '... remove ' + implementation : ''}</option>
                                         ${options}
                                     </select>
                                 </div>

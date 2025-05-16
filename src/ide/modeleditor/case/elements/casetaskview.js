@@ -30,8 +30,8 @@ export default class CaseTaskView extends TaskView {
         this.definition = definition;
     }
 
-    getImplementationList() {
-        return this.editor.ide.repository.getCases();
+    get implementationType() {
+        return 'case';
     }
 
     /**

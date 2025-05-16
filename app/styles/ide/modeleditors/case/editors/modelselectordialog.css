@@ -1,29 +1,29 @@
-.cfi-selector .cfi-tree {
+.model-selector .tree {
     overflow: auto;
     max-height: 50vh;
     border: 1px solid #bbb;
     padding: 10px;
 }
 
-.cfi-selector .buttonOk {
+.model-selector .buttonOk {
     background-color: steelblue;
     color: #fff;
 }
 
-.cfi-selector .cfi-summary:hover {
+.model-selector .summary:hover {
     background-color: #f6f6f6;
 }
 
-.cfi-selector .cfi-icon {
+.model-selector .icon {
     width: 14px;
     margin: 2px;
 }
 
-.cfi-selector .cfi-summary.cfi-selected {
+.model-selector .summary.selected-model {
     background-color: steelblue;
     color: #fff;
 }
 
-div.cfi-children-tree {
+.model-selector div.children-tree {
     padding-left: 16px;
 }

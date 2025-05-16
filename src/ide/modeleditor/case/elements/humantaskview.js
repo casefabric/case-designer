@@ -36,8 +36,8 @@ export default class HumanTaskView extends TaskView {
         this.previewForm = new PreviewTaskForm(this);
     }
 
-    getImplementationList() {
-        return this.case.editor.ide.repository.getHumanTasks();
+    get implementationType() {
+        return 'humantask';
     }
 
     createProperties() {
