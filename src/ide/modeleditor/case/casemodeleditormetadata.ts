@@ -41,7 +41,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         return 'Cases';
     }
 
-    async openCreateModelDialog() {
+    async openCreateModelDialog(callback: Function) {
         if (!this.ide) return;
         const filetype = this.fileType;
         const text = `Create a new ${this.toString()}`;
@@ -70,7 +70,9 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
 
                 // Simply create the case file, either with an empty or with an existing type definition.
                 await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, newTypeRef, newCaseTeamRef);
-                window.location.hash = fileName;
+                
+                callback(fileName);
+
                 console.groupEnd();
             };
         });

@@ -61,7 +61,7 @@ export default abstract class ModelEditorMetadata {
      */
     abstract createNewModel(ide: IDE, newModelName: string, newModelDescription: string): Promise<string>;
 
-    async openCreateModelDialog() {
+    async openCreateModelDialog(callback: Function) {
         const filetype = this.fileType;
         const text = `Create a new ${this.toString()}`;
         if (!this.ide) return;
@@ -84,7 +84,8 @@ export default abstract class ModelEditorMetadata {
                 }
 
                 await this.ide.createNewModel(filetype, newModelName, newModelDescription);
-                window.location.hash = fileName;
+
+                callback(fileName);
             };
         });
     }

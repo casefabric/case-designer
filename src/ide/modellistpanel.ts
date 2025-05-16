@@ -98,6 +98,6 @@ export default class ModelListPanel {
      */
     async create(e: JQuery.ClickEvent<HTMLElement, undefined, HTMLElement, HTMLElement>) {
         e.stopPropagation();
-        return this.type.openCreateModelDialog();
+        return this.type.openCreateModelDialog((fileName: string) => window.location.hash = fileName);
     }
 }
