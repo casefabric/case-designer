@@ -38,10 +38,18 @@ export default class ModelSelectorDialog extends Dialog {
     }
 
     async newModel() {
-        await this.typeMetadata.openCreateModelDialog((fileName: string) => {
-            this.selectedItem = this.repository.getFile(fileName);
-            this.closeModalDialog(this.selectedItem);
-        });
+        const oldCallback = this.callback!; // Save the old callback
+
+        this.callback = async (item:undefined) => { 
+            await this.typeMetadata.openCreateModelDialog((fileName: string) => {
+                if(fileName) {
+                    this.selectedItem = this.repository.getFile(fileName);
+                    oldCallback(this.selectedItem);
+                }
+            });
+    
+        }
+        this.closeModalDialog(undefined);
     }
 
     renderDefinition(file: ServerFile<ModelDefinition>, container: JQuery<HTMLElement>) {

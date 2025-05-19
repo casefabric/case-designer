@@ -57,10 +57,10 @@ export default class Dialog {
     }
 
     closeModalDialog(returnValue: any) {
-        if (this.callback) this.callback(returnValue);
         if (this.dialogHTML) {
             HtmlUtil.removeHTML(this.dialogHTML);
         }
+        if (this.callback) this.callback(returnValue);
     }
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
