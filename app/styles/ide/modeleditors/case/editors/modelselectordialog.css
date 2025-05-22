@@ -1,3 +1,16 @@
+.model-selector .selector-header {
+    padding-bottom: 10px;
+    border-bottom: lightgray 1px solid;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.model-selector .selector-header .search {
+    background-color: transparent;
+    border: 1px solid gray;
+}
+
 .model-selector .tree {
     overflow: auto;
     max-height: 50vh;
