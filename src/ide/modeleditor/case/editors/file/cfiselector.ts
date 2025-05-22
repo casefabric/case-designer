@@ -16,17 +16,12 @@ export default class CFISelector extends Dialog {
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
         const htmlDialog = $(`
-            <form class="model-selector">
+            <form class="model-selector dialog-content">
                 <div class="tree"></div>
-                <br/>
-                <input type="submit" class='buttonOk' value="OK"/>
-                <button class='buttonCancel'>Cancel</button>
             </form>
         `);
         dialogHTML.append(htmlDialog);
         this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.tree')));
-        dialogHTML.find('.buttonOk').on('click', e => this.ok());
-        dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
     }
 
     renderCaseFileItem(item: CaseFileItemDef, container: JQuery<HTMLElement>) {
@@ -37,7 +32,7 @@ export default class CFISelector extends Dialog {
             }
         }
         const html = $(
-        `<div>
+            `<div>
             <div class='summary'>
                 <img class="icon" src="${Shapes.CaseFileItem}" />
                 ${item.name}

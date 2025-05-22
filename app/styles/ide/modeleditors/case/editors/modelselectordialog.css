@@ -1,13 +1,15 @@
 .model-selector .tree {
     overflow: auto;
     max-height: 50vh;
-    border: 1px solid #bbb;
-    padding: 10px;
 }
 
 .model-selector .buttonOk {
     background-color: steelblue;
     color: #fff;
+}
+
+.model-selector .summary {
+    margin-bottom: 5px;
 }
 
 .model-selector .summary:hover {
@@ -25,5 +27,7 @@
 }
 
 .model-selector div.children-tree {
-    padding-left: 16px;
+    padding-left: 8px;
+    margin-left: 8px;
+    border-left: 1px solid lightgray;
 }

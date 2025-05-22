@@ -14,14 +14,19 @@ export default class CreateNewModelDialog extends Dialog {
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
         const htmlDialog = $(`
-            <form>
-                <label style="width:150px">Name</label><input class = "inputName" value="">
-                <br>
-                <label style="width:150px">Description</label><input class = "inputDescription"/>
-                <br>
-                <br>
-                <input style="background-color:steelblue; color:#fff" type="submit" class='buttonOk' value="OK"/>
-                <button class='buttonCancel'>Cancel</button>
+            <form class="model-selector dialog-content">
+                <div class="dialog-content">
+                    <div class="propertyBlock">
+                        <label style="width:150px">Name</label><input class = "inputName" value="">
+                    </div>
+                    <div class="propertyBlock">
+                        <label style="width:150px">Description</label><input class = "inputDescription"/>
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <input style="background-color:steelblue; color:#fff" type="submit" class='buttonOk' value="OK"/>
+                    <button class='buttonCancel'>Cancel</button>
+                </div>
             </form>
         `);
         dialogHTML.append(htmlDialog);

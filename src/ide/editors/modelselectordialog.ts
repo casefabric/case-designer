@@ -20,34 +20,32 @@ export default class ModelSelectorDialog extends Dialog {
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
         this.htmlDialog = $(`
-            <form class="model-selector">
+            <form class="model-selector dialog-content">
                 <div class="tree"></div>
-                <br/>
-                <input type="submit" class='buttonOk' value="OK"/>
-                <button class='buttonCancel'>Cancel</button>
-                <button class='buttonNew'>New ...</button>
             </form>
         `);
         dialogHTML.append(this.htmlDialog);
+        this.selectionTree = dialogHTML.find('.tree');
         this.repository.list
             .filter(file => file.fileType == this.type)
-            .forEach(file => this.renderDefinition(file, dialogHTML.find('.tree')));
-        dialogHTML.find('.buttonOk').on('click', e => this.ok());
-        dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
-        dialogHTML.find('.buttonNew').on('click', e => this.newModel());
-    }
+            .forEach(file => this.renderDefinition(file, this.selectionTree!));
+
+        dialogHTML.find('.buttonNew').on('click', e => {
+            e.preventDefault();
+            this.newModel();
+        });
 
     async newModel() {
         const oldCallback = this.callback!; // Save the old callback
 
-        this.callback = async (item:undefined) => { 
+        this.callback = async (item: undefined) => {
             await this.typeMetadata.openCreateModelDialog((fileName: string) => {
-                if(fileName) {
+                if (fileName) {
                     this.selectedItem = this.repository.getFile(fileName);
                     oldCallback(this.selectedItem);
                 }
             });
-    
+
         }
         this.closeModalDialog(undefined);
     }

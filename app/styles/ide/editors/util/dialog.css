@@ -1,30 +1,57 @@
-dialog {
+dialog.basicform {
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius:8px;
+    border-radius: 8px;
+    display: block;
+    padding: 0px;
+    height: fit-content;
+    width: fit-content;
+    overflow-x: hidden;
 }
 
-dialog .dialogHeader {
-    cursor:move;
-    min-width:380px;
-    background:#f0f0f0;
-    padding: 14px 14px 7px 14px;
-    margin:-14px -14px 0px -14px;
-    border-bottom:1px solid lightgray;
+dialog .formheader {
+    cursor: move;
+    min-width: 380px;
+    height: 20px;
+    width: fit-content;
+    background-color: rgb(66, 68, 70);
 }
 
-dialog .inputName, dialog .inputDescription, dialog .selectType, dialog .selectCaseTeam {
+dialog .dialog-buttons {
+    border-top: 1px solid gray;
+    padding-top: 10px;
+}
+
+dialog .dialog-content {
+    padding: 10px;
+    min-height: 200px;
+}
+
+dialog .dialog-body {
+    background-color: #f5f5f5;
+}
+
+dialog .propertyBlock {
+    padding-bottom: 10px;
+}
+
+dialog .inputName,
+dialog .inputDescription,
+dialog .selectType,
+dialog .selectCaseTeam {
     height: 25px;
     width: 200px;
 }
 
-dialog button, dialog input[type=submit] {
-    border-radius:5px;
+dialog button,
+dialog input[type=submit] {
+    border-radius: 5px;
     border: 1px solid gray;
-    margin: 1px;    
-    padding:6px;
+    margin: 1px;
+    padding: 6px;
 }
 
-dialog button:hover, dialog input[type=submit]:hover {
+dialog button:hover,
+dialog input[type=submit]:hover {
     border: 2px solid black;
     margin: 0px;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px;

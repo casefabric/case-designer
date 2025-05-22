@@ -2,6 +2,7 @@ import $ from "jquery";
 import "jquery-ui";
 import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
+import Images from "../util/images/images";
 
 export default class Dialog {
     callback: Function | undefined;
@@ -14,7 +15,7 @@ export default class Dialog {
 
     showModalDialog(callback: Function) {
         const dialogHTML = this.renderHeader();
-        this.renderDialog(dialogHTML);
+        this.renderDialog(dialogHTML.find('.dialog-body'));
         this.callback = callback;
         if (this.dialogHTML) {
             const dialogHTML: HTMLDialogElement = this.dialogHTML[0] as HTMLDialogElement; // Save DOM pointer to HTMLElement (not jQuery as we don't have the showModal native method available in jQuery API)
@@ -34,15 +35,28 @@ export default class Dialog {
     renderHeader() {
         if (!this.dialogHTML) {
             this.dialogHTML = $(`
-            <dialog>
-                <div class='dialogHeader'>
+            <dialog class="basicform dialog">
+                <div class='dialogHeader formheader'>
                     <label class="dialogLabel">${this.label}</label>
+                    <div class="formclose">
+                        <img src="${Images.Close}" />
+                    </div>
                 </div>
-                <br>
+                <div class='dialog-body'>
+                </div>
             </dialog>`);
             this.ide.html.append(this.dialogHTML);
             this.dialogHTML.draggable({ handle: '.dialogHeader' });
             this.dialogHTML.on('selectstart', (e: { preventDefault: () => any; }) => e.preventDefault());
+            this.dialogHTML.find('.formclose').on('click', () => this.closeModalDialog(undefined));
+
+            this.dialogHTML.on('keydown', e => {
+                if (e.keyCode == 27) {
+                    this.closeModalDialog(undefined)
+                    e.stopPropagation();
+                }
+            })
+
         }
         return this.dialogHTML;
     }
@@ -65,9 +79,7 @@ export default class Dialog {
 
     renderDialog(dialogHTML: JQuery<HTMLElement>) {
         const htmlDialog = $(`<div>
-                <button class='buttonOk'>OK</button>
                 </div>`);
         dialogHTML.append(htmlDialog);
-        htmlDialog.find('.buttonOk').on('click', e => this.closeModalDialog('Ok'));
     }
 }
