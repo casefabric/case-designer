@@ -57,6 +57,7 @@ import "@styles/ide/modeleditors/case/elements/halo/halo.css";
 import "@styles/validate/validate.css";
 import "@styles/ide/modeleditors/cfid/casefileitemdefinition.css";
 import "@styles/ide/settings/settingseditor.css";
+import ModelSelectorControl from "./editors/modelselectorcontrol";
 
 export default class IDEMain {
     html: JQuery<HTMLElement>;
@@ -84,5 +85,7 @@ export default class IDEMain {
         // Make a splitter between repository browser and the fixed editors div; it should also reposition the case model editor's splitter each time
         this.splitter = new LeftSplitter(this.html, '15%');
 
+        // Register the custom element
+        customElements.define('model-selector-control', ModelSelectorControl);
     }
 }

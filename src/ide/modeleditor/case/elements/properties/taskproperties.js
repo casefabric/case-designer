@@ -1,5 +1,5 @@
 import $ from "jquery";
-import ModelSelectorDialog from "../../../../editors/modelselectordialog";
+import ModelSelectorControl from "../../../../editors/modelselectorcontrol";
 import Images from "../../../../util/images/images";
 import TaskView from "../taskview";
 import TaskStageProperties from "./taskstageproperties";
@@ -18,41 +18,35 @@ export default class TaskProperties extends TaskStageProperties {
      * Adds a dropdown with all possible task implementation
      */
     addModelImplementation() {
-        const repositoryBrowser = this.cmmnElement.case.editor.ide.repositoryBrowser;
         const taskDefinition = this.task.definition;
         const implementationFile = taskDefinition.implementationModel?.file;
 
-        const html = $(`<div class="propertyBlock">
-                            <label>Implementation</label>
-                            <div class="modelselect">
-                                <input style='cursor: text; pointer-events: none' disabled id="modelImplementation" type="text" value="${implementationFile ? implementationFile.name : ''}"></input>
-                                <img id="zoomButton"src="${Images.ZoomIn}"></img>
-                                <img id="removeButton"src="${Images.CloseBlack}"></img>
-                            </div>
-                            </div>
-                        </div>`);
-        html.find('.modelselect').on('click', e => {
-            new ModelSelectorDialog(this.task.editor.ide, 'Select a model to be used as task implementation', this.task.implementationType, implementationFile, this.task.definition.modelDefinition)
-                .showModalDialog(file /** @type {ServerFile<ModelDefinition>}*/ => {
-                    if (file) {
-                        this.task.changeTaskImplementation(file);
-                    }
-                });
-        });
-        html.find('#removeButton').on('click',
-            e => {
+        const modelChanged = file => {
+            if (file) {
+                this.task.changeTaskImplementation(file);
+            } else {
                 // if (confirm("Do you want to remove the mappings too?")) {
                 //     console.log("Removing mappings too...")
                 // }
                 this.change(taskDefinition, 'implementationRef', '');
                 this.clear();
                 this.renderForm();
-            });
-        // Also make the html a drop target for drag/dropping elements from the repository browser
-        html.on('pointerover', e => repositoryBrowser.setDropHandler(dragData => this.task.changeTaskImplementation(dragData.file), dragData => this.task.supportsFileTypeAsImplementation(dragData)));
-        html.on('pointerout', e => repositoryBrowser.removeDropHandler());
+            }
+        }
+
+        const html = $(
+            `<div class="propertyBlock">
+                <label>Implementation</label>
+            </div>`);
+
+        html.append(new ModelSelectorControl(
+            this.task.editor.ide,
+            implementationFile,
+            this.task.implementationType,
+            this.task.definition.modelDefinition,
+            modelChanged
+        ));
         this.htmlContainer.append(html);
-        return html;
     }
 
     addValidatorField() {

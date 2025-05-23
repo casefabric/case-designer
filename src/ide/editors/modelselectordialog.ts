@@ -16,7 +16,7 @@ export default class ModelSelectorDialog extends Dialog {
     searchBox?: JQuery<HTMLElement>;
     selectionTree?: JQuery<HTMLElement>;
 
-    constructor(public ide: IDE, label: string, public type: string, private currentFile: ServerFile<ModelDefinition>, public model: ModelDefinition) {
+    constructor(public ide: IDE, label: string, public type: string, private currentFile: ServerFile<ModelDefinition> | undefined, public model: ModelDefinition) {
         super(ide, label);
         this.repository = ide.repository;
         this.selectedItem = undefined;
