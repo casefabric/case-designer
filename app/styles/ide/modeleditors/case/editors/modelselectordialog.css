@@ -34,6 +34,20 @@
     margin: 2px;
 }
 
+.model-selector .action-icon {
+    display: none;
+}
+
+.model-selector .summary:hover .action-icon {
+    display: block;
+    float: right;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 2px;
+    z-index: 0;
+}
+
 .model-selector .summary.selected-model {
     background-color: steelblue;
     color: #fff;

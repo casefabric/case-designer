@@ -32,7 +32,7 @@ export default class TaskProperties extends TaskStageProperties {
                             </div>
                         </div>`);
         html.find('.modelselect').on('click', e => {
-            new ModelSelectorDialog(this.task.editor.ide, 'Select a model to be used as task implementation', this.task.implementationType, implementationFile)
+            new ModelSelectorDialog(this.task.editor.ide, 'Select a model to be used as task implementation', this.task.implementationType, implementationFile, this.task.definition.modelDefinition)
                 .showModalDialog(file /** @type {ServerFile<ModelDefinition>}*/ => {
                     if (file) {
                         this.task.changeTaskImplementation(file);

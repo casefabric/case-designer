@@ -5,6 +5,8 @@ import ServerFile from "../../repository/serverfile/serverfile";
 import Dialog from "../editors/dialog";
 import IDE from "../ide";
 import ModelEditorMetadata from "../modeleditor/modeleditormetadata";
+import HtmlUtil from "../util/htmlutil";
+import Images from "../util/images/images";
 
 export default class ModelSelectorDialog extends Dialog {
     selectedItem?: ServerFile<ModelDefinition>;
@@ -14,7 +16,7 @@ export default class ModelSelectorDialog extends Dialog {
     searchBox?: JQuery<HTMLElement>;
     selectionTree?: JQuery<HTMLElement>;
 
-    constructor(public ide: IDE, label: string, public type: string, private currentFile?: ServerFile<ModelDefinition>) {
+    constructor(public ide: IDE, label: string, public type: string, private currentFile: ServerFile<ModelDefinition>, public model: ModelDefinition) {
         super(ide, label);
         this.repository = ide.repository;
         this.selectedItem = undefined;
@@ -32,10 +34,7 @@ export default class ModelSelectorDialog extends Dialog {
             </form>
         `);
         dialogHTML.append(this.htmlDialog);
-        this.selectionTree = dialogHTML.find('.tree');
-        this.repository.list
-            .filter(file => file.fileType == this.type)
-            .forEach(file => this.renderDefinition(file, this.selectionTree!));
+        this.renderData();
 
         //add events search model field
         this.searchBox = dialogHTML.find('.search');
@@ -48,10 +47,19 @@ export default class ModelSelectorDialog extends Dialog {
         });
     }
 
+    private renderData() {
+        this.selectionTree = this.htmlDialog!.find('.tree');
+        this.selectionTree.children().toArray().forEach(element => HtmlUtil.removeHTML($(element)));
+        this.repository.list
+            .filter(file => file.fileType == this.type)
+            .forEach(file => this.renderDefinition(file, this.selectionTree!));
+        this.applySearchFilter(undefined);
+    }
+
     /**
          * Runs the search text agains the models currently rendered, and hides them if not matching the search criteria
          */
-    applySearchFilter(e: JQuery.KeyUpEvent) {
+    applySearchFilter(e: JQuery.KeyUpEvent | undefined) {
         const searchText = this.searchBox?.val()?.toString().toLowerCase();
         // Loop through all elements, and search for the text. The elements look like <a filetype="case" name="hcmtest" href="...">hcmtest</a>
         this.selectionTree?.find('.summary').toArray().forEach(htmlElement => {
@@ -135,7 +143,9 @@ export default class ModelSelectorDialog extends Dialog {
             `<div>
                 <div class='summary'>
                     <img class="icon" src="${this.typeMetadata?.icon}" />
-                    ${file.name}
+                    <label>${file.name}</label>
+                    <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete model ..."/>
+                    <img class="action-icon rename-icon" src="${Images.Rename}" title="Rename model ..."/>
                 </div>
             </div>`);
         container?.append(html);
@@ -147,12 +157,31 @@ export default class ModelSelectorDialog extends Dialog {
         html.find('.summary').on('dblclick', e => {
             this.ok();
         });
+        html.find('.delete-icon').on('click', e => this.delete(file));
+        html.find('.rename-icon').on('click', e => this.rename(file));
+
 
         const selected = file == this.currentFile;
         if (selected) {
             this.selectedItem = file;
             html.find('.summary').addClass('selected-model');
         }
+    }
+    /**
+     * Delete a file, when a .case file is deleted also delete the .dimensions file. 
+     */
+    async delete(file: ServerFile<ModelDefinition>) {
+        await this.ide.repositoryBrowser.delete(file, this.model);
+        this.renderData();
+    }
+
+    /**
+     * Rename a file
+     * all references to the model in other models will be renamed as well.
+     */
+    async rename(file: ServerFile<ModelDefinition>) {
+        await this.ide.repositoryBrowser.rename(file);
+        this.renderData();
     }
 
     ok() {
