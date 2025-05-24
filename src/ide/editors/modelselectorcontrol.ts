@@ -2,7 +2,6 @@ import $ from "jquery";
 import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import IDE from "../ide";
-import Images from "../util/images/images";
 import ModelSelectorDialog from "./modelselectordialog";
 
 export default class ModelSelectorControl extends HTMLElement {
@@ -18,10 +17,10 @@ export default class ModelSelectorControl extends HTMLElement {
     }
 
     render() {
-        const html = $(`<div class="modelselect">
+        const html = $(`<div class="modelselect" style="display: flex; align-items: center; justify-content: space-between;">
                             <input style='cursor: text; pointer-events: none' disabled id="modelImplementation" type="text" value="${this.selectedItem ? this.selectedItem.name : ''}"></input>
-                            <img id="zoomButton"src="${Images.ZoomIn}"></img>
-                            <img id="removeButton"src="${Images.CloseBlack}"></img>
+                            <img id="zoomButton" class="zoombt"></img>
+                            <img id="removeButton" class="removeReferenceButton"></img>
                         </div>`);
         html.on('click', e => {
             new ModelSelectorDialog(this.ide, 'Select a model to be used as task implementation', this.modelType, this.selectedItem, this.sourceModel)

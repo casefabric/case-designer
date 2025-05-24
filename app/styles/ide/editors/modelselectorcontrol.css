@@ -1,0 +1,13 @@
+model-selector-control .modelselect input {
+    height: 20px;
+    width: calc(100% - 42px);
+}
+
+model-selector-control .modelselect * {
+    border: 1px solid #DDDDDD;
+}
+
+model-selector-control .modelselect img {
+    right: 2px;
+    top: 0px;
+}
