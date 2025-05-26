@@ -1,4 +1,5 @@
 import $ from "jquery";
+import HumanTaskDefinition from "../../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
 import ModelSelectorControl from "../../../../editors/modelselectorcontrol";
 import Images from "../../../../util/images/images";
 import TaskView from "../taskview";
@@ -50,39 +51,40 @@ export default class TaskProperties extends TaskStageProperties {
     }
 
     addValidatorField() {
+        /** @type{HumanTaskDefinition} */
         const taskDefinition = this.task.definition;
-        const implementation = taskDefinition.validatorRef ? taskDefinition.validatorRef : '';
+        if (!taskDefinition.workflow) {
+            return;
+        }
+        const validationFile = taskDefinition.workflow.validatorRef.file;
 
-        const options = this.case.editor.ide.repository.getProcesses().map(model => `<option value="${model.fileName}" ${model.fileName == implementation ? " selected" : ""}>${model.name}</option>`).join('');
-        const html = $(`<div class="propertyBlock" title="Select a web service to be invoked to validate task output">
-                            <label>Task Output Validator</label>
-                            <div class="properties_filefield">
-                                <div>
-                                    <select>
-                                        <option value="">${implementation ? '... remove ' + implementation : ''}</option>
-                                        ${options}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>`);
-        html.find('select').on('change', e => {
-            const reference = e.target.value;
-            const model = this.task.getImplementationList().find(model => model.fileName == reference);
-            if (model) {
-                this.change(taskDefinition, 'validatorRef', e.target.value);
+        const modelChanged = file => {
+            if (file) {
+                this.change(taskDefinition, 'validatorRef', file.fileName);
                 this.clear();
                 this.renderForm();
             } else {
                 // if (confirm("Do you want to remove the mappings too?")) {
                 //     console.log("Removing mappings too...")
                 // }
-                this.change(taskDefinition, 'validatorRef', e.target.value);
+                this.change(taskDefinition, 'validatorRef', '');
                 this.clear();
                 this.renderForm();
             }
-        });
+        }
+        const html = $(
+            `<div class="propertyBlock">
+                <label>Task output validator</label>
+            </div>`);
+
+        html.append(new ModelSelectorControl(
+            this.task.editor.ide,
+            validationFile,
+            'process',
+            this.task.definition.modelDefinition,
+            modelChanged
+        ));
         this.htmlContainer.append(html);
-        return html;
     }
 
     addParameterMappings() {
