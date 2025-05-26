@@ -199,10 +199,14 @@ export default class RepositoryBrowser {
         this.accordion.find('div').css('display', 'block');
     }
 
-    async delete(file: ServerFile<ModelDefinition>, fromModel:ModelDefinition | undefined = undefined) {
-        const usage = fromModel 
-                            ? file.usage.filter(x => x.definition?.id != fromModel.id)
-                            : file.usage;
+    async delete(file: ServerFile<ModelDefinition>,
+        fromModel: ModelDefinition | string | undefined = undefined) {
+        const fromModelId = typeof fromModel === 'string' ?
+            fromModel : fromModel?.id;
+
+        const usage = fromModel
+            ? file.usage.filter(x => x.definition?.id != fromModelId)
+            : file.usage;
 
         if (usage.length) {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${usage.length} other model${usage.length == 1 ? '' : 's'}<p/>` +
@@ -262,6 +266,6 @@ export default class RepositoryBrowser {
                 });
             }
         }
-        
+
     }
 }

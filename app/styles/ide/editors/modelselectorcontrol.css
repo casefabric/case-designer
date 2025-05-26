@@ -5,6 +5,7 @@ model-selector-control .modelselect input {
 
 model-selector-control .modelselect * {
     border: 1px solid #DDDDDD;
+    background-color: transparent;
 }
 
 model-selector-control .modelselect img {

@@ -3,7 +3,6 @@ import ModelDefinition from "../../repository/definition/modeldefinition";
 import Repository from "../../repository/repository";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Dialog from "../editors/dialog";
-import IDE from "../ide";
 import ModelEditorMetadata from "../modeleditor/modeleditormetadata";
 import HtmlUtil from "../util/htmlutil";
 import Images from "../util/images/images";
@@ -16,9 +15,13 @@ export default class ModelSelectorDialog extends Dialog {
     searchBox?: JQuery<HTMLElement>;
     selectionTree?: JQuery<HTMLElement>;
 
-    constructor(public ide: IDE, label: string, public type: string, private currentFile: ServerFile<ModelDefinition> | undefined, public model: ModelDefinition) {
-        super(ide, label);
-        this.repository = ide.repository;
+    constructor(
+        label: string,
+        public type: string,
+        private selectedModelId?: string,
+        public modelId?: string) {
+        super(window.ide, label);
+        this.repository = window.ide.repository;
         this.selectedItem = undefined;
         this.typeMetadata = ModelEditorMetadata.types.find(meta => meta.fileType == this.type)!;
     }
@@ -161,7 +164,7 @@ export default class ModelSelectorDialog extends Dialog {
         html.find('.rename-icon').on('click', e => this.rename(file));
 
 
-        const selected = file == this.currentFile;
+        const selected = file.fileName == this.selectedModelId;
         if (selected) {
             this.selectedItem = file;
             html.find('.summary').addClass('selected-model');
@@ -171,7 +174,7 @@ export default class ModelSelectorDialog extends Dialog {
      * Delete a file, when a .case file is deleted also delete the .dimensions file. 
      */
     async delete(file: ServerFile<ModelDefinition>) {
-        await this.ide.repositoryBrowser.delete(file, this.model);
+        await this.ide.repositoryBrowser.delete(file, this.modelId);
         this.renderData();
     }
 

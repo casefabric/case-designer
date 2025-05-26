@@ -1,6 +1,5 @@
 import $ from "jquery";
 import HumanTaskDefinition from "../../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
-import ModelSelectorControl from "../../../../editors/modelselectorcontrol";
 import Images from "../../../../util/images/images";
 import TaskView from "../taskview";
 import TaskStageProperties from "./taskstageproperties";
@@ -20,70 +19,61 @@ export default class TaskProperties extends TaskStageProperties {
      */
     addModelImplementation() {
         const taskDefinition = this.task.definition;
-        const implementationFile = taskDefinition.implementationModel?.file;
 
-        const modelChanged = file => {
-            if (file) {
-                this.task.changeTaskImplementation(file);
-            } else {
+        const html = $(
+            `<div class="propertyBlock">
+                <label>Implementation</label>
+                <model-selector-control 
+                    modeltype="${this.task.implementationType}" 
+                    sourcemodel="${this.task.definition.modelDefinition.id}" 
+                    class="modelSelectorControl"></model-selector-control>
+            </div>`);
+
+        const selectorControl = html.find('.modelSelectorControl');
+        selectorControl.val(taskDefinition.implementationModel?.file?.fileName || '');
+        selectorControl.on('change', e => {
+            const value = e.currentTarget.value;
+            if (!value || value === '') {
                 // if (confirm("Do you want to remove the mappings too?")) {
                 //     console.log("Removing mappings too...")
                 // }
                 this.change(taskDefinition, 'implementationRef', '');
                 this.clear();
                 this.renderForm();
+            } else {
+                const file = window.ide.repository.get(value);
+                this.task.changeTaskImplementation(file);
             }
-        }
+        });
 
-        const html = $(
-            `<div class="propertyBlock">
-                <label>Implementation</label>
-            </div>`);
-
-        html.append(new ModelSelectorControl(
-            this.task.editor.ide,
-            implementationFile,
-            this.task.implementationType,
-            this.task.definition.modelDefinition,
-            modelChanged
-        ));
         this.htmlContainer.append(html);
     }
 
     addValidatorField() {
         /** @type{HumanTaskDefinition} */
+
         const taskDefinition = this.task.definition;
         if (!taskDefinition.workflow) {
             return;
         }
-        const validationFile = taskDefinition.workflow.validatorRef.file;
 
-        const modelChanged = file => {
-            if (file) {
-                this.change(taskDefinition, 'validatorRef', file.fileName);
-                this.clear();
-                this.renderForm();
-            } else {
-                // if (confirm("Do you want to remove the mappings too?")) {
-                //     console.log("Removing mappings too...")
-                // }
-                this.change(taskDefinition, 'validatorRef', '');
-                this.clear();
-                this.renderForm();
-            }
-        }
         const html = $(
             `<div class="propertyBlock">
                 <label>Task output validator</label>
+                <model-selector-control 
+                    modeltype="process" 
+                    sourcemodel="${this.task.definition.modelDefinition.id}" 
+                    class="modelSelectorControl"></model-selector-control>
             </div>`);
 
-        html.append(new ModelSelectorControl(
-            this.task.editor.ide,
-            validationFile,
-            'process',
-            this.task.definition.modelDefinition,
-            modelChanged
-        ));
+        const selectorControl = html.find('.modelSelectorControl');
+        selectorControl.val(taskDefinition.workflow.validatorRef.file?.fileName || '');
+        selectorControl.on('change', e => {
+            this.change(taskDefinition, 'validatorRef', e.currentTarget.value);
+            this.clear();
+            this.renderForm();
+        });
+
         this.htmlContainer.append(html);
     }
 

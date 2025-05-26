@@ -1,45 +1,59 @@
 import $ from "jquery";
 import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
-import IDE from "../ide";
 import ModelSelectorDialog from "./modelselectordialog";
 
 export default class ModelSelectorControl extends HTMLElement {
-    constructor(
-        public ide: IDE,
-        public selectedItem: ServerFile<ModelDefinition> | undefined,
-        public modelType: string,
-        public sourceModel: ModelDefinition,
-        public modelChanged: (file: ServerFile<ModelDefinition> | null) => void) {
+    constructor() {
         super();
-
-        this.render();
     }
 
-    render() {
+    async connectedCallback() {
+        await this.render();
+    }
+
+    async render(): Promise<void> {
+        const modelType = this.attributes.getNamedItem('modeltype')!.value;
+        const sourceModelId = this.attributes.getNamedItem('sourcemodel')?.value;
+        const selectedModelId = $(this).val() as string | undefined | null ?? undefined;
+
+        const selectedModelName = selectedModelId ? window.ide.repository.get(selectedModelId)?.name : '';
+
         const html = $(`<div class="modelselect" style="display: flex; align-items: center; justify-content: space-between;">
-                            <input style='cursor: text; pointer-events: none' disabled id="modelImplementation" type="text" value="${this.selectedItem ? this.selectedItem.name : ''}"></input>
-                            <img id="zoomButton" class="zoombt"></img>
-                            <img id="removeButton" class="removeReferenceButton"></img>
-                        </div>`);
+                                <input style='cursor: text; pointer-events: none' disabled id="modelImplementation" type="text" value="${selectedModelName}"></input>
+                                <img id="zoomButton" class="zoombt"></img>
+                                <img id="removeButton" class="removeReferenceButton"></img>
+                            </div>`);
         html.on('click', e => {
-            new ModelSelectorDialog(this.ide, 'Select a model to be used as task implementation', this.modelType, this.selectedItem, this.sourceModel)
+            new ModelSelectorDialog(
+                'Select a model to be used as task implementation',
+                modelType,
+                selectedModelId,
+                sourceModelId)
                 .showModalDialog((file: ServerFile<ModelDefinition>) => {
                     if (file) {
-                        this.modelChanged(file);
+                        this.changeValue(html, file);
                     }
                 });
         });
-        html.find('#removeButton').on('click',
-            e => {
-                this.modelChanged(null);
-            });
+        html.find('#removeButton').on('click', e => {
+            this.changeValue(html, undefined);
+            e.stopPropagation(); // Prevent the click event from propagating to the parent div
+        });
+
         // Also make the html a drop target for drag/dropping elements from the repository browser
         html.on('pointerover',
-            e => this.ide.repositoryBrowser.setDropHandler(dragData => this.modelChanged(dragData.file),
-                dragData => dragData.file.fileType == this.modelType));
+            e => window.ide.repositoryBrowser.setDropHandler(
+                dragData => this.changeValue(html, dragData.file),
+                dragData => dragData.file.fileType == modelType));
+        html.on('pointerout', e => window.ide.repositoryBrowser.removeDropHandler());
 
-        html.on('pointerout', e => this.ide.repositoryBrowser.removeDropHandler());
         $(this).append(html);
+    }
+
+    private changeValue(html: JQuery<HTMLElement>, file?: ServerFile<ModelDefinition>) {
+        html.find('input').val(file?.name ?? '');
+        $(this).val(file?.fileName ?? '');
+        $(this).trigger('change');
     }
 }
