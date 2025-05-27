@@ -8,6 +8,7 @@ import CaseView from "../../elements/caseview";
 export default class CFISelector extends Dialog {
     case: CaseView;
     selectedItem?: CaseFileItemDef;
+    dataElement?: JQuery<HTMLElement>;
     constructor(cs: CaseView) {
         super(cs.editor.ide, 'Select a Case File Item');
         this.case = cs;
@@ -21,7 +22,8 @@ export default class CFISelector extends Dialog {
             </form>
         `);
         dialogHTML.append(htmlDialog);
-        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.tree')));
+        this.dataElement = dialogHTML.find('.tree');
+        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, this.dataElement!));
     }
 
     renderCaseFileItem(item: CaseFileItemDef, container: JQuery<HTMLElement>) {
@@ -41,7 +43,7 @@ export default class CFISelector extends Dialog {
         </div>`);
         container?.append(html);
         html.find('.summary').on('click', e => {
-            container.find('.selected-model').removeClass('selected-model');
+            this.dataElement!.find('.selected-model')?.removeClass('selected-model');
             this.selectedItem = item;
             $(e.target).addClass('selected-model');
         });
