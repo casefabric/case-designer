@@ -55,7 +55,7 @@ export default class ModelSelectorDialog extends Dialog {
         this.selectionTree.children().toArray().forEach(element => HtmlUtil.removeHTML($(element)));
         this.repository.list
             .filter(file => file.fileType == this.type)
-            .forEach(file => this.renderDefinition(file, this.selectionTree!));
+            .forEach(file => this.renderDefinition(file));
         this.applySearchFilter(undefined);
     }
 
@@ -124,8 +124,6 @@ export default class ModelSelectorDialog extends Dialog {
         this.searchBox?.find('.summary').css('display', 'block');
     }
 
-
-
     async newModel() {
         const oldCallback = this.callback!; // Save the old callback
 
@@ -141,7 +139,7 @@ export default class ModelSelectorDialog extends Dialog {
         this.closeModalDialog(undefined);
     }
 
-    renderDefinition(file: ServerFile<ModelDefinition>, container: JQuery<HTMLElement>) {
+    renderDefinition(file: ServerFile<ModelDefinition>) {
         const html = $(
             `<div>
                 <div class='summary'>
@@ -151,11 +149,11 @@ export default class ModelSelectorDialog extends Dialog {
                     <img class="action-icon rename-icon" src="${Images.Rename}" title="Rename model ..."/>
                 </div>
             </div>`);
-        container?.append(html);
+        this.selectionTree!.append(html);
         html.find('.summary').on('click', e => {
-            container.find('.selected-model').removeClass('selected-model');
+            this.selectionTree!.find('.selected-model')?.removeClass('selected-model');
             this.selectedItem = file;
-            $(e.target).addClass('selected-model');
+            $(e.target).parents('.summary').addClass('selected-model');
         });
         html.find('.summary').on('dblclick', e => {
             this.ok();
