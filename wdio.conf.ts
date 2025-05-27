@@ -1,10 +1,12 @@
 import { browser } from '@wdio/globals';
 import * as fs from "fs/promises";
 import path from 'path';
+import RepositoryConfiguration from './src/config/config';
 import { startServer } from './src/server/server';
 
-const testResultsFolder = './dist/test-results';
+const testResultsFolder = './dist/test-results/integration';
 const debug = process.env.DEBUG;
+let testLogCollection: any[] = [];
 
 export const config: WebdriverIO.Config = {
     //
@@ -13,7 +15,7 @@ export const config: WebdriverIO.Config = {
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
-    tsConfigPath: './test/tsconfig.json',
+    tsConfigPath: './test/integration/tsconfig.json',
 
     //
     // ==================
@@ -31,7 +33,7 @@ export const config: WebdriverIO.Config = {
     // of the config file unless it's absolute.
     //
     specs: [
-        './test/specs/**/*.ts'
+        './test/integration/specs/**/*.ts'
     ],
     // Patterns to exclude.
     exclude: [
@@ -62,8 +64,12 @@ export const config: WebdriverIO.Config = {
     capabilities: [{
         browserName: 'chrome',
         'goog:chromeOptions': {
-            args: ['headless', 'disable-gpu']
-        }
+            args: [
+                'headless',
+                'window-size=1920,1200'
+            ],
+            'excludeSwitches': ['enable-logging'],
+        },
     }],
 
     execArgv: debug ? ['--inspect'] : [],
@@ -166,9 +172,27 @@ export const config: WebdriverIO.Config = {
      * @param {object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    onPrepare: function (config, capabilities) {
+    onPrepare: async function (config, capabilities) {
         if (process.env.CIRCLECI !== "true") {
-            this.server = startServer(true, 3081);
+            // clean up test-results folder
+            try {
+                const stats = await fs.stat(testResultsFolder);
+                if (stats.isDirectory()) {
+                    await fs.rmdir(testResultsFolder, { recursive: true });
+                }
+            } catch (error) {
+                // ignore error if folder does not exist
+            }
+            const repositoryFolder = path.join(__dirname, './dist/test-results/integration/repository');
+            await fs.mkdir(repositoryFolder, { recursive: true })
+            const deployFolder = path.join(__dirname, './dist/test-results/integration/repository_deploy');
+            await fs.mkdir(deployFolder, { recursive: true })
+
+            const repositoryConfig = new RepositoryConfiguration();
+            repositoryConfig.repository = repositoryFolder;
+            repositoryConfig.deploy = deployFolder;
+
+            config.server = startServer(true, 3081, repositoryConfig);
         }
     },
     /**
@@ -208,8 +232,15 @@ export const config: WebdriverIO.Config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: async function (capabilities, specs, browser) {
+        browser.on('dialog', async (dialog) => {
+            // do not automatically dismiss alerts, need to be handled in the test
+        });
+
+        await browser.sessionSubscribe({ events: ['log.entryAdded'] });
+
+        browser.on('log.entryAdded', (entryAdded) => testLogCollection.push(entryAdded));
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
@@ -256,7 +287,7 @@ export const config: WebdriverIO.Config = {
         { error, result, duration, passed, retries }
     ) {
         // take a screenshot anytime a test fails and throws an error
-        if (error) {
+        if (!passed) {
             const fileFolder = path.join(testResultsFolder, test.parent);
             const filePath = path.join(fileFolder, `${test.title}.png`);
             try {
@@ -266,6 +297,12 @@ export const config: WebdriverIO.Config = {
             }
 
             await browser.saveScreenshot(filePath, { fullPage: true });
+
+            await fs.appendFile(
+                path.join(fileFolder, 'test.log'),
+                testLogCollection
+                    .map((event) => `${test.title} - ${event.level}: ${event.text}`)
+                    .join('\r\n'));
         }
     },
 
@@ -309,8 +346,11 @@ export const config: WebdriverIO.Config = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    // onComplete: function (exitCode, config, capabilities, results) {
-    // },
+    onComplete: function (exitCode, config, capabilities, results) {
+        if (process.env.CIRCLECI !== "true") {
+            config.server.close();
+        }
+    },
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session
