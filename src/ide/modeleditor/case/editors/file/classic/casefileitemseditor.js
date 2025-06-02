@@ -106,7 +106,7 @@ export default class CaseFileItemsEditor {
 
     /**
      * 
-     * @param {CFINode} node 
+     * @param {CFINode | undefined} node 
      */
     selectCFINode(node) {
         if (node === this.selectedNode) {
