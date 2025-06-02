@@ -81,11 +81,23 @@ export default class CMMNCompliance {
             // Make the reference to the definition
             item.setAttribute('definitionRef', newDefinitionId);
 
-            // AuthorizedRoleRefs have to be moved if the item is discretionary, 
-            //  but not if the definition is a UserEvent (which cannot be discretionary right now)
-            if (itemDefinition.getAttribute('authorizedRoleRefs') && item.tagName === 'discretionaryItem') {
-                item.setAttribute('authorizedRoleRefs', '' + itemDefinition.getAttribute('authorizedRoleRefs'));
-                itemDefinition.removeAttribute('authorizedRoleRefs');
+            // Discretionary items need to move attribute values for 'authorizedRoleRefs' and 'applicabilityRuleRefs'
+            if (item.tagName === 'discretionaryItem') {
+                // console.groupCollapsed("Moving attributes from " + itemDefinition.tagName + " to " + item.tagName);
+                const authorizedRoleRefs = itemDefinition.getAttribute('authorizedRoleRefs');
+                if (authorizedRoleRefs) {
+                    // console.log("Moving authorizedRoleRefs: " + authorizedRoleRefs);
+                    item.setAttribute('authorizedRoleRefs', authorizedRoleRefs);
+                    itemDefinition.removeAttribute('authorizedRoleRefs');
+                }
+
+                const applicabilityRuleRefs = itemDefinition.getAttribute('applicabilityRuleRefs');
+                if (applicabilityRuleRefs) {
+                    // console.log("Moving applicabilityRuleRefs: " + applicabilityRuleRefs);
+                    item.setAttribute('applicabilityRuleRefs', applicabilityRuleRefs);
+                    itemDefinition.removeAttribute('applicabilityRuleRefs');
+                }
+                // console.groupEnd();
             }
         }
 
