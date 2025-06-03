@@ -1,5 +1,6 @@
 ﻿import $ from "jquery";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import TypeDefinition from "../../../../repository/definition/type/typedefinition";
 import TypeDefinitionElement from "../../../../repository/definition/type/typedefinitionelement";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import XML from "../../../../util/xml";
@@ -280,6 +281,15 @@ export default class TypeEditor {
     onShow() {
         //always start with editor tab
         this.htmlParent.find('.model-source-tabs').tabs('option', 'active', 0);
+    }
+
+    async loadMainType(typeRef?: string) {
+        if (!typeRef) {
+            this.setMainType();
+        } else {
+            const file = await this.ide.repository.load<TypeDefinition>(typeRef);
+            this.setMainType(file);
+        }
     }
 
     async setMainType(file?: TypeFile) {
