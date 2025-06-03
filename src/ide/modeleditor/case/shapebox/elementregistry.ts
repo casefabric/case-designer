@@ -61,7 +61,7 @@ export class ElementMetadata {
         this.name = cmmnElementType.name;
 
         // TODO: Remove backwards compatibility code. Still used in e.g. modellistpanel 
-        (<any>cmmnElementType).typeDescription = cmmnElementType.name;
+        (<any>cmmnElementType).typeDescription = typeDescription;
         (<any>cmmnElementType).smallImage = smallImage;
         (<any>cmmnElementType).menuImage = menuImage;
     }

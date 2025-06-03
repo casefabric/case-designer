@@ -469,7 +469,7 @@ export default class CaseView {
      * @returns {String}
      */
     get typeDescription() {
-        return 'CaseView';
+        return 'Case';
     };
 
     //!!!! return true when the graph/background can have an element with elementType as parent
