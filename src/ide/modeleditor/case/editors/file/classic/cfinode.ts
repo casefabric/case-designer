@@ -68,7 +68,7 @@ export default class CFINode {
 
         const inputName = this.divCFIDetails.find('.inputName');
         const selectMultiplicity = this.divCFIDetails.find('.selectMultiplicity');
-        const selectDefinitionRef = this.divCFIDetails.find('.selectDefinitionRef');
+        const selectDefinitionRef = this.divCFIDetails.find('.selectDefinitionRef') as JQuery<HTMLSelectElement>;
 
         inputName.val(this.definition.name);
         selectMultiplicity.val(this.definition.multiplicity.toString());
@@ -110,7 +110,7 @@ export default class CFINode {
                 if (cfid) {
                     this.definition.definitionRef = cfid.fileName;
                     selectDefinitionRef.val(this.definition.definitionRef);
-                    this.editor.caseFileItemDefinitionEditor?.loadDefinition(this.definition.definitionRef);
+                    this.editor.caseFileItemDefinitionEditor.loadDefinition(this.definition.definitionRef);
                 }
             }
             this.case.refreshReferencingFields(this.definition);
@@ -190,7 +190,7 @@ export default class CFINode {
     select(): void {
         this.divCFIDetails.addClass('cfi-selected');
         // Show the right item in the definitions editor
-        this.editor.caseFileItemDefinitionEditor!.loadDefinition(this.definition.definitionRef);
+        this.editor.caseFileItemDefinitionEditor.loadDefinition(this.definition.definitionRef);
         this.case.updateSelectedCaseFileItemDefinition(this.definition);
         this.renderUsedIn(); // Refresh the usedIn count too when markers are refreshed
     }
@@ -226,7 +226,12 @@ export default class CFINode {
         const offspring = this.getOffspring();
         // If this node is selected or the current selected node is a child of this node,
         // then we need to find a new node to be selected
-        const nextNode = offspring.indexOf(this.editor.selectedNode) >= 0 ? determineNextNodeToSelect(this) : this.editor.selectedNode;
+        const currentSelectedNode = this.editor.selectedNode;
+        let nextNode: CFINode | undefined;
+        if (currentSelectedNode && currentSelectedNode.getOffspring().indexOf(this) >= 0) {
+            // If the current selected node is a child of this node, then we need to find a new node to select
+            nextNode = determineNextNodeToSelect(currentSelectedNode);
+        }
 
         // Now delete all childnodes of this node
         offspring.forEach(node => Util.removeFromArray(this.editor.cfiNodes, node));
