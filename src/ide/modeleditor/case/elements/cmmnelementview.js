@@ -218,7 +218,7 @@ export default class CMMNElementView extends CanvasElement {
         const coor = this.case.getCursorCoordinates(e);
         const cmmnElement = this.createCMMNChild(viewType, Grid.snap(coor.x), Grid.snap(coor.y));
         // Now select the newly added element
-        this.case.clearSelection();
+        this.case.selectedElement = cmmnElement;
         // Show properties of new element
         cmmnElement.propertiesView.show(true);
         return cmmnElement;
