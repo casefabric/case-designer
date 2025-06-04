@@ -8,7 +8,7 @@ import TypeWrapper from "./typewrapper";
 export default class CFIWrapper {
     merged = false;
     childWrappers: CFIWrapper[] = [];
-    caseElementsUsingCFI: ElementDefinition<any>[] = [];
+    caseElementsUsingCFI: ElementDefinition[] = [];
     cfidFile?: CFIDFile;
     typeWrapper?: TypeWrapper;
     parentType?: TypeDefinition;

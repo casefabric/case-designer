@@ -6,7 +6,7 @@ import { InternalReferenceList } from "./references/referencelist";
 import { ReferenceSet } from "./references/referenceset";
 import XMLSerializable from "./xmlserializable";
 
-export default class ElementDefinition<M extends ModelDefinition> extends XMLSerializable {
+export default class ElementDefinition<M extends ModelDefinition = ModelDefinition> extends XMLSerializable {
     readonly internalReferences = new InternalReferenceList(this);
     childDefinitions: ElementDefinition<M>[] = [];
 
@@ -94,7 +94,7 @@ export default class ElementDefinition<M extends ModelDefinition> extends XMLSer
     /**
      * Returns all elements that have a reference to this element
      */
-    searchInboundReferences(): ElementDefinition<ModelDefinition>[] {
+    searchInboundReferences(): ElementDefinition[] {
         if (this.modelDefinition && this.modelDefinition.file) {
             const definitions = this.modelDefinition.file.repository.list.map(file => file.definition);
             const elements = definitions.map(definition => definition ? definition.elements : []).flat();

@@ -1,21 +1,20 @@
 import ElementDefinition from "../elementdefinition";
-import ModelDefinition from "../modeldefinition";
 import XMLSerializable from "../xmlserializable";
 import InternalReference from "./internalreference";
 import ReferencingAttribute from "./referencingattribute";
 
-export class ReferenceSet<I extends InternalReference<ElementDefinition<ModelDefinition>>> extends ReferencingAttribute {
+export class ReferenceSet<I extends InternalReference<ElementDefinition>> extends ReferencingAttribute {
     references: Array<I> = [];
 
-    constructor(protected element: ElementDefinition<ModelDefinition>, ref: string, private creator?: new (element: ElementDefinition<ModelDefinition>, ref: string) => I) {
+    constructor(protected element: ElementDefinition, ref: string, private creator?: new (element: ElementDefinition, ref: string) => I) {
         super(element, ref);
         const references = this.ref.split(' ').filter(string => string.trim().length > 0);
         this.references = references.map(reference => this.create(reference));
     }
 
-    private create(value: string | ElementDefinition<ModelDefinition>): I {
+    private create(value: string | ElementDefinition): I {
         const ref = value instanceof ElementDefinition ? value.id : value;
-        const item = this.creator ? new this.creator(this.element, ref) : <I>new InternalReference(<ElementDefinition<ModelDefinition>>this.element, ref);
+        const item = this.creator ? new this.creator(this.element, ref) : <I>new InternalReference(<ElementDefinition>this.element, ref);
         return item;
     }
 
@@ -23,7 +22,7 @@ export class ReferenceSet<I extends InternalReference<ElementDefinition<ModelDef
         return this.references.filter(ref => ref.nonEmpty);
     }
 
-    add(reference: string | ElementDefinition<ModelDefinition>) {
+    add(reference: string | ElementDefinition) {
         this.references.push(this.create(reference).resolve());
     }
 
@@ -40,7 +39,7 @@ export class ReferenceSet<I extends InternalReference<ElementDefinition<ModelDef
         this.remove(element);
     }
 
-    find(reference: string | ElementDefinition<ModelDefinition>): I | undefined {
+    find(reference: string | ElementDefinition): I | undefined {
         return this.list.find(item => item.references(reference));
     }
 }

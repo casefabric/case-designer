@@ -2,10 +2,10 @@ import XML, { Element } from "../../util/xml";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 
-export default class CMMNDocumentationDefinition extends ElementDefinition<ModelDefinition> {
+export default class CMMNDocumentationDefinition extends ElementDefinition {
     textFormat: string;
     text: string;
-    static createDocumentationElement(importNode: Element|undefined, modelDefinition: ModelDefinition, parent?: ElementDefinition<ModelDefinition>) {
+    static createDocumentationElement(importNode: Element|undefined, modelDefinition: ModelDefinition, parent?: ElementDefinition) {
         if (importNode === undefined) {
             importNode = modelDefinition.createImportNode('documentation');
             if (parent && parent.importNode) {
@@ -15,7 +15,7 @@ export default class CMMNDocumentationDefinition extends ElementDefinition<Model
         return new CMMNDocumentationDefinition(importNode, modelDefinition, parent);
     }
 
-    constructor(importNode: Element, definition: ModelDefinition, parent?: ElementDefinition<ModelDefinition>) {
+    constructor(importNode: Element, definition: ModelDefinition, parent?: ElementDefinition) {
         super(importNode, definition, parent);
         this.textFormat = this.parseAttribute('textFormat', 'text/plain');
         const textElement = XML.getChildByTagName(this.importNode, 'text');

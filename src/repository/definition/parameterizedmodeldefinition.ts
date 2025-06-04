@@ -6,12 +6,12 @@ export default abstract class ParameterizedModelDefinition extends ModelDefiniti
     /**
      * A ModelDefinition must have input parameters.
      */
-    abstract get inputParameters(): ParameterDefinition<ParameterizedModelDefinition>[];
+    abstract get inputParameters(): ParameterDefinition[];
 
     /**
      * A ModelDefinition must have output parameters.
      */
-    abstract get outputParameters(): ParameterDefinition<ParameterizedModelDefinition>[];
+    abstract get outputParameters(): ParameterDefinition[];
 
     findInputParameter(identifier: string) {
         return this.inputParameters.find(p => p.hasIdentifier(identifier));
