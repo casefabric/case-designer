@@ -2,13 +2,13 @@ import Util from "../../../util/util";
 import { Element } from "../../../util/xml";
 import Validator from "../../validate/validator";
 import CaseFileItemTypeDefinition from "../cmmn/casefile/casefileitemtypedefinition";
-import ElementDefinition from "../elementdefinition";
 import Multiplicity from "./multiplicity";
 import SchemaDefinition from "./schemadefinition";
 import TypeDefinition from "./typedefinition";
+import TypeDefinitionElement from "./typedefinitionelement";
 import TypeReference from "./typereference";
 
-export default class SchemaPropertyDefinition extends ElementDefinition<TypeDefinition> {
+export default class SchemaPropertyDefinition extends TypeDefinitionElement {
     private _type: TypeReference;
     format: string;
     multiplicity: Multiplicity;

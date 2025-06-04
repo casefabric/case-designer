@@ -80,6 +80,7 @@ export default class CaseDefinition extends ParameterizedModelDefinition {
     get casePlan() {
         if (!this._casePlan) {
             this._casePlan = super.createDefinition(CasePlanDefinition);
+            this._casePlan.name = this.name;
         }
         return this._casePlan;
     }

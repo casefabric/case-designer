@@ -469,7 +469,7 @@ export default class CaseView {
      * @returns {String}
      */
     get typeDescription() {
-        return 'CaseView';
+        return 'Case';
     };
 
     //!!!! return true when the graph/background can have an element with elementType as parent
@@ -564,6 +564,8 @@ export default class CaseView {
      * @param {CMMNElementView} cmmnElement 
      */
     __removeElement(cmmnElement) {
+        console.groupCollapsed(`Removing ${cmmnElement}`);
+
         // if (cmmnElement instanceof PlanningTableView) return; // Cannot delete planning table images.
 
         // Remove it; which recursively also removes the children; only then save it.
@@ -577,6 +579,7 @@ export default class CaseView {
 
         // Also refresh the properties visible in the case view
         this.refreshMovableViews();
+        console.groupEnd();
     }
 
     /**

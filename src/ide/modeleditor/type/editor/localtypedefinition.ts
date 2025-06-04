@@ -1,4 +1,5 @@
 import TypeDefinition from "../../../../repository/definition/type/typedefinition";
+import TypeDefinitionElement from "../../../../repository/definition/type/typedefinitionelement";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import MainTypeDefinition from "./maintypedefinition";
 import TypeEditor from "./typeeditor";
@@ -14,7 +15,7 @@ export default class LocalTypeDefinition {
         this.definition = file.definition;
     }
 
-    async save(source?: TypeRenderer): Promise<void> {
+    async save(source?: TypeRenderer<TypeDefinitionElement>): Promise<void> {
         this.file.source = this.definition.toXML();
         TypeRenderer.refreshOthers(source);
         return this.file.save().then();

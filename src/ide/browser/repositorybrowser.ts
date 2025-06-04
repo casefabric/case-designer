@@ -1,17 +1,18 @@
 import $ from "jquery";
 import "jquery-ui";
-import ModelDefinition from "../repository/definition/modeldefinition";
-import Repository from "../repository/repository";
-import ServerFile from "../repository/serverfile/serverfile";
-import DragData from "./dragdrop/dragdata";
-import ServerFileDragData from "./dragdrop/serverfiledragdata";
-import IDE from "./ide";
-import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
+import ModelDefinition from "../../repository/definition/modeldefinition";
+import Repository from "../../repository/repository";
+import ServerFile from "../../repository/serverfile/serverfile";
+import DragData from "../dragdrop/dragdata";
+import ServerFileDragData from "../dragdrop/serverfiledragdata";
+import IDE from "../ide";
+import ModelEditorMetadata from "../modeleditor/modeleditormetadata";
+import Images from "../util/images/images";
 import ModelListPanel from "./modellistpanel";
-import Images from "./util/images/images";
 
 export default class RepositoryBrowser {
     repository: Repository;
+    panels: ModelListPanel[] = [];
     dragData?: ServerFileDragData;
     accordion: JQuery<HTMLElement>;
     searchBox: JQuery<HTMLElement>;
@@ -69,7 +70,9 @@ export default class RepositoryBrowser {
     }
 
     createModelListPanel(type: ModelEditorMetadata) {
-        return new ModelListPanel(this, this.accordion, type);
+        const panel = new ModelListPanel(this, this.accordion, type);
+        this.panels.push(panel);
+        return panel;
     }
 
     startDrag(file: ServerFile<ModelDefinition>, shapeImg: string) {

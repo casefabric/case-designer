@@ -1,6 +1,6 @@
 import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
-import RepositoryBrowser from "../repositorybrowser";
+import RepositoryBrowser from "../browser/repositorybrowser";
 import DragData from "./dragdata";
 
 export default class ServerFileDragData extends DragData {

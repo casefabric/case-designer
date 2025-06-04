@@ -1,6 +1,4 @@
 ﻿import $ from "jquery";
-import TypeDefinition from "../../../../../repository/definition/type/typedefinition";
-import TypeFile from "../../../../../repository/serverfile/typefile";
 import IDE from "../../../../ide";
 import TypeEditor from "../../../../modeleditor/type/editor/typeeditor";
 import TypeSelector from "../../../../modeleditor/type/editor/typeselector";
@@ -11,7 +9,6 @@ import CaseFileEditor from "./casefileeditor";
 export default class CaseTypeEditor {
     case: CaseView;
     ide: IDE;
-    file: TypeFile;
     typeEditor: TypeEditor;
     divTypeEditor: any;
     htmlContainer: JQuery<HTMLElement>;
@@ -24,13 +21,10 @@ export default class CaseTypeEditor {
         this.case = caseFileEditor.case;
         this.ide = this.case.editor.ide;
         this.htmlContainer = this.generateHTML();
-        this.file = <TypeFile>this.ide.repository.get(this.case.caseDefinition.caseFile.typeRef);
         this.typeEditor = new TypeEditor(this, this.divTypeEditor, this.case);
         this.caseTypeSelector = this.generateCaseTypeSelectorHTML();
         this.typeSelector = new TypeSelector(this.typeEditor.ide.repository, this.htmlContainer.find('.selectCaseFileModel'), this.typeRef, (v: string) => this.typeRef = v);
-        if (this.file) {
-            this.typeEditor.setMainType(this.file);
-        }
+        this.typeEditor.loadMainType(this.typeRef)
     }
 
     generateHTML() {
@@ -63,10 +57,7 @@ export default class CaseTypeEditor {
      */
     delete() {
         this.typeEditor.delete();
-        if (this.typeSelector) {
-            this.typeSelector.delete();
-        }
-        if (this.htmlContainer) HtmlUtil.clearHTML(this.htmlContainer);
+        HtmlUtil.clearHTML(this.htmlContainer);
     }
 
     get typeRef() {
@@ -74,16 +65,8 @@ export default class CaseTypeEditor {
     }
 
     set typeRef(typeRef: string) {
-        if (!typeRef) {
-            this.typeEditor.setMainType();
-            this.case.editor.completeUserAction();
-        } else {
-            this.ide.repository.load<TypeDefinition>(typeRef).then(file => {
-                this.file = file;
-                this.case.caseDefinition.caseFile.typeRef = typeRef;
-                this.typeEditor.setMainType(this.file);
-                this.case.editor.completeUserAction();
-            });
-        }
+        this.case.caseDefinition.caseFile.typeRef = typeRef;
+        this.typeEditor.loadMainType(typeRef);
+        this.case.editor.completeUserAction();
     }
 }

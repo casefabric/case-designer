@@ -29,9 +29,9 @@ abstract class ReferenceList<R extends Reference> {
     protected abstract create<E extends R>(ref: string): E;
 }
 
-export class InternalReferenceList extends ReferenceList<InternalReference<ElementDefinition<ModelDefinition>>> {
-    protected create<I extends InternalReference<ElementDefinition<ModelDefinition>>>(ref: string): I {
-        return <I>new InternalReference(<ElementDefinition<ModelDefinition>>this.element, ref);
+export class InternalReferenceList extends ReferenceList<InternalReference<ElementDefinition>> {
+    protected create<I extends InternalReference<ElementDefinition>>(ref: string): I {
+        return <I>new InternalReference(<ElementDefinition>this.element, ref);
     }
 
     resolve() {

@@ -1,13 +1,12 @@
 import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import ElementDefinition from "../../../../repository/definition/elementdefinition";
-import ModelDefinition from "../../../../repository/definition/modeldefinition";
 import SchemaPropertyDefinition from "../../../../repository/definition/type/schemapropertydefinition";
 import CaseFile from "../../../../repository/serverfile/casefile";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import Util from "../../../../util/util";
 import CaseModelEditor from "../../case/casemodeleditor";
-import { PropertyRenderer } from "./typerenderer";
+import PropertyRenderer from "./propertyrenderer";
 
 export default class PropertyUsage {
     static checkPropertyDeletionAllowed(renderer: PropertyRenderer) {
@@ -31,7 +30,7 @@ export default class PropertyUsage {
         referringCaseFileNames.push(...dims);
 
         // First check direct references, as that gives a different error message than child properties.
-        const caseFilter = (ref: ElementDefinition<ModelDefinition>) => referringCaseFileNames.indexOf(ref.modelDefinition.file.fileName) >= 0;
+        const caseFilter = (ref: ElementDefinition) => referringCaseFileNames.indexOf(ref.modelDefinition.file.fileName) >= 0;
         const references = getCaseReferences(renderer.property).filter(caseFilter);
         if (references.length > 0) {
             const definitionsUsing = Util.removeDuplicates(references.map(ref => ref.modelDefinition.file.fileName));

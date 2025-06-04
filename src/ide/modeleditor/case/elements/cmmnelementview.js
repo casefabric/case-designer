@@ -218,7 +218,7 @@ export default class CMMNElementView extends CanvasElement {
         const coor = this.case.getCursorCoordinates(e);
         const cmmnElement = this.createCMMNChild(viewType, Grid.snap(coor.x), Grid.snap(coor.y));
         // Now select the newly added element
-        this.case.clearSelection();
+        this.case.selectedElement = cmmnElement;
         // Show properties of new element
         cmmnElement.propertiesView.show(true);
         return cmmnElement;
@@ -519,7 +519,7 @@ export default class CMMNElementView extends CanvasElement {
 
         // Now remove our definition element from the case (overridden in CaseFileItemView, since that only needs to remove the shape)
         // Also let the definition side of the house know we're leaving
-        console.groupCollapsed(`Removing ${this}`);
+        console.groupCollapsed(`Deleting ${this}`);
         this.__removeElementDefinition();
         console.groupEnd();
 

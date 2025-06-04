@@ -45,7 +45,7 @@ export class ModelListPanel {
     }
 
     async createTypeModel(name: string) {
-        await this.selectModelTab('process');
+        await this.selectModelTab('type');
         await this.addTypeButton.click();
         await CreateNewModelDialog.nameInput.addValue(name);
         await browser.keys('\t'); // now other fields get filled.

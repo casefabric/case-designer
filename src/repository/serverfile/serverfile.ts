@@ -239,6 +239,7 @@ export default abstract class ServerFile<M extends ModelDefinition> {
      * Uploading to server gives also a new file list back, which we use to update the repository contents.
      */
     async save(): Promise<void> {
+        this.repository.startAction();
         console.groupCollapsed('Saving ' + this.fileName);
         const newMetadata = await this.repository.storage.saveModel(this.fileName, this.source);
         this.hasBeenSavedJustNow = true;
@@ -263,6 +264,7 @@ export default abstract class ServerFile<M extends ModelDefinition> {
             console.warn(`Already renaming ${this.fileName}`);
             return;
         }
+        this.repository.startAction();
         this.isRenaming = true;
         newFileName = newFileName.split(' ').join('');
         const oldFileName = this.fileName;
@@ -299,6 +301,7 @@ export default abstract class ServerFile<M extends ModelDefinition> {
      * Delete the file
      */
     async delete() {
+        this.repository.startAction();
         const metadata = await this.repository.storage.deleteModel(this.fileName);
         this.repository.removeFile(this);
         await this.repository.updateMetadata(metadata);

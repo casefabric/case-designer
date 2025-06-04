@@ -382,7 +382,7 @@ export default abstract class XMLSerializable {
     /**
      * Returns elements in models that reference this element
      */
-    abstract searchInboundReferences(): ElementDefinition<ModelDefinition>[];
+    abstract searchInboundReferences(): ElementDefinition[];
 
     /**
      * Exports the IDs of all elements in the list (that have an id) into a space-separated string

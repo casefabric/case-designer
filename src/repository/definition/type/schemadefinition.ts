@@ -1,15 +1,15 @@
 import Util from "../../../util/util";
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
-import ModelDefinition from "../modeldefinition";
 import Multiplicity from "./multiplicity";
 import SchemaPropertyDefinition from "./schemapropertydefinition";
 import TypeDefinition from "./typedefinition";
+import TypeDefinitionElement from "./typedefinitionelement";
 
-export default class SchemaDefinition extends ElementDefinition<TypeDefinition> {
+export default class SchemaDefinition extends TypeDefinitionElement {
     static TAG: string = 'schema';
     properties: SchemaPropertyDefinition[];
-    constructor(importNode: Element, public modelDefinition: TypeDefinition, public parent: ElementDefinition<TypeDefinition>) {
+    constructor(importNode: Element, public modelDefinition: TypeDefinition, public parent: TypeDefinitionElement) {
         super(importNode, modelDefinition, parent);
         this.properties = this.parseElements('property', SchemaPropertyDefinition);
     }
@@ -24,7 +24,7 @@ export default class SchemaDefinition extends ElementDefinition<TypeDefinition> 
         return property;
     }
 
-    searchInboundReferences(): ElementDefinition<ModelDefinition>[] {
+    searchInboundReferences(): ElementDefinition[] {
         // SchemaDefinition is a place holder for child properties (both in TypeDefinition and in SchemaPropertyDefinitions of complex type)
         // References are always to the TypeDefinition or to the SchemaPropertyDefinition, and therefore we're returning the references to our parent only.
         //  Note that the only one refering to this definition is _always_ the parent.

@@ -1,11 +1,10 @@
 import ElementDefinition from "../elementdefinition";
-import ModelDefinition from "../modeldefinition";
 import XMLSerializable from "../xmlserializable";
 import Reference from "./reference";
 
-export default class InternalReference<I extends ElementDefinition<ModelDefinition>> extends Reference {
+export default class InternalReference<I extends ElementDefinition> extends Reference {
     private target?: I;
-    constructor(protected element: ElementDefinition<ModelDefinition>, ref: string) {
+    constructor(protected element: ElementDefinition, ref: string) {
         super(element, ref);
         element.internalReferences.register(this);
     }

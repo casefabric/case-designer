@@ -1,5 +1,7 @@
 ﻿import $ from "jquery";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
+import TypeDefinition from "../../../../repository/definition/type/typedefinition";
+import TypeDefinitionElement from "../../../../repository/definition/type/typedefinitionelement";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import XML from "../../../../util/xml";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
@@ -11,7 +13,9 @@ import CaseView from "../../case/elements/caseview";
 import ModelSourceEditor from "../../xmleditor/modelsourceeditor";
 import TypeModelEditor from "../typemodeleditor";
 import MainTypeDefinition from "./maintypedefinition";
-import TypeRenderer, { PropertyRenderer, SchemaRenderer } from "./typerenderer";
+import PropertyRenderer from "./propertyrenderer";
+import SchemaRenderer from "./schemarenderer";
+import TypeRenderer from "./typerenderer";
 
 export default class TypeEditor {
     viewSourceEditor: ModelSourceEditor;
@@ -263,7 +267,7 @@ export default class TypeEditor {
         }
     }
 
-    removeEmptyPropertyRenderers(renderer: TypeRenderer | undefined = this.renderer) {
+    removeEmptyPropertyRenderers(renderer: TypeRenderer<TypeDefinitionElement> | undefined = this.renderer) {
         renderer?.children.forEach(r => {
             this.removeEmptyPropertyRenderers(r);
             if (r instanceof PropertyRenderer) {
@@ -277,6 +281,15 @@ export default class TypeEditor {
     onShow() {
         //always start with editor tab
         this.htmlParent.find('.model-source-tabs').tabs('option', 'active', 0);
+    }
+
+    async loadMainType(typeRef?: string) {
+        if (!typeRef) {
+            this.setMainType();
+        } else {
+            const file = await this.ide.repository.load<TypeDefinition>(typeRef);
+            this.setMainType(file);
+        }
     }
 
     async setMainType(file?: TypeFile) {

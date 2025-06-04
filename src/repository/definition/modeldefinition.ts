@@ -21,7 +21,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
     }
 
     typeCounters = new TypeCounter(this);
-    elements: ElementDefinition<ModelDefinition>[] = [];
+    elements: ElementDefinition[] = [];
 
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
@@ -82,7 +82,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
         return this.__documentation;
     }
 
-    addElement(element: ElementDefinition<ModelDefinition>) {
+    addElement(element: ElementDefinition) {
         // console.warn(this.file.fileName +": adding a " + element.constructor.name)
         this.elements.push(element);
     }
@@ -128,7 +128,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
      * Returns the element that has the specified identifier, or undefined.
      * If the constructor argument is specified, the element is checked against the constructor with 'instanceof'
      */
-    getElement(id: string, constructor?: Function): ElementDefinition<ModelDefinition> | undefined {
+    getElement(id: string, constructor?: Function): ElementDefinition | undefined {
         const element = this.elements.find(element => id && element.id == id); // Filter first checks whether id is undefined;
         if (constructor && element) {
             if (element instanceof constructor) {
@@ -171,7 +171,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
     /**
      * Returns all elements that have a reference to this element
      */
-    searchInboundReferences(): ElementDefinition<ModelDefinition>[] {
+    searchInboundReferences(): ElementDefinition[] {
         if (this.file) {
             const definitions = this.file.repository.list.map(file => file.definition);
             const elements = definitions.map(definition => definition ? definition.elements : []).flat();
