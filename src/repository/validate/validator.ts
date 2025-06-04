@@ -21,7 +21,7 @@ class Printer {
 }
 
 export default class Validator {
-    private remarks: Remark<XMLSerializable>[] = [];
+    private remarks: Remark[] = [];
     private models: ModelDefinition[];
     private printer: Printer = new Printer();
     constructor(public readonly model: ModelDefinition) {
@@ -40,7 +40,7 @@ export default class Validator {
         return this;
     }
 
-    add(remark: Remark<XMLSerializable>) {
+    add(remark: Remark) {
         this.printer.log(`Adding ${remark}`);
         this.remarks.push(remark);
     }

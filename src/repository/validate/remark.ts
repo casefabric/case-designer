@@ -2,8 +2,8 @@ import ElementDefinition from "../definition/elementdefinition";
 import ModelDefinition from "../definition/modeldefinition";
 import XMLSerializable from "../definition/xmlserializable";
 
-export default class Remark<E extends XMLSerializable> {
-    constructor(public readonly element: E, public description: string) {
+export default class Remark {
+    constructor(public readonly element: XMLSerializable, public description: string) {
     }
 
     isWarning(): boolean {
