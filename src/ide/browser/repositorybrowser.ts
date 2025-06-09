@@ -75,7 +75,7 @@ export default class RepositoryBrowser {
         return panel;
     }
 
-    startDrag(file: ServerFile<ModelDefinition>, shapeImg: string) {
+    startDrag(file: ServerFile, shapeImg: string) {
         this.dragData = new ServerFileDragData(this, file, shapeImg);
     }
 
@@ -202,7 +202,7 @@ export default class RepositoryBrowser {
         this.accordion.find('div').css('display', 'block');
     }
 
-    async delete(file: ServerFile<ModelDefinition>, fromModel:ModelDefinition | undefined = undefined) {
+    async delete(file: ServerFile, fromModel:ModelDefinition | undefined = undefined) {
         const usage = fromModel 
                             ? file.usage.filter(x => x.definition?.id != fromModel.id)
                             : file.usage;
@@ -220,7 +220,7 @@ export default class RepositoryBrowser {
         }
     }
 
-    async rename(file: ServerFile<ModelDefinition>) {
+    async rename(file: ServerFile) {
         const prompter = (previousProposal: string = ''): string | null => {
             const warningMsg = previousProposal !== file.name ? `\n   ${file.fileType} '${previousProposal}' already exists` : '';
             const text = `Specify a new name for ${file.fileType} '${file.name}'${warningMsg}`;

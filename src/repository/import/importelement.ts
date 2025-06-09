@@ -1,7 +1,6 @@
 import XML, { Element } from "../../util/xml";
 import CaseTeamModelDefinition from "../definition/caseteam/caseteammodeldefinition";
 import CaseDefinition from "../definition/cmmn/casedefinition";
-import ModelDefinition from "../definition/modeldefinition";
 import TypeDefinition from "../definition/type/typedefinition";
 import Repository from "../repository";
 import CaseFile from "../serverfile/casefile";
@@ -28,7 +27,7 @@ export default abstract class ImportElement {
     /**
      * @returns {ServerFile}
      */
-    abstract createFile(): ServerFile<ModelDefinition>;
+    abstract createFile(): ServerFile;
 }
 
 export class CaseImporter extends ImportElement {

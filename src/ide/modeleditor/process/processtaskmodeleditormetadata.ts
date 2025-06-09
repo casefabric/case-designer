@@ -1,4 +1,3 @@
-import ModelDefinition from "../../../repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
 import ProcessFile from "../../../repository/serverfile/processfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
@@ -13,7 +12,7 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
         return this.ide?.repository.getProcesses() || [];
     }
 
-    supportsFile(file: ServerFile<ModelDefinition>) {
+    supportsFile(file: ServerFile) {
         return file instanceof ProcessFile;
     }
 

@@ -1,4 +1,3 @@
-import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import IDE from "../ide";
 import CaseModelEditor from "./case/casemodeleditor";
@@ -31,7 +30,7 @@ export default class ModelEditorRegistry {
      * @param file 
      * @returns 
      */
-    get<M extends ModelEditor>(file: ServerFile<ModelDefinition>): M | undefined {
+    get<M extends ModelEditor>(file: ServerFile): M | undefined {
         return <M> this.editors.find(editor => editor.file.fileName === file.fileName);
     }
 

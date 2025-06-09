@@ -1,5 +1,4 @@
 ﻿import $ from "jquery";
-import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Util from "../../util/util";
 import MovableEditor from "../editors/movableeditor";
@@ -16,7 +15,7 @@ export default class ModelEditor {
     /**
      * Base class for model editor
      */
-    constructor(public ide: IDE, public file: ServerFile<ModelDefinition>) {
+    constructor(public ide: IDE, public file: ServerFile) {
         this.ide.editorRegistry.add(this);
         this._html = $(
 `<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">

@@ -1,4 +1,3 @@
-import ModelDefinition from "../../../repository/definition/modeldefinition";
 import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
 import HumanTaskFile from "../../../repository/serverfile/humantaskfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
@@ -17,7 +16,7 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
         return this.ide?.repository.getHumanTasks() || [];
     }
 
-    supportsFile(file: ServerFile<ModelDefinition>) {
+    supportsFile(file: ServerFile) {
         return file instanceof HumanTaskFile;
     }
 

@@ -4,7 +4,7 @@ import ModelDefinition from "../definition/modeldefinition";
 import Repository from "../repository";
 import Metadata from "./metadata";
 
-export default abstract class ServerFile<M extends ModelDefinition> {
+export default abstract class ServerFile<M extends ModelDefinition = ModelDefinition> {
     private _fileName: any;
     private _source: any;
     private _definition?: M;
@@ -311,9 +311,9 @@ export default abstract class ServerFile<M extends ModelDefinition> {
     /**
      * @returns A list of files that are used by this file
      */
-    get references(): ServerFile<ModelDefinition>[] {
+    get references(): ServerFile[] {
         if (this.definition) {
-            return <ServerFile<ModelDefinition>[]>Util.removeDuplicates(this.definition.elements.map(element => element.externalReferences.all).flat().map(ref => ref.file).filter(file => file !== undefined));
+            return <ServerFile[]>Util.removeDuplicates(this.definition.elements.map(element => element.externalReferences.all).flat().map(ref => ref.file).filter(file => file !== undefined));
         } else {
             return [];
         }
@@ -323,7 +323,7 @@ export default abstract class ServerFile<M extends ModelDefinition> {
      * Return a list of files that use this file.
      *  @returns Array with ServerFile's of the files where this file is used in 
      */
-    get usage(): ServerFile<ModelDefinition>[] {
+    get usage(): ServerFile[] {
         return Util.removeDuplicates(this.repository.list.filter(file => file.references.find(reference => reference === this)));
     }
 }
