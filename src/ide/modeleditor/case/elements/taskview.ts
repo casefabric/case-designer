@@ -53,7 +53,7 @@ export default abstract class TaskView<TD extends TaskDefinition = TaskDefinitio
         }
     }
 
-    createHalo() {
+    createHalo(): TaskHalo<TaskDefinition, TaskView> {
         return new TaskHalo(this);
     }
 
