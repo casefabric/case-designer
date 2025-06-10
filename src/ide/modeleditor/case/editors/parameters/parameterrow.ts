@@ -1,6 +1,6 @@
 import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
-import RowRenderer from "../tableeditor/rowrenderer";
+import RowRenderer from "../tablerenderer/rowrenderer";
 import ParametersControl from "./parameterscontrol";
 
 

@@ -1,5 +1,5 @@
 import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
-import TableRenderer from "../tableeditor/tablerenderer";
+import TableRenderer from "../tablerenderer/tablerenderer";
 import CaseParametersEditor from "./caseparameterseditor";
 import ParameterColumn from "./parametercolumn";
 import ParameterRow from "./parameterrow";
