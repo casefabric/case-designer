@@ -8,25 +8,32 @@ import Settings from "../settings/settings";
 import RightSplitter from "../splitter/rightsplitter";
 import { $get } from "../util/ajax";
 import HtmlUtil from "../util/htmlutil";
+import { DebugEvent } from "./debugevent";
 
 /**
  * This class implements the logic to call the repository REST service to debug a case instance.
- *
- * @constructor
  */
 export default class Debugger extends StandardForm {
-    /**
-     * 
-     * @param {CaseView} cs 
-     */
-    constructor(cs) {
+    eventTypeFilter: string;
+    splitter!: RightSplitter;
+    eventTable!: JQuery<HTMLElement>;
+    codeMirrorEventViewer: any;
+    keyHandler!: (e: any) => void;
+    _events: DebugEvent[] = [];
+    parentActorId?: string;
+    pics: DebugEvent[] = [];
+    _filteredEvents: DebugEvent[] = [];
+    eventNameFilter: string = '';
+    _selectedEvent: any;
+    currentDefinition?: string;
+    constructor(cs: CaseView) {
         super(cs, 'Debugger', 'debug-form');
         this.eventTypeFilter = '';
         this.eventNameFilter = '';
     }
 
     renderData() {
-        this.htmlContainer.html(
+        this.htmlContainer!.html(
             `<div>
     <div>
         <span style="top:-15px;position:relative;">
@@ -108,22 +115,22 @@ export default class Debugger extends StandardForm {
     </div>
 </div>`);
 
-        this.html.find('.caseInstanceId').val(localStorage.getItem('debug-case-id'))
-        this.html.find('.serverURL').on('change', e => Settings.serverURL = e.currentTarget.value);
-        this.html.find('.from').val(localStorage.getItem('from'))
-        this.html.find('.to').val(localStorage.getItem('to'))
+        this.html.find('.caseInstanceId').val(localStorage.getItem('debug-case-id') ?? '');
+        this.html.find('.serverURL').on('change', (e: JQuery.ChangeEvent) => Settings.serverURL = e.currentTarget.value);
+        this.html.find('.from').val(localStorage.getItem('from') ?? '');
+        this.html.find('.to').val(localStorage.getItem('to') ?? '');
         this.html.find('.inputShowPathInformation').prop('checked', this.showPathInformation);
-        this.html.find('.inputShowPathInformation').on('change', e => {
+        this.html.find('.inputShowPathInformation').on('change', (e: JQuery.TriggeredEvent) => {
             this.showPathInformation = e.currentTarget.checked;
             this.renderEvents();
         });
         this.html.find('.inputHideDetail').prop('checked', this.hideDetails);
-        this.html.find('.inputHideDetail').on('change', e => {
+        this.html.find('.inputHideDetail').on('change', (e: JQuery.TriggeredEvent) => {
             this.hideDetails = e.currentTarget.checked;
             this.renderEvents();
         });
         this.html.find('.inputShowAllTimestamps').prop('checked', this.showAllTimestamps);
-        this.html.find('.inputShowAllTimestamps').on('change', e => {
+        this.html.find('.inputShowAllTimestamps').on('change', (e: JQuery.TriggeredEvent) => {
             this.showAllTimestamps = e.currentTarget.checked;
             this.renderEvents();
         });
@@ -138,7 +145,7 @@ export default class Debugger extends StandardForm {
         this.eventTable = this.html.find('.event-list');
 
         // Add code mirror for decent printing
-        this.codeMirrorEventViewer = CodeMirrorConfig.createJSONEditor(this.htmlContainer.find('.debugFormContent'));
+        this.codeMirrorEventViewer = CodeMirrorConfig.createJSONEditor(this.htmlContainer!.find('.debugFormContent'));
 
         this.keyHandler = e => this.handleKeyDown(e);
 
@@ -146,15 +153,11 @@ export default class Debugger extends StandardForm {
         this.html.find('.event-content').on('paste', e => this.handlePasteText(e));
     }
 
-    /**
-     * 
-     * @param {JQuery.Event} e 
-     */
-    handlePasteText(e) {
+    handlePasteText(e: JQuery.Event) {
         e.stopPropagation();
         e.stopImmediatePropagation();
         e.preventDefault();
-        const pastedText = e.originalEvent.clipboardData.getData('text/plain');
+        const pastedText = (e as any).originalEvent.clipboardData.getData('text/plain');
         try {
             const potentialEvents = JSON.parse(pastedText);
             this.events = potentialEvents;
@@ -164,21 +167,14 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    /**
-     * 
-     * @param {JQuery.ChangeEvent} e 
-     */
-    searchWith(e) {
+    searchWith(e: JQuery.ChangeEvent) {
         const searchBox = $(e.currentTarget);
         const searchText = searchBox.val();
-        const filterName = searchBox.attr('filter');
-        this[filterName] = searchText;
+        const filterName = searchBox.attr('filter') ?? '';
+        (this as any)[filterName] = searchText;
         this.renderEvents();
     }
 
-    /**
-     * @returns {Boolean}
-     */
     get showPathInformation() {
         const showPath = localStorage.getItem('showPathInformation') === 'true';
         return showPath;
@@ -188,9 +184,6 @@ export default class Debugger extends StandardForm {
         localStorage.setItem('showPathInformation', show.toString());
     }
 
-    /**
-     * @returns {Boolean}
-     */
     get hideDetails() {
         const hide = localStorage.getItem('hideDetails') === 'true';
         return hide;
@@ -200,9 +193,6 @@ export default class Debugger extends StandardForm {
         localStorage.setItem('hideDetails', show.toString());
     }
 
-    /**
-     * @returns {Boolean}
-     */
     get showAllTimestamps() {
         const hide = localStorage.getItem('hideTimestamps') === 'true';
         return hide;
@@ -212,11 +202,7 @@ export default class Debugger extends StandardForm {
         localStorage.setItem('hideTimestamps', show.toString());
     }
 
-    /**
-     * 
-     * @param {JQuery.KeyDownEvent} e 
-     */
-    handleKeyDown(e) {
+    handleKeyDown(e: JQuery.KeyDownEvent) {
         e.stopPropagation();
         e.preventDefault();
         if (this.filteredEvents.length == 0) return; // Nothing rendered, hence no event to select.
@@ -226,7 +212,7 @@ export default class Debugger extends StandardForm {
                 if (this.selectedEvent.filterIndex == this.filteredEvents.length - 1) {
                     return;
                 } else {
-                    this.selectEvent(this.filteredEvents[this.selectedEvent.filterIndex + 1], true);
+                    this.selectEvent(this.filteredEvents[Number(this.selectedEvent.filterIndex) + 1], true);
                 }
             } else {
                 const lastEvent = this.filteredEvents[this.filteredEvents.length - 1];
@@ -239,7 +225,7 @@ export default class Debugger extends StandardForm {
                 if (this.selectedEvent.filterIndex == 0) {
                     return;
                 } else {
-                    this.selectEvent(this.filteredEvents[this.selectedEvent.filterIndex - 1], true);
+                    this.selectEvent(this.filteredEvents[Number(this.selectedEvent.filterIndex) - 1], true);
                 }
             } else {
                 const lastEvent = this.filteredEvents[this.filteredEvents.length - 1];
@@ -274,12 +260,12 @@ export default class Debugger extends StandardForm {
         this.selectedEvent = undefined;
     }
 
-    setEventContent(label, content) {
+    setEventContent(label: string, content: string) {
         this.codeMirrorEventViewer.setValue(content);
         this.codeMirrorEventViewer.refresh();
     }
 
-    get events() {
+    get events(): DebugEvent[] {
         return this._events;
     }
 
@@ -295,7 +281,7 @@ export default class Debugger extends StandardForm {
             if (boards.length) {
                 this.parentActorId = boards[0].content.value;
             } else {
-                const currentActorId = this.html.find('.caseInstanceId').val().toString();
+                const currentActorId = String(this.html!.find('.caseInstanceId').val() ?? '');
                 if (currentActorId.endsWith('-team')) {
                     this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
                 }
@@ -303,10 +289,7 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    /**
-     * @param {Array<*>} events 
-     */
-    set events(events) {
+    set events(events: DebugEvent[]) {
         this.selectedEvent = undefined;
         this._events = events;
         for (let i = 0; i < events.length; i++) {
@@ -321,7 +304,7 @@ export default class Debugger extends StandardForm {
         console.log(`Found ${events.length} events`)
         this.renderEvents();
 
-        const picPrinter = (pic, index) => {
+        const picPrinter = (pic: DebugEvent, index: number) => {
             // compatibility on events created up to cafienne engine version 1.1.21: in newer events a path property exists, showing more info.
             if (pic.content.path) return `${index}: ${pic.content.type}[${pic.content.path}]`;
             return `${index}: ${pic.content.type}[${pic.content.name + '.' + pic.content.planitem.index}]`;
@@ -335,10 +318,7 @@ export default class Debugger extends StandardForm {
         return this._filteredEvents || []; // If nothing yet selected, return an empty array
     }
 
-    /**
-     * @param {Array<any>} selection
-     */
-    set filteredEvents(selection) {
+    set filteredEvents(selection: DebugEvent[]) {
         // Clear filterIndex on current selection
         if (this._filteredEvents) this._filteredEvents.forEach(value => delete value.filterIndex)
         // Apply filterIndex to new selection
@@ -351,8 +331,7 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    getEventName(event) {
-        /** @type{String} */
+    getEventName(event: DebugEvent) {
         const path = event.content.path;
         const paths = path ? path.split('/') : [];
 
@@ -377,11 +356,11 @@ export default class Debugger extends StandardForm {
         return eventWithName;
     }
 
-    isDefinitionEvent(event) {
+    isDefinitionEvent(event: DebugEvent) {
         return (event.content && event.content.definition && event.content.definition.source && ('' + event.content.definition.source).startsWith('<?xml'));
     }
 
-    getEventButton(event) {
+    getEventButton(event: DebugEvent) {
         if (event.type === 'TaskInputFilled' && (event.content.type === 'ProcessTask' || event.content.type === 'CaseTask') || event.type === 'BoardTeamCreated' || event.type === 'FlowActivated') {
             return '<span style="padding-left:20px"><button class="buttonShowSubEvents">Show events</button></span>';
         } else if (this.isDefinitionEvent(event)) {
@@ -391,7 +370,7 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    getPlanItemName(planItemId) {
+    getPlanItemName(planItemId: string) {
         const pic = this.pics.find(p => p.content.planItemId === planItemId);
         if (pic) {
             if (pic.content.path) {
@@ -405,7 +384,7 @@ export default class Debugger extends StandardForm {
 
     }
 
-    getIndex(eventWithName) {
+    getIndex(eventWithName?: DebugEvent): string {
         if (!eventWithName) return '';
         if (!eventWithName.content) return '';
         if (!eventWithName.content.planitem) return '';
@@ -426,7 +405,7 @@ export default class Debugger extends StandardForm {
         this.setEventContent('', startMsg);
         HtmlUtil.clearHTML(this.eventTable);
 
-        const getBackgroundColor = event => {
+        const getBackgroundColor = (event: DebugEvent) => {
             if (event.type !== 'PlanItemTransitioned') return '';
             if (event.content.currentState == 'Failed') return 'color: red; font-weight: bold';
             if (event.content.currentState == 'Completed') return 'color: green; font-weight: bold';
@@ -436,7 +415,7 @@ export default class Debugger extends StandardForm {
         const eventTypes = this.eventTypeFilter.split(' ');
         const eventNames = this.eventNameFilter.split(' ');
 
-        const applyFilter = event => {
+        const applyFilter = (event: DebugEvent) => {
             const eventType = event.type;
             const eventName = this.getEventName(event);
             const hasOneOfEventTypes = eventTypes[0] == '' || eventTypes.find(type => hasSearchText(type, eventType));
@@ -450,7 +429,7 @@ export default class Debugger extends StandardForm {
         this.filteredEvents = this.events.filter(applyFilter);
         const newRows = this.filteredEvents.map(event => {
             const timestamp = event.content.modelEvent.timestamp ? event.content.modelEvent.timestamp : event.type.indexOf('Modified') >= 0 ? event.content.lastModified : '';
-            const format = timestamp => timestamp.substring(0, timestamp.indexOf('.') + 4);
+            const format = (timestamp: string) => timestamp.substring(0, timestamp.indexOf('.') + 4);
             let timestampString = timestamp;
             if (!currentTimestamp) { // bootstrap
                 currentTimestamp = timestamp;
@@ -491,10 +470,10 @@ export default class Debugger extends StandardForm {
         this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
         this.eventTable.find('.buttonCopyEventDefinition').on('click', e => this.copyEventDefinition(e.currentTarget));
 
-        if (this.eventTable.width() < this.eventTable.find('table').width()) {
-            this.splitter.repositionSplitter(this.eventTable.find('table').width() + 20);
+        if (Number(this.eventTable.width()) < Number(this.eventTable.find('table').width())) {
+            this.splitter.repositionSplitter(Number(this.eventTable.find('table').width()) + 20);
         }
-        if (!renderedBefore) this.splitter.repositionSplitter(this.eventTable.find('table').width() + 70);
+        if (!renderedBefore) this.splitter.repositionSplitter(Number(this.eventTable.find('table').width()) + 70);
         this.renderEventButtons();
         // Upon rendering the events again (e.g. when changing a tickmark in the show/hide options), let's render the selected event again.
         this.selectEvent(this.selectedEvent);
@@ -511,30 +490,29 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    get selectedEvent() {
+    get selectedEvent(): DebugEvent | undefined {
         return this._selectedEvent;
     }
 
-    set selectedEvent(event) {
+    set selectedEvent(event: DebugEvent | undefined) {
         this._selectedEvent = event;
     }
 
-    /**
-     * @param {HTMLElement} htmlElement
-     */
-    findEvent(htmlElement) {
+    findEvent(htmlElement: HTMLElement): DebugEvent | undefined {
         const eventId = $(htmlElement).closest('tr').attr('event-nr');
         if (eventId) {
-            const event = this.events[eventId];
+            const event = this.events[Number(eventId)];
             return event;
         }
     }
 
-    showSubEvents(btn) {
+    showSubEvents(btn: HTMLElement) {
         const event = this.findEvent(btn);
-        // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
-        this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.team || event.content.flowId);
-        this.showEvents();
+        if (event) {
+            // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
+            this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.team || event.content.flowId);
+            this.showEvents();
+        }
     }
 
     showParentEvents() {
@@ -544,18 +522,17 @@ export default class Debugger extends StandardForm {
         }
     }
 
-    copyEventDefinition(btn) {
+    copyEventDefinition(btn: HTMLElement) {
         const event = this.findEvent(btn);
-        HtmlUtil.copyText(event.content.definition.source);
+        if (event) {
+            HtmlUtil.copyText(event.content.definition.source);
+        }
     }
 
     /**
-     * 
-     * @param {*} event 
      * @param {boolean} scroll Whether to center the selected event. Only done when there is a scrollbar and arrow-down or arrow-up is pressed
-     * @returns 
      */
-    selectEvent(event, scroll = false) {
+    selectEvent(event?: DebugEvent, scroll = false) {
         this.selectedEvent = event;
         // Clear current selection
         this.eventTable.find('tr').css('background-color', '')
@@ -585,7 +562,7 @@ export default class Debugger extends StandardForm {
     }
 
     async showEvents() {
-        const caseInstanceId = this.html.find('.caseInstanceId').val();
+        const caseInstanceId = String(this.html.find('.caseInstanceId').val() ?? '');
         const from = this.html.find('.from').val();
         const to = this.html.find('.to').val();
         const parameters = [];
@@ -597,10 +574,10 @@ export default class Debugger extends StandardForm {
         }
 
         $get(`${Settings.serverURL}/debug/${caseInstanceId}?${parameters.join('&')}`).then(data => {
-            this.events = data;
+            this.events = data as DebugEvent[];
             if (this.events.length > 0) {
                 // Only overwrite the previous identifier if we have actually found events.
-                localStorage.setItem('debug-case-id', caseInstanceId.toString());
+                localStorage.setItem('debug-case-id', caseInstanceId);
                 localStorage.setItem('from', '' + from);
                 localStorage.setItem('to', '' + to);
             }
@@ -610,10 +587,8 @@ export default class Debugger extends StandardForm {
 
 /**
  * Determines recursively whether each character of text1 is available in text2 
- * @param {String} searchFor 
- * @param {String} searchIn
  */
-function hasSearchText(searchFor, searchIn) {
+function hasSearchText(searchFor: string, searchIn: string): boolean {
     if (!searchFor) {
         // Nothing left to search for, so found a hit 
         return true;
@@ -638,10 +613,8 @@ function hasSearchText(searchFor, searchIn) {
 /**
  * Returns the next search term to search for.
  * This is either everything up to a dot or a space, or just the next character.
- * @param {String} searchFor 
- * @returns 
  */
-function getSearchTerm(searchFor) {
+function getSearchTerm(searchFor: string): number {
     // Take everything up-to-space, or ...
     const space = searchFor.indexOf(' ');
     if (space > 0) return space;

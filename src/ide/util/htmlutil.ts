@@ -5,7 +5,7 @@ export default class HtmlUtil {
     /**
      * Copies the text to clipboard
      */
-    static copyText(text: string) {
+    static copyText(text?: string) {
         if (!text) {
             console.warn('No text to copy to clipboard');
             return;
