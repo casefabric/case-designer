@@ -23,6 +23,8 @@
   },
   "devDependencies": {
     "@types/@xmldom/xmldom": "^0.9.7",
+    "@types/backbone": "^1.4.23",
+    "@types/codemirror": "^5.60.16",
     "@types/express": "^4.17.13",
     "@types/jquery": "^3.5.30",
     "@types/jqueryui": "^1.12.23",

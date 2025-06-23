@@ -1,4 +1,3 @@
-import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import RepositoryBrowser from "../browser/repositorybrowser";
 import CreateNewModelDialog from "../createnewmodeldialog";
@@ -30,18 +29,18 @@ export default abstract class ModelEditorMetadata {
     /**
      * Whether the metadata is associated with this kind of file
      */
-    abstract supportsFile(file: ServerFile<ModelDefinition>): boolean;
+    abstract supportsFile(file: ServerFile): boolean;
 
     /**
      * Create an editor for this file
      */
-    abstract createEditor(ide: IDE, file: ServerFile<ModelDefinition>): ModelEditor;
+    abstract createEditor(ide: IDE, file: ServerFile): ModelEditor;
 
     get supportsDeploy() {
         return false;
     }
 
-    abstract get modelList(): Array<ServerFile<ModelDefinition>>;
+    abstract get modelList(): Array<ServerFile>;
 
     /**
      * Returns the image that can be used when rendering a server file that this editor can load

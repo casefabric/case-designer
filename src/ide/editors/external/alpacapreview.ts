@@ -2,10 +2,6 @@ import alpaca_raw_source from "alpaca/dist/alpaca/bootstrap/alpaca.min.js?raw";
 import hanldebars_raw_source from "handlebars/dist/handlebars.min.js?raw";
 import $ from "jquery";
 
-// BIG TODO HERE Alpaca doesn't work with jQuery import .  Some undefined jQuery
-// import "handlebars";
-// import "alpaca/dist/alpaca/bootstrap/alpaca";
-
 function loadScriptSync(src: string) {
     var s = document.createElement('script');
     s.type = "text/javascript";

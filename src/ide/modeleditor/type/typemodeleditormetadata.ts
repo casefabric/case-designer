@@ -1,4 +1,3 @@
-import ModelDefinition from "../../../repository/definition/modeldefinition";
 import TypeDefinition from "../../../repository/definition/type/typedefinition";
 import ServerFile from "../../../repository/serverfile/serverfile";
 import TypeFile from "../../../repository/serverfile/typefile";
@@ -12,7 +11,7 @@ export default class TypeModelEditorMetadata extends ModelEditorMetadata {
         return this.ide?.repository.getTypes() || [];
     }
 
-    supportsFile(file: ServerFile<ModelDefinition>) {
+    supportsFile(file: ServerFile) {
         return file instanceof TypeFile;
     }
 

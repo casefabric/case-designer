@@ -10,7 +10,7 @@ export default class CaseTypeEditor {
     case: CaseView;
     ide: IDE;
     typeEditor: TypeEditor;
-    divTypeEditor: any;
+    divTypeEditor!: JQuery<HTMLDivElement>;
     htmlContainer: JQuery<HTMLElement>;
     typeSelector: TypeSelector;
     caseTypeSelector: JQuery<HTMLElement>;

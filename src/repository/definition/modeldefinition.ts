@@ -13,7 +13,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
     modelDefinition: this;
     private __documentation?: CMMNDocumentationDefinition;
     private __migrated: boolean = false;
-    private static getImportNode(file: ServerFile<ModelDefinition>): Element {
+    private static getImportNode(file: ServerFile): Element {
         if (!file.xml) {
             throw new Error('Expected an XML element');
         }
@@ -26,7 +26,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
-    constructor(public file: ServerFile<ModelDefinition>, public readonly importNode: Element = ModelDefinition.getImportNode(file)) {
+    constructor(public file: ServerFile, public readonly importNode: Element = ModelDefinition.getImportNode(file)) {
         // Need to pass undefined in the super, and then set the modelDefinition manually.
         super(importNode);
         this.modelDefinition = this;

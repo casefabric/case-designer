@@ -3,7 +3,6 @@ import $ from "jquery";
 import CaseTeamModelDefinition from "../../../../../repository/definition/caseteam/caseteammodeldefinition";
 import CaseDefinition from "../../../../../repository/definition/cmmn/casedefinition";
 import CaseTeamDefinition from "../../../../../repository/definition/cmmn/caseteam/caseteamdefinition";
-import ModelDefinition from "../../../../../repository/definition/modeldefinition";
 import ServerFile from "../../../../../repository/serverfile/serverfile";
 import XML from "../../../../../util/xml";
 import CreateNewModelDialog from "../../../../createnewmodeldialog";
@@ -40,7 +39,7 @@ export default class CaseTeamEditor extends MovableEditor {
     private get removeTooltip(): string {
         const teamFile = this.caseTeam.caseTeamRef.file;
         if (teamFile) {
-            const usage = teamFile.usage.filter((file: ServerFile<ModelDefinition>) => file.definition?.id !== this.case.caseDefinition.id);
+            const usage = teamFile.usage.filter((file: ServerFile) => file.definition?.id !== this.case.caseDefinition.id);
             return `Remove team...\nTeam ${teamFile.name} is used in ${usage.length} other model${usage.length === 1 ? '' : 's'}\n${usage.length ? usage.map((u: any) => '- ' + u.fileName).join('\n') : ''}`;
         } else {
             return 'Remove team...';

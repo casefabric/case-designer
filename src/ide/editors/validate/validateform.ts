@@ -1,5 +1,4 @@
 ﻿﻿import $ from "jquery";
-import XMLSerializable from "../../../repository/definition/xmlserializable";
 import Remark from "../../../repository/validate/remark";
 import Validator from "../../../repository/validate/validator";
 import CaseView from "../../modeleditor/case/elements/caseview";
@@ -154,7 +153,7 @@ export default class ValidateForm extends StandardForm {
      * create a html str for a problem and adds it to the problemContainer
      * problem     : object having the problem properties
      */
-    addProblemRow(remark: Remark<XMLSerializable>) {
+    addProblemRow(remark: Remark) {
         const link = remark.modelDefinition === this.case.caseDefinition ? '' : '#' + remark.modelDefinition.file.fileName;
         const html = $(`<div class="problemrow">
             <div class="problemmodel">

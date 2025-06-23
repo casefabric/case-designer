@@ -13,7 +13,7 @@ import TypeFile from "./serverfile/typefile";
 import FileStorage from "./storage/filestorage";
 
 export default class Repository {
-    public readonly list: Array<ServerFile<ModelDefinition>> = [];
+    public readonly list: Array<ServerFile> = [];
     listeners: (() => void)[] = [];
     private actionStartTime: number = 0;
 
@@ -34,7 +34,7 @@ export default class Repository {
      * Create a client side representation for the file on the server with the specified name.
      * Parses the extension of the file and uses that to create a client side object that can also parse the source of the file.
      */
-    private create(fileName: string, source?: any): ServerFile<ModelDefinition> | undefined {
+    private create(fileName: string, source?: any): ServerFile | undefined {
         // Split:  divide "myMap/myMod.el.case" into ["MyMap/myMod", "el", "case"]
         const fileType = fileName.split('.').pop();
         switch (fileType) {
@@ -160,7 +160,7 @@ export default class Repository {
      * @param file a ServerFile instance or a file name
      * @returns true if the file already exists, or if a file with the same name and of the same type already exists in the repository list
      */
-    hasFile<F extends ServerFile<ModelDefinition>>(file: F | string, ignoreCase: boolean = false): boolean {
+    hasFile<F extends ServerFile>(file: F | string, ignoreCase: boolean = false): boolean {
         if (typeof (file) === 'string') {
             return this.list.find(model => model.fileName === file) !== undefined;
         }
@@ -253,7 +253,7 @@ export default class Repository {
     /**
      * Rename file and update all references to file on server and invoke the callback upon successful completion
      */
-    async rename(fileName: string, newFileName: string): Promise<ServerFile<ModelDefinition> | undefined> {
+    async rename(fileName: string, newFileName: string): Promise<ServerFile | undefined> {
         newFileName = newFileName.split(' ').join('');
         const serverFile = this.get(fileName);
         if (!serverFile) {
@@ -283,7 +283,7 @@ export default class Repository {
         }
     }
 
-    get(fileName: string): ServerFile<ModelDefinition> | undefined {
+    get(fileName: string): ServerFile | undefined {
         return this.list.find(serverFile => serverFile.fileName === fileName);
     }
 
@@ -301,7 +301,7 @@ export default class Repository {
         }
     }
 
-    addFile(file: ServerFile<ModelDefinition>): void {
+    addFile(file: ServerFile): void {
         // if (this.list.find(item => file.fileName === item.fileName)) {
         //     throw new Error("File " + file.fileName + " already exists")
         // }
@@ -309,12 +309,12 @@ export default class Repository {
         this.list.push(file);
     }
 
-    removeFile(file: ServerFile<ModelDefinition>): void {
+    removeFile(file: ServerFile): void {
         // console.log("Removing file " + file +" from the repository list");
         Util.removeFromArray(this.list, file);
     }
 
-    getFile(fileName: string): ServerFile<ModelDefinition> | undefined {
+    getFile(fileName: string): ServerFile | undefined {
         return this.list.find(file => file.fileName === fileName);
     }
 

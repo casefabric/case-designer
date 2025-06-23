@@ -1,5 +1,4 @@
 import CaseTeamModelDefinition from "../../../repository/definition/caseteam/caseteammodeldefinition";
-import ModelDefinition from "../../../repository/definition/modeldefinition";
 import Tags from "../../../repository/definition/tags";
 import TypeDefinition from "../../../repository/definition/type/typedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
@@ -17,7 +16,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         return this.ide?.repository.getCases() || [];
     }
 
-    supportsFile(file: ServerFile<ModelDefinition>) {
+    supportsFile(file: ServerFile) {
         return file instanceof CaseFile;
     }
 

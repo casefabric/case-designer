@@ -41,7 +41,7 @@ export default class HumanTaskDefinition extends TaskDefinition {
         }
     }
 
-    protected get implementationReference() {
+    get implementationReference() {
         return this.workflow.humanTaskRef;
     }
 
@@ -77,22 +77,6 @@ export default class HumanTaskDefinition extends TaskDefinition {
             return [];
         }
         return this.workflow.mappings;
-    }
-
-    get dueDate() {
-        return this.workflow.dueDate;
-    }
-
-    set dueDate(duedate) {
-        this.workflow.dueDate = duedate;
-    }
-
-    get assignment() {
-        return this.workflow.assignment;
-    }
-
-    set assignment(assignment) {
-        this.workflow.assignment = assignment;
     }
 
     get validatorRef() {

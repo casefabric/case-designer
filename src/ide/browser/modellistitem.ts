@@ -1,5 +1,4 @@
 import $ from "jquery";
-import ModelDefinition from "../../repository/definition/modeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Util from "../../util/util";
 import HtmlUtil from "../util/htmlutil";
@@ -8,7 +7,7 @@ import ModelListPanel from "./modellistpanel";
 
 export default class ModelListItem {
     public readonly html: JQuery<HTMLElement>;
-    constructor(public panel: ModelListPanel, public file: ServerFile<ModelDefinition>, private predecessor?: ModelListItem) {
+    constructor(public panel: ModelListPanel, public file: ServerFile, private predecessor?: ModelListItem) {
         this.panel.items.push(this);
         const urlPrefix = window.location.origin + window.location.pathname + '#';
         const error = file.metadata.error;

@@ -191,7 +191,7 @@ export default class ProcessModelEditor extends ModelEditor {
         if (!this.model.implementation) return;
 
         const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
-        const implementationType = modelImplementationDocument.getAttribute("class");
+        const implementationType = modelImplementationDocument.getAttribute("class") || '';
         const implementationTypeSelect = this.htmlContainer.find('.selectImplementationType');
         implementationTypeSelect.val(implementationType);
 

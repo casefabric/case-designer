@@ -1,7 +1,6 @@
-import XMLSerializable from "../definition/xmlserializable";
 import Remark from "./remark";
 
-export default class Warning<E extends XMLSerializable> extends Remark<E> {
+export default class Warning extends Remark {
     isWarning(): boolean {
         return true;
     }

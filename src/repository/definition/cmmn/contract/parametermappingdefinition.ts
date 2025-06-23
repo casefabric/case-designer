@@ -12,7 +12,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
     sourceRef: string;
     targetRef: string;
     transformation?: ExpressionDefinition;
-    private _implementationParameter?: ParameterDefinition<any>;
+    private _implementationParameter?: ParameterDefinition;
 
     constructor(importNode: Element, caseDefinition: CaseDefinition, parent: CMMNElementDefinition) {
         super(importNode, caseDefinition, parent);
@@ -95,11 +95,11 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         }
     }
 
-    get implementationParameter(): ParameterDefinition<any> | undefined {
+    get implementationParameter(): ParameterDefinition | undefined {
         return this._implementationParameter;
     }
 
-    set implementationParameter(parameter: ParameterDefinition<any> | undefined ) {
+    set implementationParameter(parameter: ParameterDefinition | undefined ) {
         this._implementationParameter = parameter;
         if (this.isInputMapping) {
             this.target = parameter;
@@ -130,7 +130,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return this.task?.inputs.find(parameter => parameter.id === this.sourceRef);
     }
 
-    set source(parameter: ParameterDefinition<any> | undefined) {
+    set source(parameter: ParameterDefinition | undefined) {
         this.sourceRef = parameter ? parameter.id : '';
     }
 
@@ -141,7 +141,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return this.task?.outputs.find(parameter => parameter.id === this.targetRef);
     }
 
-    set target(parameter: ParameterDefinition<any> | undefined) {
+    set target(parameter: ParameterDefinition | undefined) {
         this.targetRef = parameter ? parameter.id : '';
     }
 
