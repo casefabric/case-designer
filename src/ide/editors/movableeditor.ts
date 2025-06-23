@@ -10,7 +10,7 @@ export default class MovableEditor {
     htmlParent: JQuery<HTMLElement>;
     private _visible: boolean = false;
     protected _html?: JQuery<HTMLElement>;
-    private _changingVisiblity: any;
+    private _changingVisiblity: boolean = false;
     /**
      * A movable editor resides typically within the context of a case.
      * Usually it is something that pops up upon button click (e.g., Properties of an element, Roles Editor, Parameters Editor, etc)

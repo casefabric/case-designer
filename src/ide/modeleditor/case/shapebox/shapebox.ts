@@ -63,7 +63,7 @@ export default class ShapeBox {
      * The shape can be dragged to the canvas to create an element
      * 
      */
-    handleMouseDown(e: any, shapeType: ElementMetadata) {
+    handleMouseDown(e: JQuery.TriggeredEvent, shapeType: ElementMetadata) {
         this.case.clearSelection();
         this.dragData = new ShapeBoxDragData(this, shapeType.cmmnElementType, shapeType.typeDescription, shapeType.smallImage);
     }

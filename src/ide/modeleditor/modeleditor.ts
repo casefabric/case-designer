@@ -8,8 +8,8 @@ import Images from "../util/images/images";
 
 export default class ModelEditor {
     movableEditors: MovableEditor[] = [];
-    htmlContainer: any;
-    divMovableEditors: any;
+    htmlContainer: JQuery<HTMLElement>;
+    divMovableEditors: JQuery<HTMLDivElement>;
     keyStrokeListener: (e: any) => void;
     private _html: JQuery<HTMLElement>;
     /**
