@@ -45,6 +45,10 @@ export default class HumanTaskDefinition extends TaskDefinition {
         return this.workflow.humanTaskRef;
     }
 
+    get implementationModel() {
+        return this.implementationReference.getDefinition();
+    }
+
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'humanTask', 'planningTable', 'performerRef', 'workflow');
     }

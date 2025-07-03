@@ -33,6 +33,10 @@ export default class CaseTaskDefinition extends TaskDefinition {
         return this.caseRef;
     }
 
+    get implementationModel() {
+        return this.implementationReference.getDefinition();
+    }
+
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, 'caseTask', 'caseRef', 'mappings');
     }

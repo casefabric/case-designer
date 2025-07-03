@@ -62,7 +62,7 @@ export default abstract class TaskDefinition extends TaskStageDefinition {
         this.bindImplementation();
     }
 
-    get implementationReference(): ExternalReference<ParameterizedModelDefinition> {
+    get implementationReference(): ExternalReference {
         throw new Error('Method must be implemented in ' + this.constructor.name);
     }
 
@@ -81,9 +81,7 @@ export default abstract class TaskDefinition extends TaskStageDefinition {
         return this.implementationReference.value;
     }
 
-    get implementationModel() {
-        return this.implementationReference.getDefinition();
-    }
+    abstract get implementationModel(): ParameterizedModelDefinition | undefined;
 
     get validatorRef(): string {
         throw new Error('Method must be implemented in ' + this.constructor.name);
@@ -203,9 +201,8 @@ export default abstract class TaskDefinition extends TaskStageDefinition {
      * Generates new mappings and task input/output parameters based on the
      * given xml node that represents the contract of the task implementation.
      */
-    changeTaskImplementation(file: ServerFile<ParameterizedModelDefinition>) {
+    changeTaskImplementation(file: ServerFile) {
         const implementationRef = file.fileName;
-        const implementationModel = file.definition;
 
         if (this.implementationRef !== implementationRef) {
             console.log(this + " changes implementation (current is " + this.implementationRef + ", new is " + implementationRef + ")");
