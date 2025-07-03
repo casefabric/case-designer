@@ -3,7 +3,7 @@ import ModelDefinition from "../modeldefinition";
 import XMLSerializable from "../xmlserializable";
 import Reference from "./reference";
 
-export default class ExternalReference<M extends ModelDefinition> extends Reference {
+export default class ExternalReference<M extends ModelDefinition = ModelDefinition> extends Reference {
     private _file?: ServerFile<M>;
     constructor(element: XMLSerializable, ref: string) {
         super(element, ref);
