@@ -77,17 +77,11 @@ export default abstract class ServerFile<M extends ModelDefinition = ModelDefini
      */
     refreshMetadata(serverMetadata: Metadata, isReloading: boolean) {
         this.metadata = serverMetadata;
-        if (this.lastModified === serverMetadata.lastModified || this.hasBeenSavedJustNow) {
-            // still the same contents, but potentially a new lastmodified timestamp
-            // console.log("Data of "+this.fileName+" has not changed on the server-side");
-            if (this.lastModified !== serverMetadata.lastModified) {
-                // console.log("Updating timestamp of "+this.fileName+" from "+new Date(this.lastModified)+" to "+new Date(serverMetadata.lastModified));
-                this.lastModified = serverMetadata.lastModified;
-            }
-        } else {
+        if (this.lastModified !== serverMetadata.lastModified) {
             if (isReloading) console.log("Clearing contents of " + this.fileName + ", since server indicates there is new content")
             this.clear();
         }
+
         if (serverMetadata.content) {
             this.source = serverMetadata.content;
         }
