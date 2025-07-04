@@ -209,6 +209,10 @@ export default abstract class ModelDefinition extends XMLSerializable {
         this.__migrated = true;
     }
 
+    resetMigrationFlag() {
+        this.__migrated = false;
+    }
+
     /**
      * Returns a list of all other models that this definition relies on, including their dependents.
      * @returns 
