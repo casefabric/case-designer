@@ -7,10 +7,6 @@ import ModelEditorMetadata from "../modeleditormetadata";
 import HumantaskModelEditor from "./humantaskmodeleditor";
 
 export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
-    static register() {
-        super.registerEditorType(new HumantaskModelEditorMetadata());
-    }
-
     /** @returns {Array<ServerFile>} */
     get modelList() {
         return this.ide?.repository.getHumanTasks() || [];
@@ -41,9 +37,11 @@ export default class HumantaskModelEditorMetadata extends ModelEditorMetadata {
      * @returns fileName of the new model
      */
     async createNewModel(ide: IDE, name: string, description: string) {
+        const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const newModelContent =
             `<humantask>
-                <${IMPLEMENTATION_TAG} name="${name}" description="${description}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
+                <${IMPLEMENTATION_TAG} name="${name}" ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
+                    ${documentation}
                     <task-model></task-model>
                 </${IMPLEMENTATION_TAG}>
             </humantask>`;
