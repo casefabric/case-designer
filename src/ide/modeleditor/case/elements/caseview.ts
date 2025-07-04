@@ -13,6 +13,7 @@ import Validator from "../../../../repository/validate/validator";
 import Util from "../../../../util/util";
 import Debugger from "../../../debugger/debugger";
 import DragData from "../../../dragdrop/dragdata";
+import Grid from "../../../editors/graphical/grid";
 import ValidateForm from "../../../editors/validate/validateform";
 import RightSplitter from "../../../splitter/rightsplitter";
 import HtmlUtil from "../../../util/htmlutil";
@@ -23,7 +24,6 @@ import CaseFileEditor from "../editors/file/casefileeditor";
 import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
 import CaseTeamEditor from "../editors/team/caseteameditor";
-import Grid from "../grid";
 import ShapeBox from "../shapebox/shapebox";
 import UndoRedoBox from "../undoredo/undoredobox";
 import CaseFileItemView from "./casefileitemview";
@@ -228,7 +228,7 @@ export default class CaseView {
             model: this.graph
         });
 
-        this.grid = new Grid(this.paper, this);
+        this.grid = new Grid(this.paper, this.editor.ide);
 
         this.paper.svg.setAttribute('case', this.id);
 

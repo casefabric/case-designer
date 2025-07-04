@@ -2,7 +2,6 @@ import { dia } from "jointjs";
 import $ from "jquery";
 import IDE from "../../ide";
 import Settings from "../../settings/settings";
-import CaseView from "./elements/caseview";
 
 const grids: Grid[] = []; // List of all grid objects; forms a memory leak, in anticipation of keeping only one canvas for all cases, instead of a canvas per case.
 
@@ -15,7 +14,6 @@ const grids: Grid[] = []; // List of all grid objects; forms a memory leak, in a
 export default class Grid {
     static initialized: boolean = false;
     static ide: IDE;
-    case: CaseView;
 
     /**
      * Register a grid instance and set up global listeners if not already done.
@@ -24,7 +22,7 @@ export default class Grid {
         grids.push(grid);
         if (!this.initialized) {
             this.initialized = true;
-            this.ide = grid.case.editor.ide;
+            this.ide = grid.ide;
             $('#inputGridSize').val(Grid.Size);
             $('#inputShowGrid').prop('checked', Grid.Visible);
 
@@ -85,8 +83,8 @@ export default class Grid {
      * - updates all grids with the new background image (visibile or not)
      */
     static set Visible(visibility: boolean) {
-        if (typeof(visibility) !== 'boolean') {
-            console.warn('Cannot set visibility of the grid with a value of type ' + typeof(visibility) + ', it must be of type boolean');
+        if (typeof (visibility) !== 'boolean') {
+            console.warn('Cannot set visibility of the grid with a value of type ' + typeof (visibility) + ', it must be of type boolean');
             return;
         }
         Settings.gridVisibility = visibility;
@@ -110,9 +108,8 @@ export default class Grid {
      * @param paper effectively joint.dia.Paper
      * @param cs CaseView
      */
-    constructor(public paper: dia.Paper, cs: CaseView) {
+    constructor(public paper: dia.Paper, public ide: IDE) {
         this.paper = paper;
-        this.case = cs;
         // Register grid for changes to the settings
         Grid.register(this);
         // Do a first time render
