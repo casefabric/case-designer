@@ -9,7 +9,6 @@ import Icons from "../../util/images/icons";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditor from "./casemodeleditor";
 import CreateNewCaseModelDialog, { CreateCase } from "./createnewcasemodeldialog";
-import Grid from "./grid";
 
 export default class CaseModelEditorMetadata extends ModelEditorMetadata {
     get modelList() {
@@ -89,8 +88,6 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         // By default we create a case plan that fills the whole canvas size;
         //  We position it left and top at 2 times the grid size, with a minimum of 10px;
         //  Width and height have to be adjusted for scrollbar size.
-        const margin = 2 * Grid.Size;
-        const scrollbar = 40;
         const x = 20;//margin;
         const y = 20;//margin;
         const width = 800;//ide.caseModelEditor && ide.caseModelEditor.case ? ide.caseModelEditor.case.canvas.width() - (margin + scrollbar) : 800;
@@ -103,12 +100,12 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
         const casePlanId = `cm_${guid}_0`;
         const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const caseString =
-`<case id="${caseFileName}" name="${name}" guid="${guid}">
-    ${documentation}
-    <caseFileModel typeRef="${typeRef}"/>
-    <casePlanModel id="${casePlanId}" name="${name}"/>
-    <caseRoles caseTeamRef="${caseTeamRef}"/>
-</case>`;
+            `<case id="${caseFileName}" name="${name}" guid="${guid}">
+                ${documentation}
+                <caseFileModel typeRef="${typeRef}"/>
+                <casePlanModel id="${casePlanId}" name="${name}"/>
+                <caseRoles caseTeamRef="${caseTeamRef}"/>
+            </case>`;
 
         const dimensionsString =
             `<${Tags.CMMNDI}>

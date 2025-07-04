@@ -4,9 +4,9 @@ import CMMNElementDefinition from "../../../../repository/definition/cmmnelement
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import Remark from "../../../../repository/validate/remark";
 import Util from "../../../../util/util";
+import Grid from "../../../editors/graphical/grid";
 import HtmlUtil from "../../../util/htmlutil";
 import CaseModelEditor from "../casemodeleditor";
-import Grid from "../grid";
 import Highlighter from "../highlighter";
 import Marker from "../marker";
 import Resizer from "../resizer";
