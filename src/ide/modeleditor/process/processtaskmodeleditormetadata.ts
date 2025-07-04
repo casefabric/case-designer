@@ -42,8 +42,10 @@ export default class ProcessModelEditorMetadata extends ModelEditorMetadata {
      * @returns fileName of the new model
      */
     async createNewModel(ide: IDE, name: string, description: string) {
+        const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const newModelContent =
-`<process name="${name}" description="${description}">
+`<process name="${name}">
+    ${documentation}
     <${EXTENSIONELEMENTS}>
         <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="org.cafienne.processtask.implementation.http.HTTPCallDefinition" async="true">
         </${IMPLEMENTATION_TAG}>

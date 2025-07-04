@@ -200,6 +200,7 @@ export default abstract class ServerFile<M extends ModelDefinition = ModelDefini
         if (this.definition && this.definition.hasMigrated()) {
             console.log(`${this.definition.constructor.name} of '${this.fileName}' has migrated; uploading result`);
             this.source = this.definition.toXML();
+            this.definition.resetMigrationFlag();
             await this.save();
         } else {
             console.warn('Should not be calling this method');
