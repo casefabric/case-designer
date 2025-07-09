@@ -32,7 +32,7 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
     constructor(public parent: SchemaRenderer, htmlParent: JQuery<HTMLElement>, localType: LocalTypeDefinition, public property: SchemaPropertyDefinition) {
         super(parent.editor, parent, localType, property, htmlParent);
         this.ide = this.editor.ide;
-        this.html = $('<div class="property-renderer" />');
+        this.html = $('<div class="property-renderer"></div>');
         this.htmlParent.append(this.html);
     }
 
@@ -161,7 +161,7 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
     inputNameFocusHandler() {
         if (this.editor.selectedPropertyRenderer === this) {
             (this.inputPropertyName as any)?.attr('readonly', false);
-            this.inputPropertyName.select();
+            this.inputPropertyName.trigger("select");
         }
     }
 

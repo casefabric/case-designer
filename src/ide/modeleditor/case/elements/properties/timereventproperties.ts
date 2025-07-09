@@ -66,7 +66,7 @@ export default class TimerEventProperties extends PlanItemProperties<TimerEventV
                             <label for="cfiRadio">Case File Item transition</label>
                         </div>
                         <div id="divPI" style="display:${piTriggerSelected ? 'block' : 'none'}">
-                            <span class="separator" />
+                            <span class="separator"></span>
                             <div class="propertySelect">
                                 <label>Plan Item</label>
                                 <select id="selectPlanItem">${planItemSelection}</select>
@@ -77,7 +77,7 @@ export default class TimerEventProperties extends PlanItemProperties<TimerEventV
                             </div>
                         </div>
                         <div id="divCFI" style="display:${!piTriggerSelected ? 'block' : 'none'}">
-                            <span class="separator" />
+                            <span class="separator"></span>
                             <div class="zoomRow zoomDoubleRow">
                                 <label>Case File Item</label>
                                 <label class="valuelabel">${caseFileItemName}</label>

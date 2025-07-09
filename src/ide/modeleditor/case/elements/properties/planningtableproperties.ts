@@ -35,11 +35,10 @@ export default class PlanningTableProperties extends Properties<PlanningTableVie
                                     </tbody>
                                 </table>
                             </div>
-                            <span class="separator rules-and-items-separator"/>
+                            <span class="separator rules-and-items-separator"></span>
                             <div title="The Table Items list contains the names of discretionary items contained in this table" class="propertyBlock">
                                 <label><strong>Table Items</strong></label>
-                                <div class="planning-table-items">
-                                </div>
+                                <div class="planning-table-items"></div>
                             </div>
                         </div>`);
         html.attr('title',
@@ -56,7 +55,7 @@ since these are the items applicable for planning at that moment.`);
         this.addApplicabilityRuleField(); // Create also an empty one to allow for adding new rules
 
         this.view.definition.tableItems.forEach((item: any, index: number) => {
-            const itemHTML = $(`<div>${index + 1}. ${item.name}<span class="separator" /></div>`);
+            const itemHTML = $(`<div>${index + 1}. ${item.name}<span class="separator"></span></div>`);
             html.find('.planning-table-items').append(itemHTML);
         });
 

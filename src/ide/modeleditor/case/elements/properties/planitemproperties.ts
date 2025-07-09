@@ -47,7 +47,7 @@ export default class PlanItemProperties<PIV extends PlanItemView = PlanItemView>
                                     <button class="zoombt"></button>
                                     <button class="removeReferenceButton" title="remove the reference to the case file item" />
                                 </div>
-                                <span class="separator" />
+                                <span class="separator"></span>
                             </div>
                         </div>`);
         html.find('.rulePresence').on('click', (e: any) => {
