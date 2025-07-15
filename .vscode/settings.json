@@ -1,0 +1,13 @@
+{
+    "editor.formatOnSave": true,
+    "[css]": {
+        "editor.formatOnSave": false
+    },
+    "files.associations": {
+        "idemain.ts": "plaintext" // Treat idemain.ts as plaintext to disable formatting
+    },
+    "[plaintext]": {
+        "editor.formatOnSave": false // Disable formatting for plaintext files
+    },
+    "files.insertFinalNewline": true,
+}
