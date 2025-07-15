@@ -117,10 +117,9 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
         if (!this.pinned) {
             // the menu is not pinned and not visible, show near element
             // get position of element, place property menu left of element
-            const eA = this.view.attributes;
-            const eX = eA.position.x;
-            const eY = eA.position.y;
-            const eWidth = eA.size.width;
+            const eX = this.view.position.x;
+            const eY = this.view.position.y;
+            const eWidth = this.view.size.width;
 
             const menuWidth: any = this.html.width();
             const menuHeight: any = this.html.height();
@@ -128,7 +127,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
             const canvasOffset = (this.view.case as any).svg.offset() || { left: 0, top: 0 };
 
             // compensate for paper offset and scroll
-            let leftPosition = eX - menuWidth + canvasOffset.left - 10;
+            let leftPosition = (eX ?? 0) - menuWidth + canvasOffset.left - 10;
             let topPosition = eY + canvasOffset.top;
 
             // when menu outside body reposition
