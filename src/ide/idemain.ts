@@ -15,7 +15,6 @@ import "../../node_modules/alpaca/dist/alpaca/bootstrap/alpaca.min.css";
 import "@styles/ide/ide.css";
 import "@styles/ide/dragdata.css";
 import "@styles/ide/splitter.css";
-import "@styles/ide/repositorybrowser.css";
 import "@styles/ide/editors/util/dialog.css";
 import "@styles/ide/editors/util/zoomfield.css";
 import "@styles/ide/editors/util/messagebox.css";

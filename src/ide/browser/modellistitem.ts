@@ -16,7 +16,7 @@ export default class ModelListItem {
         const modelURL = urlPrefix + file.fileName;
         const optionalDeployIcon = this.panel.type.supportsDeploy ? `<img class="action-icon deploy-icon" src="${Images.Deploy}" action="deploy" title="Deploy ${file.name} ..."/>` : '';
         const html = $(`<div class="model-item" title="${tooltip}" fileName="${file.fileName}">
-                            <img class="menu-icon" src="${this.panel.type.icon}" />
+                            <img class="model-item-icon" src="${this.panel.type.icon}" />
                             <a name="${file.name}" fileType="${file.fileType}" href="${modelURL}"><span ${nameStyle}>${file.name}</span></a>
                             <img class="action-icon delete-icon" src="${Images.Delete}" action="delete" title="Delete model ..."/>
                             <img class="action-icon rename-icon" src="${Images.Rename}" action="rename" title="Rename model ..."/>
