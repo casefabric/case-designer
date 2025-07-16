@@ -45,9 +45,9 @@ export default class PlanItemProperties<PIV extends PlanItemView = PlanItemView>
                                     <label class="zoomlabel">${ruleAcronym}. Rule Context</label>
                                     <label class="valuelabel">${contextName}</label>
                                     <button class="zoombt"></button>
-                                    <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                                    <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
                                 </div>
-                                <span class="separator" />
+                                <span class="separator" ></span>
                             </div>
                         </div>`);
         html.find('.rulePresence').on('click', (e: any) => {

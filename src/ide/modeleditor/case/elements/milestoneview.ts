@@ -42,9 +42,9 @@ export default class MilestoneView extends PlanItemView<MilestoneDefinition> {
 
     get markup() {
         return `<g class="scalable">
-                    <rect class="cmmn-shape cmmn-border cmmn-milestone-shape" rx="20" ry="20" width="100" height="40" />
+                    <rect class="cmmn-shape cmmn-border cmmn-milestone-shape" rx="20" ry="20" width="100" height="40" ></rect>
                 </g>
-                <text class="cmmn-text" />
+                <text class="cmmn-text" ></text>
                 ${this.decoratorBox.markup}`;
     }
 

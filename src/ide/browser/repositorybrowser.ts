@@ -202,14 +202,14 @@ export default class RepositoryBrowser {
         this.accordion.find('div').css('display', 'block');
     }
 
-    async delete(file: ServerFile, fromModel:ModelDefinition | undefined = undefined) {
-        const usage = fromModel 
-                            ? file.usage.filter(x => x.definition?.id != fromModel.id)
-                            : file.usage;
+    async delete(file: ServerFile, fromModel: ModelDefinition | undefined = undefined) {
+        const usage = fromModel
+            ? file.usage.filter(x => x.definition?.id != fromModel.id)
+            : file.usage;
 
         if (usage.length) {
-            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${usage.length} other model${usage.length == 1 ? '' : 's'}<p/>` +
-                `${usage.length ? usage.map(u => '- ' + u.fileName).join('<p/>') : ''}`);
+            this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${usage.length} other model${usage.length == 1 ? '' : 's'}<p></p>` +
+                `${usage.length ? usage.map(u => '- ' + u.fileName).join('<p></p>') : ''}`);
         } else {
             const text = `Are you sure you want to delete '${file.fileName}'?`;
             if (confirm(text) === true) {
@@ -265,6 +265,6 @@ export default class RepositoryBrowser {
                 });
             }
         }
-        
+
     }
 }

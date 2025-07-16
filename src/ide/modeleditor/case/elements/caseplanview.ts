@@ -74,9 +74,9 @@ export default class CasePlanView extends StageView<CasePlanDefinition> {
 
     get markup() {
         return `<g>
-                    <polyline class="cmmn-shape cmmn-border cmmn-caseplan-header-shape" points="10,${CPM_TAB_HEIGHT} 15,0 250,0 255,${CPM_TAB_HEIGHT}" />
-                    <text class="cmmn-bold-text" font-size="12" />
-                    <rect class="cmmn-shape cmmn-border cmmn-caseplan-shape" x="0" y="${CPM_TAB_HEIGHT}" width="${this.shape.width}" height="${this.shape.height - CPM_TAB_HEIGHT}"/>
+                    <polyline class="cmmn-shape cmmn-border cmmn-caseplan-header-shape" points="10,${CPM_TAB_HEIGHT} 15,0 250,0 255,${CPM_TAB_HEIGHT}" ></polyline>
+                    <text class="cmmn-bold-text" font-size="12" ></text>
+                    <rect class="cmmn-shape cmmn-border cmmn-caseplan-shape" x="0" y="${CPM_TAB_HEIGHT}" width="${this.shape.width}" height="${this.shape.height - CPM_TAB_HEIGHT}"></rect>
                 </g>
                 ${this.decoratorBox.markup}`;
     }

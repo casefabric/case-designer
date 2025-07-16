@@ -144,10 +144,10 @@ export default abstract class TaskView<TD extends TaskDefinition = TaskDefinitio
 
     get markup() {
         return `<g class="scalable">
-                    <rect class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" rx="5" ry="5" width="100" height="60" />
+                    <rect class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" rx="5" ry="5" width="100" height="60" ></rect>
                 </g>
-                <text class="cmmn-text" />
-                <image class="taskImage" x="0" y="-4" width="24" height="24" xlink:href="${this.imageURL}" />
+                <text class="cmmn-text" ></text>
+                <image class="taskImage" x="0" y="-4" width="24" height="24" xlink:href="${this.imageURL}" ></image>
                 ${this.decoratorBox.markup}`;
     }
 

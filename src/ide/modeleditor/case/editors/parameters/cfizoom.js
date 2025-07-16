@@ -10,7 +10,7 @@ export default class CFIZoom {
     }
 
     static get tooltip() {
-        return ;
+        return;
     }
 
     /**
@@ -23,7 +23,7 @@ export default class CFIZoom {
             `<div class="cfiZoom">
                 <label class="cfiName" title="Drag/drop a case file item to link it to this parameter">${row.bindingName}</label>
                 <button class="zoombt"></button>
-                <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
             </div>`);
 
         // BindingRef event handlers

@@ -21,7 +21,7 @@ export default abstract class TaskStageProperties<TSV extends TaskStageView = Ta
                                 <div class="authorizedRolesBlock">
                                     <label>Authorized Roles</label>
                                 </div>
-                                <span class="separator" />
+                                <span class="separator" ></span>
                                 <div class="applicabilityRulesBlock">
                                     <label>Applicability Rules</label>
                                 </div>

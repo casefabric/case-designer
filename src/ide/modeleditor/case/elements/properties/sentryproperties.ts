@@ -61,9 +61,9 @@ export default class SentryProperties extends Properties<SentryView> {
                                     <label class="zoomlabel">If Part Context</label>
                                     <label class="valuelabel">${contextName}</label>
                                     <button class="zoombt"></button>
-                                    <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                                    <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
                                 </div>
-                                <span class="separator" />
+                                <span class="separator" ></span>
                             </div>
                         </div>`);
         html.find('.rulePresence').on('click', (e: any) => {
@@ -168,7 +168,7 @@ export default class SentryProperties extends Properties<SentryView> {
                                         <th title="Show/hide label">L</th>
                                     </tr>
                                 </thead>
-                                <tbody />
+                                <tbody ></tbody>
                             </table>
                         </div>`);
         this.htmlContainer.append(html);

@@ -53,7 +53,7 @@ export default class StageProperties<SV extends StageView = StageView> extends T
             const itemHTML = $(`<div>
                                     <span title="Move plan item up (affects instantiation order)" class="upButton"><img src="${Images.DoubleUp}" /></span>
                                     <span title="Move plan item down (affects instantiation order)" class="downButton"><img src="${Images.DoubleDown}" /></span> ${item.name}
-                                    <span class="separator" />
+                                    <span class="separator" ></span>
                                 </div>`);
             itemHTML.find('.upButton').on('click', (e: JQuery.ClickEvent) =>
                 this.up(e, itemHTML, item, this.view.definition.planItems)

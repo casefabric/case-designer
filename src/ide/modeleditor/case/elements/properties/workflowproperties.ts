@@ -59,9 +59,9 @@ export default class WorkflowProperties extends TaskProperties<HumanTaskView> {
                                     <label class="zoomlabel">Context for expression</label>
                                     <label class="valuelabel">${contextName}</label>
                                     <button class="zoombt"></button>
-                                    <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                                    <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
                                 </div>
-                                <span class="separator" />
+                                <span class="separator" ></span>
                             </div>
                         </div>`);
         html.find(`#${assignmentPresenceIdentifier}`).on('click', (e: JQuery.ClickEvent) => {
@@ -70,7 +70,7 @@ export default class WorkflowProperties extends TaskProperties<HumanTaskView> {
             if (!newPresence) {
                 this.humanTaskDefinition.workflow.assignment = undefined;
             } else {
-                this.humanTaskDefinition.workflow.assignment = <AssignmentDefinition> this.humanTaskDefinition.createDefinition(AssignmentDefinition);
+                this.humanTaskDefinition.workflow.assignment = <AssignmentDefinition>this.humanTaskDefinition.createDefinition(AssignmentDefinition);
             }
             this.done();
         });
@@ -109,9 +109,9 @@ export default class WorkflowProperties extends TaskProperties<HumanTaskView> {
                                     <label class="zoomlabel">Context for expression</label>
                                     <label class="valuelabel">${contextName}</label>
                                     <button class="zoombt"></button>
-                                    <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                                    <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
                                 </div>
-                                <span class="separator" />
+                                <span class="separator" ></span>
                             </div>
                         </div>`);
         html.find(`#${dueDatePresenceIdentifier}`).on('click', (e: JQuery.ClickEvent) => {
