@@ -161,7 +161,7 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
     inputNameFocusHandler() {
         if (this.editor.selectedPropertyRenderer === this) {
             (this.inputPropertyName as any)?.attr('readonly', false);
-            this.inputPropertyName.select();
+            this.inputPropertyName.trigger('select');
         }
     }
 

@@ -108,7 +108,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
         this.case.items.filter(item => item != this.view).forEach(item => item.propertiesView.hide());
 
         if (focusNameField) {
-            this.htmlContainer.find('.cmmn-element-name').select();
+            this.htmlContainer.find('.cmmn-element-name').trigger('select');
         }
     }
 
