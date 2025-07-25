@@ -65,12 +65,6 @@ export default class ExternalReference<M extends ModelDefinition = ModelDefiniti
         }
     }
 
-    removeDefinitionReference(element: XMLSerializable) {
-        if (this.references(element)) {
-            this.update('');
-        }
-    }
-
     toString() {
         return this.fileName;
     }
