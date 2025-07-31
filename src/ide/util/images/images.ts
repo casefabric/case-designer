@@ -1,3 +1,4 @@
+import aiImageUrl from '../../../../app/images/ai_128.png';
 import autoCompleteImageUrl from '../../../../app/images/autocompletedecorator_32.png';
 import closeImageUrl from '../../../../app/images/close_32.png';
 import debugImageUrl from '../../../../app/images/debug.png';
@@ -85,6 +86,7 @@ export default class Images {
     static Print = printImageUrl;
     static ViewSource = viewSourceImageUrl;
     static Debug = debugImageUrl;
+    static AI = aiImageUrl;
 
     static TaskInput = taskinputImageUrl;
     static TaskOutput = taskoutputImageUrl;
