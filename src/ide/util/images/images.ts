@@ -1,3 +1,4 @@
+import aiImageUrl from '../../../../app/images/ai_128.png';
 import autoCompleteImageUrl from '../../../../app/images/autocompletedecorator_32.png';
 import closeImageUrl from '../../../../app/images/close_32.png';
 import debugImageUrl from '../../../../app/images/debug.png';
@@ -35,6 +36,7 @@ import blockingHumanTaskImageUrl from '../../../../app/images/svg/blockinghumant
 import blockingHumanTaskHaloImageUrl from '../../../../app/images/svg/blockinghumantaskhalo.svg';
 import caseTaskImageUrl from '../../../../app/images/svg/casetask.svg';
 import nonblockingHumanTaskImageUrl from '../../../../app/images/svg/nonblockinghumantask.svg';
+import printImageUrl from '../../../../app/images/svg/print.svg';
 import processTaskImageUrl from '../../../../app/images/svg/processtask.svg';
 import renameImageUrl from '../../../../app/images/svg/rename.svg';
 import timerEventImageUrl from '../../../../app/images/svg/timerevent.svg';
@@ -42,7 +44,6 @@ import userEventImageUrl from '../../../../app/images/svg/userevent.svg';
 import taskinputImageUrl from '../../../../app/images/task_input_128.png';
 import taskoutputImageUrl from '../../../../app/images/task_output_128.png';
 import undoImageUrl from '../../../../app/images/undo_128.png';
-import printImageUrl from '../../../../app/images/svg/print.svg';
 import viewSourceImageUrl from '../../../../app/images/viewsource_128.png';
 import warningImageUrl from '../../../../app/images/warningproblem_32.png';
 import zoomInImageUrl from '../../../../app/images/zoomin_64.png';
@@ -85,6 +86,7 @@ export default class Images {
     static Print = printImageUrl;
     static ViewSource = viewSourceImageUrl;
     static Debug = debugImageUrl;
+    static AI = aiImageUrl;
 
     static TaskInput = taskinputImageUrl;
     static TaskOutput = taskoutputImageUrl;
