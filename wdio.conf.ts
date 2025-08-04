@@ -145,18 +145,36 @@ export const config: WebdriverIO.Config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
+<<<<<<< Updated upstream:wdio.conf.ts
     reporters: ['json', ['junit', {
         outputDir: testResultsFolder,
         outputFileFormat: function (options) { // optional
             return `results-${options.cid}.xml`
         }
     }]],
+=======
+    reporters: [
+        ['junit', {
+            outputDir: path.join(__dirname, testResultsFolder),
+            outputFileFormat: function (options) { // optional
+                return `results-${options.cid}.xml`
+            },
+            addFileAttribute: true,
+            addWorkerLogs: true
+        }],
+    ],
+>>>>>>> Stashed changes:test/integration/wdio.conf.ts
 
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
+<<<<<<< Updated upstream:wdio.conf.ts
         timeout: debug ? (24 * 60 * 60 * 1000) : 60000,
+=======
+        require: ['./extensions/verifybrowserconsole.ts', './extensions/takescreenshotonfailure.ts'],
+        timeout: debug ? (24 * 60 * 60 * 1000) : 60_000,
+>>>>>>> Stashed changes:test/integration/wdio.conf.ts
     },
 
     //
