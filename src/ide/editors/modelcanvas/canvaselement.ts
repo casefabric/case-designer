@@ -1,17 +1,15 @@
 import { dia } from '@joint/core';
-import CaseView from "./caseview";
+import ModelCanvas from './modelcanvas';
 
 export default abstract class CanvasElement<JointType extends dia.Cell = dia.Cell> {
-    public case: CaseView;
     private __jointElement?: JointType;
 
-    constructor(cs: CaseView) {
-        this.case = cs;
+    constructor(public canvas: ModelCanvas) {
     }
 
     set xyz_joint(jointElement: JointType) {
         this.__jointElement = jointElement;
-        (<any>jointElement).xyz_cmmn = this;
+        (<any>jointElement).xyz_cde = this;
     }
 
     get xyz_joint() {

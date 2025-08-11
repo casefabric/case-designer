@@ -1,41 +1,46 @@
 ﻿import $ from "jquery";
-import CaseFileItemDef from "../../../repository/definition/cmmn/casefile/casefileitemdef";
+import Remark from "../../../repository/validate/remark";
 import HtmlUtil from "../../util/htmlutil";
-import CMMNElementView from "./elements/cmmnelementview";
+import ElementView from "./elementview";
 
-export default class Marker {
+export default class Highlighter {
     private html: JQuery<HTMLElement>;
     private scrollListener: (e: JQuery.Event) => void;
 
     /**
      * Implements the marker object for the element
      */
-    constructor(public element: CMMNElementView) {
+    constructor(public element: ElementView) {
         // Create global event listeners for proper attach/detach to the scrolling of the paper
         // Upon scrolling we also have to change the position of the marker.
-        this.scrollListener = () => this.setPosition();
+        this.scrollListener = (e: JQuery.Event) => this.setPosition();
 
         // Note: we create the HTML directly, which in general is not good for performance.
         // However, marking object is only created once a CFI is clicked on. 
         // So, in practice it is OK to create it here and now.
-        this.html = $('<div class="markelementimage"></div>');
-        this.element.case.markerContainer.append(this.html);
+        this.html = $('<div class="highlightelementimage"></div>');
+        this.element.canvas.markerContainer.append(this.html);
 
         // Reposition the marker when the element is moving
         this.element.xyz_joint.on('change:position', (e: any) => this.setPosition());
     }
 
-    delete() {
+    delete(): void {
         HtmlUtil.removeHTML(this.html);
     }
 
     /**
      * Show or hide the marker if our element has a reference to the definition.
-     * @param definition CaseFileItemDef | undefined
+     * @param remark Remark
      */
-    refresh(definition?: CaseFileItemDef) {
-        if (definition && definition.id && this.element.referencesDefinitionElement(definition.id)) {
+    refresh(remark: Remark): void {
+        if (remark.element === this.element.definition) {
             this.visible = true;
+            if (remark.isError()) {
+                this.html.css('border', '3px solid red');
+            } else {
+                this.html.css('border', '3px solid orange');
+            }
         } else {
             this.visible = false;
         }
@@ -48,9 +53,9 @@ export default class Marker {
     set visible(visible: boolean) {
         if (visible) {
             this.setPosition();
-            this.element.case.paperContainer.on('scroll', this.scrollListener);
+            this.element.canvas.paperContainer.on('scroll', this.scrollListener);
         } else {
-            this.element.case.paperContainer.off('scroll', this.scrollListener);
+            this.element.canvas.paperContainer.off('scroll', this.scrollListener);
         }
         const visibility = visible ? 'block' : 'none';
         this.html.css('display', visibility);
@@ -60,15 +65,18 @@ export default class Marker {
      * Positions marker, coordinates are the relative coordinates in the canvas graph area.
      * So (0, 0) is the top left corner of the canvas, not of the body/document
      */
-    setPosition() {
+    setPosition(): void {
         // Compensate the position of the marker for the scroll of the paper container
         // The reason is, that the marker's html element is outside the paper container, hence needs to accomodate to the scroll of the paper container
-        const leftScroll = this.element.case.paperContainer.scrollLeft() || 0;
-        const topScroll = this.element.case.paperContainer.scrollTop() || 0;
+        const leftScroll = this.element.canvas.paperContainer.scrollLeft() || 0;
+        const topScroll = this.element.canvas.paperContainer.scrollTop() || 0;
         const markerLeft = this.element.shape.x - leftScroll;
         const markerTop = this.element.shape.y - topScroll;
+        const height = this.element.shape.height;
 
-        this.html.css('left', markerLeft - 8);
-        this.html.css('top', markerTop - 8);
+        this.html.css('left', markerLeft);
+        this.html.css('width', this.element.shape.width);
+        this.html.css('height', "1px");
+        this.html.css('top', markerTop + height + 10);
     }
 }

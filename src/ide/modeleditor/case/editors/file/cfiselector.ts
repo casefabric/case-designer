@@ -3,14 +3,12 @@ import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/
 import CaseFileItemTypeDefinition from "../../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import Dialog from "../../../../editors/dialog";
 import Shapes from "../../../../util/images/shapes";
-import CaseView from "../../elements/caseview";
+import CaseCanvas from "../../elements/casecanvas";
 
 export default class CFISelector extends Dialog {
-    case: CaseView;
     selectedItem?: CaseFileItemDef;
-    constructor(cs: CaseView) {
-        super(cs.editor.ide, 'Select a Case File Item');
-        this.case = cs;
+    constructor(public canvas: CaseCanvas) {
+        super(canvas.editor.ide, 'Select a Case File Item');
         this.selectedItem = undefined;
     }
 
@@ -24,7 +22,7 @@ export default class CFISelector extends Dialog {
             </form>
         `);
         dialogHTML.append(htmlDialog);
-        this.case.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.cfi-tree')));
+        this.canvas.caseDefinition.caseFile.children.forEach(cfi => this.renderCaseFileItem(cfi, dialogHTML.find('.cfi-tree')));
         dialogHTML.find('.buttonOk').on('click', e => { e.preventDefault(); this.ok(); });
         dialogHTML.find('.buttonCancel').on('click', e => this.cancel());
     }

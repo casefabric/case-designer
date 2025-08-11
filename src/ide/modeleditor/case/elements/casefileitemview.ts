@@ -1,15 +1,15 @@
 ﻿import CaseFileItemDef from "../../../../repository/definition/cmmn/casefile/casefileitemdef";
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import CMMNElementView from "./cmmnelementview";
+import CaseElementView from "./caseelementview";
 import CaseFileItemHalo from "./halo/cmmn/casefileitemhalo";
 import CaseFileItemProperties from "./properties/casefileitemproperties";
 import StageView from "./stageview";
 
-export default class CaseFileItemView extends CMMNElementView<CaseFileItemDef> {
+export default class CaseFileItemView extends CaseElementView<CaseFileItemDef> {
     static create(stage: StageView, x: number, y: number, definition?: CaseFileItemDef) {
-        definition = definition || CaseFileItemDef.createEmptyDefinition(stage.case.caseDefinition);
-        const shape = stage.case.diagram.createShape(x, y, 25, 40, definition.id);
+        definition = definition || CaseFileItemDef.createEmptyDefinition(stage.canvas.caseDefinition);
+        const shape = stage.canvas.diagram.createShape(x, y, 25, 40, definition.id);
         return new CaseFileItemView(stage, definition, shape);
     }
 
@@ -17,7 +17,7 @@ export default class CaseFileItemView extends CMMNElementView<CaseFileItemDef> {
      * Creates a new CaseFileItemView
      */
     constructor(public parent: StageView, definition: CaseFileItemDef, shape: ShapeDefinition) {
-        super(parent.case, parent, definition, shape);
+        super(parent.canvas, parent, definition, shape);
         this.__resizable = false;
     }
 
@@ -43,7 +43,7 @@ export default class CaseFileItemView extends CMMNElementView<CaseFileItemDef> {
     }
 
     setDefinition(definition?: CaseFileItemDef) {
-        this.definition = definition ? definition : CaseFileItemDef.createEmptyDefinition(this.case.caseDefinition);
+        this.definition = definition ? definition : CaseFileItemDef.createEmptyDefinition(this.canvas.caseDefinition);
         this.shape.cmmnElementRef = this.definition.id;
         this.refreshText();
         this.editor.completeUserAction();

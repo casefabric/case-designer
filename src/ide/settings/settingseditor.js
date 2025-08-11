@@ -128,14 +128,13 @@ export default class SettingsEditor {
                 this._changingVisiblity = true;
                 if (visible) {
                     this.onShow()
-                 }
+                }
                 this._changingVisiblity = false;
             }
         }
     }
 
     delete() {
-        this._visible = false; // Set visible to false to avoid refresh invocations from refreshMovableViews() inside case.js
         HtmlUtil.removeHTML(this.html);
     }
 

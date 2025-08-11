@@ -2,22 +2,22 @@ import $ from "jquery";
 import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
-import Grid from "../../editors/graphical/grid";
+import Grid from "../../editors/modelcanvas/grid";
+import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import MovableEditor from "../../editors/movableeditor";
 import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditorMetadata from "./casemodeleditormetadata";
-import CaseView from "./elements/caseview";
-import CMMNElementView from "./elements/cmmnelementview";
-import UndoManager from "./undoredo/undomanager";
+import CaseCanvas from "./elements/casecanvas";
+import CaseElementView from "./elements/caseelementview";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;
     dimensionsFile?: DimensionsFile;
     ideCaseFooter: JQuery<HTMLElement>;
     undoManager: UndoManager;
-    case?: CaseView;
+    canvas?: CaseCanvas;
     trackChanges: boolean = false;
     private __migrated: any;
     autoSaveTimer: any;
@@ -38,7 +38,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.undoManager = new UndoManager(this);
 
         // Upon clicking the case footer's validation label, render the validateform of the case (if a case is there)
-        this.ideCaseFooter.find('.validateLabel').on('click', () => this.case && this.case.validateForm.show());
+        this.ideCaseFooter.find('.validateLabel').on('click', () => this.canvas && this.canvas.validateForm.show());
     }
 
     get label() {
@@ -54,7 +54,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     open(caseDefinition: CaseDefinition) {
         // Reset the undo manager.
-        this.undoManager.resetActionBuffer(caseDefinition, caseDefinition.dimensions!);
+        this.undoManager.resetActionBuffer(caseDefinition);
 
         // Now that the visualization information is available, we can start the import.
         this.loadDefinition();
@@ -64,26 +64,27 @@ export default class CaseModelEditor extends ModelEditor {
 
     updateUndoRedoButtons(): void {
         // Only update the buttons if the case is loaded. The call to resetActionBuffer in open() will not have the case loaded yet.
-        if (this.case) {
-            this.case.undoBox.refresh();
+        if (this.canvas) {
+            this.canvas.undoBox.refresh();
         }
     }
 
     /**
      * Imports the source and tries to visualize it
      */
-    loadDefinition(caseDefinition: CaseDefinition | undefined = this.caseFile.definition) {
+    loadDefinition() {
+        const caseDefinition = this.file.definition;
         if (!caseDefinition) return;
         // During import no live validation and storage of changes
         this.trackChanges = false;
 
         // First, remove current case content; but without tracking changes...
-        if (this.case) {
-            this.case.delete();
+        if (this.canvas) {
+            this.canvas.delete();
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new CaseView(this, this.htmlContainer, caseDefinition);
+        this.canvas = new CaseCanvas(this, this.htmlContainer, caseDefinition, this.undoManager);
 
         if (this.__migrated) {
             console.log('Uploading migrated files');
@@ -94,7 +95,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.trackChanges = true;
 
         // Do a first time validation.
-        window.setTimeout(() => this.case?.runValidation(), 100);
+        window.setTimeout(() => this.canvas?.runValidation(), 100);
     }
 
     migrated(msg: string) {
@@ -103,28 +104,28 @@ export default class CaseModelEditor extends ModelEditor {
     }
 
     async keyStrokeHandler(e: JQuery.KeyDownEvent) {
-        if (!this.case) {
+        if (!this.canvas) {
             console.log("No case, but already pressing a key?! You're too quick ;)");
             return;
         }
         const visibleMovableEditor = this.movableEditors.find(e => e.visible);
-        const selectedElement = this.case.selectedElement;
+        const selectedElement = this.canvas.selectedElement;
         switch (e.keyCode) {
             case 27: // esc
                 // Clicking Escape closes Movable editors one by one, and if none is left, it deselects current selection
                 //  First check if source editor is currently open, and if so, close that one.
-                if (this.case.sourceEditor.visible) {
-                    this.case.sourceEditor.close();
+                if (this.canvas.sourceEditor.visible) {
+                    this.canvas.sourceEditor.close();
                 } else if (!this.hideTopEditor()) {
-                    if (this.case) {
-                        this.case.clearSelection();
+                    if (this.canvas) {
+                        this.canvas.clearSelection();
                     }
                 }
                 break;
             case 46: //del
                 if (!visibleMovableEditor && selectedElement) {
-                    this.case.__removeElement(selectedElement);
-                    this.case.clearSelection();
+                    this.canvas.__removeElement(selectedElement);
+                    this.canvas.clearSelection();
                 }
                 break;
             case 37: //arrow left;
@@ -153,10 +154,10 @@ export default class CaseModelEditor extends ModelEditor {
                 break;
             case 76: //L
                 if (e.ctrlKey) {
-                    if (!this.case.sourceEditor.visible) {
+                    if (!this.canvas.sourceEditor.visible) {
                         e.stopPropagation();
                         e.preventDefault();
-                        this.case.switchLabels();
+                        this.canvas.switchLabels();
                     }
                 }
                 break;
@@ -168,7 +169,7 @@ export default class CaseModelEditor extends ModelEditor {
                 }
                 break;
             case 89: //y
-                if (e.ctrlKey) this.undoManager.redo();
+                if (e.ctrlKey) this.canvas.undoManager.redo();
                 break;
             case 90: //z
                 if (e.ctrlKey) this.undoManager.undo();
@@ -177,7 +178,7 @@ export default class CaseModelEditor extends ModelEditor {
                 if (e.ctrlKey) {
                     e.stopPropagation();
                     e.preventDefault();
-                    this.case.print();
+                    this.canvas.print();
                 }
                 break;
             default:
@@ -188,7 +189,7 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * Handles pressing an arrow key. Moves either top editor or selected element around.
      */
-    handleArrowPress(keyCode: number, visibleMovableEditor?: MovableEditor, selectedElement?: CMMNElementView) {
+    handleArrowPress(keyCode: number, visibleMovableEditor?: MovableEditor, selectedElement?: CaseElementView) {
         // 37: arrow left, 39: arrow right, 38: arrow up, 40: arrow down 
         const xMove = (keyCode == 37 ? -1 : keyCode == 39 ? 1 : 0) * Grid.Size;
         const yMove = (keyCode == 38 ? -1 : keyCode == 40 ? 1 : 0) * Grid.Size;
@@ -225,15 +226,15 @@ export default class CaseModelEditor extends ModelEditor {
      */
     async saveModel() {
         // Validate all models currently active in the ide
-        if (this.case) {
-            this.case.runValidation();
-            await this.undoManager.saveDefinition(this.case.caseDefinition, this.case.dimensions!);
+        if (this.canvas) {
+            this.canvas.runValidation();
+            await this.canvas.undoManager.saveDefinition(this.canvas.caseDefinition);
         }
     }
 
     onShow() {
         this.ideCaseFooter.css('display', 'block');
-        this.case && this.case.onShow();
+        this.canvas && this.canvas.onShow();
     }
 
     onHide() {

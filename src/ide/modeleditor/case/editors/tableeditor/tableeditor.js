@@ -3,13 +3,13 @@ import CMMNElementDefinition from "../../../../../repository/definition/cmmnelem
 import MovableEditor from "../../../../editors/movableeditor";
 import HtmlUtil from "../../../../util/htmlutil";
 import Images from "../../../../util/images/images";
-import CaseView from "../../elements/caseview";
+import CaseCanvas from "../../elements/casecanvas";
 
 export default class TableEditor extends MovableEditor {
     /**
      * Defines a generic editor for collections of CMMNElementDefinition, to select and edit data in a table
      * Defines a generic TableEditor, to select and edit data in a table
-     * @param {CaseView} cs 
+     * @param {CaseCanvas} cs 
      */
     constructor(cs) {
         super(cs);
@@ -138,7 +138,7 @@ export default class TableEditor extends MovableEditor {
      */
     change(element, field, value) {
         element.change(field, value);
-        this.case.editor.completeUserAction();
+        this.canvas.editor.completeUserAction();
     }
 
     /**
@@ -187,7 +187,7 @@ export class RowEditor {
     }
 
     get case() {
-        return this.editor.case;
+        return this.editor.canvas;
     }
 
     get html() {

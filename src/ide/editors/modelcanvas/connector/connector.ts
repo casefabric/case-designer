@@ -1,12 +1,13 @@
 ﻿import { dia, linkTools, shapes } from '@joint/core';
-import Edge from "../../../../../repository/definition/dimensions/edge";
-import Images from '../../../../util/images/images';
+import Edge from "../../../../repository/definition/dimensions/edge";
+import Images from '../../../util/images/images';
 import CanvasElement from "../canvaselement";
-import CMMNElementView from "../cmmnelementview";
+import ElementView from '../elementview';
 
-export default class Connector extends CanvasElement<shapes.standard.Link> {
-    criterion?: CMMNElementView;
+
+export default class Connector<BaseViewT extends ElementView = ElementView> extends CanvasElement<dia.Link> {
     formerLabel?: string;
+    private _hiddenLabel?: string;
 
     get link(): shapes.standard.Link {
         return this.xyz_joint;
@@ -19,11 +20,8 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
     /**
      * Creates a connector (=link in jointJS) between a source and a target.
      */
-    constructor(public source: CMMNElementView, public target: CMMNElementView, public edge: Edge) {
-        super(source.case);
-        this.criterion = source.isCriterion ? source : target.isCriterion ? target : undefined;
-
-        const arrowStyle = this.criterion ? '8 3 3 3 3 3' : '5 5';
+    constructor(public source: BaseViewT, public target: BaseViewT, public edge: Edge) {
+        super(source.canvas);
 
         this.link = this.xyz_joint = new shapes.standard.Link({
             source: { id: this.source.xyz_joint.id, anchor: { name: 'perpendicular' } },
@@ -31,7 +29,6 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
             attrs: {
                 'line': {
                     stroke: '#423d3d',
-                    'stroke-dasharray': arrowStyle,
                     'stroke-width': 1,
                     targetMarker: {
                         'type': 'rect',
@@ -50,13 +47,13 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
             // Remove connector from source and target, and also remove the edge from the dimensions through the case.
             source.__removeConnector(this);
             target.__removeConnector(this);
-            this.case.__removeConnector(this);
-            this.case.editor.completeUserAction(); // Save the case
+            this.canvas.__removeConnector(this);
+            this.canvas.editor.completeUserAction(); // Save the case
         });
 
         this.link.on('change:vertices', e => {
             // Joint generates many change events, so we will not completeUserAction() each time,
-            // Instead, this is done when paper.on(link.pointerup) in caseview.ts
+            // Instead, this is done when paper.on(link.pointerup) in modelcanvas.ts
             this.edge.vertices = e.changed.vertices;
         });
     }
@@ -66,6 +63,12 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
             attrs: {
                 text: { text, 'font-size': 'smaller' }
             }
+        });
+    }
+
+    protected set connectionStyle(strokeDashArray: string) {
+        this.xyz_joint.attr('line', {
+            'stroke-dasharray': strokeDashArray
         });
     }
 
@@ -81,19 +84,19 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
         return this.edge.label || '';
     }
 
+    set hiddenLabel(text: string) {
+        this._hiddenLabel = text;
+    }
+
     // Connectors do not do things on move. That is handled by joint
-    moved(x: number, y: number, newParent?: CMMNElementView): void { }
+    moved(x: number, y: number, newParent?: ElementView): void { }
 
     mouseEnter(): void {
         this.addTools();
 
-        // On mouse enter of a 'sentry' linked connector, we will show the standard event if it is not yet visible.
-        //  It is hidden again on mouseout
-        this.formerLabel = this.label;
-        if (this.label || !this.criterion) return;
-        const onPart = (this.criterion as any).__getOnPart(this);
-        if (onPart) this.__setJointLabel(onPart.standardEvent.toString());
-
+        if (!this.label) {
+            this.label = this._hiddenLabel || '';
+        }
     }
 
     mouseLeave() {
@@ -126,17 +129,17 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
         const toolsView = new dia.ToolsView({
             tools: [verticesTool, customRemoveTool]
         });
-        const view = this.link.findView(this.case.paper);
+        const view = this.link.findView(this.canvas.paper);
         view.addTools(toolsView);
     }
 
     private removeTools() {
-        const view = this.link.findView(this.case.paper);
+        const view = this.link.findView(this.canvas.paper);
         view.removeTools();
     }
 
     /**
-     * Returns true if the connector is connected to a cmmn element with the specified id (either as source or target).
+     * Returns true if the connector is connected to an element with the specified id (either as source or target).
      * Note: this does not indicate whether it is connected at the source or the target end of the connector.
      */
     hasElementWithId(id: string) {

@@ -1,25 +1,32 @@
 ﻿'use strict';
 
 import $ from "jquery";
-import CaseView from "../modeleditor/case/elements/caseview";
+import DocumentableElementDefinition from "../../repository/definition/documentableelementdefinition";
+import GraphicalModelDefinition from "../../repository/definition/graphicalmodeldefinition";
 import HtmlUtil from "../util/htmlutil";
 import Images from "../util/images/images";
+import ElementView from "./modelcanvas/elementview";
+import ModelCanvas from "./modelcanvas/modelcanvas";
 import MovableEditor from "./movableeditor";
 
-export default class StandardForm extends MovableEditor {
+export default class StandardForm<
+    ModelDefT extends GraphicalModelDefinition = GraphicalModelDefinition,
+    ViewT extends ElementView<DocumentableElementDefinition<ModelDefT>> = ElementView<DocumentableElementDefinition<ModelDefT>>>
+
+    extends MovableEditor<ModelDefT, ViewT> {
     private _label: string;
     classNames: string[];
     _container?: JQuery<HTMLElement>;
 
-    constructor(cs: CaseView, label: string, ...classNames: string[]) {
-        super(cs);
+    constructor(canvas: ModelCanvas<ModelDefT, DocumentableElementDefinition<ModelDefT>, ViewT>, label: string, ...classNames: string[]) {
+        super(canvas);
         this._label = label;
         this.classNames = classNames;
     }
 
     renderHead() {
         this.html = $(
-`<div class="basicbox standardform ${this.classNames.join(' ')}">
+            `<div class="basicbox standardform ${this.classNames.join(' ')}">
     <div class="standardformheader">
         <label>${this.label}</label>
         <div class="button1st_right" title="Close">
@@ -47,7 +54,7 @@ export default class StandardForm extends MovableEditor {
     }
 
     renderForm() {
-        if (! this._html) {
+        if (!this._html) {
             this.renderHead();
         }
         this.renderData();

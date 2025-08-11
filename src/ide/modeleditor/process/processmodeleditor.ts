@@ -250,6 +250,10 @@ export default class ProcessModelEditor extends ModelEditor {
         this.visible = true;
     }
 
+    loadDefinition(): void {
+        throw new Error('Method not implemented, called from undoredomanager.');
+    }
+
     /**
      * handle the change of the source (in 2nd tab)
      */
