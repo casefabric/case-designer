@@ -4,16 +4,16 @@ import Halo from "./halo";
 import HaloBar from "./halobar";
 import HaloItem from "./haloitem";
 
-export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloItem<H> {
+export default abstract class HaloDragItem<HaloT extends Halo = Halo> extends HaloItem<HaloT> {
     dragImage: JQuery<HTMLElement>;
     tempConnector!: TemporaryConnector;
     mouseMoveHandler!: (e: JQuery.TriggeredEvent) => void;
     mouseUpHandler!: (e: JQuery.TriggeredEvent) => void;
     keyDownHandler!: (e: JQuery.KeyDownEvent) => void;
 
-    constructor(halo: H, imgURL: string, title: string, defaultBar: HaloBar = halo.topBar) {
+    constructor(halo: HaloT, imgURL: string, title: string, defaultBar: HaloBar = halo.topBar) {
         super(halo, imgURL, title, defaultBar);
-        this.dragImage = halo.element.case.html.find('.halodragimgid');
+        this.dragImage = halo.element.canvas.html.find('.halodragimgid');
         this.html.on('pointerdown', (e: JQuery.TriggeredEvent) => this.handleMouseDown(e));
     }
 
@@ -50,7 +50,7 @@ export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloIt
     }
 
     getCoordinates(e: JQuery.TriggeredEvent) {
-        return this.halo.element.case.getCursorCoordinates(e);
+        return this.halo.element.canvas.getCursorCoordinates(e);
     }
 
     handleKeyDown(e: JQuery.KeyDownEvent) {

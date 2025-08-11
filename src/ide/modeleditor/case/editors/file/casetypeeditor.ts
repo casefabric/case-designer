@@ -3,11 +3,11 @@ import IDE from "../../../../ide";
 import TypeEditor from "../../../../modeleditor/type/editor/typeeditor";
 import TypeSelector from "../../../../modeleditor/type/editor/typeselector";
 import HtmlUtil from "../../../../util/htmlutil";
-import CaseView from "../../elements/caseview";
+import CaseCanvas from "../../elements/casecanvas";
 import CaseFileEditor from "./casefileeditor";
 
 export default class CaseTypeEditor {
-    case: CaseView;
+    canvas: CaseCanvas;
     ide: IDE;
     typeEditor: TypeEditor;
     divTypeEditor!: JQuery<HTMLDivElement>;
@@ -18,10 +18,10 @@ export default class CaseTypeEditor {
      * Renders the caseFileModel definition
      */
     constructor(public caseFileEditor: CaseFileEditor, public htmlParent: JQuery<HTMLElement>) {
-        this.case = caseFileEditor.case;
-        this.ide = this.case.editor.ide;
+        this.canvas = caseFileEditor.canvas;
+        this.ide = this.canvas.editor.ide;
         this.htmlContainer = this.generateHTML();
-        this.typeEditor = new TypeEditor(this, this.divTypeEditor, this.case);
+        this.typeEditor = new TypeEditor(this, this.divTypeEditor, this.canvas);
         this.caseTypeSelector = this.generateCaseTypeSelectorHTML();
         this.typeSelector = new TypeSelector(this.typeEditor.ide.repository, this.htmlContainer.find('.selectCaseFileModel'), this.typeRef, (v: string) => this.typeRef = v);
         this.typeEditor.loadMainType(this.typeRef)
@@ -61,12 +61,12 @@ export default class CaseTypeEditor {
     }
 
     get typeRef() {
-        return this.case.caseDefinition.caseFile.typeRef;
+        return this.canvas.caseDefinition.caseFile.typeRef;
     }
 
     set typeRef(typeRef: string) {
-        this.case.caseDefinition.caseFile.typeRef = typeRef;
+        this.canvas.caseDefinition.caseFile.typeRef = typeRef;
         this.typeEditor.loadMainType(typeRef);
-        this.case.editor.completeUserAction();
+        this.canvas.editor.completeUserAction();
     }
 }

@@ -1,9 +1,9 @@
+import HaloClickItem from "../../../../../../../editors/modelcanvas/halo/haloclickitem";
 import Images from "../../../../../../../util/images/images";
-import Halo from "../../../halo";
-import HaloClickItem from "../../../haloclickitem";
+import CaseHalo from "../../../casehalo";
 
-export default class DeployHaloItem extends HaloClickItem {
-    constructor(halo: Halo) {
-        super(halo, Images.Deploy, 'Deploy this case', e => this.halo.element.case.deployForm.show());
+export default class DeployHaloItem extends HaloClickItem<CaseHalo> {
+    constructor(halo: CaseHalo) {
+        super(halo, Images.Deploy, 'Deploy this case', e => this.halo.element.canvas.deployForm.show());
     }
 }

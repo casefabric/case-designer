@@ -36,4 +36,12 @@ export default class TypeModelEditor extends ModelEditor {
     loadModel() {
         this.typeEditor.setMainType(this.file);
     }
+
+    saveModel(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    loadDefinition(): void {
+        throw new Error('Method not implemented, called from undoredomanager.');
+    }
 }

@@ -1,22 +1,23 @@
 import CasePlanDefinition from "../../../../../../repository/definition/cmmn/caseplan/caseplandefinition";
+import DeleteHaloItem from "../../../../../editors/modelcanvas/halo/deletehaloitem";
+import PrintHaloItem from "../../../../../editors/modelcanvas/halo/printhaloitem";
+import PropertiesHaloItem from "../../../../../editors/modelcanvas/halo/propertieshaloitem";
 import CasePlanView from "../../caseplanview";
-import Halo from "../halo";
+import CaseHalo from "../casehalo";
 import CaseInputParametersHaloItem from "./item/caseplan/caseinputparametershaloitem";
 import CaseOutputParametersHaloItem from "./item/caseplan/caseoutputparametershaloitem";
 import CaseRolesHaloItem from "./item/caseplan/caseroleshaloitem";
 import DebuggerHaloItem from "./item/caseplan/debuggerhaloitem";
 import DeployHaloItem from "./item/caseplan/deployhaloitem";
-import PrintHaloItem from "./item/caseplan/printhaloitem";
 import SeparatorHaloItem from "./item/caseplan/separatorhaloitem";
 import StartCaseSchemaHaloItem from "./item/caseplan/startcaseschemahaloitem";
 import ViewSourceHaloItem from "./item/caseplan/viewsourcehaloitem";
-import DeleteHaloItem from "./item/click/deletehaloitem";
-import PropertiesHaloItem from "./item/click/propertieshaloitem";
 
 /**
  * Halo for the caseplan model. This halo is situated next to the top tab of the case plan model
  */
-export default class CasePlanHalo extends Halo<CasePlanDefinition, CasePlanView> {
+export default class CasePlanHalo extends CaseHalo<CasePlanDefinition, CasePlanView> {
+
     createItems() {
         // All content in the topbar, next to the top tab (or next to the planning table).
         this.topBar.addItems(
@@ -30,7 +31,7 @@ export default class CasePlanHalo extends Halo<CasePlanDefinition, CasePlanView>
 
     setHaloPosition() {
         // Determine new left and top, relative to element's position in the case paper
-        const casePaper = this.element.case.paperContainer!;
+        const casePaper = this.element.canvas.paperContainer!;
 
         // We need to make the halo a bit lower and on the right hand side of the top tab or the planning table.
         const leftCorrection = this.element.definition.planningTable ? 310 : 260;

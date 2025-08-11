@@ -2,7 +2,7 @@
 import ParameterDefinition from "../../../../repository/definition/contract/parameterdefinition";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import StandardForm from "../../../editors/standardform";
-import CaseView from "../elements/caseview";
+import CaseCanvas from "../elements/casecanvas";
 
 export default class StartCaseEditor extends StandardForm {
     private _codeMirrorEditor: any;
@@ -12,8 +12,8 @@ export default class StartCaseEditor extends StandardForm {
     /**
      * Editor for the content of the extension element <start-case-schema>
      */
-    constructor(cs: CaseView) {
-        super(cs, 'Start Case Schema Editor', 'jsoneditor', 'start-case-editor');
+    constructor(public canvas: CaseCanvas) {
+        super(canvas, 'Start Case Schema Editor', 'jsoneditor', 'start-case-editor');
     }
 
     renderData() {
@@ -41,7 +41,7 @@ export default class StartCaseEditor extends StandardForm {
             //directly after import when the value is loaded, do not save or show as changed
             if (!this._isLoading) {
                 // Update the value inside the definition.
-                this.case.caseDefinition.startCaseSchema.value = this.value;
+                this.canvas.caseDefinition.startCaseSchema.value = this.value;
                 // Set 'changed' flag and enable autosave timer after 10 seconds of no change
                 this._changed = true;
                 this._enableAutoSave();
@@ -55,12 +55,12 @@ export default class StartCaseEditor extends StandardForm {
         this.htmlContainer?.find('.buttonGenerateSchema').on('click', () => {
             try {
                 const formSchema = ParameterDefinition.generateSchema(
-                    this.case.caseDefinition.name,
-                    this.case.caseDefinition.inputParameters
+                    this.canvas.caseDefinition.name,
+                    this.canvas.caseDefinition.inputParameters
                 );
                 this._codeMirrorEditor.setValue(JSON.stringify(formSchema, null, 2));
             } catch (error: any) {
-                this.case.editor.ide.danger('Error generating schema: ' + error.message);
+                this.canvas.editor.ide.danger('Error generating schema: ' + error.message);
             }
         });
     }
@@ -93,7 +93,7 @@ export default class StartCaseEditor extends StandardForm {
     //test json code and saves case model
     _save() {
         this._changed = false;
-        this.case.editor.completeUserAction();
+        this.canvas.editor.completeUserAction();
     }
 
     onShow() {
@@ -106,7 +106,7 @@ export default class StartCaseEditor extends StandardForm {
         }
     }
 }`
-        const definitionValue = this.case.caseDefinition.startCaseSchema.value;
+        const definitionValue = this.canvas.caseDefinition.startCaseSchema.value;
         // Upon opening the editor, set the value with the current start-case-schema, or use the default value.
         //  Note, default value will not be written into case definition if it is not changed.
         this.value = definitionValue ? definitionValue : defaultValue;

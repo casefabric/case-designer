@@ -1,28 +1,31 @@
 import $ from "jquery";
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import HtmlUtil from "../../../../util/htmlutil";
-import CMMNElementView from "../cmmnelementview";
-import DeleteHaloItem from "./cmmn/item/click/deletehaloitem";
-import PropertiesHaloItem from "./cmmn/item/click/propertieshaloitem";
-import ConnectorHaloItem from "./cmmn/item/drag/connectorhaloitem";
+import DocumentableElementDefinition from "../../../../repository/definition/documentableelementdefinition";
+import GraphicalModelDefinition from "../../../../repository/definition/graphicalmodeldefinition";
+import HtmlUtil from "../../../util/htmlutil";
+import ElementView from "../elementview";
+import DeleteHaloItem from "./deletehaloitem";
 import HaloBar from "./halobar";
 import HaloItem from "./haloitem";
+import PropertiesHaloItem from "./propertieshaloitem";
 
-export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinition, V extends CMMNElementView = CMMNElementView<D>> {
+export default class Halo<
+    ElemDefT extends DocumentableElementDefinition<GraphicalModelDefinition> = DocumentableElementDefinition<GraphicalModelDefinition>,
+    ViewT extends ElementView<ElemDefT> = ElementView<ElemDefT>> {
+
     html: JQuery<HTMLElement>;
-    rightBar: HaloBar;
-    topBar: HaloBar;
-    topRightBar: HaloBar;
-    leftBar: HaloBar;
-    bottomBar: HaloBar;
+    rightBar: HaloBar<this>;
+    topBar: HaloBar<this>;
+    topRightBar: HaloBar<this>;
+    leftBar: HaloBar<this>;
+    bottomBar: HaloBar<this>;
     scrollListener: (e: JQuery.Event) => void;
 
     /**
-     * Creates a halo for the cmmn element.
+     * Creates a halo for the element.
      * The content of the halo need not be set it in the constructor, but rather
      * in the implementation of the createContent() method. This is invoked right after constructor invocation.
      */
-    constructor(public element: V) {
+    constructor(public element: ViewT) {
         const html = this.html = $(`<div class="halobox" element="${element.id}">
     <div class="halobar top"></div>
     <div class="halobar top-right"></div>
@@ -30,7 +33,7 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
     <div class="halobar left"></div>
     <div class="halobar bottom"></div>
 </div>`);
-        this.element.case.haloContainer.append(html);
+        this.element.canvas.haloContainer.append(html);
         this.rightBar = new HaloBar(this, html.find('.right'));
         this.topBar = new HaloBar(this, html.find('.top'));
         this.topRightBar = new HaloBar(this, html.find('.top-right'));
@@ -54,7 +57,7 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
      * Can be overridden to put the element specific content in the halo
      */
     createItems() {
-        this.addItems(ConnectorHaloItem, PropertiesHaloItem, DeleteHaloItem);
+        this.addItems(PropertiesHaloItem, DeleteHaloItem);
     }
 
     /**
@@ -72,7 +75,7 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
      * Deletes the html of the halo and the event listeners
      */
     delete() {
-        this.element.case.paperContainer.off('scroll', this.scrollListener);
+        this.element.canvas.paperContainer.off('scroll', this.scrollListener);
         HtmlUtil.removeHTML(this.html);
     }
 
@@ -81,8 +84,8 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
         this.createItems();
         this.setHaloPosition();
         // Always first remove scroll listener to avoid it getting added twice.
-        this.element.case.paperContainer.off('scroll', this.scrollListener);
-        this.element.case.paperContainer.on('scroll', this.scrollListener);
+        this.element.canvas.paperContainer.off('scroll', this.scrollListener);
+        this.element.canvas.paperContainer.on('scroll', this.scrollListener);
         this.html.css('display', 'block');
     }
 
@@ -95,17 +98,17 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
             // Clear and refill the halo, since underlying definitions of items may have changed.
             this.refresh();
         } else {
-            this.element.case.paperContainer.off('scroll', this.scrollListener);
+            this.element.canvas.paperContainer.off('scroll', this.scrollListener);
             this.html.css('display', 'none');
         }
     }
 
     get haloLeft() {
-        return this.element.shape.x - this.element.case.paperContainer.scrollLeft()!;
+        return this.element.shape.x - this.element.canvas.paperContainer.scrollLeft()!;
     }
 
     get haloTop() {
-        return this.element.shape.y - this.element.case.paperContainer.scrollTop()!;
+        return this.element.shape.y - this.element.canvas.paperContainer.scrollTop()!;
     }
 
     setHaloPosition() {
@@ -119,7 +122,7 @@ export default class Halo<D extends CMMNElementDefinition = CMMNElementDefinitio
      * Adds halo items according to their default location (right, top, left, bottom) to this halo.
      * It is sufficient to pass a comma separated list of the HaloItem constructors.
      */
-    addItems(...haloItemConstructors: (new (h: Halo<D, V>) => HaloItem)[]) {
+    addItems(...haloItemConstructors: (new (h: Halo<ElemDefT, ViewT>) => HaloItem)[]) {
         haloItemConstructors.forEach(constructor => new constructor(this));
     }
 }

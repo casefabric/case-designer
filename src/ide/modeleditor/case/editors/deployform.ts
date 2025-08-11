@@ -1,19 +1,20 @@
-﻿import Definitions from "../../../../repository/deploy/definitions";
+﻿import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
+import Definitions from "../../../../repository/deploy/definitions";
 import ServerFile from "../../../../repository/serverfile/serverfile";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import StandardForm from "../../../editors/standardform";
 import Settings from "../../../settings/settings";
 import $ajax from "../../../util/ajax";
-import CaseView from "../elements/caseview";
+import CaseCanvas from "../elements/casecanvas";
 
-export default class DeployForm extends StandardForm {
+export default class DeployForm extends StandardForm<CaseDefinition> {
     codeMirrorCaseXML: any;
     /**
      * 
      * This class implements the logic to call the repository REST service to deploy a CMMN model.
      */
-    constructor(cs: CaseView) {
-        super(cs, 'Deploy CMMN Model - ' + cs.case.name, 'deployform');
+    constructor(canvas: CaseCanvas) {
+        super(canvas, 'Deploy CMMN Model - ' + canvas.name, 'deployform');
     }
 
     renderData() {
@@ -47,10 +48,10 @@ export default class DeployForm extends StandardForm {
 
         this.codeMirrorCaseXML = CodeMirrorConfig.createXMLEditor(this.htmlContainer!.find('.deployFormContent'));
 
-        const model = this.modelEditor.ide.repository.get(this.case.editor.fileName);
+        const model = this.modelEditor.ide.repository.get(this.canvas.editor.fileName);
         if (model && model.usage.length > 0) {
             const modelRenderer = (file: ServerFile) => `<a href="./#${file.fileName}?deploy=true" title="Click to open the deploy form of ${file.fileName}">${file.name}</a>`;
-            const whereUsedCounter = `Case '${this.case.caseDefinition.file.name}' is used in ${model.usage.length} other model${model.usage.length == 1 ? '' : 's'}`;
+            const whereUsedCounter = `Case '${this.canvas.caseDefinition.file.name}' is used in ${model.usage.length} other model${model.usage.length == 1 ? '' : 's'}`;
             const whereUsedModels = `${model.usage.map(modelRenderer).join(",&nbsp;&nbsp;")}`;
             this.html.find('.whereUsedContent').html(whereUsedCounter + ": " + whereUsedModels);
         }
@@ -90,13 +91,13 @@ export default class DeployForm extends StandardForm {
     }
 
     async deploy() {
-        const deployment = new Definitions(this.case.caseDefinition);
+        const deployment = new Definitions(this.canvas.caseDefinition);
         await this.modelEditor.ide.repository.deploy(deployment).catch(error => {
             console.error('Deployment failed ', error);
             console.groupEnd();
             this._setDeployTextArea(error.message);
             this._setDeployedTimestamp('');
-            this.case.editor.ide.danger('Deploy of CMMN model ' + this.case.name + ' failed');
+            this.canvas.editor.ide.danger('Deploy of CMMN model ' + this.canvas.name + ' failed');
         });
         const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
         const msg = 'Deployed at ' + now;
@@ -108,13 +109,13 @@ export default class DeployForm extends StandardForm {
 
     viewCMMN() {
         this._setDeployTextArea('Fetching MY CMMN ...');
-        const deploy = new Definitions(this.case.caseDefinition);
+        const deploy = new Definitions(this.canvas.caseDefinition);
         this._setDeployTextArea(deploy.contents());
     }
 
     async runServerValidation() {
         console.groupCollapsed('Running server validation')
-        const deployment = new Definitions(this.case.caseDefinition);
+        const deployment = new Definitions(this.canvas.caseDefinition);
         const data = deployment.contents();
         const url = `${Settings.serverURL}/repository/validate`;
         const type = 'post';

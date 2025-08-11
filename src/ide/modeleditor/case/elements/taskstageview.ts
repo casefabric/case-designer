@@ -2,9 +2,9 @@ import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
 import HumanTaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/humantaskdefinition";
 import TaskStageDefinition from "../../../../repository/definition/cmmn/caseplan/taskstagedefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import CaseView from "./caseview";
-import CMMNElementView from "./cmmnelementview";
-import Connector from "./connector/connector";
+import CaseCanvas from "./casecanvas";
+import CaseElementView from "./caseelementview";
+import CaseConnector from "./connector/caseconnector";
 import EntryCriterionView from "./entrycriterionview";
 import ExitCriterionView from "./exitcriterionview";
 import PlanItemView from "./planitemview";
@@ -16,8 +16,8 @@ export default abstract class TaskStageView<TS extends TaskStageDefinition = Tas
     /**
      * Simple class to share some logic from TaskView and StageView.
      */
-    constructor(cs: CaseView, parent: CMMNElementView | undefined, definition: TS, shape: ShapeDefinition) {
-        super(cs, parent, definition, shape);
+    constructor(canvas: CaseCanvas, parent: CaseElementView | undefined, definition: TS, shape: ShapeDefinition) {
+        super(canvas, parent, definition, shape);
         this.showPlanningTable();
     }
 
@@ -56,7 +56,7 @@ export default abstract class TaskStageView<TS extends TaskStageDefinition = Tas
         if (this.definition.planningTable) {
             if (!this.planningTableView) {
                 const position = this.__planningTablePosition;
-                const shape = this.case.diagram.getShape(this.definition.planningTable) || this.case.diagram.createShape(position.x, position.y, 24, 16, this.definition.planningTable.id);
+                const shape = this.canvas.diagram.getShape(this.definition.planningTable) || this.canvas.diagram.createShape(position.x, position.y, 24, 16, this.definition.planningTable.id);
                 new PlanningTableView(this, this.definition.planningTable, shape);
             }
         }
@@ -66,13 +66,13 @@ export default abstract class TaskStageView<TS extends TaskStageDefinition = Tas
      * Returns the PlanningTableView child, if present.
      */
     get planningTableView(): PlanningTableView | undefined {
-        return this.__childElements.find(child => child.isPlanningTable) as PlanningTableView | undefined;
+        return this.__childElements.find(child => (child as CaseElementView).isPlanningTable) as PlanningTableView | undefined;
     }
 
     /**
      * Registers a connector with this element.
      */
-    __addConnector(connector: Connector) {
+    __addConnector(connector: CaseConnector) {
         super.__addConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
@@ -87,7 +87,7 @@ export default abstract class TaskStageView<TS extends TaskStageDefinition = Tas
     /**
      * Removes a connector from the registration in this element.
      */
-    __removeConnector(connector: Connector) {
+    __removeConnector(connector: CaseConnector) {
         super.__removeConnector(connector);
         if (this.definition.isDiscretionary) {
             const target = connector.source == this ? connector.target : connector.source;
