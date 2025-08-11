@@ -7,12 +7,15 @@ import CasePlanDefinition from "../../../../repository/definition/cmmn/caseplan/
 import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
 import Diagram from "../../../../repository/definition/dimensions/diagram";
 import Dimensions from "../../../../repository/definition/dimensions/dimensions";
+import Edge from '../../../../repository/definition/dimensions/edge';
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import Remark from "../../../../repository/validate/remark";
 import Validator from "../../../../repository/validate/validator";
 import Util from "../../../../util/util";
 import Debugger from "../../../debugger/debugger";
 import DragData from "../../../dragdrop/dragdata";
+import Connector from '../../../editors/modelcanvas/connector/connector';
+import Coordinates from "../../../editors/modelcanvas/connector/coordinates";
 import Grid from "../../../editors/modelcanvas/grid";
 import ValidateForm from "../../../editors/validate/validateform";
 import RightSplitter from "../../../splitter/rightsplitter";
@@ -29,8 +32,7 @@ import UndoRedoBox from "../undoredo/undoredobox";
 import CaseElementView from "./caseelementview";
 import CaseFileItemView from "./casefileitemview";
 import CasePlanView from "./caseplanview";
-import Connector from "./connector/connector";
-import Coordinates from "./connector/coordinates";
+import CaseConnector from "./connector/caseconnector";
 import StageView from "./stageview";
 import TextAnnotationView from "./textannotationview";
 
@@ -55,7 +57,7 @@ export default class CaseView {
     readonly shapeBox: ShapeBox;
     readonly splitter: RightSplitter;
     readonly items: CaseElementView[] = [];
-    readonly connectors: Connector[] = [];
+    readonly connectors: CaseConnector[] = [];
     readonly loading: boolean = false;
     casePlanModel?: CasePlanView;
     graph!: dia.Graph;
@@ -285,7 +287,7 @@ export default class CaseView {
         this.svg.on('pointermove', (e: JQuery.Event) => this.showHaloAndResizer(e));
     }
 
-    getConnector(jointElementView: any): Connector {
+    getConnector(jointElementView: any): CaseConnector {
         return jointElementView.model.xyz_cmmn;
     }
 
@@ -522,7 +524,7 @@ export default class CaseView {
         return cmmnElement;
     }
 
-    __addConnector(connector: Connector) {
+    __addConnector(connector: CaseConnector) {
         this.connectors.push(connector);
         if (!this.loading) {
             this.graph.addCells([connector.xyz_joint]);
@@ -536,6 +538,10 @@ export default class CaseView {
     __removeConnector(connector: Connector) {
         connector.edge.removeDefinition();
         Util.removeFromArray(this.connectors, connector);
+    }
+
+    __createConnector(source: any, target: any, edge: Edge): Connector {
+        return new CaseConnector(source, target, edge);
     }
 
     /**
