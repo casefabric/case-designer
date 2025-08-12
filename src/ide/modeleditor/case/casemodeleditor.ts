@@ -54,7 +54,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     open(caseDefinition: CaseDefinition) {
         // Reset the undo manager.
-        this.undoManager.resetActionBuffer(caseDefinition, caseDefinition.dimensions!);
+        this.undoManager.resetActionBuffer(caseDefinition);
 
         // Now that the visualization information is available, we can start the import.
         this.loadDefinition();
@@ -227,7 +227,7 @@ export default class CaseModelEditor extends ModelEditor {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            await this.undoManager.saveDefinition(this.case.caseDefinition, this.case.dimensions!);
+            await this.undoManager.saveDefinition(this.case.caseDefinition);
         }
     }
 

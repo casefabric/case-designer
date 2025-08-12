@@ -6,7 +6,7 @@ import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
 import Images from "../util/images/images";
 
-export default class ModelEditor {
+export default abstract class ModelEditor {
     movableEditors: MovableEditor[] = [];
     htmlContainer: JQuery<HTMLElement>;
     divMovableEditors: JQuery<HTMLDivElement>;
@@ -49,6 +49,11 @@ export default class ModelEditor {
         }
         this.html.find('.closeButton').on('click', (e: JQuery.ClickEvent) => this.close());
         this.html.find('.refreshButton').on('click', (e: JQuery.ClickEvent) => this.refresh());
+    }
+
+    updateUndoRedoButtons() {
+        // called from undoredo action
+        console.warn('This method must be implemented in ' + this.constructor.name);
     }
 
     get html(): JQuery<HTMLElement> {
@@ -160,6 +165,11 @@ export default class ModelEditor {
      */
     completeUserAction() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    loadDefinition() {
+        // called from undoredo action
+        console.warn('This method must be implemented in ' + this.constructor.name);
     }
 
     loadModel() {
