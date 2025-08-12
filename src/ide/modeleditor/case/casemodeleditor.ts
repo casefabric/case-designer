@@ -54,7 +54,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     open(caseDefinition: CaseDefinition) {
         // Reset the undo manager.
-        this.undoManager.resetActionBuffer(caseDefinition, caseDefinition.dimensions!);
+        this.undoManager.resetActionBuffer(caseDefinition);
 
         // Now that the visualization information is available, we can start the import.
         this.loadDefinition();
@@ -72,8 +72,8 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * Imports the source and tries to visualize it
      */
-    loadDefinition(caseDefinition: CaseDefinition | undefined = this.caseFile.definition) {
-        if (!caseDefinition) return;
+    loadDefinition() {
+        if (!this.caseFile.definition) return;
         // During import no live validation and storage of changes
         this.trackChanges = false;
 
@@ -83,7 +83,7 @@ export default class CaseModelEditor extends ModelEditor {
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new CaseView(this, this.htmlContainer, caseDefinition);
+        this.case = new CaseView(this, this.htmlContainer, this.caseFile.definition);
 
         if (this.__migrated) {
             console.log('Uploading migrated files');
@@ -227,7 +227,7 @@ export default class CaseModelEditor extends ModelEditor {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            await this.undoManager.saveDefinition(this.case.caseDefinition, this.case.dimensions!);
+            await this.undoManager.saveDefinition(this.case.caseDefinition);
         }
     }
 
