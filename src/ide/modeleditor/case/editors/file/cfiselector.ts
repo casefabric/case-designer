@@ -3,12 +3,12 @@ import CaseFileItemDef from "../../../../../repository/definition/cmmn/casefile/
 import CaseFileItemTypeDefinition from "../../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import Dialog from "../../../../editors/dialog";
 import Shapes from "../../../../util/images/shapes";
-import CaseView from "../../elements/caseview";
+import CaseCanvas from "../../elements/casecanvas";
 
 export default class CFISelector extends Dialog {
-    case: CaseView;
+    case: CaseCanvas;
     selectedItem?: CaseFileItemDef;
-    constructor(cs: CaseView) {
+    constructor(cs: CaseCanvas) {
         super(cs.editor.ide, 'Select a Case File Item');
         this.case = cs;
         this.selectedItem = undefined;
