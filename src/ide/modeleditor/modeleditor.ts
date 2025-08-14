@@ -6,7 +6,7 @@ import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
 import Images from "../util/images/images";
 
-export default class ModelEditor {
+export default abstract class ModelEditor {
     movableEditors: MovableEditor[] = [];
     htmlContainer: JQuery<HTMLElement>;
     divMovableEditors: JQuery<HTMLDivElement>;
@@ -51,6 +51,8 @@ export default class ModelEditor {
         this.html.find('.refreshButton').on('click', (e: JQuery.ClickEvent) => this.refresh());
     }
 
+    abstract saveModel(): void;
+
     updateUndoRedoButtons() {
         throw new Error('This method must be implemented in ' + this.constructor.name + ' (called from undomanager)');
     }
@@ -63,14 +65,14 @@ export default class ModelEditor {
         return this.file.fileName;
     }
 
-    registerMovableEditor(editor: MovableEditor) {
+    registerMovableEditor(editor: MovableEditor<any>) {
         this.movableEditors.push(editor);
     }
 
     /**
      * Make sure the editor is on top of the others
      */
-    selectMovableEditor(editor: MovableEditor) {
+    selectMovableEditor(editor: MovableEditor<any>) {
         Util.removeFromArray(this.movableEditors, editor);
         this.movableEditors.push(editor);
         // Now reset z-index of editors, oldest at bottom, newest (this) at top.
@@ -80,7 +82,7 @@ export default class ModelEditor {
     /**
      * Give the editor an (initial) position
      */
-    positionMovableEditor(editor: MovableEditor) {
+    positionMovableEditor(editor: MovableEditor<any>) {
         const newPosition = editor.html.offset();
         if (!newPosition) return;
         if (newPosition.left == 0) {
@@ -163,6 +165,10 @@ export default class ModelEditor {
      * Editor can then decide whether or not to immediately save the model (or await e.g. a timeout)
      */
     completeUserAction() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
+    loadDefinition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
