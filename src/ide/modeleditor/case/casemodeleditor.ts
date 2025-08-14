@@ -1,6 +1,5 @@
 import $ from "jquery";
 import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
-import GraphicalModelDefinition from "../../../repository/definition/graphicalmodeldefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
 import Grid from "../../editors/modelcanvas/grid";
@@ -10,15 +9,15 @@ import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditorMetadata from "./casemodeleditormetadata";
+import CaseCanvas from "./elements/casecanvas";
 import CaseElementView from "./elements/caseelementview";
-import CaseView from "./elements/caseview";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;
     dimensionsFile?: DimensionsFile;
     ideCaseFooter: JQuery<HTMLElement>;
     undoManager: UndoManager;
-    case?: CaseView;
+    case?: CaseCanvas;
     trackChanges: boolean = false;
     private __migrated: any;
     autoSaveTimer: any;
@@ -66,7 +65,8 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * Imports the source and tries to visualize it
      */
-    loadDefinition(caseDefinition: GraphicalModelDefinition | undefined = this.caseFile.definition) {
+    loadDefinition() {
+        const caseDefinition = this.file.definition;
         if (!caseDefinition) return;
         // During import no live validation and storage of changes
         this.trackChanges = false;
@@ -77,7 +77,7 @@ export default class CaseModelEditor extends ModelEditor {
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new CaseView(this, this.htmlContainer, caseDefinition as CaseDefinition);
+        this.case = new CaseCanvas(this, this.htmlContainer, caseDefinition, this.undoManager);
 
         if (this.__migrated) {
             console.log('Uploading migrated files');
@@ -156,10 +156,10 @@ export default class CaseModelEditor extends ModelEditor {
                 }
                 break;
             case 89: //y
-                if (e.ctrlKey) this.undoManager.redo();
+                if (e.ctrlKey) this.case.undoManager.redo();
                 break;
             case 90: //z
-                if (e.ctrlKey) this.undoManager.undo();
+                if (e.ctrlKey) this.case.undoManager.undo();
             default:
                 break;
         }
@@ -211,7 +211,7 @@ export default class CaseModelEditor extends ModelEditor {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            this.undoManager.saveModel(this.case.caseDefinition);
+            this.case.undoManager.saveModel(this.case.caseDefinition);
         }
     }
 

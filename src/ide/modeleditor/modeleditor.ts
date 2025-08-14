@@ -1,5 +1,4 @@
 ﻿import $ from "jquery";
-import GraphicalModelDefinition from "../../repository/definition/graphicalmodeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Util from "../../util/util";
 import MovableEditor from "../editors/movableeditor";
@@ -7,7 +6,7 @@ import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
 import Images from "../util/images/images";
 
-export default class ModelEditor {
+export default abstract class ModelEditor {
     movableEditors: MovableEditor[] = [];
     htmlContainer: JQuery<HTMLElement>;
     divMovableEditors: JQuery<HTMLDivElement>;
@@ -52,6 +51,8 @@ export default class ModelEditor {
         this.html.find('.refreshButton').on('click', (e: JQuery.ClickEvent) => this.refresh());
     }
 
+    abstract saveModel(): void;
+
     get html(): JQuery<HTMLElement> {
         return this._html;
     }
@@ -60,14 +61,14 @@ export default class ModelEditor {
         return this.file.fileName;
     }
 
-    registerMovableEditor(editor: MovableEditor) {
+    registerMovableEditor(editor: MovableEditor<any>) {
         this.movableEditors.push(editor);
     }
 
     /**
      * Make sure the editor is on top of the others
      */
-    selectMovableEditor(editor: MovableEditor) {
+    selectMovableEditor(editor: MovableEditor<any>) {
         Util.removeFromArray(this.movableEditors, editor);
         this.movableEditors.push(editor);
         // Now reset z-index of editors, oldest at bottom, newest (this) at top.
@@ -77,7 +78,7 @@ export default class ModelEditor {
     /**
      * Give the editor an (initial) position
      */
-    positionMovableEditor(editor: MovableEditor) {
+    positionMovableEditor(editor: MovableEditor<any>) {
         const newPosition = editor.html.offset();
         if (!newPosition) return;
         if (newPosition.left == 0) {
@@ -162,7 +163,7 @@ export default class ModelEditor {
     completeUserAction() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
-    loadDefinition(caseDefinition: GraphicalModelDefinition | undefined) {
+    loadDefinition() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 

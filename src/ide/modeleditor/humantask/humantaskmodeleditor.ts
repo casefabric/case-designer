@@ -157,13 +157,13 @@ export default class HumantaskModelEditor extends ModelEditor {
     }
 
     generateSchema() {
-        if (! this.file.definition) return;
-        if (! this.model) return;
+        if (!this.file.definition) return;
+        if (!this.model) return;
 
         const generator = (parameters: ParameterDefinition<any>[]) => parameters.
             filter(parameter => parameter.typeRef).
             map(parameter => this.ide.repository.getTypes().
-            find(type => type.fileName === parameter.typeRef)).
+                find(type => type.fileName === parameter.typeRef)).
             filter(file => file !== undefined).
             map(file => file && file.definition);
         const types = [...generator(this.file.definition.inputParameters), ...generator(this.file.definition.outputParameters)].filter(t => t !== undefined);
@@ -297,6 +297,10 @@ export default class HumantaskModelEditor extends ModelEditor {
         this._model = this.file.definition;
         this.render();
         this.visible = true;
+    }
+
+    loadDefinition(): void {
+        throw new Error('Method not implemented, called from undoredomanager.');
     }
 
     /**
