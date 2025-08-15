@@ -267,8 +267,6 @@ export default class CaseView {
             // Unclear why, but Grid size input having focus does not blur when we click on the canvas...
             Grid.blurSetSize();
         });
-        // Enforce move constraints on certain elements
-        this.paper.on('element:pointermove', (elementView: any, e: any, x: number, y: number) => this.getCMMNElement(elementView).moving(x, y));
         this.paper.on('element:pointerdblclick', (elementView: any, e: any, x: number, y: number) => this.getCMMNElement(elementView).propertiesView.show(true));
         this.paper.on('blank:pointerclick', () => this.clearSelection());
         // For some reason pointerclick not always works, so also listening to pointerdown on blank.

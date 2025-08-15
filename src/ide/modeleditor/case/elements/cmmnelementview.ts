@@ -160,6 +160,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
             this.parent.xyz_joint.embed(this.xyz_joint);
         }
         this.xyz_joint.on('change:position', (e: any) => {
+            this.moving(this.position.x, this.position.y);
             this.shape.x = this.position.x;
             this.shape.y = this.position.y;
         });
@@ -402,6 +403,22 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Hook indicating that 'resizing' completed.
      */
     resized() { }
+
+    handleKeyboardNavigation(xMove: number, yMove: number) {
+        this.xyz_joint.translate(xMove, yMove);
+
+        const canvasPosition = this.case.canvas[0].getBoundingClientRect();
+        const underMouse = this.case.getItemUnderMouse(
+            new jQuery.Event('element:moved', {
+                clientX: this.position.x + canvasPosition.left,
+                clientY: this.position.y + canvasPosition.top
+            }),
+            this);
+
+        this.moved(this.position.x, this.position.y, underMouse && underMouse.shape.surrounds(this.shape) ? underMouse : this.parent!);
+
+        this.editor.completeUserAction();
+    }
 
     /**
      * Method invoked during move of an element. Enables enforcing move constraints (e.g. sentries cannot be placed in the midst of an element)
