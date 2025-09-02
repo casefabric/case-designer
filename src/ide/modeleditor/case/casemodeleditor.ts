@@ -1,5 +1,6 @@
 import $ from "jquery";
 import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
+import GraphicalModelDefinition from "../../../repository/definition/graphicalmodeldefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
 import Grid from "../../editors/modelcanvas/grid";
@@ -35,7 +36,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.caseFile = file;
         this.dimensionsFile = this.file.definition!.dimensions!.file;
         this.ideCaseFooter = $('.ideCaseFooter');
-        this.undoManager = new UndoManager(this);
+        this.undoManager = new UndoManager(this.caseFile, this);
 
         // Upon clicking the case footer's validation label, render the validateform of the case (if a case is there)
         this.ideCaseFooter.find('.validateLabel').on('click', () => this.case && this.case.validateForm.show());
@@ -54,7 +55,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     open(caseDefinition: CaseDefinition) {
         // Reset the undo manager.
-        this.undoManager.resetActionBuffer(caseDefinition, caseDefinition.dimensions!);
+        this.undoManager.resetBuffer(caseDefinition);
 
         // Now that the visualization information is available, we can start the import.
         this.loadDefinition();
@@ -65,7 +66,7 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * Imports the source and tries to visualize it
      */
-    loadDefinition(caseDefinition: CaseDefinition | undefined = this.caseFile.definition) {
+    loadDefinition(caseDefinition: GraphicalModelDefinition | undefined = this.caseFile.definition) {
         if (!caseDefinition) return;
         // During import no live validation and storage of changes
         this.trackChanges = false;
@@ -76,7 +77,7 @@ export default class CaseModelEditor extends ModelEditor {
         }
 
         // Create a new case renderer on the definition and dimensions
-        this.case = new CaseView(this, this.htmlContainer, caseDefinition);
+        this.case = new CaseView(this, this.htmlContainer, caseDefinition as CaseDefinition);
 
         if (this.__migrated) {
             console.log('Uploading migrated files');
@@ -210,7 +211,7 @@ export default class CaseModelEditor extends ModelEditor {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions!);
+            this.undoManager.saveModel(this.case.caseDefinition);
         }
     }
 

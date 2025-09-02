@@ -117,7 +117,7 @@ export default class CaseView {
         this.deployForm = new DeployForm(this);
         this.sourceEditor = new CaseSourceEditor(editor, this.html);
         this.cfiEditor = new CaseFileEditor(this, this.divCFIEditor);
-        this.undoBox = new UndoRedoBox(this, this.divUndoRedo);
+        this.undoBox = new UndoRedoBox(this.editor.undoManager, this.divUndoRedo);
         this.shapeBox = new ShapeBox(this, this.divShapeBox);
         this.splitter = new RightSplitter(this.divCaseModel, '60%', 5);
 
@@ -524,7 +524,7 @@ export default class CaseView {
     }
 
     __createConnector(source: ElementView<any>, target: ElementView<any>, edge: Edge): Connector {
-        return new CaseConnector(source, target, edge);
+        return new CaseConnector(source as any, target as any, edge);
     }
 
     /**

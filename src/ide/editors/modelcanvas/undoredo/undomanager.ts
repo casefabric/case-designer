@@ -1,76 +1,77 @@
-import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
-import Dimensions from "../../../../repository/definition/dimensions/dimensions";
-import CaseModelEditor from "../../../modeleditor/case/casemodeleditor";
-import Action from "./action";
+import GraphicalModelDefinition from "../../../../repository/definition/graphicalmodeldefinition";
+import ServerFile from "../../../../repository/serverfile/serverfile";
+import ModelEditor from "../../../modeleditor/modeleditor";
+import State from "./state";
+import UndoRedoBox from "./undoredobox";
 
 export default class UndoManager {
-    performingBufferAction: boolean = false;
-    private currentAction?: Action;
+    restoringState: boolean = false;
+    private currentState?: State;
+    private _undoBox?: UndoRedoBox;
 
-    constructor(public editor: CaseModelEditor) { }
+    constructor(file: ServerFile<any>, public editor: ModelEditor) {
+        this.currentState = new State(this, file.definition!, undefined);
+    }
+
+    set undoBox(undoBox: UndoRedoBox | undefined) {
+        this._undoBox = undoBox;
+        this.updateUndoRedoButtons();
+    }
 
     updateUndoRedoButtons(undoCount: number = this.getUndoCount(), redoCount: number = this.getRedoCount()): void {
-        // Only update the buttons once the case is loaded.
-        if (this.editor.case) this.editor.case.undoBox.updateButtons(undoCount, redoCount);
+        // Only update the buttons once the model is loaded.
+        this._undoBox?.updateButtons(undoCount, redoCount);
     }
 
     /**
-     * Clears the action buffer, and prepares it for the new content.
-     * This typically only happens when we open a new case model
+     * Clears the state buffer, and prepares it for the new content.
+     * This typically only happens when we open a new model
      */
-    resetActionBuffer(caseDefinition: CaseDefinition, dimensions: Dimensions): void {
-        this.performingBufferAction = false;
-        this.currentAction = undefined;
+    resetBuffer(definition: GraphicalModelDefinition): void {
+        this.restoringState = false;
+        this.currentState = undefined;
 
-        // First action is to add what we have to the undo/redo buffer.
-        this.addCaseAction(caseDefinition, dimensions);
+        // First state is to add what we have to the undo/redo buffer.
+        this.setState(definition);
     }
 
     /**
      * Save model and upload to server; but only if there are new changes.
-     * @param forceSave Saving case model is only done on the changes with respect to the previous save action. For creating a new model we have to forcefully save.
      */
-    saveCaseModel(caseDefinition: CaseDefinition, dimensions: Dimensions, forceSave: boolean = false) {
-        const newAction = this.addCaseAction(caseDefinition, dimensions);
-        if (newAction) {
-            if (forceSave) {
-                newAction.forceSave();
-            } else {
-                newAction.save();
-            }
+    saveModel(definition: GraphicalModelDefinition) {
+        const newState = this.setState(definition);
+        if (newState) {
+            newState.save();
         } else {
-            // See also console.warn in addCaseAction
-            console.warn('Nothing to save for this case model change?!')
+            console.warn('Nothing to save for this model change?!')
         }
     }
 
-    private addCaseAction(caseDefinition: CaseDefinition, dimensions: Dimensions) {
-        if (this.performingBufferAction) {
+    private setState(definition: GraphicalModelDefinition) {
+        if (this.restoringState) {
             // This is not supposed to happen. But order of events and invocations is not so easy, so keeping it for safety reasons if you start changing this code
-            console.warn('Adding case action while performing buffer action');
+            console.warn('Adding state while performing buffer restore');
             return;
         }
 
-        // Creating a new action makes it also the current action.
-        //  Note that the actual action may not resolve in changes, and in such a case, the currentAction will return itself and remain the same.
-        this.currentAction = new Action(this, caseDefinition, dimensions, this.currentAction as Action | undefined);
+        // Creating a new state makes it also the current state.
+        //  Note that the actual state may not result in changes, and in such a case, the currentState will return itself and remain the same.
+        this.currentState = new State(this, definition, this.currentState);
         this.updateUndoRedoButtons();
-        return this.currentAction as Action;
+        return this.currentState;
     }
 
     getUndoCount() {
-        if (this.currentAction) {
-            return this.currentAction.undoCount;
+        if (this.currentState) {
+            return this.currentState.undoCount;
         } else {
             return 0;
         }
     }
 
     async undo() {
-        if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
-
-        if (this.currentAction) {
-            this.currentAction = await this.currentAction.undo();
+        if (this.currentState) {
+            this.currentState = await this.currentState.undo();
         } else {
             console.log('No undo available');
         }
@@ -78,18 +79,16 @@ export default class UndoManager {
     }
 
     getRedoCount() {
-        if (this.currentAction) {
-            return this.currentAction.redoCount;
+        if (this.currentState) {
+            return this.currentState.redoCount;
         } else {
             return 0;
         }
     }
 
     async redo() {
-        if (!this.editor.case) return; // Function currently only enabled in CaseModelEditor
-
-        if (this.currentAction && this.currentAction.nextAction) {
-            this.currentAction = await this.currentAction.nextAction.redo();
+        if (this.currentState && this.currentState.nextState) {
+            this.currentState = await this.currentState.nextState.redo();
         } else {
             console.log('No redo availalbe');
         }

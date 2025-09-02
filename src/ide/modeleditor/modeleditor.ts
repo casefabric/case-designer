@@ -1,4 +1,5 @@
 ﻿import $ from "jquery";
+import GraphicalModelDefinition from "../../repository/definition/graphicalmodeldefinition";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Util from "../../util/util";
 import MovableEditor from "../editors/movableeditor";
@@ -18,7 +19,7 @@ export default class ModelEditor {
     constructor(public ide: IDE, public file: ServerFile) {
         this.ide.editorRegistry.add(this);
         this._html = $(
-`<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
+            `<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
     <div class="model-editor-header">
         <label class="fileNamelabel">${this.label}</label>
         <div class="refreshButton" title="Refresh">
@@ -78,7 +79,7 @@ export default class ModelEditor {
      */
     positionMovableEditor(editor: MovableEditor) {
         const newPosition = editor.html.offset();
-        if (! newPosition) return;
+        if (!newPosition) return;
         if (newPosition.left == 0) {
             newPosition.left = 220;
         }
@@ -93,7 +94,7 @@ export default class ModelEditor {
         this.movableEditors.forEach(sibling => {
             if (sibling != editor && sibling.html.css('display') == 'block') {
                 const editorOffset = sibling.html.offset();
-                if (! editorOffset) return;
+                if (!editorOffset) return;
 
                 const leftMargin = editorOffset.left - MINIMUM_MARGIN_BETWEEN_EDITORS;
                 const rightMargin = editorOffset.left + MINIMUM_MARGIN_BETWEEN_EDITORS;
@@ -120,7 +121,7 @@ export default class ModelEditor {
             }
             if ((newPosition.top + editorHeight) > bodyHeight) {
                 newPosition.top = Math.max(0, bodyHeight - editorHeight - MINIMUM_MARGIN_BETWEEN_EDITORS);
-            }    
+            }
         }
 
         editor.html.css('top', newPosition.top);
@@ -161,6 +162,9 @@ export default class ModelEditor {
     completeUserAction() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
+    loadDefinition(caseDefinition: GraphicalModelDefinition | undefined) {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
 
     loadModel() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
@@ -197,7 +201,7 @@ export default class ModelEditor {
         this.html.css('display', visible ? 'block' : 'none');
         if (visible) {
             $(document.body).off('keydown', this.keyStrokeListener);
-            $(document.body).on('keydown', this.keyStrokeListener);    
+            $(document.body).on('keydown', this.keyStrokeListener);
             this.onShow();
             this.ide.coverPanel.visible = false;
         } else {
