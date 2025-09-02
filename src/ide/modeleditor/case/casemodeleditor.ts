@@ -3,6 +3,7 @@ import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
 import Grid from "../../editors/modelcanvas/grid";
+import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import MovableEditor from "../../editors/movableeditor";
 import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
@@ -10,7 +11,6 @@ import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditorMetadata from "./casemodeleditormetadata";
 import CaseElementView from "./elements/caseelementview";
 import CaseView from "./elements/caseview";
-import UndoManager from "./undoredo/undomanager";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;
