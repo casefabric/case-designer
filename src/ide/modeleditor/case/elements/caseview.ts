@@ -17,6 +17,7 @@ import DragData from "../../../dragdrop/dragdata";
 import Connector from '../../../editors/modelcanvas/connector/connector';
 import Coordinates from "../../../editors/modelcanvas/connector/coordinates";
 import Grid from "../../../editors/modelcanvas/grid";
+import UndoRedoBox from "../../../editors/modelcanvas/undoredo/undoredobox";
 import ValidateForm from "../../../editors/validate/validateform";
 import RightSplitter from "../../../splitter/rightsplitter";
 import HtmlUtil from "../../../util/htmlutil";
@@ -28,7 +29,6 @@ import CaseParametersEditor from "../editors/parameters/caseparameterseditor";
 import StartCaseEditor from "../editors/startcaseeditor";
 import CaseTeamEditor from "../editors/team/caseteameditor";
 import ShapeBox from "../shapebox/shapebox";
-import UndoRedoBox from "../undoredo/undoredobox";
 import CaseElementView from "./caseelementview";
 import CaseFileItemView from "./casefileitemview";
 import CasePlanView from "./caseplanview";
@@ -116,7 +116,7 @@ export default class CaseView {
         this.deployForm = new DeployForm(this);
         this.sourceEditor = new CaseSourceEditor(editor, this.html);
         this.cfiEditor = new CaseFileEditor(this, this.divCFIEditor);
-        this.undoBox = new UndoRedoBox(this, this.divUndoRedo);
+        this.undoBox = new UndoRedoBox(this.editor.undoManager, this.divUndoRedo);
         this.shapeBox = new ShapeBox(this, this.divShapeBox);
         this.splitter = new RightSplitter(this.divCaseModel, '60%', 5);
 
