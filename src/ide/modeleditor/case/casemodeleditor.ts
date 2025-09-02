@@ -3,6 +3,7 @@ import CaseDefinition from "../../../repository/definition/cmmn/casedefinition";
 import CaseFile from "../../../repository/serverfile/casefile";
 import DimensionsFile from "../../../repository/serverfile/dimensionsfile";
 import Grid from "../../editors/modelcanvas/grid";
+import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import MovableEditor from "../../editors/movableeditor";
 import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
@@ -10,7 +11,6 @@ import ModelEditorMetadata from "../modeleditormetadata";
 import CaseModelEditorMetadata from "./casemodeleditormetadata";
 import CaseElementView from "./elements/caseelementview";
 import CaseView from "./elements/caseview";
-import UndoManager from "./undoredo/undomanager";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;
@@ -54,7 +54,7 @@ export default class CaseModelEditor extends ModelEditor {
 
     open(caseDefinition: CaseDefinition) {
         // Reset the undo manager.
-        this.undoManager.resetActionBuffer(caseDefinition, caseDefinition.dimensions!);
+        this.undoManager.resetActionBuffer(caseDefinition);
 
         // Now that the visualization information is available, we can start the import.
         this.loadDefinition();
@@ -72,7 +72,8 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * Imports the source and tries to visualize it
      */
-    loadDefinition(caseDefinition: CaseDefinition | undefined = this.caseFile.definition) {
+    loadDefinition() {
+        const caseDefinition = this.caseFile.definition;
         if (!caseDefinition) return;
         // During import no live validation and storage of changes
         this.trackChanges = false;
@@ -225,7 +226,7 @@ export default class CaseModelEditor extends ModelEditor {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions!);
+            this.undoManager.saveDefinition(this.case.caseDefinition);
         }
     }
 
