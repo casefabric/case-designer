@@ -9,6 +9,7 @@ import IDE from "../ide";
 import ModelEditorMetadata from "../modeleditor/modeleditormetadata";
 import Images from "../util/images/images";
 import ModelListPanel from "./modellistpanel";
+import "@styles/ide/repositorybrowser.css";
 
 export default class RepositoryBrowser {
     repository: Repository;
@@ -22,19 +23,17 @@ export default class RepositoryBrowser {
     constructor(public ide: IDE, public html: JQuery<HTMLElement>) {
         this.repository = this.ide.repository;
         this.html.append(
-            `<div class="divModelList basicform">
+            `<div class="repository-browser-content basicform">
                 <div class="formheader">
                     <label>Repository</label>
                     <div class="btnRefresh" title="Refresh the model list">
                         <img src="${Images.Refresh}" />
                     </div>
                 </div>
-                <div class="formfooter">
-                    <div class="divSearchBox">
-                        <input style='width:100%' placeholder="Search" />
-                    </div>
-                </div>
                 <div class="formcontainer">
+                    <div class="divSearchBox">
+                        <input placeholder="Search" />
+                    </div>
                     <div class="divAccordionList">
                     </div>
                 </div>
@@ -203,9 +202,7 @@ export default class RepositoryBrowser {
     }
 
     async delete(file: ServerFile, fromModel: ModelDefinition | undefined = undefined) {
-        const usage = fromModel
-            ? file.usage.filter(x => x.definition?.id != fromModel.id)
-            : file.usage;
+        const usage = fromModel ? file.usage.filter(x => x.definition?.id != fromModel.id) : file.usage;
 
         if (usage.length) {
             this.ide.danger(`Cannot delete '${file.fileName}' because the model is used in ${usage.length} other model${usage.length == 1 ? '' : 's'}<p></p>` +
@@ -265,6 +262,5 @@ export default class RepositoryBrowser {
                 });
             }
         }
-
     }
 }

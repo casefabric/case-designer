@@ -8,7 +8,7 @@ export class IDEPage extends Page {
         return $(`.model-editor-base[model="${modelName}"]`);
     }
     public get modelList() {
-        return $('.divModelList');
+        return $('.repository-browser-content');
     }
 
     public async open(model?: string): Promise<void> {

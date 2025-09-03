@@ -4,7 +4,7 @@ import CreateNewModelDialog from './createnewmodeldialog.page';
 
 export class ModelListPanel {
     private get modelTabBase() {
-        return $('.divModelList .divAccordionList');
+        return $('.repository-browser-content .divAccordionList');
     }
 
     public async selectModelTab(tabName: string) {
@@ -56,7 +56,7 @@ export class ModelListPanel {
     }
 
     public get repositoryPanel() {
-        return $('.divModelList');
+        return $('.repository-browser-content');
     }
     public get addCaseButton() {
         return this.repositoryPanel.$('[filetype="case"] .plus-icon');
