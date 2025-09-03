@@ -9,11 +9,6 @@ export default class UndoManager {
 
     constructor(public editor: CaseModelEditor) { }
 
-    updateUndoRedoButtons(undoCount: number = this.getUndoCount(), redoCount: number = this.getRedoCount()): void {
-        // Only update the buttons once the case is loaded.
-        if (this.editor.case) this.editor.case.undoBox.updateButtons(undoCount, redoCount);
-    }
-
     /**
      * Clears the action buffer, and prepares it for the new content.
      * This typically only happens when we open a new case model
@@ -54,16 +49,12 @@ export default class UndoManager {
         // Creating a new action makes it also the current action.
         //  Note that the actual action may not resolve in changes, and in such a case, the currentAction will return itself and remain the same.
         this.currentAction = new Action(this, caseDefinition, dimensions, this.currentAction as Action | undefined);
-        this.updateUndoRedoButtons();
+        this.editor.updateUndoRedoButtons();
         return this.currentAction as Action;
     }
 
     getUndoCount() {
-        if (this.currentAction) {
-            return this.currentAction.undoCount;
-        } else {
-            return 0;
-        }
+        return this.currentAction?.undoCount || 0;
     }
 
     async undo() {
@@ -74,15 +65,11 @@ export default class UndoManager {
         } else {
             console.log('No undo available');
         }
-        this.updateUndoRedoButtons();
+        this.editor.updateUndoRedoButtons();
     }
 
     getRedoCount() {
-        if (this.currentAction) {
-            return this.currentAction.redoCount;
-        } else {
-            return 0;
-        }
+        return this.currentAction?.redoCount || 0;
     }
 
     async redo() {
@@ -93,6 +80,6 @@ export default class UndoManager {
         } else {
             console.log('No redo availalbe');
         }
-        this.updateUndoRedoButtons();
+        this.editor.updateUndoRedoButtons();
     }
 }
