@@ -40,9 +40,9 @@ export default class TextAnnotationView extends CMMNElementView<TextAnnotationDe
 
     get markup() {
         return `<g class="scalable">
-                    <rect class="cmmn-shape cmmn-border cmmn-textannotation-shape" rx="5" ry="5" />
+                    <rect class="cmmn-shape cmmn-border cmmn-textannotation-shape" rx="5" ry="5" ></rect>
                 </g>
-                <text class="cmmn-text" />`;
+                <text class="cmmn-text" ></text>`;
     }
 
     get textAttributes() {

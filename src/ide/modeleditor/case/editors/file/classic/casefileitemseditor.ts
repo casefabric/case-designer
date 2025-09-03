@@ -222,7 +222,7 @@ export default class CaseFileItemsEditor {
         } catch (error: any) {
             console.error(error);
             console.groupEnd();
-            this.ide.danger(`Failure during conversion:<p/>${error.message}`)
+            this.ide.danger(`Failure during conversion:<p></p>${error.message}`)
         }
     }
 

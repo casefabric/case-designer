@@ -90,7 +90,7 @@ export default class CaseView {
             <div class="divCaseContainer">
                 <div class="divCaseCanvas basicbox">
                     <div class="paper-container-scroller">
-                        <div class="paper-container" />
+                        <div class="paper-container" ></div>
                         <div class="divResizers"></div>
                         <div class="divHalos"></div>
                         <div class="divMarker"></div>
@@ -98,7 +98,7 @@ export default class CaseView {
                     </div>
                 </div>
             </div>
-            <div class="divCaseFileContainer" />
+            <div class="divCaseFileContainer" ></div>
         </div>
     </div>
 </div>`);

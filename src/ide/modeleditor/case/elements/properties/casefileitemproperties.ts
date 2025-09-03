@@ -13,7 +13,7 @@ export default class CaseFileItemProperties extends Properties<CaseFileItemView>
                             <label class="zoomlabel">Case File Item</label>
                             <label class="valuelabel">${contextName}</label>
                             <button class="zoombt"></button>
-                            <button class="removeReferenceButton" title="remove the reference to the case file item" />
+                            <button class="removeReferenceButton" title="remove the reference to the case file item" ></button>
                         </div>`);
         this.htmlContainer.append(html);
 

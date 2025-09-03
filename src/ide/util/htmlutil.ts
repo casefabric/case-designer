@@ -12,7 +12,7 @@ export default class HtmlUtil {
         }
         const textarea = $('<textarea>');
         $(document.body).append(textarea);
-        $(textarea.val(text)).select();
+        $(textarea.val(text)).trigger('select');
         document.execCommand('copy');
         textarea.remove();
         console.log('Copied text to clipboard');

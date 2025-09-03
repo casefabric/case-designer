@@ -31,7 +31,7 @@ export default class MappingCFI {
                 <label class="cfiName">${parameter ? parameter.bindingName : ''}</label>
                 <button class="zoombt" style="right:42px" title="Select case file item"></button>
                 <button class="openBindingReferenceButton ${extraStyle}" ${!bindingRefPresent ? 'disabled="true"' : ''} title="${breTooltip}">L</button>
-                <button class="removeReferenceButton" title="Remove the reference to the case file item." />
+                <button class="removeReferenceButton" title="Remove the reference to the case file item." ></button>
             </div>`);
 
         //add events for drag and drop

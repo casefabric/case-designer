@@ -62,7 +62,7 @@ export default class CaseTeamEditor extends MovableEditor {
                         </div>
                         <div class="team-management" title="Select a case team with roles which can be assigned to any task in this Case Plan">
                             <label>Case Team</label>
-                            <select class="selectTeam"/>
+                            <select class="selectTeam"></select>
                             <img class="rename-team" title="Rename team..." src="${Images.Rename}" />
                             <img class="remove-team" title="Remove team..." src="${Images.Delete}" />
                             <br/>
@@ -137,7 +137,7 @@ export default class CaseTeamEditor extends MovableEditor {
         const teamName = path.join('/');
         const teamFileName = teamName + '.caseteam';
         const teamFile = this.modelEditor.ide.repository.createCaseTeamFile(teamFileName, CaseTeamModelDefinition.createDefinitionSource(teamName));
-        if (! teamFile.definition) {
+        if (!teamFile.definition) {
             // This would be weird.
             throw new Error("Failed to create case team model definition");
         }

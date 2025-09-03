@@ -37,7 +37,7 @@ export default class CasePlanProperties extends StageProperties<CasePlanView> {
                                 <button class="btnCaseRolesEditor">Edit Roles</button>
                             </div>
                         </div>
-                        <span class="separator" />
+                        <span class="separator" ></span>
                         <div title="Edit the 'start case schema'" class="propertyBlock">
                             <label>Start Case Schema</label>
                             <div>

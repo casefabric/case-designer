@@ -102,7 +102,7 @@ export default class Debugger extends StandardForm {
                 </table>
             </div>
             <div class="event-content">
-                <div class="codeMirrorSource debugFormContent" />
+                <div class="codeMirrorSource debugFormContent" ></div>
             </div>
         </div>
     </div>
@@ -263,7 +263,7 @@ export default class Debugger extends StandardForm {
 
         $(document).off('keyup', this.keyHandler);
         $(document).on('keyup', this.keyHandler);
-        this.html.find('.buttonShowEvents').focus();
+        this.html.find('.buttonShowEvents').trigger('focus');
         if (this.events) {
             this.renderEvents();
         }

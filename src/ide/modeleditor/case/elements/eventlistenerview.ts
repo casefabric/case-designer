@@ -18,8 +18,8 @@ export default abstract class EventListenerView<ED extends EventListenerDefiniti
     }
 
     get markup() {
-        return `<image x="0" y="0" width="32px" height="32px" xlink:href="${this.imageURL}" />
-                <text class="cmmn-text" x="16" y="50" text-anchor="middle" />`;
+        return `<image x="0" y="0" width="32px" height="32px" xlink:href="${this.imageURL}" ></image>
+                <text class="cmmn-text" x="16" y="50" text-anchor="middle" ></text>`;
     }
 
     /**
