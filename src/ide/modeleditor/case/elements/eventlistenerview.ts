@@ -18,8 +18,17 @@ export default abstract class EventListenerView<ED extends EventListenerDefiniti
     }
 
     get markup() {
-        return `<image x="0" y="0" width="32px" height="32px" xlink:href="${this.imageURL}" ></image>
-                <text class="cmmn-text" x="16" y="50" text-anchor="middle" ></text>`;
+        return `<image @selector='body' x="0" y="0" width="32px" height="32px" href="${this.imageURL}" ></image>
+                <text @selector='label' x="16" y="50" text-anchor='middle'></text>`;
+    }
+
+    get markupAttributes() {
+        return {
+            label: {
+                textVerticalAnchor: 'top',
+                y: 'calc(h+8)',
+            }
+        };
     }
 
     /**

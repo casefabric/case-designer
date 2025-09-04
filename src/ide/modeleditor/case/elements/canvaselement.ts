@@ -1,4 +1,4 @@
-import { dia } from "jointjs";
+import { dia } from '@joint/core';
 import CaseView from "./caseview";
 
 export default abstract class CanvasElement<JointType extends dia.Cell = dia.Cell> {
