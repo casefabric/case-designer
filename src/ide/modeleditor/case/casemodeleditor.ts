@@ -62,6 +62,13 @@ export default class CaseModelEditor extends ModelEditor {
         super.visible = true;
     }
 
+    updateUndoRedoButtons(): void {
+        // Only update the buttons if the case is loaded. The call to resetActionBuffer in open() will not have the case loaded yet.
+        if (this.case) {
+            this.case.undoBox.refresh();
+        }
+    }
+
     /**
      * Imports the source and tries to visualize it
      */
