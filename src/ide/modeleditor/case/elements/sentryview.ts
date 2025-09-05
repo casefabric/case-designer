@@ -1,4 +1,4 @@
-﻿import { g } from "jointjs";
+﻿import { g } from '@joint/core';
 import CaseFileItemTransition from "../../../../repository/definition/cmmn/casefile/casefileitemtransition";
 import PlanItem from "../../../../repository/definition/cmmn/caseplan/planitem";
 import PlanItemTransition from "../../../../repository/definition/cmmn/caseplan/planitemtransition";
@@ -112,10 +112,20 @@ export default abstract class SentryView<CD extends CriterionDefinition = Criter
 
     get markup() {
         return `
-        <polyline style="pointer-events: bounding-box;" class="cmmn-shape cmmn-border cmmn-${this.constructor.name.toLowerCase()}-shape" points="6,0  0,10  6,20  12,10 6,0">
+        <polyline @selector='body' style="pointer-events: bounding-box;" points="6,0  0,10  6,20  12,10 6,0">
             <title class="tooltip"></title>
         </polyline>`;
     }
+
+    get markupAttributes() {
+        return {
+            body: {
+                fill: this.color,
+            }
+        };
+    }
+
+    abstract get color(): string;
 
     resizing() {
         console.error('Cannot resize a sentry');
@@ -135,11 +145,10 @@ export default abstract class SentryView<CD extends CriterionDefinition = Criter
         const point = new g.Point(x, y);
         const boundryPoint = parentElement.getBBox().pointNearestToPoint(point);
 
-        const sA = this.attributes;
-        const sX = sA.position.x;
-        const sY = sA.position.y;
-        const sH = sA.size.height;
-        const sW = sA.size.width;
+        const sX = this.position.x;
+        const sY = this.position.y;
+        const sH = this.size.height;
+        const sW = this.size.width;
 
         const sentryTranslateX = boundryPoint.x - sX - sW / 2;
         const sentryTranslateY = boundryPoint.y - sY - sH / 2;

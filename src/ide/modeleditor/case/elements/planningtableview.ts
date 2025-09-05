@@ -1,4 +1,4 @@
-﻿import { g } from "jointjs";
+﻿import { g } from '@joint/core';
 import PlanningTableDefinition from "../../../../repository/definition/cmmn/caseplan/planning/planningtabledefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import Images from "../../../util/images/images";
@@ -41,8 +41,20 @@ export default class PlanningTableView extends CMMNElementView<PlanningTableDefi
     }
 
     get markup() {
-        return `<rect class="cmmn-shape cmmn-planningtable-shape" ></rect>
-                <image xlink:href="${Images.PlanningTable}" x="1" y="-3" width="24" height="24" ></image>`;
+        return `<rect @selector='body'></rect>
+                <image href="${Images.PlanningTable}" x="1" y="-3" width="24" height="24" ></image>`;
+    }
+
+    get markupAttributes() {
+        return {
+            body: {
+                stroke: 'transparent',
+                width: 28,
+                height: 20,
+                x: -1,
+                y: -1,
+            }
+        };
     }
 
     /**

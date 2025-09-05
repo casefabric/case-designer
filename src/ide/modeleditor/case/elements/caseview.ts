@@ -1,4 +1,4 @@
-﻿import { dia } from "jointjs";
+import { dia } from '@joint/core';
 import $ from "jquery";
 import TextAnnotationDefinition from "../../../../repository/definition/artifact/textannotation";
 import CaseDefinition from "../../../../repository/definition/cmmn/casedefinition";
@@ -238,7 +238,7 @@ export default class CaseView {
             height: '6000px',
             gridSize: 1,
             perpendicularLinks: true,
-            model: this.graph
+            model: this.graph,
         });
 
         this.grid = new Grid(this.paper, this.editor.ide);
@@ -272,10 +272,10 @@ export default class CaseView {
         this.paper.on('blank:pointerdown', () => this.clearSelection());
         // When we move over an element with the mouse, an event is raised.
         //  This event is captured to enable elements to register themselves with ShapeBox and RepositoryBrowser
-        this.paper.on('element:mouseenter', (elementView: any, e: any, x: number, y: number) => this.getCMMNElement(elementView).mouseEnter());
-        this.paper.on('element:mouseleave', (elementView: any, e: any, x: number, y: number) => this.getCMMNElement(elementView).mouseLeave());
-        this.paper.on('link:mouseenter', (elementView: any, e: any, x: number, y: number) => this.getConnector(elementView).mouseEnter());
-        this.paper.on('link:mouseleave', (elementView: any, e: any, x: number, y: number) => this.getConnector(elementView).mouseLeave());
+        this.paper.on('element:mouseenter', (elementView: any, e: any,) => this.getCMMNElement(elementView).mouseEnter());
+        this.paper.on('element:mouseleave', (elementView: any, e: any) => this.getCMMNElement(elementView).mouseLeave());
+        this.paper.on('link:mouseenter', (elementView: any, e: any) => this.getConnector(elementView).mouseEnter());
+        this.paper.on('link:mouseleave', (elementView: any, e: any) => this.getConnector(elementView).mouseLeave());
 
         // Also add special event handlers for case itself. Registers with ShapeBox to support adding case plan element if it does not exist
         this.svg.on('pointerover', (e: JQuery.Event) => this.setDropHandlers());

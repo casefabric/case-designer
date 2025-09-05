@@ -78,12 +78,20 @@ export default class ShapeDefinition extends DiagramElement {
         this.getBounds().y = y;
     }
 
+    get position() {
+        return { x: this.x, y: this.y };
+    }
+
     get width() {
         return this.bounds?.w || -1;
     }
 
     set width(w) {
         this.getBounds().w = w;
+    }
+
+    get size() {
+        return { width: this.width, height: this.height };
     }
 
     get height() {
