@@ -314,6 +314,24 @@ export default class CaseView {
         return this.html.find('.divMarker');
     }
 
+    print() {
+        const svg = this.html[0].getElementsByTagName('svg')[0].outerHTML;
+        const printWindow = window.open('', '')!;
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>${this.caseDefinition.name}</title>
+                </head>
+                <body>
+                    ${svg}
+                </body>
+            </html>`);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
+    }
+
     /**
      * Renders the "source" view tab
      */

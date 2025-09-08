@@ -1,6 +1,6 @@
 import autoCompleteImageUrl from '../../../../app/images/autocompletedecorator_32.png';
 import closeImageUrl from '../../../../app/images/close_32.png';
-import DebugImageUrl from '../../../../app/images/debug.png';
+import debugImageUrl from '../../../../app/images/debug.png';
 import deleteImageUrl from '../../../../app/images/delete_32.png';
 import delete64ImageUrl from '../../../../app/images/delete_64.png';
 import deployImageUrl from '../../../../app/images/deploy_128.png';
@@ -42,7 +42,8 @@ import userEventImageUrl from '../../../../app/images/svg/userevent.svg';
 import taskinputImageUrl from '../../../../app/images/task_input_128.png';
 import taskoutputImageUrl from '../../../../app/images/task_output_128.png';
 import undoImageUrl from '../../../../app/images/undo_128.png';
-import ViewSourceImageUrl from '../../../../app/images/viewsource_128.png';
+import printImageUrl from '../../../../app/images/svg/print.svg';
+import viewSourceImageUrl from '../../../../app/images/viewsource_128.png';
 import warningImageUrl from '../../../../app/images/warningproblem_32.png';
 import zoomInImageUrl from '../../../../app/images/zoomin_64.png';
 
@@ -81,8 +82,9 @@ export default class Images {
     static Roles = rolesImageUrl;
     static StartCaseSchema = startCaseSchemaImageUrl;
     static Deploy = deployImageUrl;
-    static ViewSource = ViewSourceImageUrl;
-    static Debug = DebugImageUrl;
+    static Print = printImageUrl;
+    static ViewSource = viewSourceImageUrl;
+    static Debug = debugImageUrl;
 
     static TaskInput = taskinputImageUrl;
     static TaskOutput = taskoutputImageUrl;

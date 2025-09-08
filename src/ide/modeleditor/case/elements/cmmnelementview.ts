@@ -130,6 +130,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
                 fill: 'transparent',
                 stroke: '#423d3d',
                 strokeWidth: 1,
+                fontFamily: 'myriad-pro, Helvetica Neue, Helvetica, Arial, sans-serif',
             },
             body: {
                 fill: 'transparent',
