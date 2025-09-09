@@ -56,7 +56,7 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
 
         this.link.on('change:vertices', e => {
             // Joint generates many change events, so we will not completeUserAction() each time,
-            // Instead, this is done when handlePointerUpPaper in case.js
+            // Instead, this is done when paper.on(link.pointerup) in caseview.ts
             this.edge.vertices = e.changed.vertices;
         });
     }
@@ -82,7 +82,7 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
     }
 
     // Connectors do not do things on move. That is handled by joint
-    moved(x: number, y: number, newParent: CMMNElementView): void { }
+    moved(x: number, y: number, newParent?: CMMNElementView): void { }
 
     mouseEnter(): void {
         this.addTools();
@@ -119,9 +119,12 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
                 },
             }],
         });
+        const verticesTool = new linkTools.Vertices({
+            stopPropagation: false,
+        });
 
         const toolsView = new dia.ToolsView({
-            tools: [new linkTools.Vertices(), customRemoveTool]
+            tools: [verticesTool, customRemoveTool]
         });
         const view = this.link.findView(this.case.paper);
         view.addTools(toolsView);

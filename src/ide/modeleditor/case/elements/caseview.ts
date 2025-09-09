@@ -249,13 +249,17 @@ export default class CaseView {
         this.svg = $(this.paper.svg);
 
         // Attach paper events
-        this.paper.on('cell:pointerup', (elementView: any, e: any, x: number, y: number) => {
-            const underMouse = this.getItemUnderMouse(e, this.getCMMNElement(elementView));
-            if (underMouse) {
-                this.getCMMNElement(elementView).moved(x, y, underMouse);
-                this.editor.completeUserAction();
-            }
+        this.paper.on('link:pointerup', (elementView: any, e: any, x: number, y: number) => {
+            this.editor.completeUserAction();
         });
+
+        this.paper.on('element:pointerup', (elementView: any, e: any, x: number, y: number) => {
+            const element = this.getCMMNElement(elementView);
+            const parentUnderMouse = this.getItemUnderMouse(e, element);
+            element.moved(x, y, parentUnderMouse);
+            this.editor.completeUserAction();
+        });
+
         this.paper.on('element:pointerdown', (elementView: any, e: any, x: number, y: number) => {
             //select the mouse down element, do not set focus on description, makes it hard to delete
             //the element with [del] keyboard button (you delete the description io element)            

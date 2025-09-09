@@ -411,7 +411,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * Hook indicating that 'moving' completed.
      */
-    moved(x: number, y: number, newParent: CMMNElementView) {
+    moved(x: number, y: number, newParent?: CMMNElementView) {
         // Check if this element can serve as a new parent for the cmmn element
         if (newParent && newParent.__canHaveAsChild(this.constructor) && newParent != this.parent) {
             // check if new parent is allowed

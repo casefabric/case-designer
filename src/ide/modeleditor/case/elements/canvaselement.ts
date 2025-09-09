@@ -26,7 +26,7 @@ export default abstract class CanvasElement<JointType extends dia.Cell = dia.Cel
      * Hook invoked after the element has moved.
      * @param newParent - optional new parent 
      */
-    moved(x: number, y: number, newParent: CanvasElement) {        
+    moved(x: number, y: number, newParent?: CanvasElement) {
     }
 
     /**
