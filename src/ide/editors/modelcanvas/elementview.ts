@@ -429,7 +429,7 @@ export default abstract class ElementView<
     /**
      * Hook indicating that 'moving' completed.
      */
-    moved(x: number, y: number, newParent: ElementView) {
+    moved(x: number, y: number, newParent?: ElementView) {
         // Check if this element can serve as a new parent for the element
         if (newParent && newParent.__canHaveAsChild(this.constructor) && newParent != this.parent) {
             // check if new parent is allowed

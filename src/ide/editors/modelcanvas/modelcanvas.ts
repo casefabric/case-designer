@@ -111,12 +111,15 @@ export default abstract class ModelCanvas<
         this.svg = $(this.paper.svg);
 
         // Attach paper events
-        this.paper.on('cell:pointerup', (elementView: any, e: any, x: number, y: number) => {
-            const underMouse = this.getItemUnderMouse(e, this.getElement(elementView));
-            if (underMouse) {
-                this.getElement(elementView).moved(x, y, underMouse);
-                this.editor.completeUserAction();
-            }
+        this.paper.on('link:pointerup', (elementView: any, e: any, x: number, y: number) => {
+            this.editor.completeUserAction();
+        });
+
+        this.paper.on('element:pointerup', (elementView: any, e: any, x: number, y: number) => {
+            const element = this.getElement(elementView);
+            const parentUnderMouse = this.getItemUnderMouse(e, element);
+            element.moved(x, y, parentUnderMouse);
+            this.editor.completeUserAction();
         });
         this.paper.on('element:pointerdown', (elementView: any, e: any, x: number, y: number) => {
             //select the mouse down element, do not set focus on description, makes it hard to delete
