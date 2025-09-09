@@ -53,7 +53,7 @@ export default class Connector<BaseViewT extends ElementView = ElementView> exte
 
         this.link.on('change:vertices', e => {
             // Joint generates many change events, so we will not completeUserAction() each time,
-            // Instead, this is done when handlePointerUpPaper in modelcanvas.ts
+            // Instead, this is done when paper.on(link.pointerup) in modelcanvas.ts
             this.edge.vertices = e.changed.vertices;
         });
     }
@@ -89,7 +89,7 @@ export default class Connector<BaseViewT extends ElementView = ElementView> exte
     }
 
     // Connectors do not do things on move. That is handled by joint
-    moved(x: number, y: number, newParent: ElementView): void { }
+    moved(x: number, y: number, newParent?: ElementView): void { }
 
     mouseEnter(): void {
         this.addTools();
@@ -122,9 +122,12 @@ export default class Connector<BaseViewT extends ElementView = ElementView> exte
                 },
             }],
         });
+        const verticesTool = new linkTools.Vertices({
+            stopPropagation: false,
+        });
 
         const toolsView = new dia.ToolsView({
-            tools: [new linkTools.Vertices(), customRemoveTool]
+            tools: [verticesTool, customRemoveTool]
         });
         const view = this.link.findView(this.canvas.paper);
         view.addTools(toolsView);
