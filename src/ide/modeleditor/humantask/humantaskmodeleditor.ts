@@ -283,18 +283,18 @@ export default class HumantaskModelEditor extends ModelEditor {
     /**
      * handle the change of the source (in 2nd tab)
      */
-    loadSource(source: string) {
+    async loadSource(source: string) {
         this.file.source = source;
         this.file.parse();
         this.loadModel();
-        this.saveModel();
+        await this.saveModel();
     }
 
-    saveModel() {
+    async saveModel() {
         // Remove 'changed' flag just prior to saving
         this._changed = false;
         this.file.source = this.model?.toXML();
-        this.file.save();
+        await this.file.save();
     }
 
     /**

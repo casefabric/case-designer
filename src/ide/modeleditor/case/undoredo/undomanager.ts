@@ -25,13 +25,13 @@ export default class UndoManager {
      * Save model and upload to server; but only if there are new changes.
      * @param forceSave Saving case model is only done on the changes with respect to the previous save action. For creating a new model we have to forcefully save.
      */
-    saveCaseModel(caseDefinition: CaseDefinition, dimensions: Dimensions, forceSave: boolean = false) {
-        const newAction = this.addCaseAction(caseDefinition, dimensions);
+    async saveDefinition(definition: CaseDefinition, dimensions: Dimensions, forceSave: boolean = false) {
+        const newAction = this.addCaseAction(definition, dimensions);
         if (newAction) {
             if (forceSave) {
-                newAction.forceSave();
+                await newAction.forceSave();
             } else {
-                newAction.save();
+                await newAction.save();
             }
         } else {
             // See also console.warn in addCaseAction

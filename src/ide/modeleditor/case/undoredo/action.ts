@@ -127,6 +127,6 @@ export default class Action {
      * Forceful save. Required for creating new models.
      */
     async forceSave() {
-        this.save(true, true);
+        await this.save(true, true);
     }
 }
