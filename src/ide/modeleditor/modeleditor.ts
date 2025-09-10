@@ -10,8 +10,8 @@ export default abstract class ModelEditor {
     movableEditors: MovableEditor[] = [];
     htmlContainer: JQuery<HTMLElement>;
     divMovableEditors: JQuery<HTMLDivElement>;
-    keyStrokeListener: (e: any) => void;
     private _html: JQuery<HTMLElement>;
+
     /**
      * Base class for model editor
      */
@@ -36,17 +36,6 @@ export default abstract class ModelEditor {
         this.htmlContainer = this.html.find('.model-editor-content');
         this.divMovableEditors = this.html.find('.divMovableEditors');
 
-        // Listener for keydown event; will be attached/detached from document.body when we become visible/hidden.
-        this.keyStrokeListener = e => {
-            const keyHandler = `on${e.key}Key`;
-            // console.log("Pressed key " + e.key + " with code " + e.keyCode +"  from target " + e.target +" custom handler: " + keyHandler +" = " + this[keyHandler]);
-            if ((this as any)[keyHandler]) {
-                // console.log("Invoking specific key handler")
-                (this as any)[keyHandler](e);
-            } else {
-                this.keyStrokeHandler(e);
-            }
-        }
         this.html.find('.closeButton').on('click', (e: JQuery.ClickEvent) => this.close());
         this.html.find('.refreshButton').on('click', (e: JQuery.ClickEvent) => this.refresh());
     }
@@ -196,7 +185,7 @@ export default abstract class ModelEditor {
     onHide() {
     }
 
-    keyStrokeHandler(e: JQuery.KeyDownEvent) {
+    async keyStrokeHandler(e: JQuery.KeyDownEvent): Promise<void> {
     }
 
     get visible() {
@@ -206,12 +195,12 @@ export default abstract class ModelEditor {
     set visible(visible) {
         this.html.css('display', visible ? 'block' : 'none');
         if (visible) {
-            $(document.body).off('keydown', this.keyStrokeListener);
-            $(document.body).on('keydown', this.keyStrokeListener);
+            $(document.body).off('keydown', e => this.keyStrokeHandler(e));
+            $(document.body).on('keydown', e => this.keyStrokeHandler(e));
             this.onShow();
             this.ide.coverPanel.visible = false;
         } else {
-            $(document.body).off('keydown', this.keyStrokeListener);
+            $(document.body).off('keydown', e => this.keyStrokeHandler(e));
             this.onHide();
         }
     }
