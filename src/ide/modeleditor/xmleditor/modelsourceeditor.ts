@@ -41,7 +41,7 @@ export default class ModelSourceEditor {
                 // setTimeout(() => this.editor.html.find('.model-source-tabs').tabs('option', 'active', 1), 100);
                 return;
             }
-            this.editor.loadSource(newSource);
+            setTimeout(async () => await this.editor.loadSource(newSource));
         }
     }
 }

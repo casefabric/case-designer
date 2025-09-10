@@ -103,7 +103,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.__migrated = true;
     }
 
-    keyStrokeHandler(e: JQuery.KeyDownEvent) {
+    async keyStrokeHandler(e: JQuery.KeyDownEvent) {
         if (!this.canvas) {
             console.log("No case, but already pressing a key?! You're too quick ;)");
             return;
@@ -165,7 +165,7 @@ export default class CaseModelEditor extends ModelEditor {
                 if (e.ctrlKey) { // Avoid the browser's save, and save the current model.
                     e.stopPropagation();
                     e.preventDefault();
-                    this.saveModel();
+                    await this.saveModel();
                 }
                 break;
             case 89: //y
@@ -208,11 +208,11 @@ export default class CaseModelEditor extends ModelEditor {
         if (this.trackChanges) {
             if (!this.autoSaveTimer) {
                 // console.warn("Setting the auto-save timer")
-                this.autoSaveTimer = window.setTimeout(() => {
+                this.autoSaveTimer = window.setTimeout(async () => {
                     // console.log("Removing timer and saving changes")
                     delete this.autoSaveTimer;
                     // Tell the repository to save
-                    this.saveModel();
+                    await this.saveModel();
                 }, 0);
             } else {
                 // console.warn("There is already an auto save timer in progress")
@@ -223,11 +223,11 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * to be used to save the current active model
      */
-    saveModel() {
+    async saveModel() {
         // Validate all models currently active in the ide
         if (this.canvas) {
             this.canvas.runValidation();
-            this.canvas.undoManager.saveDefinition(this.canvas.caseDefinition);
+            await this.canvas.undoManager.saveDefinition(this.canvas.caseDefinition);
         }
     }
 
