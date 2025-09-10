@@ -4,14 +4,18 @@ import $ from "jquery";
 import TestcaseModelDefinition from "../../../repository/definition/testcase/testcasemodeldefinition";
 import TestcaseFile from "../../../repository/serverfile/testcasefile";
 import XML from "../../../util/xml";
+import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import IDE from "../../ide";
 import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ModelSourceEditor from "../xmleditor/modelsourceeditor";
+import TestCaseCanvas from "./testcasecanvas";
 import TestcaseModelEditorMetadata from "./testcasetaskmodeleditormetadata";
 
 export default class TestcaseModelEditor extends ModelEditor {
+    undoManager: UndoManager;
     viewSourceEditor?: ModelSourceEditor;
+    canvas?: TestCaseCanvas;
     private _changed: any;
     private _currentAutoSaveTimer?: number;
     private _model?: TestcaseModelDefinition;
@@ -24,23 +28,17 @@ export default class TestcaseModelEditor extends ModelEditor {
      */
     constructor(ide: IDE, public file: TestcaseFile) {
         super(ide, file);
-        this.generateHTML();
-    }
+        this._model = this.file.definition;
 
-    get label() {
-        return 'Edit Process - ' + this.fileName;
-    }
-
-    /**
-     * adds the html of the entire page
-     */
-    generateHTML() {
         const html = $(`
             <div class="basicbox model-source-tabs">
                 <ul>
+                    <li><a href="#testcaseEditor">Model</a></li>
                     <li><a href="#sourceEditor">Source</a></li>
                 </ul>
+
                 <div class="model-source-editor" id="sourceEditor"></div>
+                <div class="testcase-editor" id="testcaseEditor"></div>
             </div>
         `);
 
@@ -51,13 +49,21 @@ export default class TestcaseModelEditor extends ModelEditor {
             activate: (e: any, ui: any) => {
                 if (ui.newPanel.hasClass('model-source-editor')) {
                     this.viewSourceEditor?.render(this.model?.toXMLString() || '');
+                } else if (ui.newPanel.hasClass('testcase-editor')) {
+                    this.loadDefinition();
                 }
             }
         });
 
         //add the source part
         this.viewSourceEditor = new ModelSourceEditor(this.html.find('.model-source-tabs .model-source-editor'), this);
-        this.viewSourceEditor?.render(this.model?.toXMLString() || '');
+        this.viewSourceEditor.render(this.model?.toXMLString() || '');
+
+        this.undoManager = new UndoManager(this);
+    }
+
+    get label() {
+        return 'Edit Testcase - ' + this.fileName;
     }
 
     onEscapeKey(e: JQuery.KeyDownEvent) {
@@ -88,9 +94,6 @@ export default class TestcaseModelEditor extends ModelEditor {
         if (this.viewSourceEditor) {
             this.viewSourceEditor.render(this.model.toXMLString());
         }
-        // Set the implementation content in the code mirror editor and
-        //        this.freeContentEditor.setValue(this.model.implementation.xml);
-        //        this.freeContentEditor.refresh();
     }
 
     completeUserAction() {
@@ -135,8 +138,26 @@ export default class TestcaseModelEditor extends ModelEditor {
 
     loadModel() {
         this._model = this.file.definition;
+        this.loadDefinition();
+
+        // Reset the undo manager.
+        this.canvas?.undoManager.resetActionBuffer(this._model!);
+
         this.render();
         this.visible = true;
+    }
+
+    loadDefinition(): void {
+        const definition = this.file.definition;
+        if (!definition) return;
+
+        // First, remove current case content; but without tracking changes...
+        if (this.canvas) {
+            this.canvas.delete();
+        }
+
+        // Create a new case renderer on the definition and dimensions
+        this.canvas = new TestCaseCanvas(this.html.find('.model-source-tabs .testcase-editor'), this, definition, this.undoManager);
     }
 
     /**
@@ -145,15 +166,21 @@ export default class TestcaseModelEditor extends ModelEditor {
     async loadSource(newSource: any) {
         this.file.source = newSource;
         this.file.parse();
-        this.loadModel();
-        this.saveModel();
+
+        await this.saveModel();
     }
 
-    saveModel() {
-        // Remove 'changed' flag just prior to saving
-        this._changed = false;
-        this.file.source = this.model?.toXML();
-        this.file.save();
+    async saveModel() {
+        if (this.canvas) {
+            await this.undoManager.saveDefinition(this.model!);
+        }
+    }
+
+    updateUndoRedoButtons(): void {
+        // Only update the buttons if the case is loaded. The call to resetActionBuffer in open() will not have the case loaded yet.
+        if (this.canvas) {
+            this.canvas.undoBox.refresh();
+        }
     }
 
     get model() {
