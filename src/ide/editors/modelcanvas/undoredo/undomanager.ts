@@ -24,13 +24,13 @@ export default class UndoManager {
      * Save model and upload to server; but only if there are new changes.
      * @param forceSave Saving model is only done on the changes with respect to the previous save action. For creating a new model we have to forcefully save.
      */
-    saveDefinition(definition: GraphicalModelDefinition, forceSave: boolean = false) {
+    async saveDefinition(definition: GraphicalModelDefinition, forceSave: boolean = false) {
         const newAction = this.addAction(definition);
         if (newAction) {
             if (forceSave) {
-                newAction.forceSave();
+                await newAction.forceSave();
             } else {
-                newAction.save();
+                await newAction.save();
             }
         } else {
             // See also console.warn in addAction
