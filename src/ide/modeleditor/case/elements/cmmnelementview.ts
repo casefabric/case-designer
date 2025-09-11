@@ -28,6 +28,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     private _highlighter?: Highlighter;
     private _halo?: Halo;
     private html_id: string = Util.createID(this.definition.id + '-'); // Copy definition id into a fixed internal html_id property to have a stable this.html search function
+    private elementColor: string = '#423d3d'; // Default color of the element, used to restore color after selection
 
     /**
      * Creates a new CMMNElementView within the case having the corresponding definition and x, y coordinates
@@ -154,6 +155,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         const size = this.shape.size;
         const attrs: dia.Element.Attributes = util.merge({}, defaultAttrs, this.markupAttributes);
         this.xyz_joint = new dia.Element({ type, markup, position, size, attrs });
+        this.elementColor = attrs.body.stroke;
 
         // Directly embed into parent
         if (this.parent && this.parent.xyz_joint) {
@@ -370,7 +372,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
             this.__renderBoundary(true);
         } else {
             // Give ourselves default color again.
-            this.xyz_joint.attr('body/stroke', '#423d3d');
+            this.xyz_joint.attr('body/stroke', this.elementColor);
             this.propertiesView.hide();
             this.__renderBoundary(false);
         }
