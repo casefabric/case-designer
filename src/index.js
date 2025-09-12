@@ -95,8 +95,16 @@ export { ExternalReferenceList, InternalReferenceList } from "./repository/defin
 export { ReferenceSet } from "./repository/definition/references/referenceset";
 export { default as ReferencingAttribute } from "./repository/definition/references/referencingattribute";
 export { default as Tags } from "./repository/definition/tags";
+export { default as CaseFileStepDefinition } from "./repository/definition/testcase/casefilestepdefinition";
+export { default as FinishStepDefinition } from "./repository/definition/testcase/finishstepdefinition";
+export { default as StartStepDefinition } from "./repository/definition/testcase/startstepdefinition";
 export { default as TestcaseModelDefinition } from "./repository/definition/testcase/testcasemodeldefinition";
 export { default as FixtureDefinition } from "./repository/definition/testcase/testfixturedefintion";
+export { default as TestPlanDefinition } from "./repository/definition/testcase/testplandefinition";
+export { default as TestStepDefinition } from "./repository/definition/testcase/teststepdefinition";
+export { default as TestStepPredecessorDefinition } from "./repository/definition/testcase/teststepprecessordefinition";
+export { default as TestStepVariantDefinition } from "./repository/definition/testcase/teststepvariantdefinition";
+export { default as UserEventStepDefinition } from "./repository/definition/testcase/usereventstepdefinition";
 export { default as Multiplicity } from "./repository/definition/type/multiplicity";
 export { default as SchemaDefinition } from "./repository/definition/type/schemadefinition";
 export { default as SchemaPropertyDefinition } from "./repository/definition/type/schemapropertydefinition";

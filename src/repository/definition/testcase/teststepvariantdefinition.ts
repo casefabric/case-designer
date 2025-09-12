@@ -1,22 +1,20 @@
 import { Element } from "../../../util/xml";
-import CaseDefinition from "../cmmn/casedefinition";
 import DocumentableElementDefinition from "../documentableelementdefinition";
 import ElementDefinition from "../elementdefinition";
-import ExternalReference from "../references/externalreference";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 
-export default class FixtureDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
-    static XML_ELEMENT = 'fixture';
+export default abstract class TestStepVariantDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
+    static XML_ELEMENT = 'variant';
 
-    caseRef: ExternalReference<CaseDefinition>;
+    content: string;
 
     constructor(importNode: Element, testcase: TestcaseModelDefinition, parent: ElementDefinition<TestcaseModelDefinition>) {
         super(importNode, testcase, parent);
 
-        this.caseRef = this.parseReference('caseRef');
+        this.content = this.parseElementText('inputs', '');
     }
 
     createExportNode(parentNode: Element) {
-        super.createExportNode(parentNode, FixtureDefinition.XML_ELEMENT, 'caseRef');
+        super.createExportNode(parentNode, TestStepVariantDefinition.XML_ELEMENT, 'inputs');
     }
 }    
