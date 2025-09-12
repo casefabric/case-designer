@@ -10,7 +10,7 @@ export class TypeOption {
     /**
      * Creates an option with the value '&lt;new&gt;'.
      */
-    static get NEW() { return new TypeOption('&lt;new&gt;', '<new>') }
+    static get NEW() { return new TypeOption('<new>', '&lt;new&gt;') }
 
     /**
      * Construct an option that refers to a type.
@@ -54,7 +54,7 @@ export default class TypeSelector {
         // - All primitive types (optional)
         // - All additional options (if specified)
         // - All types in repository
-        return [...(this.hasPrimitiveTypes? primitiveOptions : []), TypeOption.EMPTY, ...this.additionalOptions, ...this.typeFiles.map(typeFile => new TypeOption(typeFile.fileName, typeFile.name))];
+        return [...(this.hasPrimitiveTypes ? primitiveOptions : []), TypeOption.EMPTY, ...this.additionalOptions, ...this.typeFiles.map(typeFile => new TypeOption(typeFile.fileName, typeFile.name))];
     }
 }
 
