@@ -18,12 +18,8 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
         if (this.definition.fixture) {
             let planShape = this.diagram.getShape(this.definition.fixture);
             if (!planShape) {
-                // this.editor.ide.danger(`Drawing the case plan is not possible, as the diagram information is missing (check the file ${this.dimensions.file.fileName})`);
-
-                // return;
                 planShape = this.diagram.createShape(30, 100, 100, 60, this.definition.fixture.id);
             }
-
             this.fixtureView = new FixtureView(this, this.definition.fixture, planShape!);
 
             const jointElements = this.items.map(item => item.xyz_joint as dia.Cell).concat(this.connectors.map(c => c.xyz_joint));
