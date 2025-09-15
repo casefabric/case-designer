@@ -19,6 +19,7 @@ export default class TestcaseModelEditor extends ModelEditor {
     private _changed: any;
     private _currentAutoSaveTimer?: number;
     private _model?: TestcaseModelDefinition;
+    autoSaveTimer: any;
     static register() {
         ModelEditorMetadata.registerEditorType(new TestcaseModelEditorMetadata());
     }
@@ -97,7 +98,17 @@ export default class TestcaseModelEditor extends ModelEditor {
     }
 
     completeUserAction() {
-        this.saveModel();
+        if (!this.autoSaveTimer) {
+            // console.warn("Setting the auto-save timer")
+            this.autoSaveTimer = window.setTimeout(async () => {
+                // console.log("Removing timer and saving changes")
+                delete this.autoSaveTimer;
+                // Tell the repository to save
+                await this.saveModel();
+            }, 0);
+        } else {
+            // console.warn("There is already an auto save timer in progress")
+        }
     }
 
     /**
