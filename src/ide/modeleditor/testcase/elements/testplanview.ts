@@ -12,13 +12,14 @@ import Properties from '../../../editors/modelcanvas/properties';
 import TestCaseCanvas from '../testcasecanvas';
 import FixtureView from "./fixtureview";
 import TestPlanHalo from "./halo/testplanhalo";
+import TestCaseElementView from "./testcaseelementview";
 import TestFileStepView from "./testfilestepview";
 import TestFinishStepView from "./testfinishview";
 import TestStartStepView from "./teststartstepview";
 import TestStepView from "./teststepview";
 
 
-export default class TestPlanView extends ElementView<TestPlanDefinition> {
+export default class TestPlanView extends TestCaseElementView<TestPlanDefinition> {
     fixtureView: FixtureView;
     static typeDescription = 'Test Plan';
 

@@ -1,5 +1,4 @@
 import TestPlanDefinition from "../../../../../repository/definition/testcase/testplandefinition";
-import ConnectorHaloItem from "../../../../editors/modelcanvas/halo/connectorhaloitem";
 import DeleteHaloItem from "../../../../editors/modelcanvas/halo/deletehaloitem";
 import PrintHaloItem from "../../../../editors/modelcanvas/halo/printhaloitem";
 import PropertiesHaloItem from "../../../../editors/modelcanvas/halo/propertieshaloitem";
@@ -8,7 +7,7 @@ import TestCaseHalo from "./testcasehalo";
 
 export default class TestPlanHalo extends TestCaseHalo<TestPlanDefinition, TestPlanView> {
     createItems(): void {
-        this.topBar.addItems(PropertiesHaloItem, DeleteHaloItem, ConnectorHaloItem, PrintHaloItem);
+        this.topBar.addItems(PropertiesHaloItem, DeleteHaloItem, PrintHaloItem);
     }
 
     setHaloPosition() {

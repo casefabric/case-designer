@@ -3,4 +3,8 @@ import TestcaseModelDefinition from "../../../../repository/definition/testcase/
 import ElementView from "../../../editors/modelcanvas/elementview";
 
 export default abstract class TestCaseElementView<ElemDefT extends DocumentableElementDefinition<TestcaseModelDefinition>> extends ElementView<ElemDefT> {
+    get isVariant() {
+        return false;
+    }
+
 }
