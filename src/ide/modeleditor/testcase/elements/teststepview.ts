@@ -1,5 +1,5 @@
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import FixtureDefinition from '../../../../repository/definition/testcase/testfixturedefintion';
+import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import Properties from '../../../editors/modelcanvas/properties';
@@ -7,15 +7,9 @@ import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
 
 
-export default class FixtureView extends TestCaseElementView<FixtureDefinition> {
-    static create(plan: TestPlanView, x: number, y: number): FixtureView {
-        const definition: FixtureDefinition = plan.definition.createDefinition(FixtureDefinition);
-        plan.definition.testFixture = definition;
-        const shape = plan.canvas.diagram.createShape(x, y, 140, 80, definition.id);
-        return new FixtureView(plan, definition, shape);
-    }
+export default abstract class TestStepView<S extends TestStepDefinition> extends TestCaseElementView<S> {
 
-    constructor(parent: TestPlanView, definition: FixtureDefinition, shape: ShapeDefinition) {
+    constructor(parent: TestPlanView, definition: S, shape: ShapeDefinition) {
         super(parent.canvas, parent, definition, shape);
     }
 
@@ -29,12 +23,26 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
 
     get markup() {
         return `<g @selector="scalable">
-                    <rect @selector='body' rx="5" ry="5" width="60" height="20" ></rect>
-                </g>`;
+                    <path @selector="body"
+                        d=" M 2 0
+                            A 98 196 0 0 0 198 1
+                            L 2 1"
+                        fill="none"
+                        stroke="black"
+                        stroke-width="2"
+                    />
+                </g>
+                <text @selector="title" y="30" font-size="30" text-anchor="middle" fill="black">${this.title}</text>`;
     }
+
+    abstract get title(): string;
 
     get markupAttributes() {
         return {
+            title: {
+                ref: 'body',
+                x: 'calc(w/2)',
+            }
         };
     }
 

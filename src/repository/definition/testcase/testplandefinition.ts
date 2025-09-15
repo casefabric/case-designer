@@ -38,6 +38,6 @@ export default class TestPlanDefinition extends DocumentableElementDefinition<Te
     }
 
     createExportNode(parentNode: Element) {
-        super.createExportNode(parentNode, TestPlanDefinition.XML_ELEMENT, 'caseRef');
+        super.createExportNode(parentNode, TestPlanDefinition.XML_ELEMENT, 'testFixture', 'testSteps');
     }
 }    

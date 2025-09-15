@@ -2,10 +2,9 @@ import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import InternalReference from "../references/internalreference";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
-import TestStepDefinition from "./teststepdefinition";
 import TestStepVariantDefinition from "./teststepvariantdefinition";
 
-export default class TestStepPredecessorDefinition extends TestStepDefinition {
+export default class TestStepPredecessorDefinition extends ElementDefinition<TestcaseModelDefinition> {
     static XML_ELEMENT = 'predessor';
     sourceRef: InternalReference<TestStepVariantDefinition>;
 

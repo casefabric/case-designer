@@ -42,7 +42,7 @@ export default class TestcaseInstance {
         caseOwner.isOwner = true;
         const caseTeam = new CaseTeam([caseOwner]);
 
-        const compiledCase = compileCase(this.testcase.fixture.caseRef);
+        const compiledCase = compileCase(this.testcase.testplan.testFixture.caseRef);
 
         this.caseInstance = await CaseService.startCase(this.tenantOwner, { tenant: this.tenant, definition: compiledCase, inputs: {}, caseTeam, debug: true })
     }

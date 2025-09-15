@@ -3,24 +3,27 @@ import TestcaseModelDefinition from "../../../repository/definition/testcase/tes
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
 import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
-import FixtureView from "./elements/fixtureview";
+import TestPlanView from "./elements/testplanview";
 import TestElementRegistry from "./shapebox/testelementregistry";
 import TestcaseModelEditor from "./testcasemodeleditor";
 
 export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition> {
-    fixtureView: any;
+    testplanView?: TestPlanView;
     constructor(public htmlParent: JQuery<HTMLElement>,
         public editor: TestcaseModelEditor,
         public definition: TestcaseModelDefinition,
         public undoManager: UndoManager) {
         super(editor, htmlParent, definition, undoManager);
 
-        if (this.definition.fixture) {
-            let planShape = this.diagram.getShape(this.definition.fixture);
+        if (this.definition.testplan) {
+            this.loading = true;
+
+            let planShape = this.diagram.getShape(this.definition.testplan);
             if (!planShape) {
-                planShape = this.diagram.createShape(30, 100, 100, 60, this.definition.fixture.id);
+                planShape = this.diagram.createShape(20, 20, 800, 500, this.definition.testplan.id);
             }
-            this.fixtureView = new FixtureView(this, this.definition.fixture, planShape!);
+            this.testplanView = new TestPlanView(this, this.definition.testplan, planShape!);
+            this.loading = false;
 
             const jointElements = this.items.map(item => item.xyz_joint as dia.Cell).concat(this.connectors.map(c => c.xyz_joint));
             this.graph.addCells(jointElements);
@@ -34,7 +37,7 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
                 item.resized();
             });
 
-            this.fixtureView.refreshView();
+            this.testplanView.refreshView();
 
             // Ensure the definition is in sync with the diagram
             // Via undoManager, since the canvas is not yet attached to the editor (editor.saveModel() would not work)
@@ -53,21 +56,21 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
     setDropHandlers() {
         super.setDropHandlers();
 
-        if (!this.fixtureView) {
+        if (!this.testplanView) {
             this.shapeBox.setDropHandler(
                 dragData => this.createTestPlan(dragData.event),
-                dragData => dragData.shapeType == FixtureView && !this.fixtureView);
+                dragData => dragData.shapeType == TestPlanView && !this.testplanView);
         }
     }
 
     createTestPlan(e: JQuery<PointerEvent>) {
         const coor = this.getCursorCoordinates(e);
-        this.fixtureView = FixtureView.createNew(this, coor.x, coor.y);
-        this.__addElement(this.fixtureView);
+        this.testplanView = TestPlanView.createNew(this, coor.x, coor.y);
+        this.__addElement(this.testplanView);
         this.editor.completeUserAction();
 
-        this.fixtureView.propertiesView.show(true);
-        return this.fixtureView;
+        this.testplanView.propertiesView.show(true);
+        return this.testplanView;
     }
 
     removeDropHandlers() {
