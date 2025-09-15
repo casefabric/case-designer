@@ -79,7 +79,7 @@ export default abstract class PlanItemView<PI extends PlanItem = PlanItem> exten
         return this._decoratorBox;
     }
 
-    createCMMNChild(viewType: Function, x: number, y: number): ElementView<any> {
+    createChildView(viewType: Function, x: number, y: number): ElementView<any> {
         if (viewType == EntryCriterionView) {
             return this.__addChildElement(EntryCriterionView.create(this, x, y));
         } else if (viewType == ReactivateCriterionView) {
