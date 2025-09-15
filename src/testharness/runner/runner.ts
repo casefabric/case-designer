@@ -38,9 +38,10 @@ export default class Runner {
     async runTestsForCase(caseDefinition: CaseDefinition): Promise<string> {
         console.group(`Test runner: ${caseDefinition.name}`);
 
-        const relevantTestCases = this.repository.getTestcases()
+        const relevantTestCases = (this.repository.getTestcases()
             .map(testcase => testcase.definition)
-            .filter(testcase => testcase !== undefined) as TestcaseModelDefinition[];
+            .filter(testcase => testcase !== undefined) as TestcaseModelDefinition[])
+            .filter(testcase => testcase.testplan.testFixture?.caseRef.fileName === caseDefinition.id);
 
 
         await this.runTestcases(relevantTestCases);
