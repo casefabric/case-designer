@@ -1,5 +1,7 @@
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import ElementDefinition from "../../../../repository/definition/elementdefinition";
+import CaseFileStepDefinition from "../../../../repository/definition/testcase/casefilestepdefinition";
+import FinishStepDefinition from "../../../../repository/definition/testcase/finishstepdefinition";
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
 import FixtureDefinition from "../../../../repository/definition/testcase/testfixturedefintion";
 import TestPlanDefinition from "../../../../repository/definition/testcase/testplandefinition";
@@ -10,6 +12,8 @@ import Properties from '../../../editors/modelcanvas/properties';
 import TestCaseCanvas from '../testcasecanvas';
 import FixtureView from "./fixtureview";
 import TestPlanHalo from "./halo/testplanhalo";
+import TestFileStepView from "./testfilestepview";
+import TestFinishStepView from "./testfinishview";
 import TestStartStepView from "./teststartstepview";
 import TestStepView from "./teststepview";
 
@@ -40,21 +44,6 @@ export default class TestPlanView extends ElementView<TestPlanDefinition> {
         }
     }
 
-    __canHaveAsChild(elementType: Function): boolean {
-        return elementType == FixtureView || elementType == TestStartStepView;
-    }
-
-    createChildView(viewType: Function, x: number, y: number): ElementView<any> {
-        if (Util.isSubClassOf(TestStepView, viewType)) {
-            return this.__addChildElement((viewType as any).create(this, x, y));
-        } else if (viewType == FixtureView) {
-            return this.__addChildElement(FixtureView.create(this, x, y));
-        } else { // Could (should?) be sentry
-            return super.createChildView(viewType, x, y);
-        }
-    }
-
-
     private addPlanItem<E extends ElementDefinition>(definition: E, shapeBuilder: (definition: E) => ShapeDefinition) {
         // Only add the new plan item if we do not yet visualize it
         if (!this.__childElements.find(planItemView => planItemView.definition.id == definition.id)) {
@@ -71,12 +60,34 @@ export default class TestPlanView extends ElementView<TestPlanDefinition> {
             return child;
         }
     }
+
+    __canHaveAsChild(elementType: Function): boolean {
+        return elementType == FixtureView ||
+            Util.isSubClassOf(TestStepView, elementType);
+    }
+
+    createChildView(viewType: Function, x: number, y: number): ElementView<any> {
+        if (Util.isSubClassOf(TestStepView, viewType)) {
+            return this.__addChildElement((viewType as any).create(this, x, y));
+        } else if (viewType == FixtureView) {
+            return this.__addChildElement(FixtureView.create(this, x, y));
+        } else { // Could (should?) be sentry
+            return super.createChildView(viewType, x, y);
+        }
+    }
+
     /**
      * Creates a new view based on the plan item,
      */
     createPlanItemView(definition: ElementDefinition, shape: ShapeDefinition) {
         if (definition instanceof StartStepDefinition) {
             return new TestStartStepView(this, definition as StartStepDefinition, shape);
+        }
+        else if (definition instanceof CaseFileStepDefinition) {
+            return new TestFileStepView(this, definition as CaseFileStepDefinition, shape);
+        }
+        else if (definition instanceof FinishStepDefinition) {
+            return new TestFinishStepView(this, definition as FinishStepDefinition, shape);
         }
         else if (definition instanceof FixtureDefinition) {
             return new FixtureView(this, definition, shape);
