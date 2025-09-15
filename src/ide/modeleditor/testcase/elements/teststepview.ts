@@ -11,7 +11,6 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
 
     constructor(parent: TestPlanView, definition: S, shape: ShapeDefinition) {
         super(parent.canvas, parent, definition, shape);
-        this.__resizable = false;
     }
 
     createProperties() {
@@ -32,14 +31,18 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
                         stroke="black"
                         stroke-width="2"
                     />
-                    <text x="100" y="30" font-size="30" text-anchor="middle" fill="black">${this.title}</text>
-                </g>`;
+                </g>
+                <text @selector="title" y="30" font-size="30" text-anchor="middle" fill="black">${this.title}</text>`;
     }
 
     abstract get title(): string;
 
     get markupAttributes() {
         return {
+            title: {
+                ref: 'body',
+                x: 'calc(w/2)',
+            }
         };
     }
 
