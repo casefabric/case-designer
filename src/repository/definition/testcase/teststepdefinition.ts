@@ -19,4 +19,8 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
 
         this.predessors = this.parseElements(TestStepPredecessorDefinition.XML_ELEMENT, TestStepPredecessorDefinition);
     }
+
+    createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
+        super.createExportNode(parentNode, tagName, 'variants', 'predecessors', propertyNames);
+    }
 }    
