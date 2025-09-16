@@ -101,6 +101,7 @@ export { default as StartStepDefinition } from "./repository/definition/testcase
 export { default as TestcaseModelDefinition } from "./repository/definition/testcase/testcasemodeldefinition";
 export { default as FixtureDefinition } from "./repository/definition/testcase/testfixturedefintion";
 export { default as TestPlanDefinition } from "./repository/definition/testcase/testplandefinition";
+export { default as TestStepAssertionSetDefinition } from "./repository/definition/testcase/teststepassetionsetdefinition";
 export { default as TestStepDefinition } from "./repository/definition/testcase/teststepdefinition";
 export { default as TestStepPredecessorDefinition } from "./repository/definition/testcase/teststepprecessordefinition";
 export { default as TestStepVariantDefinition } from "./repository/definition/testcase/teststepvariantdefinition";
