@@ -1,4 +1,6 @@
 import { dia } from "@joint/core";
+import TextAnnotationDefinition from "../../../repository/definition/artifact/textannotation";
+import ShapeDefinition from "../../../repository/definition/dimensions/shape";
 import TestcaseModelDefinition from "../../../repository/definition/testcase/testcasemodeldefinition";
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
@@ -37,12 +39,66 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
                 item.resized();
             });
 
+            this.renderLooseShapesAndDropUnusedShapes();
+
+            // Finally render all connectors
+            this.renderConnectors();
+
+
             this.testplanView.refreshView();
 
             // Ensure the definition is in sync with the diagram
             // Via undoManager, since the canvas is not yet attached to the editor (editor.saveModel() would not work)
             setTimeout(() => this.undoManager.saveDefinition(this.definition));
         }
+    }
+
+    renderLooseShapesAndDropUnusedShapes() {
+        const getDefinition = (shape: ShapeDefinition) => {
+            const element = this.caseDefinition.getElement(shape.cmmnElementRef);
+            if (element) {
+                return element;
+            } else {
+                // But if it is not, then we should print a warning
+                console.warn(`Error: found a shape without a matching definition: ${shape.toString()}`)
+                return undefined;
+            }
+        }
+        // Now render the "loose" shapes (textboxes and casefileitems) in the appropriate parent stage
+        this.diagram.shapes.forEach(shape => {
+            const definitionElement = getDefinition(shape);
+            // Only take the textboxes not the other elements, as they are rendered from testplanview constructor.
+            if (definitionElement instanceof TextAnnotationDefinition) {
+                // TODO add textannotation view
+                // if (definitionElement instanceof TextAnnotationDefinition) {
+                //     this.testplanView?.__addChildElement(new TestAnnotationView(this.testplanView, definitionElement, shape));
+                // }
+            }
+
+            // Now check if we have an actually view element for this shape, if not, it means we have no corresponding definition element, and then we'll remove the shape from the Dimensions.
+            const view = this.items.find(view => view.shape === shape);
+            if (!view) {
+                shape.removeDefinition();
+            }
+        });
+    }
+
+
+    private renderConnectors() {
+        this.diagram.edges.forEach(edge => {
+            const source = this.getItem(edge.sourceId);
+            const target = this.getItem(edge.targetId);
+
+            if (!source) {
+                console.warn('Found illegal edge, without source ' + edge.sourceId, edge, target);
+                return;
+            }
+            if (!target) {
+                console.warn('Found illegal edge, without target ' + edge.targetId, edge, source);
+                return;
+            }
+            source.__connect(target, edge);
+        });
     }
 
     render(model: TestcaseModelDefinition) {
