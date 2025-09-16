@@ -1,10 +1,12 @@
 import { g } from "@joint/core";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
+import TestStepAssertionSetDefinition from "../../../../repository/definition/testcase/teststepassetionsetdefinition";
 import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
 import TestStepVariantDefinition from "../../../../repository/definition/testcase/teststepvariantdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import Properties from '../../../editors/modelcanvas/properties';
+import TestStepAssertionsView from "./testassertionsview";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
 import TestStepVariantView from "./teststepvariantview";
@@ -19,6 +21,8 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
             // TODO logic location for added variant
             this.addVariantView(variant, def => this.canvas.diagram.createShape(20, 20, 30, 30, def.id));
         }
+
+        this.addAssertionSetView(definition.assertionSet, def => this.canvas.diagram.createShape(50, 50, 40, 20, def.id));
     }
 
     private addVariantView(definition: TestStepVariantDefinition, shapeBuilder: (definition: TestStepVariantDefinition) => ShapeDefinition) {
@@ -31,15 +35,27 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
                 return;
             }
             // Add a view based on the definition with its shape
-            const child = this.__addChildElement(this.createVariantView(definition, shape));
+            const child = this.__addChildElement(new TestStepVariantView(this, definition, shape));
             child.changeParent(this);
 
             return child;
         }
     }
+    private addAssertionSetView(definition: TestStepAssertionSetDefinition, shapeBuilder: (definition: TestStepAssertionSetDefinition) => ShapeDefinition) {
+        // Only add the new plan item if we do not yet visualize it
+        if (!this.__childElements.find(planItemView => planItemView.definition.id == definition.id)) {
+            // Check whether we can find a shape for the definition.
+            const shape = this.canvas.diagram.getShape(definition) ?? shapeBuilder(definition);
+            if (!shape) {
+                console.warn(`Error: missing shape definition for ${definition.constructor.name} named "${definition.name}" with id "${definition.id}"`);
+                return;
+            }
+            // Add a view based on the definition with its shape
+            const child = this.__addChildElement(new TestStepAssertionsView(this, definition, shape));
+            child.changeParent(this);
 
-    createVariantView(definition: TestStepVariantDefinition, shape: ShapeDefinition) {
-        return new TestStepVariantView(this, definition, shape);
+            return child;
+        }
     }
 
     createChildView(viewType: Function, x: number, y: number): ElementView<any> {

@@ -1,0 +1,5 @@
+<svg width="160" height="90" xmlns="http://www.w3.org/2000/svg" font-family= 'myriad-pro, Helvetica Neue, Helvetica, Arial, sans-serif'>
+  <g transform="translate(30,30) ">
+    <path stroke="black" fill="transparent" stroke-width="6" d=" M 50 50 L 100 50 A 50 50 0 0 0 0 50 Z"/>
+    </g>
+</svg>
