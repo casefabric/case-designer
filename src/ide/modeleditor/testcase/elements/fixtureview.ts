@@ -2,7 +2,7 @@ import ShapeDefinition from "../../../../repository/definition/dimensions/shape"
 import FixtureDefinition from '../../../../repository/definition/testcase/testfixturedefintion';
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
-import Properties from '../../../editors/modelcanvas/properties';
+import TextCaseProperties from "./properties/testcaseproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
 
@@ -20,7 +20,7 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
     }
 
     createProperties() {
-        return new Properties(this);
+        return new TextCaseProperties(this);
     }
 
     createHalo(): Halo {

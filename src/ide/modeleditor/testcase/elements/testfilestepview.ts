@@ -2,7 +2,7 @@ import ShapeDefinition from "../../../../repository/definition/dimensions/shape"
 import CaseFileStepDefinition from "../../../../repository/definition/testcase/casefilestepdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
-import Properties from '../../../editors/modelcanvas/properties';
+import TextCaseProperties from "./properties/testcaseproperties";
 import TestPlanView from "./testplanview";
 import TestStepView from "./teststepview";
 
@@ -20,7 +20,7 @@ export default class TestFileStepView extends TestStepView<CaseFileStepDefinitio
     }
 
     createProperties() {
-        return new Properties(this);
+        return new TextCaseProperties(this);
     }
 
     createHalo(): Halo {

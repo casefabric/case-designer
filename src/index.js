@@ -105,6 +105,7 @@ export { default as TestStepAssertionSetDefinition } from "./repository/definiti
 export { default as TestStepDefinition } from "./repository/definition/testcase/teststepdefinition";
 export { default as TestStepPredecessorDefinition } from "./repository/definition/testcase/teststepprecessordefinition";
 export { default as TestStepVariantDefinition } from "./repository/definition/testcase/teststepvariantdefinition";
+export { default as TextAnnotationDefinition } from "./repository/definition/testcase/textannotation";
 export { default as UserEventStepDefinition } from "./repository/definition/testcase/usereventstepdefinition";
 export { default as Multiplicity } from "./repository/definition/type/multiplicity";
 export { default as SchemaDefinition } from "./repository/definition/type/schemadefinition";

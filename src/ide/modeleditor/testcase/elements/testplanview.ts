@@ -8,15 +8,16 @@ import TestPlanDefinition from "../../../../repository/definition/testcase/testp
 import Util from "../../../../util/util";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
-import Properties from '../../../editors/modelcanvas/properties';
 import TestCaseCanvas from '../testcasecanvas';
 import FixtureView from "./fixtureview";
 import TestPlanHalo from "./halo/testplanhalo";
+import TextCaseProperties from "./properties/testcaseproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestFileStepView from "./testfilestepview";
 import TestFinishStepView from "./testfinishview";
 import TestStartStepView from "./teststartstepview";
 import TestStepView from "./teststepview";
+import TextAnnotationView from "./textannotationview";
 
 
 export default class TestPlanView extends TestCaseElementView<TestPlanDefinition> {
@@ -64,7 +65,8 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
 
     __canHaveAsChild(elementType: Function): boolean {
         return elementType == FixtureView ||
-            Util.isSubClassOf(TestStepView, elementType);
+            Util.isSubClassOf(TestStepView, elementType) ||
+            elementType == TextAnnotationView;
     }
 
     createChildView(viewType: Function, x: number, y: number): ElementView<any> {
@@ -72,6 +74,8 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
             return this.__addChildElement((viewType as any).create(this, x, y));
         } else if (viewType == FixtureView) {
             return this.__addChildElement(FixtureView.create(this, x, y));
+        } else if (viewType == TextAnnotationView) {
+            return this.__addChildElement(TextAnnotationView.create(this, x, y));
         } else { // Could (should?) be sentry
             return super.createChildView(viewType, x, y);
         }
@@ -100,7 +104,7 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
 
 
     createProperties() {
-        return new Properties(this);
+        return new TextCaseProperties(this);
     }
 
     createHalo(): Halo {
