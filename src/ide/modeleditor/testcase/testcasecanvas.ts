@@ -1,11 +1,12 @@
 import { dia } from "@joint/core";
-import TextAnnotationDefinition from "../../../repository/definition/artifact/textannotation";
 import ShapeDefinition from "../../../repository/definition/dimensions/shape";
 import TestcaseModelDefinition from "../../../repository/definition/testcase/testcasemodeldefinition";
+import TextAnnotationDefinition from "../../../repository/definition/testcase/textannotation";
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
 import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import TestPlanView from "./elements/testplanview";
+import TextAnnotationView from "./elements/textannotationview";
 import TestElementRegistry from "./shapebox/testelementregistry";
 import TestcaseModelEditor from "./testcasemodeleditor";
 
@@ -55,7 +56,7 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
 
     renderLooseShapesAndDropUnusedShapes() {
         const getDefinition = (shape: ShapeDefinition) => {
-            const element = this.caseDefinition.getElement(shape.cmmnElementRef);
+            const element = this.definition.getElement(shape.cmmnElementRef);
             if (element) {
                 return element;
             } else {
@@ -69,10 +70,7 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
             const definitionElement = getDefinition(shape);
             // Only take the textboxes not the other elements, as they are rendered from testplanview constructor.
             if (definitionElement instanceof TextAnnotationDefinition) {
-                // TODO add textannotation view
-                // if (definitionElement instanceof TextAnnotationDefinition) {
-                //     this.testplanView?.__addChildElement(new TestAnnotationView(this.testplanView, definitionElement, shape));
-                // }
+                this.testplanView?.__addChildElement(new TextAnnotationView(this.testplanView, definitionElement, shape));
             }
 
             // Now check if we have an actually view element for this shape, if not, it means we have no corresponding definition element, and then we'll remove the shape from the Dimensions.
