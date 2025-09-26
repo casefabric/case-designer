@@ -4,7 +4,7 @@ import HaloDragItem from "./halodragitem";
 
 export default class ConnectorHaloItem extends HaloDragItem<Halo> {
     constructor(halo: Halo) {
-        super(halo, Images.Link, 'Connector', halo.rightBar);
+        super(halo, Images.LinkSmall, 'Connector', halo.rightBar);
     }
 
     handleMouseUp(e: JQuery.TriggeredEvent) {
