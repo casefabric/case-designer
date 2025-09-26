@@ -15,6 +15,7 @@ import IfPartImageUrl from '../../../../app/images/ifpart_32.png';
 import inputImageUrl from '../../../../app/images/input_128.png';
 import blockingImageUrl from '../../../../app/images/isblocking_32.png';
 import linkImageUrl from '../../../../app/images/link_black_128.png';
+import linkSmallImageUrl from '../../../../app/images/link_small.svg';
 import manualActivationImageUrl from '../../../../app/images/manualactivationdecorator_32.png';
 import minusImageUrl from '../../../../app/images/minus_32.png';
 import newModelImageUrl from '../../../../app/images/model_24.png';
@@ -35,6 +36,7 @@ import blockingHumanTaskImageUrl from '../../../../app/images/svg/blockinghumant
 import blockingHumanTaskHaloImageUrl from '../../../../app/images/svg/blockinghumantaskhalo.svg';
 import caseTaskImageUrl from '../../../../app/images/svg/casetask.svg';
 import nonblockingHumanTaskImageUrl from '../../../../app/images/svg/nonblockinghumantask.svg';
+import printImageUrl from '../../../../app/images/svg/print.svg';
 import processTaskImageUrl from '../../../../app/images/svg/processtask.svg';
 import renameImageUrl from '../../../../app/images/svg/rename.svg';
 import timerEventImageUrl from '../../../../app/images/svg/timerevent.svg';
@@ -42,7 +44,6 @@ import userEventImageUrl from '../../../../app/images/svg/userevent.svg';
 import taskinputImageUrl from '../../../../app/images/task_input_128.png';
 import taskoutputImageUrl from '../../../../app/images/task_output_128.png';
 import undoImageUrl from '../../../../app/images/undo_128.png';
-import printImageUrl from '../../../../app/images/svg/print.svg';
 import viewSourceImageUrl from '../../../../app/images/viewsource_128.png';
 import warningImageUrl from '../../../../app/images/warningproblem_32.png';
 import zoomInImageUrl from '../../../../app/images/zoomin_64.png';
@@ -76,6 +77,7 @@ export default class Images {
     static Settings = settingsImageUrl;
     static NewModel = newModelImageUrl;
     static Link = linkImageUrl;
+    static LinkSmall = linkSmallImageUrl;
 
     static Input = inputImageUrl;
     static Output = outputImageUrl;
