@@ -5,6 +5,7 @@ import HaloBar from "./halobar";
 import HaloItem from "./haloitem";
 
 export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloItem<H> {
+    dragImage: JQuery<HTMLElement>;
     tempConnector!: TemporaryConnector;
     mouseMoveHandler!: (e: JQuery.TriggeredEvent) => void;
     mouseUpHandler!: (e: JQuery.TriggeredEvent) => void;
@@ -12,6 +13,7 @@ export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloIt
 
     constructor(halo: H, imgURL: string, title: string, defaultBar: HaloBar = halo.topBar) {
         super(halo, imgURL, title, defaultBar);
+        this.dragImage = halo.element.case.html.find('.halodragimgid');
         this.html.on('pointerdown', (e: JQuery.TriggeredEvent) => this.handleMouseDown(e));
     }
 
@@ -41,6 +43,10 @@ export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloIt
 
         // Create a temporary connector to the current coordinates
         this.tempConnector = new TemporaryConnector(this.halo.element, this.getCoordinates(e));
+
+        this.dragImage.attr('src', this.imgURL);
+        this.dragImage.css('display', 'block');
+        this.positionDragImage(e);
     }
 
     getCoordinates(e: JQuery.TriggeredEvent) {
@@ -63,6 +69,7 @@ export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloIt
         if (this.tempConnector) {
             this.tempConnector.remove();
         }
+        this.dragImage.css('display', 'none');
     }
 
     /** 
@@ -73,7 +80,22 @@ export default abstract class HaloDragItem<H extends Halo = Halo> extends HaloIt
         if (this.tempConnector) {
             this.tempConnector.target = this.getCoordinates(e);
         }
+        this.positionDragImage(e);
     }
+
+    /**
+     * positions the halo drag image next to the cursor
+     */
+    positionDragImage(e: JQuery.TriggeredEvent) {
+        const coordinates = this.getCoordinates(e);
+        const x = coordinates.x;
+        const y = coordinates.y;
+        const w = this.dragImage.innerWidth() || 0;
+        const h = this.dragImage.innerHeight() || 0;
+        this.dragImage.css('top', y - h / 2);
+        this.dragImage.css('left', x - w / 2);
+    }
+
 
     /**
      * Handles mouseup after mousedown on halo
