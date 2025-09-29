@@ -630,22 +630,6 @@ export default abstract class ElementView<
     }
 
     /**
-     * Determine whether this element can have a criterion added with the specified type.
-     */
-    canHaveCriterion(criterionType: Function) {
-        return false;
-    }
-
-    /**
-     * Add a criterion to this element sourcing the incoming element.
-     * Default implementation is empty, task, stage, caseplan and milestone can override it.
-     */
-    createCriterionAndConnect(criterionType: Function, sourceElement: ElementView, e: JQuery.Event) {
-        // Create a new criterion and add the source as an on part
-        this.addElementView(criterionType, e).adoptOnPart(sourceElement);
-    }
-
-    /**
      * Hook for sentries to override.
      */
     adoptOnPart(sourceElement: ElementView) { }
