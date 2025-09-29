@@ -4,9 +4,11 @@ import TestStepAssertionSetDefinition from "../../../../repository/definition/te
 import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
+import TestCaseConnector from "./connector/testcaseconnector";
 import TestCaseHalo from "./halo/testcasehalo";
 import TextCaseProperties from "./properties/testcaseproperties";
 import TestCaseElementView from "./testcaseelementview";
+import TestStepVariantView from "./teststepvariantview";
 import TestStepView from "./teststepview";
 
 
@@ -41,6 +43,14 @@ export default class TestStepAssertionsView extends TestCaseElementView<TestStep
         };
     }
 
+    __removeConnector(connector: TestCaseConnector): void {
+        super.__removeConnector(connector);
+
+        this.definition.removePredecessor((<TestStepVariantView>connector.source).definition);
+
+        this.canvas.editor.completeUserAction();
+    }
+
     moved(x: number, y: number, newParent: ElementView) {
     }
 
@@ -70,7 +80,8 @@ export default class TestStepAssertionsView extends TestCaseElementView<TestStep
         super.resizing(w, h);
     }
 
-    get isVariant() {
+    get isAssertion() {
         return true;
     }
+
 }

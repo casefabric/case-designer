@@ -12,10 +12,10 @@ export default class TestStepPredecessorDefinition extends ElementDefinition<Tes
     constructor(importNode: Element, testcase: TestcaseModelDefinition, parent: ElementDefinition<TestcaseModelDefinition>) {
         super(importNode, testcase, parent);
 
-        this.sourceRef = this.parseInternalReference('sourceref');
+        this.sourceRef = this.parseInternalReference('sourceRef');
     }
 
     createExportNode(parentNode: Element) {
-        super.createExportNode(parentNode, TestStepPredecessorDefinition.XML_ELEMENT);
+        super.createExportNode(parentNode, TestStepPredecessorDefinition.XML_ELEMENT, 'sourceRef');
     }
 }    

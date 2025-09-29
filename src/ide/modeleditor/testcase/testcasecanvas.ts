@@ -1,16 +1,21 @@
 import { dia } from "@joint/core";
+import Edge from "../../../repository/definition/dimensions/edge";
 import ShapeDefinition from "../../../repository/definition/dimensions/shape";
+import DocumentableElementDefinition from "../../../repository/definition/documentableelementdefinition";
 import TestcaseModelDefinition from "../../../repository/definition/testcase/testcasemodeldefinition";
 import TextAnnotationDefinition from "../../../repository/definition/testcase/textannotation";
+import Connector from "../../editors/modelcanvas/connector/connector";
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
 import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
+import TestCaseConnector from "./elements/connector/testcaseconnector";
+import TestCaseElementView from "./elements/testcaseelementview";
 import TestPlanView from "./elements/testplanview";
 import TextAnnotationView from "./elements/textannotationview";
 import TestElementRegistry from "./shapebox/testelementregistry";
 import TestcaseModelEditor from "./testcasemodeleditor";
 
-export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition> {
+export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition, DocumentableElementDefinition<TestcaseModelDefinition>, TestCaseElementView> {
     testplanView?: TestPlanView;
     constructor(public htmlParent: JQuery<HTMLElement>,
         public editor: TestcaseModelEditor,
@@ -105,6 +110,10 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition>
 
     createShapeBox(htmlElement: JQuery<HTMLElement>): ShapeBox {
         return new ShapeBox(this, new TestElementRegistry(), htmlElement);
+    }
+
+    __createConnector(source: TestCaseElementView, target: TestCaseElementView, edge: Edge): Connector {
+        return new TestCaseConnector(source, target, edge);
     }
 
     setDropHandlers() {
