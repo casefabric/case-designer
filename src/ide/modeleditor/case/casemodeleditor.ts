@@ -166,6 +166,7 @@ export default class CaseModelEditor extends ModelEditor {
                 break;
             case 90: //z
                 if (e.ctrlKey) this.undoManager.undo();
+                break;
             case 80: // P
                 if (e.ctrlKey) {
                     e.stopPropagation();
