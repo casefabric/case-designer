@@ -45,4 +45,8 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
     resizing(w: number, h: number): void {
         super.resizing(w, h);
     }
+
+    get isStartStep(): boolean {
+        return true;
+    }
 }
