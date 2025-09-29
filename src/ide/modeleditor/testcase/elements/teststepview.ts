@@ -12,7 +12,8 @@ import TestPlanView from "./testplanview";
 import TestStepVariantView from "./teststepvariantview";
 
 
-export default abstract class TestStepView<S extends TestStepDefinition> extends TestCaseElementView<S> {
+export default abstract class TestStepView<S extends TestStepDefinition = TestStepDefinition> extends TestCaseElementView<S> {
+    assertionView: TestStepAssertionsView | undefined;
 
     constructor(parent: TestPlanView, definition: S, shape: ShapeDefinition) {
         super(parent.canvas, parent, definition, shape);
@@ -22,7 +23,7 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
             this.addVariantView(variant, def => this.canvas.diagram.createShape(20, 20, 30, 30, def.id));
         }
 
-        this.addAssertionSetView(definition.assertionSet, def => this.canvas.diagram.createShape(50, 50, 40, 20, def.id));
+        this.assertionView = this.addAssertionSetView(definition.assertionSet, def => this.canvas.diagram.createShape(50, 50, 40, 20, def.id));
     }
 
     private addVariantView(definition: TestStepVariantDefinition, shapeBuilder: (definition: TestStepVariantDefinition) => ShapeDefinition) {
@@ -134,6 +135,10 @@ export default abstract class TestStepView<S extends TestStepDefinition> extends
             }
         });
 
+    }
+
+    get isStep(): boolean {
+        return true;
     }
 
 }

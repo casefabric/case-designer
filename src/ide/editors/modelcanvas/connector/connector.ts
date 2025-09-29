@@ -27,9 +27,9 @@ export default class Connector<BaseViewT extends ElementView = ElementView> exte
             source: { id: this.source.xyz_joint.id, anchor: { name: 'perpendicular' } },
             target: { id: this.target.xyz_joint.id, anchor: { name: 'perpendicular' } },
             attrs: {
-                'line': {
+                line: {
                     stroke: '#423d3d',
-                    'stroke-width': 1,
+                    strokeWidth: 1,
                     targetMarker: {
                         'type': 'rect',
                         'width': 0,
