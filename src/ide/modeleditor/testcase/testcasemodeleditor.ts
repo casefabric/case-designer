@@ -51,7 +51,7 @@ export default class TestcaseModelEditor extends ModelEditor {
                 if (ui.newPanel.hasClass('model-source-editor')) {
                     this.viewSourceEditor?.render(this.model?.toXMLString() || '');
                 } else if (ui.newPanel.hasClass('testcase-editor')) {
-                    this.canvas?.render(this.model!);
+                    this.loadDefinition();
                 }
             }
         });
@@ -177,7 +177,7 @@ export default class TestcaseModelEditor extends ModelEditor {
     async loadSource(newSource: any): Promise<void> {
         this.file.source = newSource;
         this.file.parse();
-        this.loadModel();
+
         await this.saveModel();
     }
 
