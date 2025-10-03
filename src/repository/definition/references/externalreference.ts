@@ -62,7 +62,10 @@ export default class ExternalReference<M extends ModelDefinition = ModelDefiniti
             this._file = undefined;
             this.ref = newFileName;
             this.loadFile();
+
+            return true;
         }
+        return false;
     }
 
     toString() {
