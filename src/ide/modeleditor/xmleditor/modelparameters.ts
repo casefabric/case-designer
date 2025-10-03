@@ -101,7 +101,7 @@ export default class ModelParameters {
         html.find('.inputParameterName').on('change', e => this.changeParameter(html, parameter, (e.currentTarget as any).value, parameter.id));
         html.find('.inputParameterType').on('change', e => this.changeParameter(html, parameter, parameter.name || $(e.currentTarget).find(':selected').text(), parameter.id, (e.currentTarget as any).value));
         // // Remove "readonly" upon dblclick; id's are typically generated because they must be unique across multiple models
-        html.find('.inputParameterId').on('dblclick', e => $(e.currentTarget).attr('readonly', <any>false));
+        html.find('.inputParameterId').on('dblclick', e => $(e.currentTarget).removeAttr('readonly'));
         html.find('.inputParameterId').on('change', e => this.changeParameter(html, parameter, parameter.name, (e.currentTarget as any).value));
         this.html.find('tbody').append(html);
     }

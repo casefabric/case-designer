@@ -226,7 +226,7 @@ export default class Properties<
         // On pointer down we enable editing the documentation, but only if it exists
         textarea.on('pointerdown', () => {
             if (documentation) {
-                textarea.attr('readonly', '' + false);
+                textarea.removeAttr('readonly');
                 textarea.addClass('edit-cmmn-documentation');
             }
         });
