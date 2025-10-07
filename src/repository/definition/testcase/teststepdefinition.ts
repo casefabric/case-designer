@@ -1,3 +1,4 @@
+import TestcaseInstance from "../../../testharness/runner/testcaseinstance";
 import { Element } from "../../../util/xml";
 import DocumentableElementDefinition from "../documentableelementdefinition";
 import ElementDefinition from "../elementdefinition";
@@ -14,7 +15,7 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
 
         this.variants = this.parseElements(TestStepVariantDefinition.XML_ELEMENT, TestStepVariantDefinition);
         if (this.variants.length === 0) {
-            this.variants.push(this.createNewVariantDefinition());
+            this.createNewVariantDefinition();
         }
 
         this.assertionSet = this.parseElement(TestStepAssertionSetDefinition.XML_ELEMENT, TestStepAssertionSetDefinition) ?? this.createDefaultAssertionSetDefinition();
@@ -42,5 +43,9 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
 
     createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
         super.createExportNode(parentNode, tagName, 'variants', 'assertionSet', propertyNames);
+    }
+
+    async execute(instance: TestcaseInstance): Promise<void> {
+        console.log("Excecuting: " + this.constructor.name);
     }
 }    

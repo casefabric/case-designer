@@ -8,6 +8,8 @@ import Connector from "../../editors/modelcanvas/connector/connector";
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
 import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
+import BottomSplitter from "../../splitter/bottomsplitter";
+import TestRunnerForm from "./editors/testrunnerform";
 import TestCaseConnector from "./elements/connector/testcaseconnector";
 import TestAnnotationView from "./elements/testannotationview";
 import TestCaseElementView from "./elements/testcaseelementview";
@@ -17,11 +19,18 @@ import TestcaseModelEditor from "./testcasemodeleditor";
 
 export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition, DocumentableElementDefinition<TestcaseModelDefinition>, TestCaseElementView> {
     testplanView?: TestPlanView;
+    divTestRunner: JQuery<HTMLElement>;
+    testRunnerForm: TestRunnerForm;
     constructor(public htmlParent: JQuery<HTMLElement>,
         public editor: TestcaseModelEditor,
         public definition: TestcaseModelDefinition,
         public undoManager: UndoManager) {
         super(editor, htmlParent, definition, undoManager);
+
+        this.divCaseModel.append('<div class="divTestRunnerContainer"></div>');
+        this.divTestRunner = this.html.find('.divTestRunnerContainer');
+        this.testRunnerForm = new TestRunnerForm(this.editor, this.divTestRunner);
+        new BottomSplitter(this.divCaseModel, 900, 100);
 
         if (this.definition.testplan) {
             this.loading = true;
