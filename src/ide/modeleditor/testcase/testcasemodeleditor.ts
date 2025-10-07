@@ -105,6 +105,8 @@ export default class TestcaseModelEditor extends ModelEditor {
                 delete this.autoSaveTimer;
                 // Tell the repository to save
                 await this.saveModel();
+
+                this.canvas?.testRunnerForm.onTestCaseModelDefinitionUpdate();
             }, 0);
         } else {
             // console.warn("There is already an auto save timer in progress")

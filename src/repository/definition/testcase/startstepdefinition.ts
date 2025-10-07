@@ -1,3 +1,4 @@
+import TestcaseInstance from "../../../testharness/runner/testcaseinstance";
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
@@ -16,5 +17,9 @@ export default class StartStepDefinition extends TestStepDefinition {
 
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, StartStepDefinition.XML_ELEMENT);
+    }
+
+    async execute(instance: TestcaseInstance): Promise<void> {
+        await instance.startCaseInstance();
     }
 }    

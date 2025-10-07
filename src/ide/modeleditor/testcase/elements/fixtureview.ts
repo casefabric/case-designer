@@ -1,8 +1,10 @@
+
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import FixtureDefinition from '../../../../repository/definition/testcase/testfixturedefintion';
+import ServerFile from "../../../../repository/serverfile/serverfile";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
-import TestCaseProperties from "./properties/testcaseproperties";
+import FixtureProperties from "./properties/fixtureproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
 
@@ -20,7 +22,7 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
     }
 
     createProperties() {
-        return new TestCaseProperties(this);
+        return new FixtureProperties(this);
     }
 
     createHalo(): Halo {
@@ -51,5 +53,11 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
 
     resizing(w: number, h: number): void {
         super.resizing(w, h);
+    }
+
+    changeCaseReference(file?: ServerFile) {
+        this.definition.caseRef.update(file?.fileName ?? '');
+        this.refreshText();
+        this.canvas.editor.completeUserAction();
     }
 }
