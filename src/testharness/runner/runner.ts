@@ -1,8 +1,11 @@
-import { Config as CafienneClientConfig, User } from "@casefabric/typescript-client";
+import { Config as CafienneClientConfig } from "@casefabric/typescript-client";
 import Settings from "../../ide/settings/settings";
 import CaseDefinition from "../../repository/definition/cmmn/casedefinition";
+import StartStepDefinition from "../../repository/definition/testcase/startstepdefinition";
 import TestcaseModelDefinition from "../../repository/definition/testcase/testcasemodeldefinition";
+import TestStepDefinition from "../../repository/definition/testcase/teststepdefinition";
 import Repository from "../../repository/repository";
+import StepInstance from "./stepinstance";
 import TestcaseInstance from "./testcaseinstance";
 
 export default class Runner {
@@ -56,19 +59,63 @@ export default class Runner {
         return await Promise.all(testcases.map(x => this.runTestcase(x)));
     }
 
-    private async runTestcase(testcase: TestcaseModelDefinition): Promise<TestcaseInstance> {
+    public async runTestcase(testcase: TestcaseModelDefinition): Promise<TestcaseInstance> {
         console.log(`Running testcase: ${testcase.name}`);
 
-        const adminUser = await new User("admin").login();
-        console.log(`user logged in: ${adminUser}`);
+        const instance = new TestcaseInstance(testcase);
 
-        const instance = await this.setupTestcaseInstance(adminUser, testcase);
-
-        return await instance.run();
+        return await this.runTestcaseInstance(instance);
     }
 
-    private async setupTestcaseInstance(adminUser: User, testcase: TestcaseModelDefinition): Promise<TestcaseInstance> {
-        const instance = new TestcaseInstance(adminUser, testcase);
+    public getInstances(testcase: TestcaseModelDefinition) {
+        const startSteps = testcase.testplan.testSteps.filter(step => step instanceof StartStepDefinition);
+        const instances: TestcaseInstance[] = [];
+        startSteps.forEach(start => {
+            this.buildTestInstances(testcase, testcase.testplan.testSteps, [], start, instances);
+        })
+
+        return instances;
+    }
+    buildTestInstances(testcase: TestcaseModelDefinition,
+        potentialTestSteps: TestStepDefinition[],
+        pathPrefix: StepInstance[],
+        current: TestStepDefinition,
+        instances: TestcaseInstance[]) {
+
+        if (current.variants.length == 0) {
+            instances.push(new TestcaseInstance(testcase, [...pathPrefix, new StepInstance(current, null)]))
+        }
+
+        current.variants.forEach(variant => {
+            const matchingPredecessors = potentialTestSteps.
+                flatMap(step => step.assertionSet?.predecessors).
+                filter(predecessor => predecessor !== undefined).
+                filter(predecessor => predecessor.sourceRef.value == variant.id);
+
+            const newStep = new StepInstance(current, variant);
+
+            if (matchingPredecessors.length == 0) {
+                // instantiate with cloned steps
+                instances.push(new TestcaseInstance(testcase, [...pathPrefix, newStep].map(step => new StepInstance(step.stepDefinition, step.variant))));
+                return;
+            }
+            matchingPredecessors.forEach(predecessor => {
+
+                this.buildTestInstances(
+                    testcase,
+                    potentialTestSteps.filter(step => step.id != predecessor.parent?.id),
+                    [...pathPrefix, newStep],
+                    predecessor.parent.parent,
+                    instances
+                );
+            });
+        });
+    }
+    async runTestcaseInstance(instance: TestcaseInstance) {
+        console.group(`Running testcase instance: ${instance.name}`);
+
+        await instance.run();
+        console.groupEnd();
 
         return instance;
     }

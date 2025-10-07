@@ -1,7 +1,7 @@
 import { Element } from "../../../util/xml";
 import DocumentableElementDefinition from "../documentableelementdefinition";
-import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
+import TestStepDefinition from "./teststepdefinition";
 import TestStepPredecessorDefinition from "./teststepprecessordefinition";
 import TestStepVariantDefinition from "./teststepvariantdefinition";
 
@@ -10,7 +10,7 @@ export default abstract class TestStepAssertionSetDefinition extends Documentabl
 
     predecessors: TestStepPredecessorDefinition[] = [];
 
-    constructor(importNode: Element, testcase: TestcaseModelDefinition, parent: ElementDefinition<TestcaseModelDefinition>) {
+    constructor(importNode: Element, testcase: TestcaseModelDefinition, public parent: TestStepDefinition) {
         super(importNode, testcase, parent);
 
         this.predecessors = this.parseElements(TestStepPredecessorDefinition.XML_ELEMENT, TestStepPredecessorDefinition);
