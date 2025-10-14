@@ -145,6 +145,24 @@ export default abstract class XMLSerializable {
         }
         return defaultValue;
     }
+    parseElementCDataToObject(childName: string, defaultValue: object): object {
+        const childElement = XML.getChildByTagName(this.importNode, childName);
+        if (childElement) {
+            const textValue = XML.getCDATANodeOrSelf(childElement).textContent;
+            try {
+                return JSON.parse(textValue);
+            } catch (e) {
+                console.warn("Cannot parse JSON content in <" + childName + "> element: " + textValue, e);
+            }
+        }
+        return defaultValue;
+    }
+    exportObjectToElementCDATA(parentNode: Element, tagName: string, value: object): any {
+        const textElement = XML.createChildElement(this.exportNode, tagName);
+        const textValue = JSON.stringify(value, null, 2);
+        const textCDataNode = this.exportNode.ownerDocument.createCDATASection(textValue);
+        textElement.appendChild(textCDataNode);
+    }
 
     /**
      * Searches for the first child element with the given tag name, and, if found, instantiates it with the constructor and returns it.
