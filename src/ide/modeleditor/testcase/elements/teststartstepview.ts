@@ -1,8 +1,6 @@
-import CaseParameterDefinition from "../../../../repository/definition/cmmn/contract/caseparameterdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
 import Util from "../../../../util/util";
-import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestCaseProperties from "./properties/testcaseproperties";
 import TestPlanView from "./testplanview";
@@ -33,21 +31,6 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
         return "Start";
     }
 
-    moved(x: number, y: number, newParent: ElementView) {
-    }
-
-    /**
-     * A planningTable has a fixed position on its parent, it cannot be moved.
-     * Position cursor is not relevant
-     */
-    moving(x: number, y: number) {
-        super.moving(x, y);
-    }
-
-    resizing(w: number, h: number): void {
-        super.resizing(w, h);
-    }
-
     get isStartStep(): boolean {
         return true;
     }
@@ -65,47 +48,4 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
         return this.generateSchema(caseDefinition.inputParameters);
     }
 
-    generateSchema(inputs: CaseParameterDefinition[]): any {
-        const ide = this.canvas.editor.ide;
-
-        const properties: any = {};
-        const definitions: any = {};
-        const formSchema = {
-            schema: {
-                title: this.name,
-                type: "object",
-                properties,
-                definitions,
-            }
-        };
-
-        for (const input of inputs) {
-            if (!input.typeRef && !input.binding) {
-                continue;
-            }
-
-            let property: any;
-            if (input.typeRef) {
-                const typeDef = ide.repository.
-                    getTypes().
-                    find(type => type.fileName === input.typeRef)?.definition;
-                if (!typeDef) {
-                    continue;
-                }
-
-                property = typeDef.schema?.toJSONSchema(properties, formSchema.schema);
-            } else {
-                const required: any[] = [];
-                property = input.binding?.toJSONSchema(properties, required, formSchema.schema);
-            }
-
-            if (input.name && input.name != property.title && property.title) {
-                properties[input.name] = property;
-                delete properties[property.title];
-                property.title = input.name;
-            }
-        }
-
-        return formSchema;
-    }
 }
