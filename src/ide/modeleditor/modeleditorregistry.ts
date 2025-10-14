@@ -79,7 +79,6 @@ export default class ModelEditorRegistry {
         // Show the editor with the fileName (if available), hide all the ones with a different fileName
         const existingEditor = this.editors.find(editor => editor.fileName == fileName);
         this.editors.forEach(editor => editor.visible = (editor === existingEditor));
-        if (existingEditor) existingEditor.visible = true;
 
         //show model name on browser tab
         document.title = 'Dynamic Case Management - ' + serverFile.name;
