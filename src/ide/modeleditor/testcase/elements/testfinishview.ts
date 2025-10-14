@@ -1,11 +1,9 @@
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import FinishStepDefinition from "../../../../repository/definition/testcase/finishstepdefinition";
-import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestCaseProperties from "./properties/testcaseproperties";
 import TestPlanView from "./testplanview";
 import TestStepView from "./teststepview";
-
 
 export default class TestFinishStepView extends TestStepView<FinishStepDefinition> {
     static create(plan: TestPlanView, x: number, y: number) {
@@ -29,20 +27,5 @@ export default class TestFinishStepView extends TestStepView<FinishStepDefinitio
 
     get title(): string {
         return "Finish";
-    }
-
-    moved(x: number, y: number, newParent: ElementView) {
-    }
-
-    /**
-     * A planningTable has a fixed position on its parent, it cannot be moved.
-     * Position cursor is not relevant
-     */
-    moving(x: number, y: number) {
-        super.moving(x, y);
-    }
-
-    resizing(w: number, h: number): void {
-        super.resizing(w, h);
     }
 }

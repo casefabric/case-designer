@@ -4,6 +4,7 @@ import ElementDefinition from "../elementdefinition";
 import CaseFileStepDefinition from "./casefilestepdefinition";
 import FinishStepDefinition from "./finishstepdefinition";
 import StartStepDefinition from "./startstepdefinition";
+import TaskStepDefinition from "./taskstepdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 import FixtureDefinition from "./testfixturedefintion";
 import TestStepDefinition from "./teststepdefinition";
@@ -29,6 +30,7 @@ export default class TestPlanDefinition extends DocumentableElementDefinition<Te
                 case CaseFileStepDefinition.XML_ELEMENT: return itemCreator(element, CaseFileStepDefinition);
                 case UserEventStepDefinition.XML_ELEMENT: return itemCreator(element, UserEventStepDefinition);
                 case FinishStepDefinition.XML_ELEMENT: return itemCreator(element, FinishStepDefinition);
+                case TaskStepDefinition.XML_ELEMENT: return itemCreator(element, TaskStepDefinition);
                 default: console.error(`Unkown tag '${element.tagName}' cannot be parsed`);
                     return;// ignore other elements
             }

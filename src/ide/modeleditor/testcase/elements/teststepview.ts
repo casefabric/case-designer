@@ -1,3 +1,5 @@
+import CaseParameterDefinition from "../../../../repository/definition/cmmn/contract/caseparameterdefinition";
+import ParameterDefinition from "../../../../repository/definition/contract/parameterdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import TestStepAssertionSetDefinition from "../../../../repository/definition/testcase/teststepassetionsetdefinition";
 import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
@@ -5,6 +7,7 @@ import TestStepVariantDefinition from "../../../../repository/definition/testcas
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import Properties from '../../../editors/modelcanvas/properties';
+import TestStepProperties from "./properties/teststepproperties";
 import TestStepAssertionsView from "./testassertionsview";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
@@ -85,8 +88,8 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
     }
 
 
-    createProperties() {
-        return new Properties(this);
+    createProperties(): Properties {
+        return new TestStepProperties(this);
     }
 
     createHalo(): Halo {
@@ -104,7 +107,8 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
                         stroke-width="2"
                     />
                 </g>
-                <text @selector="title" y="30" font-size="30" text-anchor="middle" fill="black">${this.title}</text>`;
+                <text @selector="title" y="30" font-size="30" text-anchor="middle" fill="black">${this.title}</text>
+                <text @selector="label" y="50" text-anchor="middle" fill="black">${this.name}</text>`;
     }
 
     abstract get title(): string;
@@ -114,7 +118,11 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
             title: {
                 ref: 'body',
                 x: 'calc(w/2)',
-            }
+            },
+            label: {
+                ref: 'body',
+                x: 'calc(w/2)',
+            },
         };
     }
 
@@ -162,4 +170,9 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
     getVariantTypeSchema(): any {
         return undefined;
     }
+
+    generateSchema(inputs: CaseParameterDefinition[]): any {
+        return ParameterDefinition.generateSchema(this.name, inputs);
+    }
+
 }
