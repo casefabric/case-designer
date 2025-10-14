@@ -92,7 +92,7 @@ export default class TestStepVariantView extends TestCaseElementView<TestStepVar
         return true;
     }
 
-    updateContent(newContent: string) {
+    updateContent(newContent: object) {
         if (this.definition.content !== newContent) {
             this.definition.content = newContent;
             this.canvas.editor.completeUserAction();

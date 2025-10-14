@@ -18,5 +18,10 @@ export default class FixtureDefinition extends DocumentableElementDefinition<Tes
 
     createExportNode(parentNode: Element) {
         super.createExportNode(parentNode, FixtureDefinition.XML_ELEMENT, 'caseRef');
+
+    }
+
+    get caseDefinition(): CaseDefinition | undefined {
+        return this.caseRef.getDefinition();
     }
 }    

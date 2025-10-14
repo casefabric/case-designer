@@ -3,6 +3,7 @@ import ElementDefinition from "../../../../repository/definition/elementdefiniti
 import CaseFileStepDefinition from "../../../../repository/definition/testcase/casefilestepdefinition";
 import FinishStepDefinition from "../../../../repository/definition/testcase/finishstepdefinition";
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
+import TaskStepDefinition from "../../../../repository/definition/testcase/taskstepdefinition";
 import FixtureDefinition from "../../../../repository/definition/testcase/testfixturedefintion";
 import TestPlanDefinition from "../../../../repository/definition/testcase/testplandefinition";
 import Util from "../../../../util/util";
@@ -18,6 +19,7 @@ import TestFileStepView from "./testfilestepview";
 import TestFinishStepView from "./testfinishview";
 import TestStartStepView from "./teststartstepview";
 import TestStepView from "./teststepview";
+import TestTaskStepView from "./testtaskstepview";
 
 
 export default class TestPlanView extends TestCaseElementView<TestPlanDefinition> {
@@ -93,6 +95,9 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
         }
         else if (definition instanceof FinishStepDefinition) {
             return new TestFinishStepView(this, definition as FinishStepDefinition, shape);
+        }
+        else if (definition instanceof TaskStepDefinition) {
+            return new TestTaskStepView(this, definition as TaskStepDefinition, shape);
         }
         else if (definition instanceof FixtureDefinition) {
             return new FixtureView(this, definition, shape);

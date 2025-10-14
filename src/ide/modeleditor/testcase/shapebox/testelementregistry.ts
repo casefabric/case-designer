@@ -8,6 +8,7 @@ import TestFileStepView from "../elements/testfilestepview";
 import TestFinishStepView from "../elements/testfinishview";
 import TestStartStepView from "../elements/teststartstepview";
 import TestStepVariantView from "../elements/teststepvariantview";
+import TestTaskStepView from "../elements/testtaskstepview";
 import TestImages from "../testimages";
 
 
@@ -18,6 +19,7 @@ export default class TestElementRegistry extends ElementRegistry {
         this.registerType(FixtureView, 'Fixture', Images.ProcessTask);
         this.registerType(TestStartStepView, 'Start', TestImages.Start);
         this.registerType(TestFileStepView, 'File', TestImages.File);
+        this.registerType(TestTaskStepView, 'Task', Images.BlockingHumanTask);
         this.registerType(TestFinishStepView, 'Finish', TestImages.Finish);
         this.registerType(TestStepVariantView, 'Variant', TestImages.Variant);
         this.registerType(TestStepAssertionsView, 'Assertions');
