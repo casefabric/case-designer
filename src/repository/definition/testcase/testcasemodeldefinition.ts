@@ -1,11 +1,11 @@
 import TestcaseFile from "../../../repository/serverfile/testcasefile";
 import GraphicalModelDefinition from "../graphicalmodeldefinition";
+import TestAnnotationDefinition from "./testannotation";
 import TestPlanDefinition from "./testplandefinition";
-import TextAnnotationDefinition from "./textannotation";
 
 export default class TestcaseModelDefinition extends GraphicalModelDefinition {
     testplan: TestPlanDefinition;
-    annotations: TextAnnotationDefinition[] = [];
+    annotations: TestAnnotationDefinition[] = [];
 
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
@@ -14,11 +14,11 @@ export default class TestcaseModelDefinition extends GraphicalModelDefinition {
         super(file, file.fileName + '.dimensions');
 
         this.testplan = this.parseElement(TestPlanDefinition.XML_ELEMENT, TestPlanDefinition) ?? this.createDefinition(TestPlanDefinition);
-        this.annotations = this.parseElements('textAnnotation', TextAnnotationDefinition);
+        this.annotations = this.parseElements('textAnnotation', TestAnnotationDefinition);
     }
 
     createTextAnnotation(id?: string) {
-        const annotation: TextAnnotationDefinition = super.createDefinition(TextAnnotationDefinition, undefined, id);
+        const annotation: TestAnnotationDefinition = super.createDefinition(TestAnnotationDefinition, undefined, id);
         this.annotations.push(annotation);
         return annotation;
     }

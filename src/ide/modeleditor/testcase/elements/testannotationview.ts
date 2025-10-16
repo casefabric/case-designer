@@ -1,24 +1,24 @@
 ﻿import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import TextAnnotationDefinition from "../../../../repository/definition/testcase/textannotation";
+import TestAnnotationDefinition from "../../../../repository/definition/testcase/testannotation";
 import TestTextAnnotationHalo from "./halo/testtextannotationhalo";
-import TextAnnotationProperties from "./properties/textannotationproperties";
+import TestAnnotationProperties from "./properties/testannotationproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
 
-export default class TextAnnotationView extends TestCaseElementView<TextAnnotationDefinition> {
+export default class TestAnnotationView extends TestCaseElementView<TestAnnotationDefinition> {
     /**
      * Create a new TextAnnotationView at the given coordinates.
      */
-    static create(plan: TestPlanView, x: number, y: number): TextAnnotationView {
+    static create(plan: TestPlanView, x: number, y: number): TestAnnotationView {
         const definition = plan.canvas.definition.createTextAnnotation();
         const shape = plan.canvas.diagram.createShape(x, y, 100, 60, definition.id);
-        return new TextAnnotationView(plan, definition, shape);
+        return new TestAnnotationView(plan, definition, shape);
     }
 
     /**
      * Creates a new TextAnnotationView element
      */
-    constructor(public parent: TestPlanView, definition: TextAnnotationDefinition, shape: ShapeDefinition) {
+    constructor(public parent: TestPlanView, definition: TestAnnotationDefinition, shape: ShapeDefinition) {
         super(parent.canvas, parent, definition, shape);
     }
 
@@ -31,7 +31,7 @@ export default class TextAnnotationView extends TestCaseElementView<TextAnnotati
     }
 
     createProperties() {
-        return new TextAnnotationProperties(this);
+        return new TestAnnotationProperties(this);
     }
 
     createHalo() {
