@@ -19,6 +19,11 @@ export default class StepInstance {
 
     async run(instance: TestcaseInstance): Promise<void> {
         console.log(`Running step: ${this.name}`);
+        if (!await this.assertionsChecked(instance)) {
+            console.log(`Step ${this.name} not executed due to failed assertions`);
+            return;
+        }
+
         try {
             await this.stepDefinition.execute(instance, this.variant);
             this.status = "passed";
@@ -28,5 +33,19 @@ export default class StepInstance {
             this.status = "failed";
             this.description = error.response ?? error.toString();
         }
+    }
+
+    async assertionsChecked(instance: TestcaseInstance): Promise<boolean> {
+        if (this.stepDefinition.assertionSet) {
+            for (const assertion of this.stepDefinition.assertionSet.assertions) {
+                const result = await assertion.execute(instance);
+                if (!result.success) {
+                    this.status = "failed";
+                    this.description = result.message ?? "Assertion failed";
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
