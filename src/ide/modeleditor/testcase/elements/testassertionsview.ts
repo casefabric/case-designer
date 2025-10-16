@@ -1,12 +1,12 @@
 import { g } from "@joint/core";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import TestStepAssertionSetDefinition from "../../../../repository/definition/testcase/teststepassetionsetdefinition";
+import TestStepAssertionSetDefinition from "../../../../repository/definition/testcase/teststepassertionsetdefinition";
 import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestCaseConnector from "./connector/testcaseconnector";
 import TestCaseHalo from "./halo/testcasehalo";
-import TestCaseProperties from "./properties/testcaseproperties";
+import TestStepAssertionProperties from "./properties/teststepassertionproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestStepVariantView from "./teststepvariantview";
 import TestStepView from "./teststepview";
@@ -21,7 +21,7 @@ export default class TestStepAssertionsView extends TestCaseElementView<TestStep
     }
 
     createProperties() {
-        return new TestCaseProperties(this);
+        return new TestStepAssertionProperties(this);
     }
 
     createHalo(): Halo {
