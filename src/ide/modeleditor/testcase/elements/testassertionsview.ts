@@ -6,7 +6,7 @@ import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestCaseConnector from "./connector/testcaseconnector";
 import TestCaseHalo from "./halo/testcasehalo";
-import TextCaseProperties from "./properties/testcaseproperties";
+import TestCaseProperties from "./properties/testcaseproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestStepVariantView from "./teststepvariantview";
 import TestStepView from "./teststepview";
@@ -21,7 +21,7 @@ export default class TestStepAssertionsView extends TestCaseElementView<TestStep
     }
 
     createProperties() {
-        return new TextCaseProperties(this);
+        return new TestCaseProperties(this);
     }
 
     createHalo(): Halo {

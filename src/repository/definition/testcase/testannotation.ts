@@ -3,7 +3,7 @@ import DocumentableElementDefinition from "../documentableelementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 import TestPlanDefinition from "./testplandefinition";
 
-export default class TextAnnotationDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
+export default class TestAnnotationDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
     textFormat: string;
     text: any;
 
