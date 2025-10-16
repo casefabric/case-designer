@@ -2,7 +2,7 @@ import TestcaseInstance from "../../../testharness/runner/testcaseinstance";
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
-import TestStepAssertionSetDefinition from "./teststepassetionsetdefinition";
+import TestStepAssertionSetDefinition from "./teststepassertionsetdefinition";
 import TestStepDefinition from "./teststepdefinition";
 import TestStepVariantDefinition from "./teststepvariantdefinition";
 

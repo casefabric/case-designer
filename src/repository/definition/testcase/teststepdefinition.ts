@@ -3,7 +3,7 @@ import { Element } from "../../../util/xml";
 import DocumentableElementDefinition from "../documentableelementdefinition";
 import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
-import TestStepAssertionSetDefinition from "./teststepassetionsetdefinition";
+import TestStepAssertionSetDefinition from "./teststepassertionsetdefinition";
 import TestStepVariantDefinition from "./teststepvariantdefinition";
 
 export default abstract class TestStepDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
