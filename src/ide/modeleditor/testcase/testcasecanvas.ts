@@ -2,16 +2,16 @@ import { dia } from "@joint/core";
 import Edge from "../../../repository/definition/dimensions/edge";
 import ShapeDefinition from "../../../repository/definition/dimensions/shape";
 import DocumentableElementDefinition from "../../../repository/definition/documentableelementdefinition";
+import TestAnnotationDefinition from "../../../repository/definition/testcase/testannotation";
 import TestcaseModelDefinition from "../../../repository/definition/testcase/testcasemodeldefinition";
-import TextAnnotationDefinition from "../../../repository/definition/testcase/textannotation";
 import Connector from "../../editors/modelcanvas/connector/connector";
 import ModelCanvas from "../../editors/modelcanvas/modelcanvas";
 import ShapeBox from "../../editors/modelcanvas/shapebox/shapebox";
 import UndoManager from "../../editors/modelcanvas/undoredo/undomanager";
 import TestCaseConnector from "./elements/connector/testcaseconnector";
+import TestAnnotationView from "./elements/testannotationview";
 import TestCaseElementView from "./elements/testcaseelementview";
 import TestPlanView from "./elements/testplanview";
-import TextAnnotationView from "./elements/textannotationview";
 import TestElementRegistry from "./shapebox/testelementregistry";
 import TestcaseModelEditor from "./testcasemodeleditor";
 
@@ -74,8 +74,8 @@ export default class TestCaseCanvas extends ModelCanvas<TestcaseModelDefinition,
         this.diagram.shapes.forEach(shape => {
             const definitionElement = getDefinition(shape);
             // Only take the textboxes not the other elements, as they are rendered from testplanview constructor.
-            if (definitionElement instanceof TextAnnotationDefinition) {
-                this.testplanView?.__addChildElement(new TextAnnotationView(this.testplanView, definitionElement, shape));
+            if (definitionElement instanceof TestAnnotationDefinition) {
+                this.testplanView?.__addChildElement(new TestAnnotationView(this.testplanView, definitionElement, shape));
             }
 
             // Now check if we have an actually view element for this shape, if not, it means we have no corresponding definition element, and then we'll remove the shape from the Dimensions.

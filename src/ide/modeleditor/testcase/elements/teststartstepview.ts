@@ -2,7 +2,7 @@ import ShapeDefinition from "../../../../repository/definition/dimensions/shape"
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
-import TextCaseProperties from "./properties/testcaseproperties";
+import TestCaseProperties from "./properties/testcaseproperties";
 import TestPlanView from "./testplanview";
 import TestStepView from "./teststepview";
 
@@ -20,7 +20,7 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
     }
 
     createProperties() {
-        return new TextCaseProperties(this);
+        return new TestCaseProperties(this);
     }
 
     createHalo(): Halo {
