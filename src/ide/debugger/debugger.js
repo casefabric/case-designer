@@ -144,6 +144,10 @@ export default class Debugger extends StandardForm {
 
         // Scan for pasted text. It can upload and re-engineer a deployed model into a set of files
         this.html.find('.event-content').on('paste', e => this.handlePasteText(e));
+
+        if (this.html.find('.caseInstanceId').val()) {
+            this.showEvents();
+        }
     }
 
     /**
@@ -605,6 +609,29 @@ export default class Debugger extends StandardForm {
                 localStorage.setItem('to', '' + to);
             }
         }).catch(error => this.modelEditor.ide.danger(error.message, 5000));
+    }
+
+    show(caseInstanceId) {
+        super.show();
+
+        if (caseInstanceId) {
+            this.html.find('.caseInstanceId').val(caseInstanceId);
+            this.showEvents();
+        }
+    }
+
+    hide() {
+        const oldHash = window.location.hash;
+        const debugIndex = oldHash.indexOf('debug=')
+        if (debugIndex > 0) {
+            const nextParameterIndex = oldHash.indexOf('&', debugIndex);
+            if (nextParameterIndex > 0) {
+                window.location.hash = oldHash.substring(0, debugIndex) + oldHash.substring(nextParameterIndex + 1);
+            } else {
+                window.location.hash = oldHash.substring(0, debugIndex);
+            }
+        }
+        super.hide();
     }
 }
 

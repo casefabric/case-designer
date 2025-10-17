@@ -162,6 +162,9 @@ export default class CaseCanvas extends ModelCanvas<CaseDefinition, CMMNElementD
         if (urlQuery.length > 1) {
             if (urlQuery[1].startsWith('deploy=true')) {
                 this.deployForm.show();
+            } else if (urlQuery[1].startsWith('debug=')) {
+                const caseInstanceId = urlQuery[1].substring(6);
+                this.debugEditor.show(caseInstanceId);
             }
         }
     }
