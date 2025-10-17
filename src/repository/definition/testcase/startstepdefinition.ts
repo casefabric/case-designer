@@ -4,6 +4,7 @@ import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 import TestStepAssertionSetDefinition from "./teststepassetionsetdefinition";
 import TestStepDefinition from "./teststepdefinition";
+import TestStepVariantDefinition from "./teststepvariantdefinition";
 
 export default class StartStepDefinition extends TestStepDefinition {
     static XML_ELEMENT = 'startstep';
@@ -19,7 +20,7 @@ export default class StartStepDefinition extends TestStepDefinition {
         super.createExportNode(parentNode, StartStepDefinition.XML_ELEMENT);
     }
 
-    async execute(instance: TestcaseInstance): Promise<void> {
-        await instance.startCaseInstance();
+    async execute(instance: TestcaseInstance, variant?: TestStepVariantDefinition | null): Promise<void> {
+        await instance.startCaseInstance(variant?.content);
     }
 }    
