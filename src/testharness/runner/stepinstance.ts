@@ -20,7 +20,7 @@ export default class StepInstance {
     async run(instance: TestcaseInstance): Promise<void> {
         console.log(`Running step: ${this.name}`);
         try {
-            await this.stepDefinition.execute(instance);
+            await this.stepDefinition.execute(instance, this.variant);
             this.status = "passed";
         } catch (error: any) {
 

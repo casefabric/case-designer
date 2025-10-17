@@ -5,6 +5,7 @@ import ServerFile from "../../../../repository/serverfile/serverfile";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestImages from "../testimages";
+import FixtureHalo from "./halo/fixturehalo";
 import FixtureProperties from "./properties/fixtureproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
@@ -27,7 +28,7 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
     }
 
     createHalo(): Halo {
-        return new Halo(this);
+        return new FixtureHalo(this);
     }
 
     get text() {

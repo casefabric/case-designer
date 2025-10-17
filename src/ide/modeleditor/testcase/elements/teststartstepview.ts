@@ -1,3 +1,4 @@
+import CaseParameterDefinition from "../../../../repository/definition/cmmn/contract/caseparameterdefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
 import Util from "../../../../util/util";
@@ -61,7 +62,50 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
             return Util.parseJSON(caseDefinition.startCaseSchema.value).object;
         }
 
-        // TODO: build schema based on case input parameters
+        return this.generateSchema(caseDefinition.inputParameters);
+    }
 
+    generateSchema(inputs: CaseParameterDefinition[]): any {
+        const ide = this.canvas.editor.ide;
+
+        const properties: any = {};
+        const definitions: any = {};
+        const formSchema = {
+            schema: {
+                title: this.name,
+                type: "object",
+                properties,
+                definitions,
+            }
+        };
+
+        for (const input of inputs) {
+            if (!input.typeRef && !input.binding) {
+                continue;
+            }
+
+            let property: any;
+            if (input.typeRef) {
+                const typeDef = ide.repository.
+                    getTypes().
+                    find(type => type.fileName === input.typeRef)?.definition;
+                if (!typeDef) {
+                    continue;
+                }
+
+                property = typeDef.schema?.toJSONSchema(properties, formSchema.schema);
+            } else {
+                const required: any[] = [];
+                property = input.binding?.toJSONSchema(properties, required, formSchema.schema);
+            }
+
+            if (input.name && input.name != property.title && property.title) {
+                properties[input.name] = property;
+                delete properties[property.title];
+                property.title = input.name;
+            }
+        }
+
+        return formSchema;
     }
 }

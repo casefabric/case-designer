@@ -46,7 +46,7 @@ export default class TestcaseInstance {
         await TenantService.getTenantOwners(this.adminUser, this.tenant); // just to be sure the tenant is properly created
     }
 
-    async startCaseInstance(): Promise<void> {
+    async startCaseInstance(input?: string): Promise<void> {
         const caseOwner = new CaseTeamUser(this.tenantOwner);
         caseOwner.isOwner = true;
         const caseTeam = new CaseTeam([caseOwner]);
@@ -56,7 +56,8 @@ export default class TestcaseInstance {
         }
         const compiledCase = compileCase(this.testcase.testplan.testFixture.caseRef);
 
-        this.caseInstance = await CaseService.startCase(this.tenantOwner, { tenant: this.tenant, definition: compiledCase, inputs: {}, caseTeam, debug: true })
+        const inputObject = input ? JSON.parse(input) : {};
+        this.caseInstance = await CaseService.startCase(this.tenantOwner, { tenant: this.tenant, definition: compiledCase, inputs: inputObject, caseTeam, debug: true })
     }
 
     async run(): Promise<TestcaseInstance> {
