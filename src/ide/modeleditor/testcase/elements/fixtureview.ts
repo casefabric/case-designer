@@ -4,6 +4,7 @@ import FixtureDefinition from '../../../../repository/definition/testcase/testfi
 import ServerFile from "../../../../repository/serverfile/serverfile";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
+import TestImages from "../testimages";
 import FixtureProperties from "./properties/fixtureproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
@@ -30,13 +31,31 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
     }
 
     get markup() {
+        const caseName = this.definition.caseRef.getDefinition()?.name || '&lt;&lt;unset&gt;&gt;';
         return `<g @selector="scalable">
                     <rect @selector='body' rx="5" ry="5" width="60" height="20" ></rect>
-                </g>`;
+                </g>
+                <image @selector="icon" href="${TestImages.Fixture}" width="24" height="24" x="8" y="8"></image>
+                <text @selector="caseName">${caseName}</text>`;
+    }
+
+    refreshText(): void {
+        super.refreshText();
+        const caseName = this.definition.caseRef.getDefinition()?.name || '<<unset>>';
+        this.xyz_joint.attr('caseName/text', caseName);
     }
 
     get markupAttributes() {
         return {
+            caseName: {
+                ref: 'body',
+                'ref-x': 0.5,
+                'ref-y': 0.5,
+                'y-alignment': 'middle',
+                'x-alignment': 'middle',
+                stroke: 'none',
+                fill: 'black',
+            },
         };
     }
 
@@ -57,6 +76,7 @@ export default class FixtureView extends TestCaseElementView<FixtureDefinition> 
 
     changeCaseReference(file?: ServerFile) {
         if (this.definition.caseRef.update(file?.fileName ?? '')) {
+            this.refreshText();
             this.canvas.editor.completeUserAction();
         }
     }
