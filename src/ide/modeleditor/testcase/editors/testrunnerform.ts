@@ -143,7 +143,7 @@ class InstanceNode {
                 <input class="result" type="text" readonly></input>
             </div>
             <div class="input-name-container">
-                <input class="instance" type="text" readonly></input>
+                <a style="color:blue; " class="instance"></a>
             </div>`
             );
 
@@ -183,9 +183,11 @@ class InstanceNode {
         }
 
         if (this.instance.caseInstance) {
-            this.instanceElement.val(this.instance.caseInstance.id);
+            this.instanceElement.text(this.instance.caseInstance.id);
+            this.instanceElement.attr('href', `#${this.form.editor.model?.testplan.testFixture.caseRef}?debug=${this.instance.caseInstance.id}`);
         } else {
-            this.instanceElement.val('');
+            this.instanceElement.text('');
+            this.instanceElement.removeAttr('href');
         }
     }
 
