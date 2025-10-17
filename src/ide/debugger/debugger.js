@@ -606,6 +606,15 @@ export default class Debugger extends StandardForm {
             }
         }).catch(error => this.modelEditor.ide.danger(error.message, 5000));
     }
+
+    show(caseInstanceId) {
+        super.show();
+
+        if (caseInstanceId) {
+            this.html.find('.caseInstanceId').val(caseInstanceId);
+            this.showEvents();
+        }
+    }
 }
 
 /**
