@@ -6,6 +6,6 @@ import TestStepConnectorHaloItem from "./teststepconnectorhaloitem";
 export default class TestStepVariantHalo extends TestCaseHalo<TestStepVariantDefinition, TestStepVariantView> {
     createItems(): void {
         super.createItems();
-        this.addItems(TestStepConnectorHaloItem);
+        this.bottomBar.addItems(TestStepConnectorHaloItem);
     }
 }

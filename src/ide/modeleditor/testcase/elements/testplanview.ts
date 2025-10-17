@@ -36,12 +36,12 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
         super(canvas, undefined, definition, shape);
 
         this.fixtureView = this.addPlanItem(definition.testFixture, (def) => {
-            return this.canvas.diagram.createShape(20, 20, 60, 20, def.id);
+            return this.canvas.diagram.createShape(shape.x + 20, shape.y + 20, 60, 20, def.id);
         }) as FixtureView;
 
         for (const stepDef of definition.testSteps) {
             this.addPlanItem(stepDef, (def) => {
-                return this.canvas.diagram.createShape(20, 60 + this.__childElements.length * 60, 100, 30, def.id);
+                return this.canvas.diagram.createShape(shape.x + 20, shape.y + 40, 60, 20, def.id);
             });
         }
     }
@@ -56,7 +56,7 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
                 return;
             }
             // Add a view based on the definition with its shape
-            const child = this.__addChildElement(this.createPlanItemView(definition, shape));
+            const child = this.__addChildElement(this.createTestPlanItemView(definition, shape));
             child.changeParent(this);
 
             return child;
@@ -84,7 +84,7 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
     /**
      * Creates a new view based on the plan item,
      */
-    createPlanItemView(definition: ElementDefinition, shape: ShapeDefinition) {
+    createTestPlanItemView(definition: ElementDefinition, shape: ShapeDefinition) {
         if (definition instanceof StartStepDefinition) {
             return new TestStartStepView(this, definition as StartStepDefinition, shape);
         }
@@ -172,4 +172,7 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
         delete this.canvas.testplanView;
     }
 
+    get isTestPlan() {
+        return true;
+    }
 }
