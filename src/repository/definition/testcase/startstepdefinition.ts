@@ -1,6 +1,7 @@
 import { Element } from "../../../util/xml";
 import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
+import TestStepAssertionSetDefinition from "./teststepassetionsetdefinition";
 import TestStepDefinition from "./teststepdefinition";
 
 export default class StartStepDefinition extends TestStepDefinition {
@@ -8,6 +9,9 @@ export default class StartStepDefinition extends TestStepDefinition {
 
     constructor(importNode: Element, testcase: TestcaseModelDefinition, parent: ElementDefinition<TestcaseModelDefinition>) {
         super(importNode, testcase, parent);
+    }
+    protected createDefaultAssertionSetDefinition(): TestStepAssertionSetDefinition | undefined {
+        return undefined;
     }
 
     createExportNode(parentNode: Element) {

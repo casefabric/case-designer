@@ -1,4 +1,3 @@
-import { g } from "@joint/core";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import TestStepAssertionSetDefinition from "../../../../repository/definition/testcase/teststepassetionsetdefinition";
 import TestStepDefinition from "../../../../repository/definition/testcase/teststepdefinition";
@@ -20,10 +19,19 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
 
         for (const variant of definition.variants) {
             // TODO logic location for added variant
-            this.addVariantView(variant, def => this.canvas.diagram.createShape(20, 20, 30, 30, def.id));
+            this.addVariantView(variant, def => {
+                const size = 30;
+                return this.canvas.diagram.createShape(shape.x + (shape.width / 2) - (size / 2), shape.y + shape.height - (size / 2), size, size, def.id);
+            });
         }
 
-        this.assertionView = this.addAssertionSetView(definition.assertionSet, def => this.canvas.diagram.createShape(50, 50, 40, 20, def.id));
+        if (definition.assertionSet) {
+            this.assertionView = this.addAssertionSetView(definition.assertionSet, def => this.canvas.diagram.createShape(50, 50, 40, 20, def.id));
+        }
+    }
+
+    createNewVariantDefinition(): TestStepVariantDefinition {
+        return this.definition.createNewVariantDefinition();
     }
 
     private addVariantView(definition: TestStepVariantDefinition, shapeBuilder: (definition: TestStepVariantDefinition) => ShapeDefinition) {
@@ -38,6 +46,9 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
             // Add a view based on the definition with its shape
             const child = this.__addChildElement(new TestStepVariantView(this, definition, shape));
             child.changeParent(this);
+
+            // enforce constraints
+            child.moving(child.shape.x, child.shape.y);
 
             return child;
         }
@@ -54,6 +65,9 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
             // Add a view based on the definition with its shape
             const child = this.__addChildElement(new TestStepAssertionsView(this, definition, shape));
             child.changeParent(this);
+
+            // enforce constraints
+            child.moving(child.shape.x, child.shape.y);
 
             return child;
         }
@@ -116,24 +130,28 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
     }
 
     resizing(w: number, h: number): void {
+        const sX = this.xyz_joint.position().x;
+        const oldWidth = this.xyz_joint.size().width;
+
         super.resizing(w, h);
-        this.__childElements.filter(child => (<TestCaseElementView<any>>child).isVariant).forEach((variantView: any) => {
 
-            // keep the variant on the boundary of its parent step, see TestStepVariantView.moving()
+        const relativeWidthChange = w / oldWidth;
 
-            //get the current position of variant (the centre)
-            const x = variantView.shape.x + variantView.shape.width / 2;
-            const y = variantView.shape.y + variantView.shape.height / 2;
-            const middleOfVariant = new g.Point(x, y);
-            //find the side of the step the variant is nearest to and re-position variant,
-            // but only if it is on the right or bottom side (because we're only resizing, not re-positioning)
-            const nearestSide = this.xyz_joint.getBBox().sideNearestToPoint(middleOfVariant);
-            if (nearestSide == 'right') {
-                variantView.moving(this.shape.x + this.shape.width, y);
-            } else if (nearestSide == 'bottom') {
-                variantView.moving(x, this.shape.y + this.shape.height);
+        this.__childElements.filter(child => (<TestCaseElementView<any>>child).isVariant).forEach((child) => {
+            const variantView = <TestStepVariantView>child;
+
+            //get the current x-position of variant (the centre)
+            const vX = variantView.shape.x + variantView.shape.width / 2;
+
+            const targetX = sX + ((vX - (sX + (variantView.shape.width / 2))) * relativeWidthChange);
+
+            const translateX = Math.round(targetX - variantView.xyz_joint.position().x);
+            if (translateX != 0) {
+                variantView.xyz_joint.translate(translateX, 0);
             }
         });
+
+        this.assertionView?.moving(this.assertionView.shape.x, this.assertionView.shape.y);
 
     }
 

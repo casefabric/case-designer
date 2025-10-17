@@ -8,15 +8,19 @@ export default class TestCaseConnector extends Connector<TestCaseElementView> {
         super(source, target, edge);
 
         this.link.connector('smooth');
-        this.link.attr({
-            line: {
-                targetMarker: {
-                    type: 'path',
-                    stroke: '#423d3d',
-                    fill: 'white'
-                }
-            }
-        });
 
+        if (this.source.isTextAnnotation) {
+            this.connectionStyle = '5 5';
+        } else {
+            this.link.attr({
+                line: {
+                    targetMarker: {
+                        type: 'path',
+                        stroke: '#423d3d',
+                        fill: 'white'
+                    }
+                }
+            });
+        }
     }
 }

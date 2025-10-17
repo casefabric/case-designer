@@ -12,7 +12,11 @@ export default class TestStepConnectorHaloItem extends HaloDragItem<TestCaseHalo
     handleMouseUp(e: JQuery.TriggeredEvent) {
         super.handleMouseUp(e);
         const target = this.halo.element.canvas.getItemUnderMouse(e);
-        if (target && this.halo.element.isVariant) {
+        if (!target) {
+            return;
+        }
+
+        if (this.halo.element.isVariant) {
             let targetStep: TestStepView | undefined;
 
             if (target.isAssertion) {
@@ -36,6 +40,8 @@ export default class TestStepConnectorHaloItem extends HaloDragItem<TestCaseHalo
 
                 this.halo.element.canvas.editor.completeUserAction();
             }
+        } else if (this.halo.element.isTextAnnotation && !target.isTestPlan) {
+            this.halo.element.__connect(target);
         }
     }
 }

@@ -12,8 +12,7 @@ import TestStepView from "./teststepview";
 
 export default class TestStepVariantView extends TestCaseElementView<TestStepVariantDefinition> {
     static create(step: TestStepView<TestStepDefinition>, x: number, y: number) {
-        const definition: TestStepVariantDefinition = step.definition.createDefinition(TestStepVariantDefinition);
-        step.definition.variants.push(definition);
+        const definition: TestStepVariantDefinition = step.createNewVariantDefinition();
         const shape = step.canvas.diagram.createShape(x, y, 30, 30, definition.id);
         return new TestStepVariantView(step, definition, shape);
     }
@@ -32,37 +31,55 @@ export default class TestStepVariantView extends TestCaseElementView<TestStepVar
     }
 
     get markup() {
-        return `<g @selector="scalable">
-                    <polygon @selector='body' points="10,0 27,0 37,17 27,34 10,34 0,17"></polygon>
+        return `<g @selector="rotatable">
+                    <g @selector="scalable">
+                        <circle @selector='body' cx='15' cy='15' r='15'></circle>
+                    </g>
+                    <text @selector='label' text-anchor='middle' x='15' y='20' font-size='12px' font-family='Arial, helvetica, sans-serif'>V</text>
                 </g>`;
     }
 
     get markupAttributes() {
         return {
+            body: {
+                fill: '#ffffff',
+            },
         };
     }
 
     moved(x: number, y: number, newParent: ElementView) {
     }
 
-    moving(x: number, y: number) {
-        super.moving(x, y);
+    moving(sX: number, sY: number) {
+        super.moving(sX, sY);
 
         // Keep the variant on the boundary of its parent step, see TestStepView.resizing()
         const parentElement = this.parent.xyz_joint;
-        const sX = this.position.x;
-        const sY = this.position.y;
         const sH = this.size.height;
         const sW = this.size.width;
-
         const shapeCenter = new g.Point(sX + (sW / 2), sY + (sH / 2));
-        const boundaryPoint = parentElement.getBBox().pointNearestToPoint(shapeCenter);
 
-        const sentryTranslateX = boundaryPoint.x - shapeCenter.x;
-        const sentryTranslateY = boundaryPoint.y - shapeCenter.y;
+        let targetX = shapeCenter.x;
+        if (targetX < this.parent.shape.x) {
+            targetX = this.parent.shape.x;
+        } else if (targetX > this.parent.shape.x + this.parent.shape.width) {
+            targetX = this.parent.shape.x + this.parent.shape.width;
+        }
 
-        if (sentryTranslateX != 0 || sentryTranslateY != 0) {
-            this.xyz_joint.translate(sentryTranslateX, sentryTranslateY);
+        const parentCenter = new g.Point(parentElement.position().x + (parentElement.size().width / 2),
+            parentElement.position().y + (parentElement.size().height / 2));
+
+        const offCenterX = Math.abs(parentCenter.x - targetX);
+        const relativeOffCenterX = offCenterX / (parentElement.size().width / 2);
+
+        // calculate targetY based on relativeOffCenterX on the lower half ellipse of the parent
+        const targetY = parentElement.position().y + parentElement.size().height -
+            (parentElement.size().height * (1 - Math.sqrt(1 - (relativeOffCenterX * relativeOffCenterX))));
+
+        const translateX = Math.round(targetX - (this.xyz_joint.position().x + this.xyz_joint.size().width / 2));
+        const translateY = Math.round(targetY - shapeCenter.y);
+        if (translateX != 0 || translateY != 0) {
+            this.xyz_joint.translate(translateX, translateY);
         }
 
     }
