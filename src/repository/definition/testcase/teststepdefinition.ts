@@ -45,7 +45,7 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
         super.createExportNode(parentNode, tagName, 'variants', 'assertionSet', propertyNames);
     }
 
-    async execute(instance: TestcaseInstance): Promise<void> {
-        console.log("Excecuting: " + this.constructor.name);
+    async execute(instance: TestcaseInstance, variant: TestStepVariantDefinition | null): Promise<void> {
+        console.log(`Excecuting: ${this.constructor.name} with variant '${variant?.name}'`);
     }
 }    

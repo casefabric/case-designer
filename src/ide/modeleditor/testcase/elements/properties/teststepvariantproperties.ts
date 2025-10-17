@@ -22,12 +22,12 @@ export default class TestStepVariantProperties extends TestCaseProperties<TestSt
 
     addJsonDataForm(label: string, schema: any, data?: string, onChange?: (newContent: any) => void) {
         const currentContent = data ? JSON.parse(data) : {};
-        const html = $(`<div class="propertyBlock">
+        const html = $(`<div class="propertyBlock" style="height: 500px; width=100%; overflow-y:auto; ">
                             <label>${label}</label>
-                            <div class="properties jsoneditor" style="height: 200px; width:100%; border: 1px solid #ccc;"></div>
+                            <div class="json-variant-editor" border: 1px solid #ccc;"></div>
                         </div>`);
         this.htmlContainer.append(html);
-        const jsonEditor = html.find('.jsoneditor');
+        const jsonEditor = html.find('.json-variant-editor');
 
         const editor = new AlpacaPreview(jsonEditor, currentContent, onChange).render(schema);
     }

@@ -2,9 +2,9 @@
     "configurations": [
         {
             "type": "chrome",
-            "name": "http://localhost:2081/#a_new_moon.case?test=true",
+            "name": "http://localhost:2081/#a_new_moon.testcase",
             "request": "launch",
-            "url": "http://localhost:2081/#a_new_moon.case?test=true"
+            "url": "http://localhost:2081/#a_new_moon.testcase"
         }
     ]
 }
