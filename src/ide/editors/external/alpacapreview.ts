@@ -16,13 +16,24 @@ loadScriptSync(hanldebars_raw_source);
 loadScriptSync(alpaca_raw_source);
 
 export default class AlpacaPreview {
-    html: JQuery<HTMLElement>;
+    private html: any; // casting to any because alpaca does not have typescript definitions on jquery elements
 
-    constructor(public container: JQuery<HTMLElement>) {
+    constructor(public container: JQuery<HTMLElement>, public data?: any, public onChange?: (newContent: any) => void) {
         this.html = container;
     }
 
-    render(jsonForm: any) {
-        (<any>this.html)?.alpaca(jsonForm);
+    render(schema: any) {
+        schema.data = this.data;
+        schema.postRender = (field: any) => {
+            // When the user changes something, update the model
+            field.on('change', () => {
+                const value = field.getValue();
+                if (this.onChange) {
+                    this.onChange(value);
+                }
+            });
+        }
+
+        this.html.alpaca(schema);
     }
 }
