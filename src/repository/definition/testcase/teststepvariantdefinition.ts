@@ -1,4 +1,4 @@
-import { Element } from "../../../util/xml";
+import XML, { Element } from "../../../util/xml";
 import DocumentableElementDefinition from "../documentableelementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 import TestStepDefinition from "./teststepdefinition";
@@ -11,10 +11,15 @@ export default abstract class TestStepVariantDefinition extends DocumentableElem
     constructor(importNode: Element, testcase: TestcaseModelDefinition, public parent: TestStepDefinition) {
         super(importNode, testcase, parent);
 
-        this.content = this.parseElementText('inputs', '');
+        const textElement = XML.getChildByTagName(this.importNode, 'content');
+        this.content = textElement ? XML.getCDATANodeOrSelf(textElement).textContent : '';
     }
 
     createExportNode(parentNode: Element) {
-        super.createExportNode(parentNode, TestStepVariantDefinition.XML_ELEMENT, 'inputs');
+        super.createExportNode(parentNode, TestStepVariantDefinition.XML_ELEMENT);
+
+        const textElement = XML.createChildElement(this.exportNode, 'content');
+        const textCDataNode = this.exportNode.ownerDocument.createCDATASection(this.content);
+        textElement.appendChild(textCDataNode);
     }
 }    

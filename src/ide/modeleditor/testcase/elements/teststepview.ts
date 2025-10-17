@@ -159,4 +159,7 @@ export default abstract class TestStepView<S extends TestStepDefinition = TestSt
         return true;
     }
 
+    getVariantTypeSchema(): any {
+        return undefined;
+    }
 }

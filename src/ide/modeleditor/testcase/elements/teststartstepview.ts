@@ -1,5 +1,6 @@
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import StartStepDefinition from "../../../../repository/definition/testcase/startstepdefinition";
+import Util from "../../../../util/util";
 import ElementView from '../../../editors/modelcanvas/elementview';
 import Halo from '../../../editors/modelcanvas/halo/halo';
 import TestCaseProperties from "./properties/testcaseproperties";
@@ -48,5 +49,19 @@ export default class TestStartStepView extends TestStepView<StartStepDefinition>
 
     get isStartStep(): boolean {
         return true;
+    }
+
+    getVariantTypeSchema() {
+        const caseDefinition = this.definition.modelDefinition?.testplan?.testFixture?.caseRef.getDefinition();
+
+        if (!caseDefinition) {
+            return undefined;
+        }
+        if (caseDefinition.startCaseSchema.value && caseDefinition.startCaseSchema.value != null) {
+            return Util.parseJSON(caseDefinition.startCaseSchema.value).object;
+        }
+
+        // TODO: build schema based on case input parameters
+
     }
 }

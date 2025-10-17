@@ -36,7 +36,7 @@ export default class TestPlanView extends TestCaseElementView<TestPlanDefinition
         super(canvas, undefined, definition, shape);
 
         this.fixtureView = this.addPlanItem(definition.testFixture, (def) => {
-            return this.canvas.diagram.createShape(shape.x + 20, shape.y + 20, 60, 20, def.id);
+            return this.canvas.diagram.createShape(shape.x + 20, shape.y + 40, 120, 40, def.id);
         }) as FixtureView;
 
         for (const stepDef of definition.testSteps) {
