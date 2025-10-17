@@ -74,7 +74,7 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
 
     validate(validator: Validator) {
         super.validate(validator);
-        if (! this.isEmpty) {
+        if (!this.isEmpty) {
             validator.mustHaveName(this);
         }
     }
@@ -109,5 +109,9 @@ export default class CaseFileItemDef extends CaseFileItemCollection {
             const childrenNode = XML.createChildElement(this.exportNode, 'children');
             this.children.forEach(child => child.createExportNode(childrenNode));
         }
+    }
+
+    toJSONSchema(parent: any, required: any, root: any): Object {
+        throw new Error("Not implemented for old case file structure.");
     }
 }

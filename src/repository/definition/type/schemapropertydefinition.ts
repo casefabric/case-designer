@@ -66,7 +66,7 @@ export default class SchemaPropertyDefinition extends TypeDefinitionElement {
     }
 
     private get description(): string {
-        if (this.name) { 
+        if (this.name) {
             return `Property "${this.name}"`;
         } else {
             const count = this.parent.properties.indexOf(this);
@@ -131,12 +131,20 @@ export default class SchemaPropertyDefinition extends TypeDefinitionElement {
         properties[this.name] = jsonProperty;
         jsonProperty.$id = this.id;
         jsonProperty.title = this.name; // Default label is the name of the property
+
+        this.addTypeStructureToJSONSchema(jsonProperty, required, root);
+        return jsonProperty;
+    }
+
+    addTypeStructureToJSONSchema(jsonProperty: any, required: any, root: any): any {
         const property: any = jsonProperty;
         if (this.type === 'object') {
             property.type = 'object';
             this.schema?.toJSONSchema(property, root);
         } else if (this.typeRef && this.subType) {
-            const $id = this.subType.id.slice(0, this.subType.id.length - 5); // Strip ".type" from id
+            const $id = this.subType.id.
+                slice(0, this.subType.id.length - 5). // Strip ".type" from id
+                replace('/', '\\');
             const $ref = '#/definitions/' + $id;
             property.$ref = $ref;
             if (!root.definitions) {

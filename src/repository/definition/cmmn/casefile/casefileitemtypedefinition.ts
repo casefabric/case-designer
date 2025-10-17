@@ -124,4 +124,9 @@ export default class CaseFileItemTypeDefinition extends CaseFileItemDef {
         // We do not need to create any export XML, as the parent CaseFile will set a 'typeRef' attribute that includes us.
         return;
     }
+
+    toJSONSchema(parent: any, required: any, root: any): Object {
+        return this.property.addTypeStructureToJSONSchema(parent, required, root);
+    }
+
 }

@@ -157,37 +157,18 @@ export default class HumantaskModelEditor extends ModelEditor {
     }
 
     generateSchema() {
-        if (! this.file.definition) return;
-        if (! this.model) return;
+        try {
+            if (!this.file.definition) return;
+            if (!this.model) return;
 
-        const generator = (parameters: ParameterDefinition<any>[]) => parameters.
-            filter(parameter => parameter.typeRef).
-            map(parameter => this.ide.repository.getTypes().
-            find(type => type.fileName === parameter.typeRef)).
-            filter(file => file !== undefined).
-            map(file => file && file.definition);
-        const types = [...generator(this.file.definition.inputParameters), ...generator(this.file.definition.outputParameters)].filter(t => t !== undefined);
-        const properties: any = {};
-        const definitions: any = {};
-        const formSchema = {
-            schema: {
-                title: this.file.definition.implementation.documentation.text || this.file.definition.name,
-                type: "object",
-                properties,
-                definitions,
-            }
+            const formSchema = ParameterDefinition.generateSchema(
+                this.file.definition.implementation.documentation.text || this.file.definition.name,
+                [...this.file.definition.inputParameters, ...this.file.definition.outputParameters]);
+
+            this.freeContentEditor.setValue(JSON.stringify(formSchema, null, 2));
+        } catch (error: any) {
+            this.ide.danger('Error generating schema: ' + error.message);
         }
-        types.map(type => type && type.toJSONSchema().schema).forEach((schema: any) => {
-            properties[schema.title] = schema;
-            if (schema.definitions) {
-                Object.assign(definitions, { ...schema.definitions });
-                delete schema.definitions;
-            }
-        });
-
-        this.model.implementation.taskModel.value = JSON.stringify(formSchema, undefined, 2);
-        this.saveModel();
-        this.render();
     }
 
     render() {
