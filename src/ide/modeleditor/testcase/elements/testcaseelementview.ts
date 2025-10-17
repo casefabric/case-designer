@@ -20,5 +20,10 @@ export default abstract class TestCaseElementView<ElemDefT extends DocumentableE
     get isStep() {
         return false;
     }
-
+    get isTextAnnotation() {
+        return false;
+    }
+    get isTestPlan() {
+        return false;
+    }
 }

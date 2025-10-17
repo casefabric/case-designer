@@ -1,6 +1,6 @@
 ﻿import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import TextAnnotationDefinition from "../../../../repository/definition/testcase/textannotation";
-import Halo from "../../../editors/modelcanvas/halo/halo";
+import TestTextAnnotationHalo from "./halo/testtextannotationhalo";
 import TextAnnotationProperties from "./properties/textannotationproperties";
 import TestCaseElementView from "./testcaseelementview";
 import TestPlanView from "./testplanview";
@@ -35,7 +35,7 @@ export default class TextAnnotationView extends TestCaseElementView<TextAnnotati
     }
 
     createHalo() {
-        return new Halo(this);
+        return new TestTextAnnotationHalo(this);
     }
 
     get markup() {
