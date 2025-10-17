@@ -322,7 +322,7 @@ export default abstract class ModelCanvas<
             return element;
         }
 
-        this.graph.addCells([element.xyz_joint]);
+        this.graph.addCells(element.xyz_joints);
         // TODO: this should no longer be necessary if constructors fill proper joint immediately based upon definition
         element.refreshView();
         // TODO: figure out when to properly apply the move constraint logic

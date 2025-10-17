@@ -57,6 +57,10 @@ export default abstract class ElementView<
         return this.definition.name;
     }
 
+    get xyz_joints(): dia.Element[] {
+        return [this.xyz_joint, ...this.__childElements.map(c => c.xyz_joints).flat()];
+    }
+
     /**
      * Override this method to provide type specific Properties object
      */
@@ -391,8 +395,8 @@ export default abstract class ElementView<
      * Resizes the element, move sentries and decorators
      */
     resizing(w: number, h: number) {
-        if (w < 0) w = 0;
-        if (h < 0) h = 0;
+        if (w < 10) w = 10;
+        if (h < 10) h = 10;
 
         this.shape.width = w;
         this.shape.height = h;
@@ -443,7 +447,10 @@ export default abstract class ElementView<
      * Adds an element to another element, implements element.__addElement
      */
     __addChildElement<ViewT extends ElementView>(childElement: ViewT): ViewT {
-        return this.canvas.__addElement(childElement);
+        if (this.canvas.graph.getCells().indexOf(this.xyz_joint) >= 0) { // only if parent is already rendered
+            return this.canvas.__addElement(childElement);
+        }
+        return childElement
     }
 
     /**
