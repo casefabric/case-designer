@@ -1,5 +1,5 @@
 # Create runtime image
-FROM node:23.11-alpine
+FROM node:24.10-alpine
 
 # Switch workdir - this specific directory is used in standard configurations of e.g. getting-started to mount the repository folder
 WORKDIR /usr/src/app

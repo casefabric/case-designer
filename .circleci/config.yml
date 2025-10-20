@@ -20,7 +20,7 @@ workflows:
 jobs:
   branch-build-to-snapshot:
     machine:
-      image: ubuntu-2404:2024.11.1
+      image: ubuntu-2404:2025.09.1
       docker_layer_caching: true
     resource_class: large
     working_directory: ~/cafienne-ide
@@ -30,7 +30,7 @@ jobs:
 
   main-build-to-latest:
     machine:
-      image: ubuntu-2404:2024.11.1
+      image: ubuntu-2404:2025.09.1
       docker_layer_caching: true
     resource_class: large
     working_directory: ~/cafienne-ide
