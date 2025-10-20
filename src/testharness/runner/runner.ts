@@ -88,7 +88,7 @@ export default class Runner {
 
         current.variants.forEach(variant => {
             const matchingPredecessors = potentialTestSteps.
-                flatMap(step => step.assertionSet?.predecessors).
+                flatMap(step => step.predecessors).
                 filter(predecessor => predecessor !== undefined).
                 filter(predecessor => predecessor.sourceRef.value == variant.id);
 
@@ -105,7 +105,7 @@ export default class Runner {
                     testcase,
                     potentialTestSteps.filter(step => step.id != predecessor.parent?.id),
                     [...pathPrefix, newStep],
-                    predecessor.parent.parent,
+                    predecessor.parent,
                     instances
                 );
             });

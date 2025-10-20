@@ -46,7 +46,7 @@ export default class TestStepAssertionsView extends TestCaseElementView<TestStep
     __removeConnector(connector: TestCaseConnector): void {
         super.__removeConnector(connector);
 
-        this.definition.removePredecessor((<TestStepVariantView>connector.source).definition);
+        this.definition.parent.removePredecessor((<TestStepVariantView>connector.source).definition);
 
         this.canvas.editor.completeUserAction();
     }

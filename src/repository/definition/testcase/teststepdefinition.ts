@@ -4,11 +4,14 @@ import DocumentableElementDefinition from "../documentableelementdefinition";
 import ElementDefinition from "../elementdefinition";
 import TestcaseModelDefinition from "./testcasemodeldefinition";
 import TestStepAssertionSetDefinition from "./teststepassertionsetdefinition";
+import TestStepPredecessorDefinition from "./teststepprecessordefinition";
 import TestStepVariantDefinition from "./teststepvariantdefinition";
 
 export default abstract class TestStepDefinition extends DocumentableElementDefinition<TestcaseModelDefinition> {
     variants: TestStepVariantDefinition[] = [];
     assertionSet?: TestStepAssertionSetDefinition;
+    predecessors: TestStepPredecessorDefinition[];
+
 
     constructor(importNode: Element, testcase: TestcaseModelDefinition, parent: ElementDefinition<TestcaseModelDefinition>) {
         super(importNode, testcase, parent);
@@ -17,6 +20,7 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
         if (this.variants.length === 0) {
             this.createNewVariantDefinition();
         }
+        this.predecessors = this.parseElements(TestStepPredecessorDefinition.XML_ELEMENT, TestStepPredecessorDefinition);
 
         this.assertionSet = this.parseElement(TestStepAssertionSetDefinition.XML_ELEMENT, TestStepAssertionSetDefinition) ?? this.createDefaultAssertionSetDefinition();
     }
@@ -37,12 +41,25 @@ export default abstract class TestStepDefinition extends DocumentableElementDefi
         return variantName;
     }
 
+    createPredecessor(predessor: DocumentableElementDefinition<TestcaseModelDefinition>) {
+        const predecessorDefinition = this.createDefinition(TestStepPredecessorDefinition) as TestStepPredecessorDefinition;
+        predecessorDefinition.sourceRef.update(predessor.id);
+        this.predecessors.push(predecessorDefinition);
+    }
+    removePredecessor(definition: TestStepVariantDefinition) {
+        const predecessorDefinition = this.predecessors.find(p => p.sourceRef.value === definition.id);
+        if (predecessorDefinition) {
+            this.predecessors = this.predecessors.filter(p => p !== predecessorDefinition);
+            predecessorDefinition.removeDefinition();
+        }
+    }
+
     protected createDefaultAssertionSetDefinition(): TestStepAssertionSetDefinition | undefined {
         return this.createDefinition(TestStepAssertionSetDefinition) as TestStepAssertionSetDefinition;
     }
 
     createExportNode(parentNode: Element, tagName: string, ...propertyNames: any[]) {
-        super.createExportNode(parentNode, tagName, 'variants', 'assertionSet', propertyNames);
+        super.createExportNode(parentNode, tagName, 'variants', 'assertionSet', 'predecessors', propertyNames);
     }
 
     async execute(instance: TestcaseInstance, variant: TestStepVariantDefinition | null): Promise<void> {
