@@ -36,7 +36,7 @@ export default class TestStepConnectorHaloItem extends HaloDragItem<TestCaseHalo
 
             if (targetStep && targetStep.assertionView) {
                 this.halo.element.__connect(targetStep.assertionView);
-                targetStep.assertionView.definition.createPrecessesor(this.halo.element.definition);
+                targetStep.definition.createPredecessor(this.halo.element.definition);
 
                 this.halo.element.canvas.editor.completeUserAction();
             }
