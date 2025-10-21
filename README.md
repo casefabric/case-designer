@@ -1,6 +1,6 @@
 ﻿# Cafienne IDE
 
-## License 
+## License
 
 This code is available under the [GNU AFFERO GENERAL PUBLIC LICENSE v3](LICENSE).
 

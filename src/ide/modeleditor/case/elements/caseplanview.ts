@@ -73,7 +73,7 @@ export default class CasePlanView extends StageView<CasePlanDefinition> {
     }
 
     get markup() {
-        return `<g>
+        return `<g @selector='scalable'>
                     <polyline @selector='header' points="10,${CPM_TAB_HEIGHT} 15,0 250,0 255,${CPM_TAB_HEIGHT}" ></polyline>
                     <text @selector='label' font-size="12" ></text>
                     <rect @selector='body' x="0" y="${CPM_TAB_HEIGHT}" width="${this.shape.width}" height="${this.shape.height - CPM_TAB_HEIGHT}"></rect>
