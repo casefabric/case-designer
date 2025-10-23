@@ -97,6 +97,7 @@ export default [
 { // repository cli
     entry: {
         compile: { import: './src/repository/compile.ts', dependOn: ['shared'] },
+        testrunner: { import: './src/testharness/runnermain.ts', dependOn: ['shared'] },
         shared: './src/index.js',
         index: { import: './src/index.js', dependOn: ['shared'] },
     },
@@ -127,11 +128,19 @@ export default [
     experiments: {
         outputModule: true,
     },
+    externalsType: "module-import",
     externals: [
-        nodeExternals({ importType: (request) => `import ${request}` }),
         {
-            'fs': 'import fs',
-        }
+            'node-fetch': 'node-commonjs node-fetch', // https://github.com/matthew-andrews/isomorphic-fetch/issues/194#issuecomment-1513787724
+        },
+        nodeExternals({
+            importType: (request) => `import ${request}`,
+            // Exclude only specific modules
+            // You can also use a regular expression or a function here
+            modulesDir: './node_modules',
+            // This is the regex that will be used to match the modules to exclude
+            allowlist: [/^@casefabric\/.*/],
+        }),
     ],
 },
 { // ide

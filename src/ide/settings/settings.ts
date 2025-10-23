@@ -3,6 +3,8 @@
 import SettingsStorage from "./settingsstorage";
 
 const SERVER_URL = 'server';
+const ISSUER_URL = 'issuer';
+const TOKEN_URL = 'token';
 const GRID_SIZE = 'grid_size';
 const GRID_VISIBILITY = 'grid_visible';
 const VALIDATION_SETTINGS = 'validation_settings';
@@ -23,6 +25,19 @@ export default class Settings {
 
     static set serverURL(url) {
         SettingsStorage.setItem(SERVER_URL, url);
+    }
+
+    static get issuerURL() {
+        const host = window.location.hostname;
+        const protocol = window.location.protocol;
+        const port = '2077';
+        const defaultURL = `${protocol}//${host}:${port}`;
+        return SettingsStorage.getItem(ISSUER_URL) || defaultURL;
+    }
+
+    static get tokenURL() {
+        const defaultURL = `${this.issuerURL}/token`;
+        return SettingsStorage.getItem(TOKEN_URL) || defaultURL;
     }
 
     static get gridSize() {

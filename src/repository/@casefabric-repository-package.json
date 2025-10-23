@@ -2,7 +2,8 @@
     "name": "@casefabric/repository",
     "version": "0.2.1",
     "bin": {
-        "compile": "./compile.js"
+        "compile": "./compile.js",
+        "testrunner": "./testrunner.js"
     },
     "description": "Create and compile CaseFabric design time models",
     "type": "module",
@@ -15,8 +16,5 @@
         "case-fabric"
     ],
     "dependencies": {
-        "@xmldom/xmldom": "^0.9.6",
-        "path": "^0.12.7",
-        "xml-formatter": "^3.6.4"
     }
 }
