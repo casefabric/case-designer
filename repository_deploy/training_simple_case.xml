@@ -1,0 +1,47 @@
+<definitions xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <caseFileItemDefinition name="SimpleRootItem" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="training_simple_case_type_SimpleRootItem.object">
+        <property name="FirstProperty" type="http://www.omg.org/spec/CMMN/PropertyType/string"/>
+    </caseFileItemDefinition>
+    <caseFileItemDefinition name="training_simple_case" definitionType="http://www.omg.org/spec/CMMN/DefinitionType/Unspecified" id="training_simple_case.type"/>
+    <case id="training_simple_case.case" name="training_simple_case" expressionLanguage="spel">
+        <caseFileModel cafienne:typeRef="training_simple_case.type">
+            <caseFileItem id="SimpleRootItem" name="SimpleRootItem" multiplicity="ExactlyOne" definitionRef="training_simple_case_type_SimpleRootItem.object"/>
+        </caseFileModel>
+        <casePlanModel id="cm__65qFi_0" name="training_simple_case" autoComplete="true">
+            <planItem id="_65qFi_1" name="Simple Root data created" definitionRef="ms__65qFi_1">
+                <entryCriterion id="crit__65qFi_0" sentryRef="s_crit__65qFi_0"/>
+                <itemControl id="_65qFi_2">
+                    <requiredRule id="_65qFi_3">
+                        <condition id="_65qFi_4">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </requiredRule>
+                </itemControl>
+            </planItem>
+            <sentry id="s_crit__65qFi_0">
+                <caseFileItemOnPart id="_65qFi_5" sourceRef="SimpleRootItem">
+                    <standardEvent>create</standardEvent>
+                </caseFileItemOnPart>
+            </sentry>
+            <milestone id="ms__65qFi_1" name="Simple Root data created"/>
+        </casePlanModel>
+        <caseRoles cafienne:caseTeamRef="training_simple_case.caseteam"/>
+    </case>
+    <CMMNDI>
+        <CMMNDiagram>
+            <CMMNShape name="training_simple_case" cmmnElementRef="cm__65qFi_0">
+                <Bounds x="20" y="20" width="800" height="500"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="SimpleRootItem">
+                <Bounds x="240" y="236" width="25" height="40"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="_65qFi_1">
+                <Bounds x="440" y="240" width="100" height="40"/>
+            </CMMNShape>
+            <CMMNShape cmmnElementRef="crit__65qFi_0">
+                <Bounds x="434" y="250" width="12" height="20"/>
+            </CMMNShape>
+            <CMMNEdge sourceCMMNElementRef="SimpleRootItem" targetCMMNElementRef="crit__65qFi_0"/>
+        </CMMNDiagram>
+    </CMMNDI>
+</definitions>

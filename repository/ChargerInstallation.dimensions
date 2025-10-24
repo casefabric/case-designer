@@ -1,0 +1,24 @@
+<CMMNDI xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <CMMNDiagram>
+        <CMMNShape name="ChargerInstallation" cmmnElementRef="cm__jL5nt_0">
+            <Bounds x="20" y="30" width="800" height="500"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_jL5nt_1">
+            <Bounds x="650" y="260" width="140" height="80"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_jL5nt_3">
+            <Bounds x="460" y="350" width="140" height="80"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_jL5nt_5">
+            <Bounds x="250" y="140" width="140" height="80"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="crit__jL5nt_0">
+            <Bounds x="494" y="340" width="12" height="20"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="crit__jL5nt_1">
+            <Bounds x="644" y="290" width="12" height="20"/>
+        </CMMNShape>
+        <CMMNEdge sourceCMMNElementRef="_jL5nt_5" targetCMMNElementRef="crit__jL5nt_0"/>
+        <CMMNEdge sourceCMMNElementRef="_jL5nt_3" targetCMMNElementRef="crit__jL5nt_1"/>
+    </CMMNDiagram>
+</CMMNDI>

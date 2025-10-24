@@ -1,0 +1,39 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="AIHolidayPlanning.case" name="AIHolidayPlanning" expressionLanguage="spel" guid="_8oGC4">
+    <caseFileModel typeRef="AIHolidayPlanning.type"/>
+    <casePlanModel id="cm__8oGC4_0" name="AIHolidayPlanning" autoComplete="true">
+        <exitCriterion id="crit__8oGC4_2">
+            <planItemOnPart id="_8oGC4_18" sourceRef="_8oGC4_13">
+                <standardEvent>complete</standardEvent>
+            </planItemOnPart>
+        </exitCriterion>
+        <aiTask id="_8oGC4_1" name="Find A Holiday" isBlocking="true" processRef="FindAHoliday.ai">
+            <inputs id="_8oGC4_26" name="GuardRails" bindingRef="GuardRails"/>
+            <parameterMapping id="_8oGC4_19" sourceRef="_8oGC4_26" targetRef="_flSk_Wish"/>
+        </aiTask>
+        <humanTask id="_8oGC4_11" name="Add a personal find" isBlocking="true"/>
+        <humanTask id="_8oGC4_13" name="Select a Holiday" isBlocking="true">
+            <entryCriterion id="crit__8oGC4_1">
+                <planItemOnPart id="_8oGC4_17" sourceRef="_8oGC4_15">
+                    <standardEvent>complete</standardEvent>
+                </planItemOnPart>
+            </entryCriterion>
+        </humanTask>
+        <stage id="_8oGC4_15" name="Stage_0" autoComplete="true">
+            <aiTask id="_8oGC4_4" name="Evaluate Quality" isBlocking="true" processRef="EvaluateQuality.ai">
+                <entryCriterion id="crit__8oGC4_0">
+                    <caseFileItemOnPart id="_8oGC4_10" sourceRef="FoundMatches">
+                        <standardEvent>create</standardEvent>
+                    </caseFileItemOnPart>
+                </entryCriterion>
+                <itemControl id="_8oGC4_6">
+                    <repetitionRule id="_8oGC4_8">
+                        <condition id="_8oGC4_9">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </repetitionRule>
+                </itemControl>
+            </aiTask>
+        </stage>
+    </casePlanModel>
+    <caseRoles caseTeamRef="AIHolidayPlanning.caseteam"/>
+</case>

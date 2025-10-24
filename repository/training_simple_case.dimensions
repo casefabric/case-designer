@@ -1,0 +1,17 @@
+<CMMNDI xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
+    <CMMNDiagram>
+        <CMMNShape name="training_simple_case" cmmnElementRef="cm__65qFi_0">
+            <Bounds x="20" y="20" width="800" height="500"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="SimpleRootItem">
+            <Bounds x="240.44140625" y="236.80078125" width="25" height="40"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="_65qFi_1">
+            <Bounds x="440" y="240" width="100" height="40"/>
+        </CMMNShape>
+        <CMMNShape cmmnElementRef="crit__65qFi_0">
+            <Bounds x="434" y="250" width="12" height="20"/>
+        </CMMNShape>
+        <CMMNEdge sourceCMMNElementRef="SimpleRootItem" targetCMMNElementRef="crit__65qFi_0"/>
+    </CMMNDiagram>
+</CMMNDI>
