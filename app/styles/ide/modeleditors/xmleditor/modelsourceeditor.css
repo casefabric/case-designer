@@ -9,6 +9,15 @@
     border: 0px;
 }
 
+.model-source-label {
+    font-weight: bold;
+    margin-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: block;
+    font-size: larger;
+}
+
 .model-source-editor {
     display: none;
 }

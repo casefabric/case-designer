@@ -8,6 +8,7 @@ import DimensionsFile from "./serverfile/dimensionsfile";
 import HumanTaskFile from "./serverfile/humantaskfile";
 import Metadata from "./serverfile/metadata";
 import ProcessFile from "./serverfile/processfile";
+import AIFile from "./serverfile/aifile";
 import ServerFile from "./serverfile/serverfile";
 import TypeFile from "./serverfile/typefile";
 import FileStorage from "./storage/filestorage";
@@ -41,6 +42,7 @@ export default class Repository {
             case 'case': return this.createCaseFile(fileName, source);
             case 'dimensions': return this.createDimensionsFile(fileName, source);
             case 'process': return this.createProcessFile(fileName, source);
+            case 'ai': return this.createAIFile(fileName, source);
             case 'humantask': return this.createHumanTaskFile(fileName, source);
             case 'cfid': return this.createCFIDFile(fileName, source);
             case 'type': return this.createTypeFile(fileName, source);
@@ -92,6 +94,20 @@ export default class Repository {
      */
     createProcessFile(fileName: string, source: any): ProcessFile {
         return new ProcessFile(this, fileName, source);
+    }
+
+     /**
+     * Create a new AIFile that can parse and write server side .ai files
+     */
+    createAIFile(fileName: string, source: any): AIFile {
+        return new AIFile(this, fileName, source);
+    }
+
+    /**
+     * Returns the list of AI task implementations in the repository
+     */
+    getAITasks(): AIFile[] {
+        return this.list.filter(serverFile => serverFile instanceof AIFile);
     }
 
     /**

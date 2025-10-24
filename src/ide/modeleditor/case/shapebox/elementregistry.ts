@@ -10,6 +10,7 @@ import HumanTaskView from "../elements/humantaskview";
 import MilestoneView from "../elements/milestoneview";
 import PlanningTableView from "../elements/planningtableview";
 import ProcessTaskView from "../elements/processtaskview";
+import AITaskView from "../elements/aitaskview";
 import ReactivateCriterionView from "../elements/reactivatecriterionview";
 import StageView from "../elements/stageview";
 import TextAnnotationView from "../elements/textannotationview";
@@ -27,6 +28,7 @@ export default class ElementRegistry {
         this.registerType(HumanTaskView, 'Human Task', Shapes.HumanTask, Icons.HumanTask);
         this.registerType(CaseTaskView, 'Case Task', Shapes.CaseTask, Icons.CaseTask);
         this.registerType(ProcessTaskView, 'Process Task', Shapes.ProcessTask, Icons.ProcessTask);
+        this.registerType(AITaskView, 'AI Task', Shapes.AITask, Icons.AITask);
         this.registerType(MilestoneView, 'Milestone', Shapes.Milestone);
         this.registerType(TimerEventView, 'Timer Event', Shapes.TimerEvent);
         this.registerType(UserEventView, 'User Event', Shapes.UserEvent);

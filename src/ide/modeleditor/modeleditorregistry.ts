@@ -5,6 +5,7 @@ import HumantaskModelEditor from "./humantask/humantaskmodeleditor";
 import ModelEditor from "./modeleditor";
 import ModelEditorMetadata from "./modeleditormetadata";
 import ProcessModelEditor from "./process/processmodeleditor";
+import AIModelEditor from "./aitask/aimodeleditor";
 import TypeModelEditor from "./type/typemodeleditor";
 
 export default class ModelEditorRegistry {
@@ -18,6 +19,7 @@ export default class ModelEditorRegistry {
         HumantaskModelEditor.register();
         ProcessModelEditor.register();
         TypeModelEditor.register();
+        AIModelEditor.register();
     }
 
     add(editor: ModelEditor) {

@@ -1,3 +1,4 @@
+import aiTaskImageUrl from '../../../../app/images/svg/aimenu.svg';
 import humanTaskImageUrl from '../../../../app/images/svg/blockinghumantaskmenu.svg';
 import caseFileItemImageUrl from '../../../../app/images/svg/casefileitem.svg';
 import casePlanImageUrl from '../../../../app/images/svg/caseplanmodel.svg';
@@ -15,6 +16,7 @@ export default class Shapes {
     static HumanTask = humanTaskImageUrl;
     static CaseTask = caseTaskImageUrl;
     static ProcessTask = processTaskImageUrl;
+    static AITask = aiTaskImageUrl;
     static Milestone = milestoneImageUrl;
     static TimerEvent = Images.TimerEvent;
     static UserEvent = Images.UserEvent;
