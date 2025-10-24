@@ -1,0 +1,9 @@
+<type xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="training_simple_case.type" name="training_simple_case">
+    <schema>
+        <property id="sp__0eEmb_0" name="SimpleRootItem" type="object" multiplicity="ExactlyOne">
+            <schema id="_0eEmb_0" name="Schema_0">
+                <property id="sp__0eEmb_3" name="FirstProperty" type="string" multiplicity="ExactlyOne"/>
+            </schema>
+        </property>
+    </schema>
+</type>

@@ -1,0 +1,20 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="training_simple_case.case" name="training_simple_case" expressionLanguage="spel" guid="_65qFi">
+    <caseFileModel typeRef="training_simple_case.type"/>
+    <casePlanModel id="cm__65qFi_0" name="training_simple_case" autoComplete="true">
+        <milestone id="_65qFi_1" name="Simple Root data created">
+            <entryCriterion id="crit__65qFi_0">
+                <caseFileItemOnPart id="_65qFi_5" sourceRef="SimpleRootItem">
+                    <standardEvent>create</standardEvent>
+                </caseFileItemOnPart>
+            </entryCriterion>
+            <itemControl id="_65qFi_2">
+                <requiredRule id="_65qFi_3">
+                    <condition id="_65qFi_4">
+                        <body><![CDATA[true]]></body>
+                    </condition>
+                </requiredRule>
+            </itemControl>
+        </milestone>
+    </casePlanModel>
+    <caseRoles caseTeamRef="training_simple_case.caseteam"/>
+</case>

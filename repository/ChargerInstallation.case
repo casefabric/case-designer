@@ -1,0 +1,21 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="ChargerInstallation.case" name="ChargerInstallation" expressionLanguage="spel" guid="_jL5nt">
+    <caseFileModel typeRef="ChargerInstallation.type"/>
+    <casePlanModel id="cm__jL5nt_0" name="ChargerInstallation" autoComplete="true">
+        <humanTask id="_jL5nt_1" name="Customer agrees to installation" isBlocking="true">
+            <entryCriterion id="crit__jL5nt_1">
+                <planItemOnPart id="_jL5nt_8" sourceRef="_jL5nt_3">
+                    <standardEvent>complete</standardEvent>
+                </planItemOnPart>
+            </entryCriterion>
+        </humanTask>
+        <humanTask id="_jL5nt_3" name="Install on location" isBlocking="true">
+            <entryCriterion id="crit__jL5nt_0">
+                <planItemOnPart id="_jL5nt_7" sourceRef="_jL5nt_5">
+                    <standardEvent>complete</standardEvent>
+                </planItemOnPart>
+            </entryCriterion>
+        </humanTask>
+        <humanTask id="_jL5nt_5" name="Electricity company approval" isBlocking="true"/>
+    </casePlanModel>
+    <caseRoles caseTeamRef="ChargerInstallation.caseteam"/>
+</case>
