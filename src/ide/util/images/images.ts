@@ -1,4 +1,3 @@
-import aiImageUrl from '../../../../app/images/ai_128.png';
 import autoCompleteImageUrl from '../../../../app/images/autocompletedecorator_32.png';
 import closeImageUrl from '../../../../app/images/close_32.png';
 import debugImageUrl from '../../../../app/images/debug.png';
@@ -32,6 +31,7 @@ import settingsImageUrl from '../../../../app/images/settings_32.png';
 import startCaseSchemaImageUrl from '../../../../app/images/startcaseschema_128.png';
 import addChildNodeImageUrl from '../../../../app/images/svg/add-child-node.svg';
 import addSiblingNodeImageUrl from '../../../../app/images/svg/add-sibling-node.svg';
+import aiImageUrl from '../../../../app/images/svg/ai.svg';
 import blockingHumanTaskImageUrl from '../../../../app/images/svg/blockinghumantask.svg';
 import blockingHumanTaskHaloImageUrl from '../../../../app/images/svg/blockinghumantaskhalo.svg';
 import caseTaskImageUrl from '../../../../app/images/svg/casetask.svg';

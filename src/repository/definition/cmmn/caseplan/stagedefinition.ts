@@ -10,6 +10,7 @@ import ProcessTaskDefinition from "./task/processtaskdefinition";
 import TaskStageDefinition from "./taskstagedefinition";
 import TimerEventDefinition from "./timereventdefinition";
 import UserEventDefinition from "./usereventdefinition";
+import AITaskDefinition from "./task/aitaskdefinition";
 
 export default class StageDefinition extends TaskStageDefinition {
     autoComplete: boolean;
@@ -52,6 +53,7 @@ export default class StageDefinition extends TaskStageDefinition {
         const childParser = (element: Element) => {
             switch (element.tagName) {
                 case 'humanTask': return itemCreator(element, HumanTaskDefinition);
+                case 'aiTask': return itemCreator(element, AITaskDefinition);
                 case 'caseTask': return itemCreator(element, CaseTaskDefinition);
                 case 'processTask': return itemCreator(element, ProcessTaskDefinition);
                 case 'milestone': return itemCreator(element, MilestoneDefinition);

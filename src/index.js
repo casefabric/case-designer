@@ -1,4 +1,6 @@
 export { default as RepositoryConfiguration } from "./config/config";
+export { default as AIImplementationDefinition } from "./repository/definition/ai/aiimplementationdefinition";
+export { default as AIModelDefinition } from "./repository/definition/ai/aimodeldefinition";
 export { default as ArtifactDefinition } from "./repository/definition/artifact/artifactdefinition";
 export { default as TextAnnotationDefinition } from "./repository/definition/artifact/textannotation";
 export { default as AttributeDefinition } from "./repository/definition/attributedefinition";
@@ -25,6 +27,7 @@ export { ApplicabilityRuleDefinition } from "./repository/definition/cmmn/casepl
 export { default as ApplicabilityRuleReference } from "./repository/definition/cmmn/caseplan/planning/applicabilityrulereference";
 export { default as PlanningTableDefinition } from "./repository/definition/cmmn/caseplan/planning/planningtabledefinition";
 export { default as StageDefinition } from "./repository/definition/cmmn/caseplan/stagedefinition";
+export { default as AITaskDefinition } from "./repository/definition/cmmn/caseplan/task/aitaskdefinition";
 export { default as CaseTaskDefinition } from "./repository/definition/cmmn/caseplan/task/casetaskdefinition";
 export { default as HumanTaskDefinition } from "./repository/definition/cmmn/caseplan/task/humantaskdefinition";
 export { default as PlanItemReference } from "./repository/definition/cmmn/caseplan/task/planitemreference";
@@ -115,6 +118,7 @@ export { default as Importer } from "./repository/import/importer";
 export { default as LocalTrainingStorage } from "./repository/llm/localtrainingstorage";
 export { default as TrainingStorage } from "./repository/llm/trainingstorage";
 export { default as Repository } from "./repository/repository";
+export { default as AIFile } from "./repository/serverfile/aifile";
 export { default as CaseFile } from "./repository/serverfile/casefile";
 export { default as CaseTeamFile } from "./repository/serverfile/caseteamfile";
 export { default as CFIDFile } from "./repository/serverfile/cfidfile";

@@ -29,6 +29,9 @@ import TaskView from "./taskview";
 import TextAnnotationView from "./textannotationview";
 import TimerEventView from "./timereventview";
 import UserEventView from "./usereventview";
+import AIFile from "../../../../repository/serverfile/aifile";
+import AITaskView from "./aitaskview";
+import AITaskDefinition from "../../../../repository/definition/cmmn/caseplan/task/aitaskdefinition";
 
 export default class StageView<SD extends StageDefinition = StageDefinition> extends TaskStageView<SD> {
     static create(stage: StageView, x: number, y: number): StageView {
@@ -45,7 +48,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
     setDropHandlers() {
         super.setDropHandlers();
         // allow for dropping tasks directly from repository browser ...
-        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData), dragData => dragData.file instanceof CaseFile || dragData.file instanceof HumanTaskFile || dragData.file instanceof ProcessFile);
+        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData), dragData => dragData.file instanceof CaseFile || dragData.file instanceof HumanTaskFile || dragData.file instanceof ProcessFile || dragData.file instanceof AIFile);
         // ... and case file items to be dropped from the cfiEditor
         this.case.cfiEditor.setDropHandler(dragData => this.addCaseFileItem(dragData));
     }
@@ -78,6 +81,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
             if (dragData.file instanceof CaseFile) return CaseTaskView;
             if (dragData.file instanceof HumanTaskFile) return HumanTaskView;
             if (dragData.file instanceof ProcessFile) return ProcessTaskView;
+            if (dragData.file instanceof AIFile) return AITaskView;
         };
         const viewType = shapeType();
         if (viewType) {
@@ -173,6 +177,8 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
             return new UserEventView(this, definition, shape);
         } else if (definition instanceof TimerEventDefinition) {
             return new TimerEventView(this, definition, shape);
+        } else if (definition instanceof AITaskDefinition) {
+            return new AITaskView(this, definition, shape);
         } else {
             throw new Error('This type of plan item cannot be instantiated into a view ' + definition.name);
         }
@@ -258,6 +264,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
             elementType == TimerEventView ||
             elementType == CaseFileItemView ||
             elementType == StageView ||
+            elementType == AITaskView ||
             elementType == TextAnnotationView) {
             return true;
         }

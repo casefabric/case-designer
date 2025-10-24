@@ -6,7 +6,7 @@ import FileStorage from "./filestorage";
 import { EOL } from "../../util/xml";
 
 function isKnownExtension(extension: string): boolean {
-    return ['.case', '.process', '.humantask', '.dimensions', '.cfid', '.type', '.caseteam', '.xml'].indexOf(extension) >= 0;
+    return ['.case', '.process', '.humantask', '.dimensions', '.cfid', '.type', '.caseteam', '.xml', '.ai'].indexOf(extension) >= 0;
 }
 
 export default class LocalFileStorage extends FileStorage {
