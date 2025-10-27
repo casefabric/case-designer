@@ -24,6 +24,7 @@
                 <entryCriterion id="crit__8oGC4_1" sentryRef="s_crit__8oGC4_1"/>
             </planItem>
             <planItem id="_8oGC4_15" name="Stage_0" definitionRef="s__8oGC4_15"/>
+            <planItem id="_8oGC4_1" name="Find A Holiday" definitionRef="pt__8oGC4_1"/>
             <sentry id="s_crit__8oGC4_2">
                 <planItemOnPart id="_8oGC4_18" sourceRef="_8oGC4_13">
                     <standardEvent>complete</standardEvent>
@@ -36,10 +37,39 @@
             </sentry>
             <humanTask id="ht__8oGC4_11" name="Add a personal find" isBlocking="true"/>
             <humanTask id="ht__8oGC4_13" name="Select a Holiday" isBlocking="true"/>
-            <stage id="s__8oGC4_15" name="Stage_0" autoComplete="true"/>
+            <stage id="s__8oGC4_15" name="Stage_0" autoComplete="true">
+                <planItem id="_8oGC4_4" name="Evaluate Quality" definitionRef="pt__8oGC4_4">
+                    <entryCriterion id="crit__8oGC4_0" sentryRef="s_crit__8oGC4_0"/>
+                    <itemControl id="_8oGC4_6">
+                        <repetitionRule id="_8oGC4_8">
+                            <condition id="_8oGC4_9">
+                                <body><![CDATA[true]]></body>
+                            </condition>
+                        </repetitionRule>
+                    </itemControl>
+                </planItem>
+                <sentry id="s_crit__8oGC4_0">
+                    <caseFileItemOnPart id="_8oGC4_10" sourceRef="FoundMatches">
+                        <standardEvent>create</standardEvent>
+                    </caseFileItemOnPart>
+                </sentry>
+            </stage>
+            <processTask id="pt__8oGC4_4" name="Evaluate Quality" isBlocking="true" processRef="EvaluateQuality.ai"/>
+            <processTask id="pt__8oGC4_1" name="Find A Holiday" isBlocking="true" processRef="FindAHoliday.ai"/>
         </casePlanModel>
         <caseRoles cafienne:caseTeamRef="AIHolidayPlanning.caseteam"/>
     </case>
+    <process name="FindAHoliday" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified" id="FindAHoliday.ai">
+        <input id="_puWL_Wish" name="Wish"/>
+        <extensionElements mustUnderstand="false">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="com.casefabric.ai.processtask.definition.AiCallDefinition" async="true"/>
+        </extensionElements>
+    </process>
+    <process name="EvaluateQuality" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified" id="EvaluateQuality.ai">
+        <extensionElements mustUnderstand="false">
+            <cafienne:implementation xmlns:cafienne="org.cafienne" class="com.casefabric.ai.processtask.definition.AiCallDefinition" async="true"/>
+        </extensionElements>
+    </process>
     <CMMNDI>
         <CMMNDiagram>
             <CMMNShape name="AIHolidayPlanning" cmmnElementRef="cm__8oGC4_0">

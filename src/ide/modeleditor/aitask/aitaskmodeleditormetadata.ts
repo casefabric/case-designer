@@ -44,13 +44,13 @@ export default class AIModelEditorMetadata extends ModelEditorMetadata {
     async createNewModel(ide: IDE, name: string, description: string) {
         const documentation = description ? `<documentation textFormation="text/plain"><text><![CDATA[${description}]]></text></documentation>` : '';
         const newModelContent =
-`<process name="${name}">
-    ${documentation}
-    <${EXTENSIONELEMENTS}>
-        <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="com.casefabric.ai.processtask.AICallDefintion" async="true">
-        </${IMPLEMENTATION_TAG}>
-    </${EXTENSIONELEMENTS}>
-</process>`;
+            `<ai name="${name}" xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" implementationType="http://www.omg.org/spec/CMMN/ProcessType/Unspecified">
+                ${documentation}
+                <${EXTENSIONELEMENTS} mustUnderstand="false">
+                    <${IMPLEMENTATION_TAG} ${CAFIENNE_PREFIX}="${CAFIENNE_NAMESPACE}" class="com.casefabric.ai.processtask.definition.AiCallDefinition" async="true">
+                    </${IMPLEMENTATION_TAG}>
+                </${EXTENSIONELEMENTS}>
+            </ai>`;
         const fileName = name + '.ai';
         const file = ide.repository.createAIFile(fileName, newModelContent);
         await file.save();
