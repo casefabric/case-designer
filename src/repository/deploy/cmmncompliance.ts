@@ -2,8 +2,25 @@ import XML, { Element } from "../../util/xml";
 
 export default class CMMNCompliance {
     static convert(element: Element): void {
+        this.convertAITasksToProcessTasks(element);
         this.splitPlanItemsFromDefinitions(element);
         this.splitCriteriaAndSentries(element);
+    }
+    static convertAITasksToProcessTasks(element: Element) {
+        const aiTaskElements = XML.getElementsByTagName(element, 'aiTask');
+        aiTaskElements.forEach(aiTaskElement => {
+            const processTaskElement = XML.createChildElement(aiTaskElement.parentNode as Element, 'processTask');
+            // Copy all attributes
+            Array.from(aiTaskElement.attributes).forEach(attribute => {
+                processTaskElement.setAttribute(attribute.name, attribute.value);
+            });
+            // Clone all children to the new processTask element
+            XML.children(aiTaskElement).forEach(childNode => {
+                processTaskElement.appendChild(childNode.cloneNode(true));
+            });
+            // Remove the old aiTask element
+            aiTaskElement.parentNode?.removeChild(aiTaskElement);
+        });
     }
 
     static splitPlanItemsFromDefinitions(element: Element): void {

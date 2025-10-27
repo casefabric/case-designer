@@ -1,6 +1,18 @@
 {
     "configurations": [
         {
+            "name": "Compile AIHolidayPlanning",
+            "program": "${workspaceFolder}/dist/repository/compile.js",
+            "args": [
+                "AIHolidayPlanning"
+            ],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "type": "chrome",
             "name": "Debug Case Designer",
             "request": "launch",

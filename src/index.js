@@ -107,6 +107,7 @@ export { default as TypeReference } from "./repository/definition/type/typerefer
 export { default as TypeCounter } from "./repository/definition/typecounter";
 export { default as UnnamedCMMNElementDefinition } from "./repository/definition/unnamedcmmnelementdefinition";
 export { default as XMLSerializable } from "./repository/definition/xmlserializable";
+export { default as AIDeployment } from "./repository/deploy/aideployment";
 export { default as CaseDeployment } from "./repository/deploy/casedeployment";
 export { default as CMMNCompliance } from "./repository/deploy/cmmncompliance";
 export { default as DefinitionDeployment } from "./repository/deploy/definitiondeployment";

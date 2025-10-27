@@ -1,4 +1,5 @@
 import XML, { Element } from "../../util/xml";
+import AIModelDefinition from "../definition/ai/aimodeldefinition";
 import CaseFileDefinitionDefinition from "../definition/cfid/casefileitemdefinitiondefinition";
 import CaseDefinition from "../definition/cmmn/casedefinition";
 import ModelDefinition from "../definition/modeldefinition";
@@ -74,7 +75,8 @@ export default class Definitions {
         this.definitions.filter(d => d.definition instanceof TypeDefinition).forEach(definition => definition.append());
         // ... then cases ...
         this.definitions.filter(d => d.definition instanceof CaseDefinition).forEach(definition => definition.append());
-        // ... then processes ... 
+        // ... then processes (and ai)... 
+        this.definitions.filter(d => d.definition instanceof AIModelDefinition).forEach(definition => definition.append());
         this.definitions.filter(d => d.definition instanceof ProcessModelDefinition).forEach(definition => definition.append());
         // ... and finally add the diagram element
         const cmmnDiElement = XML.createChildElement(this.definitionsElement, Tags.CMMNDI);
