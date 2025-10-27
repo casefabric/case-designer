@@ -1,7 +1,7 @@
 import HumanTaskFile from "../../serverfile/humantaskfile";
+import { IMPLEMENTATION_TAG } from "../cmmnextensiontags";
 import ModelDefinition from "../modeldefinition";
 import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
-import { IMPLEMENTATION_TAG } from "../xmlserializable";
 import HumanTaskImplementationDefinition from "./humantaskimplementationdefinition";
 
 export default class HumanTaskModelDefinition extends ModelDefinition implements ParameterizedModelDefinition<HumanTaskModelDefinition> {

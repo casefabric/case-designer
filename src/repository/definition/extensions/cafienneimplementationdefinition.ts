@@ -1,7 +1,7 @@
 import { Element } from "../../../util/xml";
+import { IMPLEMENTATION_TAG } from "../cmmnextensiontags";
 import ElementDefinition from "../elementdefinition";
 import ModelDefinition from "../modeldefinition";
-import { IMPLEMENTATION_TAG } from "../xmlserializable";
 import CMMNExtensionDefinition from "./cmmnextensiondefinition";
 
 /**

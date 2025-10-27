@@ -1,4 +1,4 @@
-import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
+import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../../../repository/definition/cmmnextensiontags";
 import HumanTaskFile from "../../../repository/serverfile/humantaskfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
 import IDE from "../../ide";

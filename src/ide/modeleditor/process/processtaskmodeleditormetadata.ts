@@ -1,4 +1,4 @@
-import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "../../../repository/definition/xmlserializable";
+import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "../../../repository/definition/cmmnextensiontags";
 import ProcessFile from "../../../repository/serverfile/processfile";
 import ServerFile from "../../../repository/serverfile/serverfile";
 import IDE from "../../ide";
