@@ -1,6 +1,6 @@
 import { Element } from "../../../util/xml";
+import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../cmmnextensiontags";
 import ParameterDefinition from "../contract/parameterdefinition";
-import { CAFIENNE_NAMESPACE, CAFIENNE_PREFIX, IMPLEMENTATION_TAG } from "../xmlserializable";
 import HumanTaskModelDefinition from "./humantaskmodeldefinition";
 import HumanTaskModelElementDefinition from "./humantaskmodelelementdefinition";
 import TaskModelDefinition from "./taskmodeldefinition";

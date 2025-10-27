@@ -3,6 +3,7 @@ import XML, { Element } from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
 import Validator from "../validate/validator";
 import AttributeDefinition from "./attributedefinition";
+import { CAFIENNE_NAMESPACE, EXTENSIONELEMENTS, IMPLEMENTATION_TAG } from "./cmmnextensiontags";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 import ExternalReference from "./references/externalreference";
@@ -10,12 +11,6 @@ import Reference from "./references/reference";
 import { ExternalReferenceList } from "./references/referencelist";
 import ReferencingAttribute from "./references/referencingattribute";
 
-
-// Some constants
-export const EXTENSIONELEMENTS = 'extensionElements';
-export const CAFIENNE_NAMESPACE = 'org.cafienne';
-export const CAFIENNE_PREFIX = 'xmlns:cafienne';
-export const IMPLEMENTATION_TAG = 'cafienne:implementation';
 
 export default abstract class XMLSerializable {
     private _name: string = '';
