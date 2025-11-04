@@ -7,9 +7,11 @@ import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
 import IDEMain from "./idemain";
 import MessageBox from "./messagebox";
+import RemoteAIMetadataStorage from "./modeleditor/aitask/remoteaimetadatastorage";
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
 import RemoteFileStorage from "./remotefilestorage";
 import RemoteTrainingStorage from "./remotetrainingstorage";
+import Settings from "./settings/settings";
 import SettingsEditor from "./settings/settingseditor";
 import StylesLoader from "./stylesloader";
 
@@ -27,6 +29,7 @@ export default class IDE {
     coverPanel: CoverPanel;
     settingsEditor: SettingsEditor;
     training: RemoteTrainingStorage;
+    aiMetadataStorage: RemoteAIMetadataStorage;;
 
     constructor() {
         this.editorRegistry = new ModelEditorRegistry(this);
@@ -39,6 +42,7 @@ export default class IDE {
         this.coverPanel = new CoverPanel(this); // Helper to show/hide status messages while loading models from the repository
         this.settingsEditor = new SettingsEditor(this);
         this.training = new RemoteTrainingStorage(window.location.origin);
+        this.aiMetadataStorage = new RemoteAIMetadataStorage(this, Settings.serverURL);
 
         // Repository object handles the interaction with the server
         this.html.on('keydown', e => {

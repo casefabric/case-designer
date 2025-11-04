@@ -13,9 +13,7 @@ export default class AIModelDefinition extends ModelDefinition implements Parame
      */
     constructor(public file: AIFile) {
         super(file);
-        /** @type {Array<ParameterDefinition>} */
         this.input = this.parseElements('input', ParameterDefinition);
-        /** @type {Array<ParameterDefinition>} */
         this.output = this.parseElements('output', ParameterDefinition);
         this.implementation = this.parseImplementation(AIImplementationDefinition);
     }

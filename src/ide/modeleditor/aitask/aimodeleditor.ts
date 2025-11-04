@@ -1,6 +1,8 @@
 ﻿'use strict';
 
 import $ from "jquery";
+import AIModelDefinition from "../../../repository/definition/ai/aimodeldefinition";
+import AIFile from "../../../repository/serverfile/aifile";
 import XML from "../../../util/xml";
 import CodeMirrorConfig from "../../editors/external/codemirrorconfig";
 import IDE from "../../ide";
@@ -8,9 +10,8 @@ import ModelEditor from "../modeleditor";
 import ModelEditorMetadata from "../modeleditormetadata";
 import ModelParameters from "../xmleditor/modelparameters";
 import ModelSourceEditor from "../xmleditor/modelsourceeditor";
-import AIModelDefinition from "../../../repository/definition/ai/aimodeldefinition";
+import Agent from "./agent";
 import AIModelEditorMetadata from "./aitaskmodeleditormetadata";
-import AIFile from "../../../repository/serverfile/aifile";
 
 export default class AIModelEditor extends ModelEditor {
     inputParametersControl?: ModelParameters;
@@ -40,6 +41,7 @@ export default class AIModelEditor extends ModelEditor {
      * adds the html of the entire page
      */
     generateHTML() {
+
         const html = $(`
             <div class="basicbox model-source-tabs">
                 <ul>
@@ -62,27 +64,10 @@ export default class AIModelEditor extends ModelEditor {
                         <div class="model-output-parameters"></div>
                     </div>
                     <div class="process-model-source">
-                        <label>AI Task Type&nbsp;&nbsp;</label>
-                        <select class="selectImplementationType">
-                            <option value="" disabled selected>select implementation type</option>
-                            <option value="ai 1">AI 1</option>
+                        <label>AI Agent&nbsp;&nbsp;</label>
+                        <select class="selectAgent">
                         </select>
                         <!-- <div class="code-mirror-container"></div> -->
-                        <label>AI Model Type&nbsp;&nbsp;</label>
-                        <select class="selectImplementationType">
-                            <option value="" disabled selected>select model type</option>
-                            <option value="GPT_41">OpenAiModels.GPT_41</option>
-                            <option value="GPT_432">OpenAiModels.GPT_432</option>
-                            <option value="GPT_4Turbo">OpenAiModels.GPT_4Turbo</option>
-                            <option value="GPT_35_Turbo">OpenAiModels.GPT_35_Turbo</option>
-                        </select>
-                        <label>Agent Role&nbsp;&nbsp;</label>
-                        <select class="selectImplementationType">
-                            <option value="" disabled selected>select role</option>
-                            <option value="GPT_41">User</option>
-                            <option value="GPT_432">Agent</option>
-                            <option value="GPT_4Turbo">System</option>
-                        </select>
                          <div class="model-source-label">PROMPT</div>
                         <div class="code-mirror-container"></div>
                     </div>
@@ -91,12 +76,23 @@ export default class AIModelEditor extends ModelEditor {
             </div>
         `);
 
+        setTimeout(async () => {
+            // Load agents from server
+            const agents: Agent[] = await this.ide.aiMetadataStorage.getAgents();
+            const agentSelect = html.find('.selectAgent');
+            agents.forEach(agent => {
+                const option = $('<option></option>').attr('value', agent.outputField.name).text(agent.name);
+                agentSelect.append(option);
+            });
+            this.renderAgent();
+        }, 0);
+
         this.htmlContainer.append(html);
 
         //add change event to input fields
         this.htmlContainer.find('.inputName').on('change', (e: any) => this.changeName(e.currentTarget.value));
         this.htmlContainer.find('.inputDocumentation').on('change', (e: any) => this.changeDescription(e.currentTarget.value));
-        //this.htmlContainer.find('.selectImplementationType').on('change', (e: any) => this.changeImplementationType(e.currentTarget.value));
+        this.htmlContainer.find('.selectAgent').on('change', (e: any) => this.changeAgent(e.currentTarget.value));
 
         // Render input parameters
         this.inputParametersControl = new ModelParameters(this, this.html.find('.model-input-parameters'), 'Input Parameters');
@@ -158,11 +154,18 @@ export default class AIModelEditor extends ModelEditor {
         }
     }
 
-    changeImplementationType(propertyValue: string) {
+    changeAgent(propertyValue: string) {
         if (!this.model) return;
         if (!this.model.implementation) return;
         const modelImplementation = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
-        modelImplementation.setAttribute("class", propertyValue);
+
+        const promptNode = XML.getChildByTagName(modelImplementation, "response");
+        if (promptNode) {
+            modelImplementation.removeChild(promptNode);
+        }
+        const newPromptNode = XML.createChildElement(modelImplementation, "response");
+        XML.createTextChild(newPromptNode, propertyValue);
+
         this.model.implementation.xml = XML.prettyPrint(modelImplementation);
         this.freeContentEditor.setValue(this.model.implementation.xml);
         this.saveModel();
@@ -172,10 +175,14 @@ export default class AIModelEditor extends ModelEditor {
         if (!this.model) return;
         if (!this.model.implementation) return;
 
+        if (!this.freeContentEditor) {
+            this.generateHTML();
+        }
+
         // Render name, description and implementationType
         this.htmlContainer.find('.inputName').val(this.model.name);
         this.htmlContainer.find('.inputDocumentation').val(this.model.documentation.text);
-        this.renderImplementationType();
+        this.renderAgent();
         this.inputParametersControl?.renderParameters(this.model.inputParameters);
         this.outputParametersControl?.renderParameters(this.model.outputParameters);
 
@@ -184,19 +191,15 @@ export default class AIModelEditor extends ModelEditor {
         this.freeContentEditor.refresh();
     }
 
-    renderImplementationType() {
+    renderAgent() {
         if (!this.model) return;
         if (!this.model.implementation) return;
 
         const modelImplementationDocument = XML.loadXMLString(this.model.implementation.xml).documentElement ?? (() => { throw new Error('No ownerDocument found'); })();
-        const implementationType = modelImplementationDocument.getAttribute("class") || '';
-        const implementationTypeSelect = this.htmlContainer.find('.selectImplementationType');
-        implementationTypeSelect.val(implementationType);
 
-        // if (implementationTypeSelect.val() != implementationType) {
-        //     //Unknown value in the select, reset select to custom value
-        //     implementationTypeSelect.val(CUSTOM_IMPLEMENTATION_DEFINITION_IMPLEMENTATION_CLASS);
-        // }
+        const responseNode = XML.getChildByTagName(modelImplementationDocument, "response");
+        const agentSelect = this.htmlContainer.find('.selectAgent');
+        agentSelect.val(responseNode?.textContent || '');
     }
 
     completeUserAction() {
@@ -281,7 +284,7 @@ export default class AIModelEditor extends ModelEditor {
         }
 
         if (this.model && this.model.implementation) this.model.implementation.xml = value;
-        this.renderImplementationType();
+        this.renderAgent();
 
         this.saveModel();
     }
