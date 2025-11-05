@@ -4,7 +4,7 @@
         "editor.formatOnSave": false
     },
     "files.associations": {
-        "idemain.ts": "plaintext" // Treat idemain.ts as plaintext to disable formatting
+        "stylesloader.ts": "plaintext" // Treat stylesloader as plaintext to disable formatting when saving changes.
     },
     "[plaintext]": {
         "editor.formatOnSave": false // Disable formatting for plaintext files
