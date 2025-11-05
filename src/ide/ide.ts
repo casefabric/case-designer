@@ -11,6 +11,10 @@ import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
 import RemoteFileStorage from "./remotefilestorage";
 import SettingsEditor from "./settings/settingseditor";
+import StylesLoader from "./stylesloader";
+
+// First load all styles and then forget about it :(
+new StylesLoader();
 
 export default class IDE {
     editorRegistry: ModelEditorRegistry;
