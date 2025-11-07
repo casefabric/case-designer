@@ -136,6 +136,8 @@ export default class Resizer {
 
         const eX = jointElement.position().x;
         const eY = jointElement.position().y;
+        const eW = jointElement.size().width;
+        const eH = jointElement.size().height;
 
         const coor = this.element.case.getCursorCoordinates(e);
 
@@ -218,18 +220,17 @@ export default class Resizer {
         dx = Grid.snap(dx);
         dy = Grid.snap(dy);
 
-        if (w == this.startW && h == this.startH) {
-            // Nothing was resized...
-            return;
+        if (h != eH || w != eW) {
+            // Set size of element and resizer
+            this.element.resizing(w, h);
+            this.setSize(); // Resize the resizer as well
         }
 
-        // Set size of element and resizer
-        this.element.resizing(w, h);
-        this.setSize(); // Resize the resizer as well
-
-        // Set position of element and resizer
-        this.setPosition();
-        jointElement.translate(dx, dy);
+        if (dx != 0 || dy != 0) {
+            // Set position of element and resizer
+            this.setPosition();
+            jointElement.translate(dx, dy);
+        }
     }
 
     /**
