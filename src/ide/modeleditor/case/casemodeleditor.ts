@@ -14,7 +14,6 @@ import UndoManager from "./undoredo/undomanager";
 
 export default class CaseModelEditor extends ModelEditor {
     caseFile: CaseFile;
-    dimensionsFile?: DimensionsFile;
     ideCaseFooter: JQuery<HTMLElement>;
     undoManager: UndoManager;
     case?: CaseView;
@@ -33,7 +32,6 @@ export default class CaseModelEditor extends ModelEditor {
         super(ide, file);
         this.file = file;
         this.caseFile = file;
-        this.dimensionsFile = this.file.definition!.dimensions!.file;
         this.ideCaseFooter = $('.ideCaseFooter');
         this.undoManager = new UndoManager(this);
 
@@ -43,6 +41,21 @@ export default class CaseModelEditor extends ModelEditor {
 
     get label() {
         return 'Edit Case Model - ' + this.fileName;
+    }
+
+    get dimensionsFile(): DimensionsFile {
+        return this.file.definition!.dimensions!.file;
+    }
+
+    get error(): any {
+        const dimensionsError = () => {
+            const dimensionsFile = this.file.definition && this.file.definition._dimensions.file;
+            if (!dimensionsFile) return '<p/>Dimensions file is missing';
+            if (dimensionsFile.metadata.error) return 'Dimensions file has an error<p/>' + dimensionsFile.metadata.error;
+            return '';
+        }
+
+        return this.file.metadata.error || dimensionsError();
     }
 
     /**
