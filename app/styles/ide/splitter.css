@@ -16,13 +16,14 @@
 
 .splitter-minimize {
     display: none;
+    border: 1px solid white;
     width: 16px;
     height: 16px;
     left: -4px;
     top: 25px;
     position: absolute;
     cursor: pointer;
-    background-color: #808080;
+    background-color: grey;
 }
 
 .splitter-minimize img {
@@ -41,7 +42,8 @@
     top: 25px;
     position: absolute;
     cursor: pointer;
-    background-color: #808080;
+    border: 1px solid white;
+    background-color: grey;
 }
 
 .splitter-restore img {

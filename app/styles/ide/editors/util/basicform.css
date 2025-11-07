@@ -16,8 +16,6 @@
     border-bottom: 1px solid #DDDDDD;
     width: 100%;
     white-space: nowrap;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
 }
 
 .basicform .formheadernoradius {
