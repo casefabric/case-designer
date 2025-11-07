@@ -1,6 +1,6 @@
 import "@styles/ide/coverpanel.css";
 import $ from "jquery";
-import IDE from "./ide";
+import IDEMain from "./idemain";
 
 /**
  * Showing/hiding status messages on top of the fixed editors.
@@ -13,15 +13,14 @@ export default class CoverPanel {
     /**
      * This editor handles Case models
      */
-    constructor(public ide: IDE) {
+    constructor(public ide: IDEMain, private parent: JQuery<HTMLElement>, mainClass = '') {
         this.ide = ide;
-        this.html = $(`<div class="divCoverPanel">
-    <div></div>
-    <div class="basicbox">
-        <label class="labelCoverPanelDescription"></label>
+        this.html = $(`<div class="divCoverPanel ${mainClass}">
+    <div class="basicbox message">
+        <label class="labelCoverPanelDescription">Please, open or create a model.</label>
     </div>
 </div>`);
-        this.ide.main.divModelEditors.append(this.html);
+        this.parent.append(this.html);
         this.msgElement = this.html.find('.labelCoverPanelDescription');
     }
 
