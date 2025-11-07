@@ -88,7 +88,7 @@
     background-position: 2px;
     background-repeat: no-repeat;
     background-size: 10px 10px;
-    border: 1px solid rgb(221, 221, 221);
+    border: 1px solid grey;
 }
 
 .cfiDefinitionUnspecPropertyTreeTable th {
