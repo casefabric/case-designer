@@ -73,10 +73,11 @@ export default class CasePlanView extends StageView<CasePlanDefinition> {
     }
 
     get markup() {
-        return `<g @selector='scalable'>
+        // @selector 'scalable' is not used, since scaling is handled with 'calc' in markupAttributes
+        return `<g @selector='body'>
                     <polyline @selector='header' points="10,${CPM_TAB_HEIGHT} 15,0 250,0 255,${CPM_TAB_HEIGHT}" ></polyline>
-                    <text @selector='label' font-size="12" ></text>
-                    <rect @selector='body' x="0" y="${CPM_TAB_HEIGHT}" width="${this.shape.width}" height="${this.shape.height - CPM_TAB_HEIGHT}"></rect>
+                    <text @selector='label'></text>
+                    <rect @selector='rect' x="0" y="${CPM_TAB_HEIGHT}"></rect>
                 </g>
                 ${this.decoratorBox.markup}`;
     }
@@ -88,9 +89,14 @@ export default class CasePlanView extends StageView<CasePlanDefinition> {
                 'ref-x': .5,
                 'ref-y': 18,
                 'x-alignment': 'middle',
-                'y-alignment': 'bottom'
-            }
-        };
+                'y-alignment': 'bottom',
+                'font-weight': 'bold',
+            },
+            rect: {
+                height: `calc(h - ${CPM_TAB_HEIGHT})`,
+                width: `calc(w)`,
+            },
+        }
     }
 
     /**
