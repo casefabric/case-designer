@@ -72,25 +72,6 @@ export default class IDE {
     }
 
     /**
-     * 
-     * @returns fileName of the new model
-     */
-    async createNewModel(fileType: string, newModelName: string, newModelDescription: string): Promise<string> {
-        const editorMetadata = ModelEditorMetadata.types.find(type => type.fileType == fileType);
-        if (!editorMetadata) {
-            const msg = 'Cannot create new models of type ' + fileType;
-            console.error(msg);
-            this.danger(msg);
-            return Promise.reject(msg);
-        } else {
-            console.groupCollapsed(`Creating new ${fileType} ${newModelName}.${fileType}`);
-            const model = await editorMetadata.createNewModel(this, newModelName, newModelDescription);
-            console.groupEnd();
-            return model;
-        }
-    }
-
-    /**
      * Shows a green success message.
      * @param message text to be displayed
      * @param delay message is automatically remove after this number of microsec  
