@@ -82,9 +82,27 @@ export default abstract class ModelEditorMetadata {
                     return;
                 }
 
-                await this.ide.createNewModel(filetype, newModelName, newModelDescription);
+                await ModelEditorMetadata.createNewModel(this.ide, filetype, newModelName, newModelDescription);
                 window.location.hash = fileName;
             };
         });
+    }
+
+    /**
+     * @returns fileName of the new model
+     */
+    static async createNewModel(ide: IDE, fileType: string, newModelName: string, newModelDescription: string): Promise<string> {
+        const editorMetadata = ModelEditorMetadata.types.find(type => type.fileType == fileType);
+        if (!editorMetadata) {
+            const msg = 'Cannot create new models of type ' + fileType;
+            console.error(msg);
+            ide.danger(msg);
+            return Promise.reject(msg);
+        } else {
+            console.groupCollapsed(`Creating new ${fileType} ${newModelName}.${fileType}`);
+            const model = await editorMetadata.createNewModel(ide, newModelName, newModelDescription);
+            console.groupEnd();
+            return model;
+        }
     }
 }

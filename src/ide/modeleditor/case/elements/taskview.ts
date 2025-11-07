@@ -3,6 +3,7 @@ import CMMNElementDefinition from "../../../../repository/definition/cmmnelement
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import ServerFile from "../../../../repository/serverfile/serverfile";
 import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
+import ModelEditorMetadata from "../../modeleditormetadata";
 import TaskMappingsEditor from "../editors/task/taskmappingseditor";
 import { TaskDecoratorBox } from "./decorator/box/taskdecoratorbox";
 import TaskHalo from "./halo/cmmn/taskhalo";
@@ -81,7 +82,7 @@ export default abstract class TaskView<TD extends TaskDefinition = TaskDefinitio
         if (existingModel) {
             this.definition.implementationReference.update(existingModel.fileName);
         } else {
-            const fileName = await this.case.editor.ide.createNewModel(this.fileType, potentialImplementationName, this.definition.documentation.text);
+            const fileName = await ModelEditorMetadata.createNewModel(this.case.editor.ide, this.fileType, potentialImplementationName, this.definition.documentation.text);
             this.definition.implementationReference.update(fileName);
             // Open the editor for the new task implementation file
             window.location.hash = fileName;
