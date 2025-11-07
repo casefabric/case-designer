@@ -8,8 +8,7 @@ export default class IDEFooter {
      * Constructs the footer of the IDE element.
      */
     constructor(public ide: IDE) {
-        this.html = $(
-`<div class="ide-footer basicbox idefooter">
+        this.html = $(`<div class="basicbox ide-footer">
     <div class="globalWarning"></div>
     <div class="ideCaseFooter">
         <div class="btn-group gridsettings">
@@ -50,7 +49,7 @@ export default class IDEFooter {
             isOpera === false &&
             isIEedge === false)) {
             // is Google Chrome
-        } else { 
+        } else {
             this.setGlobalWarning('This application is tested only in Chrome browsers');
         }
 

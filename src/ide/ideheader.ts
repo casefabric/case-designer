@@ -7,9 +7,7 @@ export default class IDEHeader {
      * Constructs the footer of the IDE element.
      */
     constructor(public ide: IDE) {
-        this.html = $(
-    `<!-- Define the header containing the UI control buttons -->
-    <div class="ide-header basicbox">
+        this.html = $(`<div class="ide-header">
         <div class="btn-toolbar" role="toolbar">
             <div class="btn-group appname">
                 <label>Dynamic Case Management</label>

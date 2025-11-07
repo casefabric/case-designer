@@ -1,3 +1,4 @@
+import "@styles/ide/coverpanel.css";
 import $ from "jquery";
 import IDE from "./ide";
 

@@ -1,16 +1,15 @@
-
 .model-tabs {
     position: absolute;
     float: left;
-    left: 4px;
+    left: 3px;
     right: 0px;
     top: 0px;
     height: 20px;
     display: block;
-    border-bottom: 2px solid rgb(221, 221, 221);
+    border-left: 1px solid grey;
+    background-color: rgb(66, 68, 70);
 }
 
-/* Style the tab */
 .model-tab {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
@@ -18,42 +17,28 @@
     padding-right: 2px;
     overflow: hidden;
     display: inline-block;
-    margin-right: 0px; /* Space between tabs */
-    border-top-left-radius: 4px; /* Rounded corners */
-    border-top-right-radius: 4px; /* Rounded corners */
     text-align: center;
     background-color: rgb(66, 68, 70);
     color: lightgrey;
-    border: 1px solid #DDDDDD;
-    height: 19px;
-    margin-top: 1px;
+    border-right: 1px solid grey;
+    border-top: 1px solid grey;
+    height: 20px;
     position: relative;
     white-space: nowrap;
 }
 
-/* Create an active/current tablink class */
+.model-tab:last-child {
+    border-right: 2px solid grey;  
+}
+
 .model-tab.active {
-    /* background-color: rgb(66, 68, 70);; */
-    /* border-bottom: 1px solid; */
-    /* font-weight: normal; */
     height: 20px;
+    border-top: 2px solid rgb(156, 175, 226);
+    padding-top: 0px;
+    background-color: rgb(66, 68, 70);
     color: white;
-    margin-top: 0px;
 }
 
-/* First tab must be little to the left */
-.model-tab.first {
-    border: 1px solid #DDDDDD;
-    margin-left: -1px;
-}
-
-/* If there is only one tab we correct the size*/
-.model-tab.one {
-    height: 19px;
-    margin-top: 1px;
-}
-
-/* Style the label that are used to open the tab content */
 .model-tab label {
     transition: 0.3s;
     font-weight: normal;
@@ -69,6 +54,10 @@
 
 .model-tab.active .refreshButton {
     display: inline;
+}
+
+.model-tab .closeButton {
+    padding-right: 2px;
 }
 
 .model-tab img {

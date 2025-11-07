@@ -82,7 +82,7 @@
     background-position: 2px 2px;
     background-repeat: no-repeat;
     background-size: 8px 8px;
-    border: 1px solid rgb(221, 221, 221); /* slightly less visible border color */
+    border: 1px solid grey; /* slightly less visible border color */
 }
 
 .modelparametertable td * {

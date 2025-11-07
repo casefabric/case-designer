@@ -1,9 +1,7 @@
 <humantask xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne">
     <cafienne:implementation name="SendResponse" class="org.cafienne.cmmn.definition.task.WorkflowTaskDefinition">
         <documentation textFormat="text/plain">
-            <text>
-                <![CDATA[Sends a response back to the initiator of the hello world case]]>
-            </text>
+            <text><![CDATA[Sends a response back to the initiator of the hello world case]]></text>
         </documentation>
         <input id="Greeting" name="Greeting" typeRef="Greeting.type"/>
         <output id="Response" name="Response"/>
@@ -67,7 +65,6 @@
       }
     }
   }
-}
-</task-model>
+}</task-model>
     </cafienne:implementation>
 </humantask>
