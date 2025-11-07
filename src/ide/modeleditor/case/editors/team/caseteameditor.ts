@@ -200,7 +200,7 @@ export default class CaseTeamEditor extends MovableEditor {
                 await file.save();
                 file.usage
                     .filter(f => f.definition instanceof CaseDefinition)
-                    .map(file => this.case.editor.ide.editorRegistry.get(file))
+                    .map(file => this.case.editor.ide.main.getEditor(file))
                     .filter(caseEditor => caseEditor !== undefined).map(caseEditor => <CaseModelEditor>caseEditor)
                     .filter(caseEditor => caseEditor.case?.teamEditor.visible && caseEditor.case.teamEditor !== this)
                     .forEach(caseEditor => {

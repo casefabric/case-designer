@@ -1,28 +1,29 @@
 ﻿import $ from "jquery";
 import ServerFile from "../../repository/serverfile/serverfile";
 import Util from "../../util/util";
+import CoverPanel from "../coverpanel";
 import MovableEditor from "../editors/movableeditor";
 import IDE from "../ide";
 import HtmlUtil from "../util/htmlutil";
-import Images from "../util/images/images";
+import { ModelTab } from "../modeltabs";
 
 export default class ModelEditor {
+    readonly html: JQuery<HTMLElement>;
+    coverPanel: CoverPanel;
     movableEditors: MovableEditor[] = [];
     htmlContainer: JQuery<HTMLElement>;
     divMovableEditors: JQuery<HTMLDivElement>;
     keyStrokeListener: (e: any) => void;
-    private _html: JQuery<HTMLElement>;
     /**
      * Base class for model editor
      */
     constructor(public ide: IDE, public file: ServerFile) {
-        this.ide.editorRegistry.add(this);
-        this._html = $(`<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
+        this.html = $(`<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
     <div class="divMovableEditors"></div>
     <div class="model-editor-content"></div>
-</div>`);
-        this.ide.divModelEditors.append(this._html);
-
+</div>`)
+        this.coverPanel = new CoverPanel(this.ide.main, this.html);
+        this.coverPanel.hide();
         this.htmlContainer = this.html.find('.model-editor-content');
         this.divMovableEditors = this.html.find('.divMovableEditors');
 
@@ -39,12 +40,21 @@ export default class ModelEditor {
         }
     }
 
-    get html(): JQuery<HTMLElement> {
-        return this._html;
-    }
-
     get fileName(): string {
         return this.file.fileName;
+    }
+
+    get error() {
+        return this.file.metadata.error;
+    }
+
+    initialize() {
+        if (this.error) {
+            this.coverPanel.show('Cannot open ' + this.fileName + '<p/>Error: ' + this.error);
+        } else {
+            this.coverPanel.hide();
+            this.loadModel();
+        }
     }
 
     registerMovableEditor(editor: MovableEditor) {
@@ -187,32 +197,25 @@ export default class ModelEditor {
             $(document.body).off('keydown', this.keyStrokeListener);
             $(document.body).on('keydown', this.keyStrokeListener);
             this.onShow();
-            this.ide.coverPanel.hide();
         } else {
             $(document.body).off('keydown', this.keyStrokeListener);
             this.onHide();
         }
     }
 
-    close() {
-        this.ide.back();
-    }
-
     destroy() {
         if (this.visible) {
             this.visible = false;
-            window.location.hash = '';
         }
         HtmlUtil.removeHTML(this.html);
-        Util.removeFromArray(this.ide.editorRegistry.editors, this);
+        Util.removeFromArray(this.ide.main.editors, this);
     }
 
     async refresh() {
         console.groupCollapsed(`Reloading editor of ${this.file}`);
         await this.file.reload();
         try {
-            this._html.find(".fileNamelabel").text(this.label);
-            this.loadModel();
+            this.initialize();
         } catch (error) {
             this.ide.warning(String(error));
         } finally {

@@ -139,13 +139,6 @@ export default class ProcessModelEditor extends ModelEditor {
         this.viewSourceEditor = new ModelSourceEditor(this.html.find('.model-source-tabs .model-source-editor'), this);
     }
 
-    onEscapeKey(e: JQuery.KeyDownEvent) {
-        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-            return;
-        }
-        this.close();
-    }
-
     changeName(newName: string) {
         if (this.model) {
             this.model.name = newName;

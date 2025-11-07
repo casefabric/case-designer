@@ -1,14 +1,12 @@
 import $ from "jquery";
 import Importer from "../repository/import/importer";
 import Repository from "../repository/repository";
+import ServerFile from "../repository/serverfile/serverfile";
 import RepositoryBrowser from "./browser/repositorybrowser";
-import CoverPanel from "./coverpanel";
 import IDEFooter from "./idefooter";
 import IDEHeader from "./ideheader";
 import IDEMain from "./idemain";
 import MessageBox from "./messagebox";
-import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
-import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
 import RemoteFileStorage from "./remotefilestorage";
 import SettingsEditor from "./settings/settingseditor";
 import StylesLoader from "./stylesloader";
@@ -17,25 +15,21 @@ import StylesLoader from "./stylesloader";
 new StylesLoader();
 
 export default class IDE {
-    editorRegistry: ModelEditorRegistry;
     repository: Repository;
     html: JQuery<HTMLElement>;
     header: IDEHeader;
     main: IDEMain;
     footer: IDEFooter;
     messageBox: MessageBox;
-    coverPanel: CoverPanel;
     settingsEditor: SettingsEditor;
 
     constructor() {
-        this.editorRegistry = new ModelEditorRegistry(this);
         this.repository = new Repository(new RemoteFileStorage(window.location.origin));
         this.html = $('body');
         this.header = new IDEHeader(this);
         this.main = new IDEMain(this);
         this.footer = new IDEFooter(this);
         this.messageBox = new MessageBox(this);
-        this.coverPanel = new CoverPanel(this); // Helper to show/hide status messages while loading models from the repository
         this.settingsEditor = new SettingsEditor(this);
 
         // Repository object handles the interaction with the server
@@ -46,12 +40,7 @@ export default class IDE {
         });
 
         // Scan for pasted text. It can upload and re-engineer a deployed model into a set of files
-        this.html.on('paste', e => this.handlePasteText(e))
-    }
-
-    back() {
-        // Simplistic. Buggy. But nice and simple for now. Better would be to hash all locations we've been and go back properly
-        // history.back();
+        this.html.on('paste', e => this.handlePasteText(e));
     }
 
     handlePasteText(e: JQuery.TriggeredEvent) {
@@ -66,13 +55,12 @@ export default class IDE {
         }
     }
 
-    get repositoryBrowser(): RepositoryBrowser {
-        return this.main.repositoryBrowser;
+    open(file: ServerFile) {
+        window.location.replace('#' + file.fileName);
     }
 
-    /** @returns {JQuery<HTMLElement>} The element in which the editors can be added */
-    get divModelEditors() {
-        return this.main.divModelEditors;
+    get repositoryBrowser(): RepositoryBrowser {
+        return this.main.repositoryBrowser;
     }
 
     /**

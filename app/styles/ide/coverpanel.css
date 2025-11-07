@@ -1,19 +1,22 @@
 .divCoverPanel {
-    width: 100%;
+    position: relative;
     height: 100%;
-    background-color: rgb(221, 221, 221);
-}
-
-.divCoverPanel>div:first-child {
-    opacity: 0.5;
     width: 100%;
     background-color: rgb(221, 221, 221);
+    z-index: 2;
 }
 
-.divCoverPanel>div:last-child {
+.divCoverPanel.main {
+    left: 3px;
+    top: 20px;
+    width: calc(100% - 3px);
+    height: calc(100% - 20px);
+    border-left: 1px solid grey;
+}
+
+.divCoverPanel>div.message {
     top: 100px;
     left: 100px;
-    width: 200px;
-    height: 60px;
+    size: content;
     padding: 10px;
 }

@@ -59,12 +59,6 @@ export default class RepositoryBrowser {
             this.repository.listModels().then(() => this.searchBox.val('')).catch(message => this.ide.danger(message, 5000));
         });
 
-        // Add handler for hash changes, that should load the new model
-        $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
-
-        // Now load the repository contents, and after that optionally load the first model
-        this.repository.listModels().then(() => this.loadModelFromBrowserLocation()).catch(msg => this.ide.danger(msg, 5000));
-
         ModelEditorMetadata.types.forEach(type => type.init(this));
     }
 
@@ -93,30 +87,14 @@ export default class RepositoryBrowser {
         if (this.dragData) this.dragData.removeDropHandler();
     }
 
-    /**
-     * Checks the window.location hash and loads the corresponding model.
-     */
-    loadModelFromBrowserLocation() {
-        this.refreshAccordionStatus();
-
-        // Ask the IDE to open the model.
-        this.ide.editorRegistry.open(this.currentFileName);
-    }
-
-    get currentFileName() {
-        // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
-        //  Skip anything that is behind the optional question mark
-        return window.location.hash.slice(1).split('?')[0];
-    }
-
-    refreshAccordionStatus() {
+    refreshAccordionStatus(selectedFileName: string = this.ide.main.currentFileName) {
         // Select the currently opened model. Should we also open the right accordion with it?
         //  Also: this logic must also be invoked when we refresh the contents of the accordion.
         //  That requires that we also know what the current model is.
         this.accordion.find('.model-item').removeClass('modelselected');
-        this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').addClass('modelselected');
+        this.accordion.find('.model-item[fileName="' + selectedFileName + '"]').addClass('modelselected');
         // Also select the corresponding accordion tab
-        $(this.accordion.find('.model-item[fileName="' + this.currentFileName + '"]').closest('.file-container')).prev('h3')[0]?.click();
+        $(this.accordion.find('.model-item[fileName="' + selectedFileName + '"]').closest('.file-container')).prev('h3')[0]?.click();
     }
 
     /**
@@ -211,7 +189,7 @@ export default class RepositoryBrowser {
             if (confirm(text) === true) {
                 await this.ide.repository.delete(file.fileName);
                 // Tell editor registry to remove any editors for this file.
-                this.ide.editorRegistry.remove(file.fileName);
+                this.ide.main.remove(file.fileName);
             }
         }
     }
@@ -247,14 +225,14 @@ export default class RepositoryBrowser {
                 }
                 await file.rename(newFileName);
                 // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
-                if (this.currentFileName === oldFileName) {
+                if (this.ide.main.currentFileName === oldFileName) {
                     window.location.hash = newFileName;
-                    if (this.ide.editorRegistry.currentEditor) {
-                        this.ide.editorRegistry.currentEditor.refresh();
+                    if (this.ide.main.currentEditor) {
+                        this.ide.main.currentEditor.refresh();
                     }
                 }
                 file.usage.forEach(usingFile => {
-                    const editor = this.ide.editorRegistry.editors.find(editor => editor.file === usingFile);
+                    const editor = this.ide.main.editors.find(editor => editor.file === usingFile);
                     if (editor) {
                         editor.refresh();
                     }

@@ -1,6 +1,7 @@
 import "@styles/ide/modeltabs.css";
 import $ from "jquery";
 import Util from "../util/util";
+import IDEMain from "./idemain";
 import ModelEditor from "./modeleditor/modeleditor";
 import HtmlUtil from "./util/htmlutil";
 import Images from "./util/images/images";
@@ -8,10 +9,11 @@ import Images from "./util/images/images";
 export default class ModelTabs {
     tabList: ModelTab[] = [];
     private activeTab?: ModelTab;
+
     /**
      * Constructs the footer of the IDE element.
      */
-    constructor(private divModelTabs: JQuery<HTMLElement>) {
+    constructor(public main: IDEMain, private html: JQuery<HTMLElement>) {
     }
 
     addTab(editor: ModelEditor) {
@@ -22,35 +24,38 @@ export default class ModelTabs {
         }
 
         const tab = new ModelTab(editor, this);
-
-        this.divModelTabs.append(tab.html);
+        this.html.append(tab.html);
         this.tabList.push(tab);
         this.markSelectedTab(tab);
     }
 
-    selectTab(tab: ModelTab) {
-        window.location.hash = tab.editor.fileName;
+    select(editor: ModelEditor) {
+        const tab = this.tabList.find(tab => tab.editor === editor);
+        if (tab) {
+            this.markSelectedTab(tab);
+        }
     }
 
     private markSelectedTab(tab: ModelTab) {
-        this.tabList.forEach(t => t.html.removeClass('active one'));
-        if (this.tabList.length > 0) {
-            this.tabList[0].html.addClass('first');
-        }
-        if (this.tabList.length === 1) {
-            this.tabList[0].html.addClass('one');
-        }
+        this.tabList.forEach(t => t.html.removeClass('active'));
         tab.html.addClass('active');
+
         this.activeTab = tab;
+        this.main.coverPanel.hide();
+        tab.show();
+    }
+
+    closeTab(editor: ModelEditor) {
+        const tab = this.tabList.find(tab => tab.editor === editor);
+        if (tab) {
+            this.removeTab(tab);
+        }
     }
 
     removeTab(tab: ModelTab) {
-        tab.editor.close();
-
-        const tabIndex = Util.removeFromArray(this.tabList, tab);
-        console.log("Active tab: " + this.activeTab);
-        console.log("Found index: " + tabIndex);
+        tab.editor.destroy();
         HtmlUtil.removeHTML(tab.html);
+        const tabIndex = Util.removeFromArray(this.tabList, tab);
         if (this.tabList.length === 0) {
             // No more tabs, show the cover panel
             this.activeTab = undefined;
@@ -72,9 +77,9 @@ export default class ModelTabs {
     }
 }
 
-class ModelTab {
+export class ModelTab {
     html: JQuery<HTMLElement>;
-    constructor(public editor: ModelEditor, public tabContainer: ModelTabs) {
+    constructor(public editor: ModelEditor, public container: ModelTabs) {
         this.html = $(
             `<span class="model-tab" id="modelTab_${editor.fileName}">
                 <label class="modelLabel">${editor.fileName}</label>
@@ -94,14 +99,18 @@ class ModelTab {
         });
 
         this.html.find('.closeButton').on('click', (e: JQuery.ClickEvent) => {
-            this.tabContainer.removeTab(this);
+            this.container.removeTab(this);
             e.stopImmediatePropagation();
             e.preventDefault();
         });
 
-        this.html.find('.modelLabel').on('click', (e: JQuery.ClickEvent) => {
-            this.tabContainer.selectTab(this);
+        this.html.on('click', (e: JQuery.ClickEvent) => {
+            this.container.main.ide.open(this.editor.file);
             e.preventDefault();
         });
+    }
+
+    show() {
+        // this.html.show();
     }
 }

@@ -26,13 +26,6 @@ export default class TypeModelEditor extends ModelEditor {
         return 'Edit Type - ' + this.fileName;
     }
 
-    onEscapeKey(e: JQuery.KeyDownEvent) {
-        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-            return;
-        }
-        this.close();
-    }
-
     loadModel() {
         this.typeEditor.setMainType(this.file);
     }
