@@ -1,11 +1,12 @@
 import ServerFile from "../../repository/serverfile/serverfile";
 import IDE from "../ide";
+import AIModelEditor from "./aitask/aimodeleditor";
+import AIModelEditorMetadata from "./aitask/aitaskmodeleditormetadata";
 import CaseModelEditor from "./case/casemodeleditor";
 import HumantaskModelEditor from "./humantask/humantaskmodeleditor";
 import ModelEditor from "./modeleditor";
 import ModelEditorMetadata from "./modeleditormetadata";
 import ProcessModelEditor from "./process/processmodeleditor";
-import AIModelEditor from "./aitask/aimodeleditor";
 import TypeModelEditor from "./type/typemodeleditor";
 
 export default class ModelEditorRegistry {
@@ -22,6 +23,10 @@ export default class ModelEditorRegistry {
         AIModelEditor.register();
     }
 
+    async initialize() {
+        await AIModelEditorMetadata.INSTANCE.initializeBuiltInDefinitions(this.ide);
+    }
+
     add(editor: ModelEditor) {
         this.editors.push(editor);
     }
@@ -33,7 +38,7 @@ export default class ModelEditorRegistry {
      * @returns 
      */
     get<M extends ModelEditor>(file: ServerFile): M | undefined {
-        return <M> this.editors.find(editor => editor.file.fileName === file.fileName);
+        return <M>this.editors.find(editor => editor.file.fileName === file.fileName);
     }
 
     /** 

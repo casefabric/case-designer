@@ -1,4 +1,6 @@
-export const types = [
+import Type from "../type";
+
+export const types: Type[][] = [
   [
     {
       "name": "com.embabel.agent.domain.io.UserInput",
