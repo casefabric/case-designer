@@ -1,3 +1,4 @@
+import "@styles/ide/repositorybrowser.css";
 import $ from "jquery";
 import "jquery-ui";
 import ModelDefinition from "../../repository/definition/modeldefinition";
@@ -9,7 +10,6 @@ import IDE from "../ide";
 import ModelEditorMetadata from "../modeleditor/modeleditormetadata";
 import Images from "../util/images/images";
 import ModelListPanel from "./modellistpanel";
-import "@styles/ide/repositorybrowser.css";
 
 export default class RepositoryBrowser {
     repository: Repository;
@@ -61,9 +61,6 @@ export default class RepositoryBrowser {
 
         // Add handler for hash changes, that should load the new model
         $(window).on('hashchange', () => this.loadModelFromBrowserLocation());
-
-        // Now load the repository contents, and after that optionally load the first model
-        this.repository.listModels().then(() => this.loadModelFromBrowserLocation()).catch(msg => this.ide.danger(msg, 5000));
 
         ModelEditorMetadata.types.forEach(type => type.init(this));
     }

@@ -39,6 +39,12 @@
             "env": {
                 "DEBUG": "true"
             }
+        },
+        {
+            "type": "chrome",
+            "name": "AITask_2.ai",
+            "request": "launch",
+            "url": "http://localhost:2081/#AITask_2.ai"
         }
     ]
 }

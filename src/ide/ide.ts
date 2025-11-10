@@ -55,6 +55,13 @@ export default class IDE {
         this.html.on('paste', e => this.handlePasteText(e))
     }
 
+    async initialize() {
+        // Now load the repository contents, and after that optionally load the first model
+        await this.repository.listModels().then(() => this.main.repositoryBrowser.loadModelFromBrowserLocation()).catch(msg => this.danger(msg, 5000));
+
+        await this.editorRegistry.initialize();
+    }
+
     back() {
         // Simplistic. Buggy. But nice and simple for now. Better would be to hash all locations we've been and go back properly
         history.back();

@@ -7,7 +7,7 @@ import AIImplementationDefinition from "./aiimplementationdefinition";
 export default class AIModelDefinition extends ModelDefinition implements ParameterizedModelDefinition<AIModelDefinition> {
     input: ParameterDefinition<AIModelDefinition>[] = [];
     output: ParameterDefinition<AIModelDefinition>[] = [];
-    implementation?: AIImplementationDefinition;
+    implementation: AIImplementationDefinition;
     /**
      * Imports an XML element and parses it into a in-memory definition structure.
      */
@@ -15,7 +15,7 @@ export default class AIModelDefinition extends ModelDefinition implements Parame
         super(file);
         this.input = this.parseElements('input', ParameterDefinition);
         this.output = this.parseElements('output', ParameterDefinition);
-        this.implementation = this.parseImplementation(AIImplementationDefinition);
+        this.implementation = this.parseImplementation(AIImplementationDefinition) ?? this.createDefinition(AIImplementationDefinition);
     }
 
     get inputParameters() {

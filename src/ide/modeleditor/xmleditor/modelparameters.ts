@@ -15,7 +15,7 @@ export default class ModelParameters {
      * This object handles the input and output parameters of task model editor.
      * 
      */
-    constructor(public editor: ModelEditor, public htmlContainer: JQuery<HTMLElement>, public label: string) {
+    constructor(public editor: ModelEditor, public htmlContainer: JQuery<HTMLElement>, public label: string, public readonly?: boolean) {
         this.html = $(`<div class='modelparametertable'>
         <label>${this.label}</label>
         <div>
@@ -51,7 +51,9 @@ export default class ModelParameters {
 
         // Now render the parameters
         this.parameters.forEach(parameter => this.addParameter(parameter));
-        this.addParameter();
+        if (!this.readonly) {
+            this.addParameter();
+        }
     }
 
     addParameter(parameter?: ParameterDefinition) {
@@ -80,10 +82,10 @@ class ParameterEditor {
     html: JQuery<HTMLElement>;
     constructor(private parent: ModelParameters, public parameter: ParameterDefinition) {
         this.html = $(`<tr>
-            <td><button class="removeParameter"></button></td>
-            <td><input class="inputParameterName modelparameternamecol" value="${parameter.name}" /></td>
-            <td><select class="inputParameterType modelparametertypecol"><option></option></select></td>
-            <td><input class="inputParameterId modelparameteridcol" readonly value="${parameter.id}" /></td>
+            <td><button ${this.parent.readonly ? 'disabled' : ''} class="removeParameter"></button></td>
+            <td><input ${this.parent.readonly ? 'disabled' : ''} class="inputParameterName modelparameternamecol" value="${parameter.name}" /></td>
+            <td><select ${this.parent.readonly ? 'disabled' : ''} class="inputParameterType modelparametertypecol"></select></td>
+            <td><input ${this.parent.readonly ? 'disabled' : ''} class="inputParameterId modelparameteridcol" readonly value="${parameter.id}" /></td>
         </tr>`);
 
         this.html.find('.removeParameter').on('click', e => parent.removeParameterEditor(this));

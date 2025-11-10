@@ -35,6 +35,7 @@ import "@styles/ide/modeleditors/xmleditor/modelsourceeditor.css";
 import "@styles/ide/modeleditors/xmleditor/tabs.css";
 import "@styles/ide/modeleditors/humantask/humantaskmodeleditor.css";
 import "@styles/ide/modeleditors/process/processmodeleditor.css";
+import "@styles/ide/modeleditors/ai/aimodeleditor.css";
 import "@styles/ide/modeleditors/case/casemodeleditor.css";
 import "@styles/ide/modeleditors/case/caseparameters.css";
 import "@styles/ide/modeleditors/case/deploy.css";
