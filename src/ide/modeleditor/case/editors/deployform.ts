@@ -21,14 +21,18 @@ export default class DeployForm extends StandardForm {
             `<div>
     <div>
         <button class="btn btn-default btnViewCMMN">View CMMN</button>
-        <button class="btn btn-default btnDeploy">Deploy</button>
         <button class="btn btn-default btnServerValidation">Server validation</button>
-
+        <button class="btn btn-default btnDeploy">Deploy</button>
+        <button class="btn btn-default btnLaunch" title="Go to the CaseRoom and start a case">Try it out</button>
     </div>
     <span class="deployed_timestamp"></span>
-    <div style="top:8px;position:relative" title="Click the URL to edit it">
-        <label>Server validation goes to</label>
+    <div style="top:8px;position:relative" title="Click the URL to edit the Case Engine URL used for validation">
+        <label style="padding-right: 2em">Server URL</label>
         <input style="border:0px;background-color:inherit" class="serverURL" value="${Settings.serverURL}" type="text"></input>
+    </div>
+    <div style="top:4px;position:relative" title="Click the URL to edit CaseRoom URL used to launch cases">
+        <label>CaseRoom URL</label>
+        <input style="border:0px;background-color:inherit" class="caseRoomURL" value="${Settings.caseRoomURL}" type="text"></input>
     </div>
     <div class="where_used_content">
         <br/>
@@ -39,11 +43,12 @@ export default class DeployForm extends StandardForm {
         <div class="codeMirrorSource deployFormContent" ></div>
     </div>
 </div>`);
-
         this.html.find('.btnDeploy').on('click', () => this.deploy());
         this.html.find('.btnViewCMMN').on('click', () => this.viewCMMN());
         this.html.find('.btnServerValidation').on('click', () => this.runServerValidation());
+        this.html.find('.btnLaunch').on('click', () => this.launchInstance());
         this.html.find('.serverURL').on('change', e => Settings.serverURL = (e.currentTarget as any).value);
+        this.html.find('.caseRoomURL').on('change', e => Settings.caseRoomURL = (e.currentTarget as any).value);
 
         this.codeMirrorCaseXML = CodeMirrorConfig.createXMLEditor(this.htmlContainer!.find('.deployFormContent'));
 
@@ -140,5 +145,9 @@ export default class DeployForm extends StandardForm {
                 this._setDeployTextArea(error.message);
             }
         });
+    }
+
+    launchInstance() {
+        window.open(`${Settings.caseRoomURL}/startcase/${this.case.caseDefinition.file.name}`, '_case_room_from_designer');
     }
 }
