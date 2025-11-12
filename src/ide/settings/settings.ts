@@ -3,6 +3,7 @@
 import SettingsStorage from "./settingsstorage";
 
 const SERVER_URL = 'server';
+const CASE_ROOM_URL = 'caseroom';
 const GRID_SIZE = 'grid_size';
 const GRID_VISIBILITY = 'grid_visible';
 const VALIDATION_SETTINGS = 'validation_settings';
@@ -23,6 +24,18 @@ export default class Settings {
 
     static set serverURL(url) {
         SettingsStorage.setItem(SERVER_URL, url);
+    }
+
+    static get caseRoomURL() {
+        const host = window.location.hostname;
+        const protocol = window.location.protocol;
+        const port = '3317';
+        const defaultURL = protocol + '//' + host + ':' + port;
+        return SettingsStorage.getItem(CASE_ROOM_URL) || defaultURL;
+    }
+
+    static set caseRoomURL(url) {
+        SettingsStorage.setItem(CASE_ROOM_URL, url);
     }
 
     static get gridSize() {
