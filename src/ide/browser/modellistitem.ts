@@ -26,7 +26,7 @@ export default class ModelListItem {
         // Add event handler for rename, delete, and deploy.
         html.find('.delete-icon').on('click', async e => await panel.repositoryBrowser.delete(file));
         html.find('.rename-icon').on('click', async e => await panel.repositoryBrowser.rename(file));
-        html.find('.deploy-icon').on('click', e => window.location.hash = file.fileName + '?deploy=true');
+        html.find('.deploy-icon').on('click', e => this.panel.ide.navigator.navigate(file.fileName + '?deploy=true'));
         // Add event handler for dragging the model.
         html.on('pointerdown', e => {
             e.preventDefault();

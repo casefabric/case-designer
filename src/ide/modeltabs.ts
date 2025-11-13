@@ -59,7 +59,7 @@ export default class ModelTabs {
         if (this.tabList.length === 0) {
             // No more tabs, show the cover panel
             this.activeTab = undefined;
-            window.location.hash = '';
+            this.main.ide.navigator.goHome();
             return;
         }
         if (this.activeTab === tab) {
@@ -105,7 +105,7 @@ export class ModelTab {
         });
 
         this.html.on('click', (e: JQuery.ClickEvent) => {
-            this.container.main.ide.open(this.editor.file);
+            this.container.main.ide.navigator.load(this.editor.file);
             e.preventDefault();
         });
     }

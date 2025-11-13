@@ -10,6 +10,7 @@ import MessageBox from "./messagebox";
 import RemoteFileStorage from "./remotefilestorage";
 import SettingsEditor from "./settings/settingseditor";
 import StylesLoader from "./stylesloader";
+import IDENavigator from "./idenavigator";
 
 // First load all styles and then forget about it :(
 new StylesLoader();
@@ -22,6 +23,7 @@ export default class IDE {
     footer: IDEFooter;
     messageBox: MessageBox;
     settingsEditor: SettingsEditor;
+    navigator: IDENavigator = new IDENavigator(this);
 
     constructor() {
         this.repository = new Repository(new RemoteFileStorage(window.location.origin));
@@ -53,10 +55,6 @@ export default class IDE {
                 importer.uploadFiles();
             }
         }
-    }
-
-    open(file: ServerFile) {
-        window.location.replace('#' + file.fileName);
     }
 
     get repositoryBrowser(): RepositoryBrowser {

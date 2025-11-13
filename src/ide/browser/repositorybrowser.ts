@@ -87,7 +87,7 @@ export default class RepositoryBrowser {
         if (this.dragData) this.dragData.removeDropHandler();
     }
 
-    refreshAccordionStatus(selectedFileName: string = this.ide.main.currentFileName) {
+    refreshAccordionStatus(selectedFileName: string = this.ide.navigator.hash.fileName) {
         // Select the currently opened model. Should we also open the right accordion with it?
         //  Also: this logic must also be invoked when we refresh the contents of the accordion.
         //  That requires that we also know what the current model is.
@@ -166,7 +166,7 @@ export default class RepositoryBrowser {
             this.removeSearchFilter();
         } else if (e.keyCode == 13) { // Pressed Enter key, let's open the first search result
             if (first) {
-                window.location.hash = ($(first).attr('name') + '.' + $(first).attr('filetype'));
+                this.ide.navigator.navigate($(first).attr('name') + '.' + $(first).attr('filetype'));
             }
         }
     }
@@ -225,8 +225,8 @@ export default class RepositoryBrowser {
                 }
                 await file.rename(newFileName);
                 // Check if the file that is being renamed is currently visible, and if so, change the hash and refresh the editor
-                if (this.ide.main.currentFileName === oldFileName) {
-                    window.location.hash = newFileName;
+                if (this.ide.navigator.hash.fileName === oldFileName) {
+                    this.ide.navigator.navigate(newFileName);
                     if (this.ide.main.currentEditor) {
                         this.ide.main.currentEditor.refresh();
                     }

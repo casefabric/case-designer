@@ -83,7 +83,7 @@ export default abstract class ModelEditorMetadata {
                 }
 
                 await ModelEditorMetadata.createNewModel(this.ide, filetype, newModelName, newModelDescription);
-                window.location.hash = fileName;
+                this.ide.navigator.navigate(fileName);
             };
         });
     }
