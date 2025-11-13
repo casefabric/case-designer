@@ -68,7 +68,7 @@ export default class CaseModelEditorMetadata extends ModelEditorMetadata {
 
                 // Simply create the case file, either with an empty or with an existing type definition.
                 await this.createNewCaseModelWithTypeRef(this.ide, newModelName, newModelDescription, newTypeRef, newCaseTeamRef);
-                window.location.hash = fileName;
+                this.ide.navigator.navigate(fileName);
                 console.groupEnd();
             };
         });

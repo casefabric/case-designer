@@ -214,11 +214,8 @@ export default class CaseView {
     }
 
     onShow() {
-        const urlQuery = window.location.hash.slice(1).split('?');
-        if (urlQuery.length > 1) {
-            if (urlQuery[1].startsWith('deploy=true')) {
-                this.deployForm.show();
-            }
+        if (this.editor.ide.navigator.hash.contains('deploy')) {
+            this.deployForm.show();
         }
     }
 

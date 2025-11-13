@@ -85,7 +85,7 @@ export default abstract class TaskView<TD extends TaskDefinition = TaskDefinitio
             const fileName = await ModelEditorMetadata.createNewModel(this.case.editor.ide, this.fileType, potentialImplementationName, this.definition.documentation.text);
             this.definition.implementationReference.update(fileName);
             // Open the editor for the new task implementation file
-            window.location.hash = fileName;
+            this.editor.ide.navigator.navigate(fileName);
         }
         this.case.editor.completeUserAction();
         this.refreshView();

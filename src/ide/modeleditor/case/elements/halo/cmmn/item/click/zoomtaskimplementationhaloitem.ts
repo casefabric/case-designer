@@ -9,6 +9,6 @@ export default class ZoomTaskImplementationHaloItem extends HaloClickItem<TaskHa
         const imgURL = Images.ZoomIn;
         const title = 'Open task implementation - ' + implementationRef + '\nRight-click to open in new tab';
         const html = $(`<a href="./#${implementationRef}" title="${title}" ><img src="${imgURL}" /></a>`);
-        super(halo, imgURL, title, e => { window.location.hash = implementationRef; }, halo.bottomBar, html);
+        super(halo, imgURL, title, e => { this.halo.element.case.editor.ide.navigator.navigate(implementationRef); }, halo.bottomBar, html);
     }
 }

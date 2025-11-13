@@ -57,14 +57,15 @@ export default class IDEMain {
      * Checks the window.location hash and loads the corresponding model.
      */
     private loadModelFromBrowserLocation() {
+        this.ide.navigator.navigate(window.location.hash);
         this.open(this.currentFileName);
-        this.repositoryBrowser.refreshAccordionStatus(this.currentFileName);
+        this.repositoryBrowser.refreshAccordionStatus(this.ide.navigator.hash.fileName);
     }
 
     get currentFileName() {
         // Splice: take "myMap/myModel.case" out of something like "http://localhost:2081/#myMap/myModel.case"
         //  Skip anything that is behind the optional question mark
-        return window.location.hash.slice(1).split('?')[0];
+        return this.ide.navigator.hash.fileName;
     }
 
     private registerEditors() {
