@@ -26,8 +26,8 @@ export default class Connector extends CanvasElement<shapes.standard.Link> {
         const arrowStyle = this.criterion ? '8 3 3 3 3 3' : '5 5';
 
         this.link = this.xyz_joint = new shapes.standard.Link({
-            source: { id: this.source.xyz_joint.id },
-            target: { id: this.target.xyz_joint.id },
+            source: { id: this.source.xyz_joint.id, anchor: { name: 'perpendicular' } },
+            target: { id: this.target.xyz_joint.id, anchor: { name: 'perpendicular' } },
             attrs: {
                 'line': {
                     stroke: '#423d3d',
