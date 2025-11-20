@@ -82,6 +82,8 @@ export default class CaseDeployment extends DefinitionDeployment {
         updateCaseReferences('requiredRule', 'contextRef');
         updateCaseReferences('manualActivationRule', 'contextRef');
         updateCaseReferences('applicabilityRule', 'contextRef');
+        updateCaseReferences('assignment', 'contextRef');
+        updateCaseReferences('duedate', 'contextRef');
         updateCaseReferences('ifPart', 'contextRef');
         updateCaseReferences('caseFileItemOnPart', 'sourceRef');
         updateCaseReferences('input', 'bindingRef');
@@ -176,6 +178,6 @@ export default class CaseDeployment extends DefinitionDeployment {
             caseRoles.setAttribute('cafienne:caseTeamRef', caseTeamRef);
             caseRoles.removeAttribute('caseTeamRef');
             XML.getElementsByTagName(caseTeamDefinition.definition.exportNode, 'role').forEach((role: Element) => caseRoles.appendChild(role.cloneNode(true)));
-        }        
+        }
     }
 }
