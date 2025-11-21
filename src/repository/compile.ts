@@ -12,6 +12,7 @@ import Repository from "./repository";
 import CaseFile from "./serverfile/casefile";
 import FileStorage from './storage/filestorage';
 import LocalFileStorage from "./storage/localfilestorage";
+import { EOL } from '../util/xml';
 
 const config = new RepositoryConfiguration();
 const repositoryFolder = config.repository;
@@ -80,8 +81,8 @@ async function compileAndWrite(caseFile: CaseFile, fileStorage: FileStorage) {
     logging = false;
     const definitionSet = new Definitions(caseFile.definition!);
     var content = definitionSet.contents();
-    if (typeof content === 'string' && !content.endsWith('\n')) {
-        content = content + '\r\n';
+    if (typeof content === 'string' && !content.endsWith(EOL)) {
+        content = content + EOL;
     }
     logging = true;
 

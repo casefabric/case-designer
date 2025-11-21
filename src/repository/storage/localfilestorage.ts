@@ -3,6 +3,7 @@ import * as path from "path";
 import RepositoryConfiguration from "../../config/config";
 import Metadata from "../serverfile/metadata";
 import FileStorage from "./filestorage";
+import { EOL } from "../../util/xml";
 
 function isKnownExtension(extension: string): boolean {
     return ['.case', '.process', '.humantask', '.dimensions', '.cfid', '.type', '.caseteam', '.xml'].indexOf(extension) >= 0;
@@ -121,8 +122,8 @@ async function writeFile(folder: string, fileName: string, content: any) {
     }
 
     // Add a newline, since some XML serializations don't print it, and then it looks ugly in git
-    if (typeof content === 'string' && !content.endsWith('\n')) {
-        content = content + '\n';
+    if (typeof content === 'string' && !content.endsWith(EOL)) {
+        content = content + EOL;
     }
     await fs.writeFile(absoluteFileName, content, { encoding: 'utf8' });
 }

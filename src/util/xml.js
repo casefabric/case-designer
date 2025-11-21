@@ -1,6 +1,8 @@
 import { Document, DOMParser, Element, Node, XMLSerializer } from '@xmldom/xmldom';
 import xmlformatter from 'xml-formatter';
 
+export const EOL = '\r\n';
+
 export default class XML {
     /**
      * Parses the given xml string into a Document object
@@ -286,7 +288,7 @@ export default class XML {
 
         return xmlformatter(text, {
             collapseContent: true,
-            lineSeparator: "\r\n"
+            lineSeparator: EOL
         });
     }
 }
