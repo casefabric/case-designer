@@ -1,0 +1,10 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="has_sub_casemodel_with_all_casefile_binding_options.case" name="has_sub_casemodel_with_all_casefile_binding_options" expressionLanguage="spel" guid="_yKkDv">
+    <documentation textFormat="text/plain">
+        <text><![CDATA[Used to verifify unique id behavior (of case file items) in the resulting CMMN output]]></text>
+    </documentation>
+    <caseFileModel typeRef="has_sub_casemodel_with_all_casefile_binding_options.type"/>
+    <casePlanModel id="cm__yKkDv_0" name="has_sub_casemodel_with_all_casefile_binding_options" autoComplete="true">
+        <caseTask id="_yKkDv_1" name="sub_casemodel_with_all_casefile_binding_options" isBlocking="true" caseRef="sub_casemodel_with_all_casefile_binding_options.case"/>
+    </casePlanModel>
+    <caseRoles caseTeamRef="has_sub_casemodel_with_all_casefile_binding_options.caseteam"/>
+</case>

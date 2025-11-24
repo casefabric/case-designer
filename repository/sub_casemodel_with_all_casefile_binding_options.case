@@ -1,0 +1,143 @@
+<case xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="sub_casemodel_with_all_casefile_binding_options.case" name="sub_casemodel_with_all_casefile_binding_options" expressionLanguage="spel" guid="_ue6Fm">
+    <caseFileModel typeRef="sub_casemodel_with_all_casefile_binding_options.type"/>
+    <casePlanModel id="cm__ue6Fm_0" name="sub_casemodel_with_all_casefile_binding_options" autoComplete="true">
+        <milestone id="_ue6Fm_111" name="Milestone_1"/>
+        <planningTable id="_ue6Fm_15">
+            <stage id="_ue6Fm_63" name="Stage_0" authorizedRoleRefs="cr__R4WVV_0" autoComplete="false">
+                <itemControl id="_ue6Fm_64">
+                    <repetitionRule id="_ue6Fm_65" contextRef="Root">
+                        <condition id="_ue6Fm_66">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </repetitionRule>
+                    <requiredRule id="_ue6Fm_67" contextRef="Root">
+                        <condition id="_ue6Fm_68">
+                            <body><![CDATA[true]]></body>
+                        </condition>
+                    </requiredRule>
+                    <manualActivationRule id="_ue6Fm_69" contextRef="Root">
+                        <condition id="_ue6Fm_70">
+                            <body><![CDATA[false]]></body>
+                        </condition>
+                    </manualActivationRule>
+                </itemControl>
+                <milestone id="_ue6Fm_4" name="Milestone_0">
+                    <entryCriterion id="crit__ue6Fm_0">
+                        <ifPart id="_ue6Fm_109" contextRef="Root">
+                            <condition id="_ue6Fm_110">
+                                <body/>
+                            </condition>
+                        </ifPart>
+                        <caseFileItemOnPart id="_ue6Fm_108" sourceRef="Root">
+                            <standardEvent>create</standardEvent>
+                        </caseFileItemOnPart>
+                    </entryCriterion>
+                    <itemControl id="_ue6Fm_16">
+                        <repetitionRule id="_ue6Fm_37" contextRef="Root">
+                            <condition id="_ue6Fm_38">
+                                <body><![CDATA[true]]></body>
+                            </condition>
+                        </repetitionRule>
+                        <requiredRule id="_ue6Fm_39" contextRef="Root">
+                            <condition id="_ue6Fm_40">
+                                <body><![CDATA[true]]></body>
+                            </condition>
+                        </requiredRule>
+                    </itemControl>
+                </milestone>
+                <userEvent id="_ue6Fm_35" name="UserEvent_0" authorizedRoleRefs="cr__R4WVV_0"/>
+                <timerEvent id="_ue6Fm_32" name="TimerEvent_0">
+                    <planItemStartTrigger id="_ue6Fm_107">
+                        <standardEvent/>
+                    </planItemStartTrigger>
+                </timerEvent>
+                <humanTask id="_ue6Fm_7" name="HumanTask_0" isBlocking="true" performerRef="cr__R4WVV_0">
+                    <itemControl id="_ue6Fm_8">
+                        <repetitionRule id="_ue6Fm_9" contextRef="Root">
+                            <condition id="_ue6Fm_10">
+                                <body><![CDATA[true]]></body>
+                            </condition>
+                        </repetitionRule>
+                        <requiredRule id="_ue6Fm_11" contextRef="Root">
+                            <condition id="_ue6Fm_12">
+                                <body><![CDATA[true]]></body>
+                            </condition>
+                        </requiredRule>
+                        <manualActivationRule id="_ue6Fm_13" contextRef="Root">
+                            <condition id="_ue6Fm_14">
+                                <body><![CDATA[false]]></body>
+                            </condition>
+                        </manualActivationRule>
+                    </itemControl>
+                    <inputs id="_ue6Fm_27" name="Root" bindingRef="Root"/>
+                    <outputs id="_ue6Fm_28" name="Root" bindingRef="Root"/>
+                    <planningTable id="_ue6Fm_87">
+                        <humanTask id="_ue6Fm_75" name="HumanTask_1" authorizedRoleRefs="cr__R4WVV_0" isBlocking="true">
+                            <extensionElements mustUnderstand="false">
+                                <cafienne:implementation xmlns:cafienne="org.cafienne" humanTaskRef="approvetravelrequest.humantask"/>
+                            </extensionElements>
+                        </humanTask>
+                        <applicabilityRule id="_ue6Fm_97" name="humanrule" contextRef="Root"/>
+                    </planningTable>
+                    <extensionElements mustUnderstand="false">
+                        <cafienne:implementation xmlns:cafienne="org.cafienne" humanTaskRef="approvetravelrequest.humantask">
+                            <parameterMapping id="_ue6Fm_24" sourceRef="_ue6Fm_27" targetRef="TravelRequest_2"/>
+                            <parameterMapping id="_ue6Fm_25" sourceRef="Approval_2" targetRef="_ue6Fm_28"/>
+                            <assignment id="_ue6Fm_19" contextRef="Root"/>
+                            <duedate id="_ue6Fm_18" contextRef="Root"/>
+                        </cafienne:implementation>
+                    </extensionElements>
+                </humanTask>
+                <planningTable id="_ue6Fm_71">
+                    <caseTask id="_ue6Fm_41" name="CaseTask_0" applicabilityRuleRefs="_ue6Fm_72" authorizedRoleRefs="cr__R4WVV_0" isBlocking="true" caseRef="a_new_moon.case">
+                        <itemControl id="_ue6Fm_42">
+                            <repetitionRule id="_ue6Fm_43" contextRef="Root">
+                                <condition id="_ue6Fm_44">
+                                    <body><![CDATA[true]]></body>
+                                </condition>
+                            </repetitionRule>
+                            <requiredRule id="_ue6Fm_45" contextRef="Root">
+                                <condition id="_ue6Fm_46">
+                                    <body><![CDATA[true]]></body>
+                                </condition>
+                            </requiredRule>
+                            <manualActivationRule id="_ue6Fm_47" contextRef="Root">
+                                <condition id="_ue6Fm_48">
+                                    <body><![CDATA[false]]></body>
+                                </condition>
+                            </manualActivationRule>
+                        </itemControl>
+                    </caseTask>
+                    <processTask id="_ue6Fm_49" name="ProcessTask_0" applicabilityRuleRefs="_ue6Fm_72" authorizedRoleRefs="cr__R4WVV_0" isBlocking="true" processRef="allocatefunds.process">
+                        <itemControl id="_ue6Fm_50">
+                            <repetitionRule id="_ue6Fm_57" contextRef="Root">
+                                <condition id="_ue6Fm_58">
+                                    <body><![CDATA[true]]></body>
+                                </condition>
+                            </repetitionRule>
+                            <requiredRule id="_ue6Fm_59" contextRef="Root">
+                                <condition id="_ue6Fm_60">
+                                    <body><![CDATA[true]]></body>
+                                </condition>
+                            </requiredRule>
+                            <manualActivationRule id="_ue6Fm_61" contextRef="Root">
+                                <condition id="_ue6Fm_62">
+                                    <body><![CDATA[false]]></body>
+                                </condition>
+                            </manualActivationRule>
+                        </itemControl>
+                        <inputs id="_ue6Fm_55" name="Root" bindingRef="Root"/>
+                        <outputs id="_ue6Fm_56" name="Root" bindingRef="Root"/>
+                        <parameterMapping id="_ue6Fm_51" sourceRef="_ue6Fm_55" targetRef="travelrequest"/>
+                        <parameterMapping id="_ue6Fm_53" sourceRef="purchaseorder" targetRef="_ue6Fm_56"/>
+                    </processTask>
+                    <applicabilityRule id="_ue6Fm_72" name="ApplicabilityRule_0" contextRef="Root"/>
+                </planningTable>
+            </stage>
+            <applicabilityRule id="_ue6Fm_113" name="ApplicabilityRule_1" contextRef="Root"/>
+        </planningTable>
+    </casePlanModel>
+    <caseRoles caseTeamRef="sub_casemodel_with_all_casefile_binding_options.caseteam"/>
+    <input id="_ue6Fm_29" name="Root" bindingRef="Root"/>
+    <output id="_ue6Fm_30" name="Root" bindingRef="Root"/>
+</case>

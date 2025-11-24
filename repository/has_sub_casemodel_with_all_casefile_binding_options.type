@@ -1,0 +1,10 @@
+<type xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="has_sub_casemodel_with_all_casefile_binding_options.type" name="has_sub_casemodel_with_all_casefile_binding_options">
+    <schema>
+        <property id="sp__hCR7c_0" name="ParentRoot" type="object" multiplicity="ExactlyOne">
+            <schema id="_hCR7c_0" name="Schema_0">
+                <property id="sp__hCR7c_3" name="Child1" type="string" multiplicity="ExactlyOne"/>
+            </schema>
+        </property>
+        <property id="sp__Ad2x2_0" name="subcasetype" type="sub_casemodel_with_all_casefile_binding_options.type" multiplicity="ExactlyOne"/>
+    </schema>
+</type>
