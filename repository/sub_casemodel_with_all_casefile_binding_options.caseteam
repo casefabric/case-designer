@@ -1,0 +1,6 @@
+<caseteam xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="sub_casemodel_with_all_casefile_binding_options.caseteam" name="sub_casemodel_with_all_casefile_binding_options">
+    <documentation textFormat="text/plain">
+        <text><![CDATA[sub_casemodel_with_all_casefile_binding_options]]></text>
+    </documentation>
+    <role id="cr__R4WVV_0" name="JustARole"/>
+</caseteam>

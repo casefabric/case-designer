@@ -1,0 +1,9 @@
+<type xmlns="http://www.omg.org/spec/CMMN/20151109/MODEL" xmlns:cafienne="org.cafienne" id="sub_casemodel_with_all_casefile_binding_options.type" name="sub_casemodel_with_all_casefile_binding_options">
+    <schema>
+        <property id="sp__l3HIT_0" name="Root" type="object" multiplicity="ExactlyOne">
+            <schema id="_l3HIT_0" name="Schema_0">
+                <property id="sp__Ub4IO_1" name="Child1" type="string" multiplicity="ExactlyOne"/>
+            </schema>
+        </property>
+    </schema>
+</type>
