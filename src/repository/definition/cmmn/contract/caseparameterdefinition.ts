@@ -32,7 +32,7 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
         }
     }
 
-    get binding(): CaseFileItemDef | undefined{
+    get binding(): CaseFileItemDef | undefined {
         return this.bindingRef.getDefinition();
     }
 
@@ -41,7 +41,7 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
     }
 
     get defaultOperation() {
-        return this.binding ? this.binding.isArray ? 'add' : 'update' : ''; 
+        return this.binding ? this.binding.isArray ? 'add' : 'update' : '';
     }
 
     get hasUnusualBindingRefinement() {
@@ -76,4 +76,18 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
         // Parameters have different tagnames depending on their type, so this must be passed.
         super.createExportNode(parentNode, tagName, 'bindingRef', 'bindingRefinement');
     }
+
+    addPropertyToSchema(schema: { title: string; type: string; properties: any; definitions: any; }) {
+        if (!this.bindingRef) {
+            return;
+        }
+
+        const property: any = {};
+        property.title = this.name;
+        schema.properties[this.name] = property;
+
+        this.bindingRef.getDefinition()?.toJSONSchema(property, [], schema);
+
+    }
+
 }

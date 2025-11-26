@@ -1,4 +1,6 @@
-﻿import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
+﻿import "../../../../../app/styles/ide/modeleditors/case/editors/startcaseeditor.css";
+import ParameterDefinition from "../../../../repository/definition/contract/parameterdefinition";
+import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
 import StandardForm from "../../../editors/standardform";
 import CaseView from "../elements/caseview";
 
@@ -11,12 +13,13 @@ export default class StartCaseEditor extends StandardForm {
      * Editor for the content of the extension element <start-case-schema>
      */
     constructor(cs: CaseView) {
-        super(cs, 'Start Case Schema Editor', 'jsoneditor');
+        super(cs, 'Start Case Schema Editor', 'jsoneditor', 'start-case-editor');
     }
 
     renderData() {
         this.htmlContainer?.html(
             `<label>JSON Definition</label>
+            <button class="buttonGenerateSchema">Generate schema from type information</button>
 <div class="jsoncode"></div>`);
 
         // add code mirror
@@ -47,7 +50,19 @@ export default class StartCaseEditor extends StandardForm {
 
         // Avoid CTRL-Y and CTRL-Z invoking undo-manager
         //  Apparently, code mirror does not give the event as a parameter to the function, so we work directly on window.event
-        this._codeMirrorEditor.on('keydown', (e: Event) => e.stopPropagation());
+        this._codeMirrorEditor.on('keydown', (e: Event) => (<any>window).event.stopPropagation());
+
+        this.htmlContainer?.find('.buttonGenerateSchema').on('click', () => {
+            try {
+                const formSchema = ParameterDefinition.generateSchema(
+                    this.case.caseDefinition.name,
+                    this.case.caseDefinition.inputParameters
+                );
+                this._codeMirrorEditor.setValue(JSON.stringify(formSchema, null, 2));
+            } catch (error: any) {
+                this.case.editor.ide.danger('Error generating schema: ' + error.message);
+            }
+        });
     }
 
     /**
