@@ -1,5 +1,4 @@
 import ElementDefinition from "../elementdefinition";
-import XMLSerializable from "../xmlserializable";
 import Reference from "./reference";
 
 export default class InternalReference<I extends ElementDefinition> extends Reference {
@@ -42,16 +41,6 @@ export default class InternalReference<I extends ElementDefinition> extends Refe
             this.target = undefined;
             this.ref = newReference ? newReference instanceof ElementDefinition ? newReference.id : newReference : '';
             this.loadDefinition();
-        }
-    }
-
-    remove() {
-        this.update('');
-    }
-
-    removeDefinitionReference(element: XMLSerializable) {
-        if (this.references(element)) {
-            this.update('');
         }
     }
 

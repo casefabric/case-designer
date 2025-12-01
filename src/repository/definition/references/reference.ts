@@ -19,7 +19,19 @@ export default abstract class Reference extends ReferencingAttribute {
         }
     }
 
+    removeDefinitionReference(something: string | XMLSerializable | Reference) {
+        if (this.references(something)) {
+            this.update('');
+        }
+    }
+
+    remove() {
+        this.update('');
+    }
+
     abstract get isInvalid(): boolean;
+
+    abstract update(newReference: string): void;
 
     resolve() {
     }
