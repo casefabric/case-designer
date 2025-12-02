@@ -43,6 +43,8 @@ export default class TypeSelector {
         this.htmlParent.html(this.getOptions().map(option => option.html()).join(''));
         this.htmlParent.val(this.typeRef);
         this.htmlParent.on('change', e => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
             this.typeRef = '' + this.htmlParent.val();
             this.callback(this.typeRef);
         });

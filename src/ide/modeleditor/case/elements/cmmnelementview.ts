@@ -28,6 +28,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     private _highlighter?: Highlighter;
     private _halo?: Halo;
     private html_id: string = Util.createID(this.definition.id + '-'); // Copy definition id into a fixed internal html_id property to have a stable this.html search function
+    private elementColor: string = '#423d3d'; // Default color of the element, used to restore color after selection
 
     /**
      * Creates a new CMMNElementView within the case having the corresponding definition and x, y coordinates
@@ -154,12 +155,14 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         const size = this.shape.size;
         const attrs: dia.Element.Attributes = util.merge({}, defaultAttrs, this.markupAttributes);
         this.xyz_joint = new dia.Element({ type, markup, position, size, attrs });
+        this.elementColor = attrs.body.stroke;
 
         // Directly embed into parent
         if (this.parent && this.parent.xyz_joint) {
             this.parent.xyz_joint.embed(this.xyz_joint);
         }
         this.xyz_joint.on('change:position', (e: any) => {
+            this.moving(this.position.x, this.position.y);
             this.shape.x = this.position.x;
             this.shape.y = this.position.y;
         });
@@ -369,7 +372,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
             this.__renderBoundary(true);
         } else {
             // Give ourselves default color again.
-            this.xyz_joint.attr('body/stroke', '#423d3d');
+            this.xyz_joint.attr('body/stroke', this.elementColor);
             this.propertiesView.hide();
             this.__renderBoundary(false);
         }
@@ -402,6 +405,22 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Hook indicating that 'resizing' completed.
      */
     resized() { }
+
+    handleKeyboardNavigation(xMove: number, yMove: number) {
+        this.xyz_joint.translate(xMove, yMove);
+
+        const canvasPosition = this.case.canvas[0].getBoundingClientRect();
+        const underMouse = this.case.getItemUnderMouse(
+            new jQuery.Event('element:moved', {
+                clientX: this.position.x + canvasPosition.left,
+                clientY: this.position.y + canvasPosition.top
+            }),
+            this);
+
+        this.moved(this.position.x, this.position.y, underMouse && underMouse.shape.surrounds(this.shape) ? underMouse : this.parent!);
+
+        this.editor.completeUserAction();
+    }
 
     /**
      * Method invoked during move of an element. Enables enforcing move constraints (e.g. sentries cannot be placed in the midst of an element)

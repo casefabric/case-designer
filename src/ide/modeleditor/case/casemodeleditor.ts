@@ -102,7 +102,7 @@ export default class CaseModelEditor extends ModelEditor {
         this.__migrated = true;
     }
 
-    keyStrokeHandler(e: JQuery.KeyDownEvent) {
+    async keyStrokeHandler(e: JQuery.KeyDownEvent) {
         if (!this.case) {
             console.log("No case, but already pressing a key?! You're too quick ;)");
             return;
@@ -136,7 +136,13 @@ export default class CaseModelEditor extends ModelEditor {
                     // Arrow press should not have effect when you're in an input or textarea.
                     break;
                 }
-                return this.handleArrowPress(e.keyCode, visibleMovableEditor, selectedElement);
+
+                if (visibleMovableEditor || selectedElement) {
+                    e.preventDefault();
+                    this.handleArrowPress(e.keyCode, visibleMovableEditor, selectedElement);
+                    break;
+                }
+                break;
             case 97: //1;
                 break;
             case 98: //2;
@@ -158,7 +164,7 @@ export default class CaseModelEditor extends ModelEditor {
                 if (e.ctrlKey) { // Avoid the browser's save, and save the current model.
                     e.stopPropagation();
                     e.preventDefault();
-                    this.saveModel();
+                    await this.saveModel();
                 }
                 break;
             case 89: //y
@@ -181,7 +187,6 @@ export default class CaseModelEditor extends ModelEditor {
 
     /**
      * Handles pressing an arrow key. Moves either top editor or selected element around.
-     * @returns false if the event must be canceled, true if the arrow press was not handled.
      */
     handleArrowPress(keyCode: number, visibleMovableEditor?: MovableEditor, selectedElement?: CMMNElementView) {
         // 37: arrow left, 39: arrow right, 38: arrow up, 40: arrow down 
@@ -189,13 +194,10 @@ export default class CaseModelEditor extends ModelEditor {
         const yMove = (keyCode == 38 ? -1 : keyCode == 40 ? 1 : 0) * Grid.Size;
         if (visibleMovableEditor) {
             visibleMovableEditor.move(xMove, yMove);
-            return false;
-        } else if (selectedElement) {
-            selectedElement.xyz_joint.translate(xMove, yMove);
-            this.completeUserAction();
-            return false;
+        } else {
+            selectedElement?.handleKeyboardNavigation(xMove, yMove);
         }
-        return true;
+        return;
     }
 
     /**
@@ -206,11 +208,11 @@ export default class CaseModelEditor extends ModelEditor {
         if (this.trackChanges) {
             if (!this.autoSaveTimer) {
                 // console.warn("Setting the auto-save timer")
-                this.autoSaveTimer = window.setTimeout(() => {
+                this.autoSaveTimer = window.setTimeout(async () => {
                     // console.log("Removing timer and saving changes")
                     delete this.autoSaveTimer;
                     // Tell the repository to save
-                    this.saveModel();
+                    await this.saveModel();
                 }, 0);
             } else {
                 // console.warn("There is already an auto save timer in progress")
@@ -221,11 +223,11 @@ export default class CaseModelEditor extends ModelEditor {
     /**
      * to be used to save the current active model
      */
-    saveModel() {
+    async saveModel() {
         // Validate all models currently active in the ide
         if (this.case) {
             this.case.runValidation();
-            this.undoManager.saveCaseModel(this.case.caseDefinition, this.case.dimensions!);
+            await this.undoManager.saveDefinition(this.case.caseDefinition, this.case.dimensions!);
         }
     }
 

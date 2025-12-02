@@ -166,7 +166,7 @@ export default class ModelEditor {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
-    loadSource(source: string) {
+    async loadSource(source: string): Promise<void> {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
 
@@ -221,12 +221,14 @@ export default class ModelEditor {
 
     async refresh() {
         console.groupCollapsed(`Reloading editor of ${this.file}`);
-        await this.file.reload().then(() => {
+        await this.file.reload();
+        try {
             this._html.find(".fileNamelabel").text(this.label);
-            console.groupEnd();
             this.loadModel();
-        }).catch(error => {
-            this.ide.warning(error);
-        });
+        } catch (error) {
+            this.ide.warning(String(error));
+        } finally {
+            console.groupEnd();
+        }
     }
 }

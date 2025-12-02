@@ -11,6 +11,10 @@ import ModelEditorMetadata from "./modeleditor/modeleditormetadata";
 import ModelEditorRegistry from "./modeleditor/modeleditorregistry";
 import RemoteFileStorage from "./remotefilestorage";
 import SettingsEditor from "./settings/settingseditor";
+import StylesLoader from "./stylesloader";
+
+// First load all styles and then forget about it :(
+new StylesLoader();
 
 export default class IDE {
     editorRegistry: ModelEditorRegistry;
@@ -69,25 +73,6 @@ export default class IDE {
     /** @returns {JQuery<HTMLElement>} The element in which the editors can be added */
     get divModelEditors() {
         return this.main.divModelEditors;
-    }
-
-    /**
-     * 
-     * @returns fileName of the new model
-     */
-    async createNewModel(fileType: string, newModelName: string, newModelDescription: string): Promise<string> {
-        const editorMetadata = ModelEditorMetadata.types.find(type => type.fileType == fileType);
-        if (!editorMetadata) {
-            const msg = 'Cannot create new models of type ' + fileType;
-            console.error(msg);
-            this.danger(msg);
-            return Promise.reject(msg);
-        } else {
-            console.groupCollapsed(`Creating new ${fileType} ${newModelName}.${fileType}`);
-            const model = await editorMetadata.createNewModel(this, newModelName, newModelDescription);
-            console.groupEnd();
-            return model;
-        }
     }
 
     /**

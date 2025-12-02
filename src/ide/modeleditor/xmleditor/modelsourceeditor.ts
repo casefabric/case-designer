@@ -31,7 +31,7 @@ export default class ModelSourceEditor {
     /**
      * handle the change of all fields, create the xml and save
      */
-    importSource() {
+    async importSource() {
         if (this._changed == true) {
             const newSource = this._codeMirrorEditor.getValue();
             const data = XML.loadXMLString(newSource);
@@ -41,7 +41,7 @@ export default class ModelSourceEditor {
                 // setTimeout(() => this.editor.html.find('.model-source-tabs').tabs('option', 'active', 1), 100);
                 return;
             }
-            this.editor.loadSource(newSource);
+            await this.editor.loadSource(newSource);
         }
     }
 }
