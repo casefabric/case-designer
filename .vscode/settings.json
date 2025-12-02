@@ -4,6 +4,7 @@
         "editor.formatOnSave": false
     },
     "files.associations": {
+        "tsconfig.json": "plaintext", // Treat tsconfig.json as plaintext to disable formatting
         "idemain.ts": "plaintext" // Treat idemain.ts as plaintext to disable formatting
     },
     "[plaintext]": {

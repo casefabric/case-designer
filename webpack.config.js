@@ -1,9 +1,14 @@
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlBundlerPlugin = require('html-bundler-webpack-plugin');
-const { BannerPlugin } = require('webpack');
-const nodeExternals = require('webpack-node-externals');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import webpack from 'webpack';
+import nodeExternals from 'webpack-node-externals';
+
 const devMode = process.env.DEV_MODE ? process.env.DEV_MODE.trim().toLowerCase() === 'true' : false;
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class BuildPrinter {
     constructor(name) {
@@ -67,7 +72,7 @@ const ideResolvers = {
     },
 };
 
-module.exports = [
+export default [
 { // server
     entry: {
             server: './src/server/startserver.ts'
@@ -106,7 +111,7 @@ module.exports = [
     target: 'async-node',
     plugins: [
         addBuildHook(new BuildPrinter('repository')),
-        new BannerPlugin({
+        new webpack.BannerPlugin({
             banner: '#!/usr/bin/env node',
             raw: true,
         }),
