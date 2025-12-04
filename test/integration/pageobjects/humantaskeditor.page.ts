@@ -20,15 +20,21 @@ export class HumantaskModelEditor {
     inputModelParameterNameInput(index: number) {
         return this.locator(`.model-input-parameters tbody > tr:nth-child(${index}) .inputParameterName`);
     }
+
     inputModelParameterTypeSelect(index: number) {
-        return this.locator(`.model-input-parameters tbody > tr:nth-child(${index}) select.inputParameterType`);
+        const selectLocator = this.locator(`.model-input-parameters tbody > tr:nth-child(${index}) select.inputParameterType`);
+        selectLocator.click(); // options are loaded upon focus
+        return selectLocator;
     }
 
     outputModelParameterNameInput(index: number) {
         return this.locator(`.model-output-parameters tbody > tr:nth-child(${index}) .inputParameterName`);
     }
+
     outputModelParameterTypeSelect(index: number) {
-        return this.locator(`.model-output-parameters tbody > tr:nth-child(${index}) select.inputParameterType`);
+        const selectLocator = this.locator(`.model-output-parameters tbody > tr:nth-child(${index}) select.inputParameterType`);
+        selectLocator.click(); // options are loaded upon focus
+        return selectLocator;
     }
 }
 

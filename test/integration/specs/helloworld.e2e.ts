@@ -59,7 +59,6 @@ async function buildSendResponseHumantask(greetingTypeName: string) {
 
     await HumantaskModelEditor.descriptionInput.addValue('Documentation about SendResponse');
     await HumantaskModelEditor.inputModelParameterNameInput(1).addValue('Greeting');
-    await HumantaskModelEditor.inputModelParameterTypeSelect(1).waitForDisplayed();
     await HumantaskModelEditor.inputModelParameterTypeSelect(1).selectByVisibleText(greetingTypeName);
 
     await HumantaskModelEditor.outputModelParameterNameInput(1).addValue('Response');
