@@ -1,38 +1,33 @@
 import $ from "jquery";
 import DragData from "../../../dragdrop/dragdata";
-import ShapeBoxDragData from "../../../modeleditor/case/shapebox/shapeboxdragdata";
-import CaseView from "../elements/caseview";
-import ElementRegistry, { ElementMetadata } from "./elementregistry";
+import ModelCanvas from "../modelcanvas";
+import ElementMetadata from "./elementmetadata";
+import ElementRegistry from "./elementregistry";
+import ShapeBoxDragData from "./shapeboxdragdata";
 
 export default class ShapeBox {
-    case: CaseView;
-    html: JQuery<HTMLElement>;
     dragData?: ShapeBoxDragData;
     htmlContainer: JQuery<HTMLUListElement>;
 
     /**
-     * Box that has the CMMN shapes that are available for dragging to the canvas
+     * Box that has the shapes that are available for dragging to the canvas
      */
-    constructor(cs: CaseView, htmlElement: JQuery<HTMLElement>) {
-        ElementRegistry.initialize();
-        this.case = cs;
-        this.html = htmlElement;
-
-        const html = $(
+    constructor(private canvas: ModelCanvas, typeRegistry: ElementRegistry, public html: JQuery<HTMLElement>) {
+        const innerhtml = $(
             `<div>
-    <div class="formheader">
-        <label>Shapes</label>
-    </div>
-    <div class="shapesbody">
-        <ul class="list-group"></ul>
-    </div>
-</div>`);
-        this.html.append(html);
+                <div class="formheader">
+                    <label>Shapes</label>
+                </div>
+                <div class="shapesbody">
+                    <ul class="list-group"></ul>
+                </div>
+            </div>`);
+        this.html.append(innerhtml);
         //stop ghost image dragging, stop text and html-element selection
-        html.on('pointerdown', e => e.preventDefault());
-        this.htmlContainer = html.find('ul');
+        innerhtml.on('pointerdown', e => e.preventDefault());
+        this.htmlContainer = innerhtml.find('ul');
         // add shapes from element registry that have an image.
-        ElementRegistry.viewMetadata.filter(shapeType => shapeType.hasImage).forEach(shapeType => {
+        typeRegistry.viewMetadata.filter(shapeType => shapeType.hasImage).forEach(shapeType => {
             const description = shapeType.typeDescription;
             const imgURL = shapeType.smallImage;
             const html = $(`<li class="list-group-item" title="${description}">
@@ -47,7 +42,7 @@ export default class ShapeBox {
      * Registers a drop handler with the repository browser.
      * If an item from the browser is moved over the canvas, elements can register a drop handler
      */
-    setDropHandler(dropHandler:(dragData: ShapeBoxDragData) => void, filter?: (dragData: ShapeBoxDragData) => boolean) {
+    setDropHandler(dropHandler: (dragData: ShapeBoxDragData) => void, filter?: (dragData: ShapeBoxDragData) => boolean) {
         if (this.dragData) this.dragData.setDropHandler(<(dragData: DragData) => void>dropHandler, <(dragData: DragData) => boolean>filter);
     }
 
@@ -64,7 +59,7 @@ export default class ShapeBox {
      * 
      */
     handleMouseDown(e: JQuery.TriggeredEvent, shapeType: ElementMetadata) {
-        this.case.clearSelection();
-        this.dragData = new ShapeBoxDragData(this, shapeType.cmmnElementType, shapeType.typeDescription, shapeType.smallImage);
+        this.canvas.clearSelection();
+        this.dragData = new ShapeBoxDragData(this, shapeType.elementType, shapeType.typeDescription, shapeType.smallImage);
     }
 }

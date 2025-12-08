@@ -1,6 +1,6 @@
 import { Element } from "../../../../util/xml";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import CaseTeamDefinition from "./caseteamdefinition";
 
 export default class CaseRoleDefinition extends CMMNElementDefinition {

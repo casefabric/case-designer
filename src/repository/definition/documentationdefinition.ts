@@ -2,17 +2,17 @@ import XML, { Element } from "../../util/xml";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 
-export default class CMMNDocumentationDefinition extends ElementDefinition {
+export default class DocumentationDefinition extends ElementDefinition {
     textFormat: string;
     text: string;
-    static createDocumentationElement(importNode: Element|undefined, modelDefinition: ModelDefinition, parent?: ElementDefinition) {
+    static createDocumentationElement(importNode: Element | undefined, modelDefinition: ModelDefinition, parent?: ElementDefinition) {
         if (importNode === undefined) {
             importNode = modelDefinition.createImportNode('documentation');
             if (parent && parent.importNode) {
                 parent.importNode.appendChild(importNode);
             }
         }
-        return new CMMNDocumentationDefinition(importNode, modelDefinition, parent);
+        return new DocumentationDefinition(importNode, modelDefinition, parent);
     }
 
     constructor(importNode: Element, definition: ModelDefinition, parent?: ElementDefinition) {

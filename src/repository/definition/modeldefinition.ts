@@ -1,7 +1,7 @@
 import Util from "../../util/util";
 import XML, { Document, Element } from "../../util/xml";
 import ServerFile from "../serverfile/serverfile";
-import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
+import DocumentationDefinition from "./documentationdefinition";
 import ElementDefinition from "./elementdefinition";
 import TypeCounter from "./typecounter";
 import XMLSerializable from "./xmlserializable";
@@ -11,7 +11,7 @@ import XMLSerializable from "./xmlserializable";
  */
 export default abstract class ModelDefinition extends XMLSerializable {
     modelDefinition: this;
-    private __documentation?: CMMNDocumentationDefinition;
+    private __documentation?: DocumentationDefinition;
     private __migrated: boolean = false;
     private static getImportNode(file: ServerFile): Element {
         if (!file.xml) {
@@ -62,7 +62,7 @@ export default abstract class ModelDefinition extends XMLSerializable {
     parseDocumentationElement() {
         const documentationElement = XML.getChildByTagName(this.importNode, 'documentation');
         if (documentationElement) {
-            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(documentationElement, this, undefined);
+            this.__documentation = DocumentationDefinition.createDocumentationElement(documentationElement, this, undefined);
         }
         // Now check whether or not to convert the deprecated 'description' attribute
         const description = this.parseAttribute('description');
@@ -73,11 +73,11 @@ export default abstract class ModelDefinition extends XMLSerializable {
     }
 
     /**
-     * @returns {CMMNDocumentationDefinition}
+     * @returns {DocumentationDefinition}
      */
     get documentation() {
         if (!this.__documentation) {
-            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(undefined, this, undefined);
+            this.__documentation = DocumentationDefinition.createDocumentationElement(undefined, this, undefined);
         }
         return this.__documentation;
     }

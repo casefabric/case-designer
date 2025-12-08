@@ -1,17 +1,17 @@
 import { shapes } from '@joint/core';
 import CanvasElement from "../canvaselement";
-import CMMNElementView from "../cmmnelementview";
+import ElementView from '../elementview';
 import Coordinates from "./coordinates";
 
 export default class TemporaryConnector extends CanvasElement<shapes.standard.Link> {
-    source: CMMNElementView;
+    source: ElementView;
     link: shapes.standard.Link;
 
     /**
      * Creates a temporary connector (=link in jointJS) from the source to a set of target coordinates
      */
-    constructor(source: CMMNElementView, coordinates: Coordinates) {
-        super(source.case);
+    constructor(source: ElementView, coordinates: Coordinates) {
+        super(source.canvas);
         this.source = source;
 
         this.link = this.xyz_joint = new shapes.standard.Link({
@@ -29,7 +29,7 @@ export default class TemporaryConnector extends CanvasElement<shapes.standard.Li
                 }
             },
         });
-        this.link.addTo(this.case.graph);
+        this.link.addTo(this.canvas.graph);
     }
 
     mouseEnter(): void { }

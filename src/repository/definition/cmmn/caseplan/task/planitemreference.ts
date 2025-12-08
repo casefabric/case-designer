@@ -1,7 +1,7 @@
 import { Element } from "../../../../../util/xml";
-import CMMNElementDefinition from "../../../cmmnelementdefinition";
 import XMLSerializable from "../../../xmlserializable";
 import CaseDefinition from "../../casedefinition";
+import CMMNElementDefinition from "../../cmmnelementdefinition";
 import PlanItem from "../planitem";
 
 /**
@@ -15,7 +15,7 @@ export default class PlanItemReference extends CMMNElementDefinition {
     }
 
     get task(): PlanItem {
-        return <PlanItem> this.modelDefinition.getElement(this.taskRef, PlanItem);
+        return <PlanItem>this.modelDefinition.getElement(this.taskRef, PlanItem);
     }
 
     adopt(task: PlanItem) {

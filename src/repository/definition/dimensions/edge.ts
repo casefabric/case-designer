@@ -31,7 +31,7 @@ export default class Edge extends DiagramElement {
         return element.id === this.sourceId || element.id === this.targetId;
     }
 
-    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    updateReferences<MD extends ModelDefinition>(element: ElementDefinition<MD>, oldId: string, newId: string, oldName: string, newName: string) {
         if (this.sourceId === oldId) {
             this.sourceId = newId;
         }

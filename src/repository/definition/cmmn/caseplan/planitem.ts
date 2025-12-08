@@ -1,10 +1,10 @@
 import Util from "../../../../util/util";
 import { Element } from "../../../../util/xml";
 import Validator from "../../../validate/validator";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import { ReferenceSet } from "../../references/referenceset";
 import CaseDefinition from "../casedefinition";
 import CaseRoleReference from "../caseteam/caserolereference";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import CriterionDefinition from "../sentry/criteriondefinition";
 import EntryCriterionDefinition from "../sentry/entrycriteriondefinition";
 import ExitCriterionDefinition from "../sentry/exitcriteriondefinition";

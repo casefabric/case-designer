@@ -1,11 +1,11 @@
 import { Element } from "../../../../util/xml";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ParameterDefinition from "../../contract/parameterdefinition";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
 import TaskDefinition from "../caseplan/task/taskdefinition";
 import TaskParameterDefinition from "../caseplan/task/taskparameterdefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import ExpressionDefinition from "../expression/expressiondefinition";
 
 export default class ParameterMappingDefinition extends UnnamedCMMNElementDefinition {
@@ -99,7 +99,7 @@ export default class ParameterMappingDefinition extends UnnamedCMMNElementDefini
         return this._implementationParameter;
     }
 
-    set implementationParameter(parameter: ParameterDefinition | undefined ) {
+    set implementationParameter(parameter: ParameterDefinition | undefined) {
         this._implementationParameter = parameter;
         if (this.isInputMapping) {
             this.target = parameter;

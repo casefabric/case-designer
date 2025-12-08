@@ -1,7 +1,6 @@
 import CaseFile from "../../serverfile/casefile";
 import Validator from "../../validate/validator";
 import TextAnnotationDefinition from "../artifact/textannotation";
-import CMMNElementDefinition from "../cmmnelementdefinition";
 import GraphicalModelDefinition from "../graphicalmodeldefinition";
 import Migrator from "../migration/cmmn/migrator";
 import ParameterizedModelDefinition from "../parameterizedmodeldefinition";
@@ -9,6 +8,7 @@ import CaseFileDefinition from "./casefile/casefiledefinition";
 import CasePlanDefinition from "./caseplan/caseplandefinition";
 import PlanItem from "./caseplan/planitem";
 import CaseTeamDefinition from "./caseteam/caseteamdefinition";
+import CMMNElementDefinition from "./cmmnelementdefinition";
 import CaseParameterDefinition from "./contract/caseparameterdefinition";
 import StartCaseSchemaDefinition from "./startcaseschemadefinition";
 

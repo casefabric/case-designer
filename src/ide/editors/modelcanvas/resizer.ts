@@ -1,12 +1,11 @@
 ﻿import $ from "jquery";
-import Grid from "../../editors/graphical/grid";
 import HtmlUtil from "../../util/htmlutil";
-import CMMNElementView from "./elements/cmmnelementview";
+import ElementView from "./elementview";
+import Grid from "./grid";
 
 type ResizeDirection = 'nw' | 'n' | 'ne' | 'w' | 'e' | 'sw' | 's' | 'se';
 
 export default class Resizer {
-    element: CMMNElementView;
     html: JQuery<HTMLElement>;
     scrollListener: (e: JQuery.Event) => void;
     startX!: number;
@@ -20,11 +19,8 @@ export default class Resizer {
 
     /**
      * Implements the resizer object for the element
-     * @param element CMMNElementView
      */
-    constructor(element: CMMNElementView) {
-        this.element = element;
-
+    constructor(public element: ElementView) {
         // Create global event listeners for proper attach/detach to the scrolling of the paper
         this.scrollListener = (e: JQuery.Event) => this.setPosition();
 
@@ -32,7 +28,7 @@ export default class Resizer {
         this.html = $(`<div class="resizebox" element="${this.element.id}">
     <div class="fence"></div>
 </div>`);
-        this.element.case.resizeContainer.append(this.html);
+        this.element.canvas.resizeContainer.append(this.html);
 
         // Add the corner resize handles, nw = north west etc
         if ((this.element as any).__resizable) {
@@ -55,9 +51,9 @@ export default class Resizer {
         if (visible) {
             this.setPosition();
             this.setSize();
-            this.element.case.paperContainer.on('scroll', this.scrollListener);
+            this.element.canvas.paperContainer.on('scroll', this.scrollListener);
         } else {
-            this.element.case.paperContainer.off('scroll', this.scrollListener);
+            this.element.canvas.paperContainer.off('scroll', this.scrollListener);
         }
         const visibility = visible ? 'block' : 'none';
         this.html.css('display', visibility);
@@ -69,8 +65,8 @@ export default class Resizer {
      */
     setPosition() {
         // Compensate the position of the resizer for the scroll of the paper container
-        const leftScroll = this.element.case.paperContainer.scrollLeft() || 0;
-        const topScroll = this.element.case.paperContainer.scrollTop() || 0;
+        const leftScroll = this.element.canvas.paperContainer.scrollLeft() || 0;
+        const topScroll = this.element.canvas.paperContainer.scrollTop() || 0;
         const resizerLeft = this.element.shape.x - leftScroll;
         const resizerTop = this.element.shape.y - topScroll;
 
@@ -88,9 +84,9 @@ export default class Resizer {
 
     /**
      * Handles the moving of an element to position the resizer around the element
-     * This event handler is invoked from case.js
+     * This event handler is invoked from modelcanvas.ts
      */
-    handleMoveElement(elementView: CMMNElementView, e: JQuery.Event, x: number, y: number) {
+    handleMoveElement(elementView: ElementView, e: JQuery.Event, x: number, y: number) {
         this.setPosition();
     }
 
@@ -139,7 +135,7 @@ export default class Resizer {
         const eW = jointElement.size().width;
         const eH = jointElement.size().height;
 
-        const coor = this.element.case.getCursorCoordinates(e);
+        const coor = this.element.canvas.getCursorCoordinates(e);
 
         // Depending on the selected handle the element should resize differently
         // Determine the new position/size of the element AND resizer
@@ -243,7 +239,7 @@ export default class Resizer {
         // Tell the element that it has been resized
         this.element.resized();
 
-        this.element.case.editor.completeUserAction();
+        this.element.canvas.editor.completeUserAction();
     }
 
     addResizeHandles(...handles: ResizeDirection[]) {

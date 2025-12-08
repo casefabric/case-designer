@@ -13,12 +13,12 @@ export default class CaseFileItemOnPartDefinition extends OnPartDefinition<CaseF
     constructor(importNode: Element, caseDefinition: CaseDefinition, public parent: CriterionDefinition) {
         super(importNode, caseDefinition, parent);
     }
-    
+
     parseStandardEvent(value: string): StandardEvent {
         return CaseFileItemTransition.parse(value);
     }
 
-    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    updateReferences<MD extends ModelDefinition>(element: ElementDefinition<MD>, oldId: string, newId: string, oldName: string, newName: string) {
         if (this.sourceRef.references(oldId)) {
             this.sourceRef.update(newId);
         }

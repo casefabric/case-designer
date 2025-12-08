@@ -13,10 +13,11 @@ import ProcessFile from "../../../../repository/serverfile/processfile";
 import Util from "../../../../util/util";
 import CaseFileItemDragData from "../../../dragdrop/casefileitemdragdata";
 import ServerFileDragData from "../../../dragdrop/serverfiledragdata";
+import ElementView from "../../../editors/modelcanvas/elementview";
+import CaseCanvas from "./casecanvas";
+import CaseElementView from "./caseelementview";
 import CaseFileItemView from "./casefileitemview";
 import CaseTaskView from "./casetaskview";
-import CaseView from "./caseview";
-import CMMNElementView from "./cmmnelementview";
 import StageDecoratorBox from "./decorator/box/stagedecoratorbox";
 import PlanItemHalo from "./halo/cmmn/planitemhalo";
 import HumanTaskView from "./humantaskview";
@@ -33,27 +34,27 @@ import UserEventView from "./usereventview";
 export default class StageView<SD extends StageDefinition = StageDefinition> extends TaskStageView<SD> {
     static create(stage: StageView, x: number, y: number): StageView {
         const definition = stage.definition.createPlanItem(StageDefinition);
-        const shape = stage.case.diagram.createShape(x, y, 420, 140, definition.id);
-        return new StageView(stage.case, stage, definition, shape);
+        const shape = stage.canvas.diagram.createShape(x, y, 420, 140, definition.id);
+        return new StageView(stage.canvas, stage, definition, shape);
     }
 
-    constructor(cs: CaseView, parent: CMMNElementView | undefined, definition: SD, shape: ShapeDefinition) {
-        super(cs, parent, definition, shape);
+    constructor(canvas: CaseCanvas, parent: CaseElementView | undefined, definition: SD, shape: ShapeDefinition) {
+        super(canvas, parent, definition, shape);
         this.definition.planItems.forEach(planItem => this.addPlanItem(planItem));
     }
 
     setDropHandlers() {
         super.setDropHandlers();
         // allow for dropping tasks directly from repository browser ...
-        this.case.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData), dragData => dragData.file instanceof CaseFile || dragData.file instanceof HumanTaskFile || dragData.file instanceof ProcessFile);
+        this.canvas.editor.ide.repositoryBrowser.setDropHandler(dragData => this.addTaskModel(dragData), dragData => dragData.file instanceof CaseFile || dragData.file instanceof HumanTaskFile || dragData.file instanceof ProcessFile);
         // ... and case file items to be dropped from the cfiEditor
-        this.case.cfiEditor.setDropHandler(dragData => this.addCaseFileItem(dragData));
+        this.canvas.cfiEditor.setDropHandler(dragData => this.addCaseFileItem(dragData));
     }
 
     removeDropHandlers() {
         super.removeDropHandlers();
-        this.case.editor.ide.repositoryBrowser.removeDropHandler();
-        this.case.cfiEditor.removeDropHandler();
+        this.canvas.editor.ide.repositoryBrowser.removeDropHandler();
+        this.canvas.cfiEditor.removeDropHandler();
     }
 
     /**
@@ -66,8 +67,8 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
             return;
         }
 
-        const coor = this.case.getCursorCoordinates(evt);
-        this.__addCMMNChild(CaseFileItemView.create(this, coor.x, coor.y, dragData.item));
+        const coor = this.canvas.getCursorCoordinates(evt);
+        this.__addChildElement(CaseFileItemView.create(this, coor.x, coor.y, dragData.item));
     }
 
     /**
@@ -94,7 +95,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
     resetChildren() {
         const currentChildren = this.__childElements;
         // Only other plan items, case file items and textboxes can move in/out of us. Not planning tables or sentries.
-        const allCaseItems = this.case.items.filter(item => !item.isPlanningTable && !item.isCriterion);
+        const allCaseItems = this.canvas.items.filter(item => !item.isPlanningTable && !item.isCriterion);
         // Create a collection of items we surround visually, but only the "top-level", not their children.
         const visuallySurroundedItems = allCaseItems.filter(item => this.surrounds(item) && !this.surrounds(item.parent));
         // Former children: those that are currently a descendant, but that we no longer surround visually.
@@ -110,7 +111,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
     /**
      * Determines whether this stage visually surrounds the cmmn element.
      */
-    surrounds(other: CMMNElementView | undefined) {
+    surrounds(other: CaseElementView | undefined) {
         // Note: this method is added here instead of directly invoking shape.surrounds because logic is different at caseplan level, so caseplan can override.
         return other && this.shape.surrounds(other.shape);
     }
@@ -120,7 +121,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
         this.resetChildren();
     }
 
-    moved(x: number, y: number, newParent: CMMNElementView) {
+    moved(x: number, y: number, newParent: CaseElementView) {
         super.moved(x, y, newParent);
         this.resetChildren();
     }
@@ -145,13 +146,13 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
         // Only add the new plan item if we do not yet visualize it
         if (!this.__childElements.find(planItemView => planItemView.definition.id == definition.id)) {
             // Check whether we can find a shape for the definition.
-            const shape = this.case.diagram.getShape(definition);
+            const shape = this.canvas.diagram.getShape(definition);
             if (!shape) {
                 console.warn(`Error: missing shape definition for ${definition.constructor.name} named "${definition.name}" with id "${definition.id}"`);
                 return;
             }
             // Add a view based on the definition with its shape
-            return this.__addCMMNChild(this.createPlanItemView(definition, shape));
+            return this.__addChildElement(this.createPlanItemView(definition, shape));
         }
     }
 
@@ -166,7 +167,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
         } else if (definition instanceof ProcessTaskDefinition) {
             return new ProcessTaskView(this, definition, shape);
         } else if (definition instanceof StageDefinition) {
-            return new StageView(this.case, this, definition, shape);
+            return new StageView(this.canvas, this, definition, shape);
         } else if (definition instanceof MilestoneDefinition) {
             return new MilestoneView(this, definition, shape);
         } else if (definition instanceof UserEventDefinition) {
@@ -181,7 +182,7 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
     /**
      * Method invoked when a child is moved into this element from a different parent.
      */
-    adoptItem(childElement: CMMNElementView) {
+    adoptItem(childElement: CaseElementView) {
         const previousParent = childElement.parent;
         super.adoptItem(childElement);
         if (childElement.isPlanItem) {
@@ -212,15 +213,15 @@ export default class StageView<SD extends StageDefinition = StageDefinition> ext
         this.addPlanItem(definition);
     }
 
-    createCMMNChild(viewType: Function, x: number, y: number): CMMNElementView {
+    createChildView(viewType: Function, x: number, y: number): ElementView<any> {
         if (Util.isSubClassOf(PlanItemView, viewType)) {
-            return this.__addCMMNChild((viewType as any).create(this, x, y));
+            return this.__addChildElement((viewType as any).create(this, x, y));
         } else if (viewType == CaseFileItemView) {
-            return this.__addCMMNChild(CaseFileItemView.create(this, x, y));
+            return this.__addChildElement(CaseFileItemView.create(this, x, y));
         } else if (viewType == TextAnnotationView) {
-            return this.__addCMMNChild(TextAnnotationView.create(this, x, y));
+            return this.__addChildElement(TextAnnotationView.create(this, x, y));
         } else { // Could (should?) be sentry
-            return super.createCMMNChild(viewType, x, y);
+            return super.createChildView(viewType, x, y);
         }
     }
 

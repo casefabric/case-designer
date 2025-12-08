@@ -3,9 +3,9 @@ import ExternalReference from "../../../../repository/definition/references/exte
 import XML, { Element } from "../../../../util/xml";
 import Validator from "../../../validate/validator";
 import CaseTeamRoleDefinition from "../../caseteam/caseteamroledefinition";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import CaseRoleDefinition from "./caseroledefinition";
 import ExternalCaseRoleDefinition from "./externalcaseroledefinition";
 

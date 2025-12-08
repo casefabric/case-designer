@@ -44,6 +44,7 @@ export { default as CaseRoleDefinition } from "./repository/definition/cmmn/case
 export { default as CaseRoleReference } from "./repository/definition/cmmn/caseteam/caserolereference";
 export { default as CaseTeamDefinition } from "./repository/definition/cmmn/caseteam/caseteamdefinition";
 export { default as ExternalCaseRoleDefinition } from "./repository/definition/cmmn/caseteam/externalcaseroledefinition";
+export { default as CMMNElementDefinition } from "./repository/definition/cmmn/cmmnelementdefinition";
 export { default as CaseParameterDefinition } from "./repository/definition/cmmn/contract/caseparameterdefinition";
 export { default as InputMappingDefinition } from "./repository/definition/cmmn/contract/inputmappingdefinition";
 export { default as OutputMappingDefinition } from "./repository/definition/cmmn/contract/outputmappingdefinition";
@@ -60,8 +61,6 @@ export { default as PlanItemOnPartDefinition } from "./repository/definition/cmm
 export { default as ReactivateCriterionDefinition } from "./repository/definition/cmmn/sentry/reactivatecriteriondefinition";
 export { default as StandardEvent } from "./repository/definition/cmmn/sentry/standardevent";
 export { default as StartCaseSchemaDefinition } from "./repository/definition/cmmn/startcaseschemadefinition";
-export { default as CMMNDocumentationDefinition } from "./repository/definition/cmmndocumentationdefinition";
-export { default as CMMNElementDefinition } from "./repository/definition/cmmnelementdefinition";
 export { default as ParameterDefinition } from "./repository/definition/contract/parameterdefinition";
 export { default as Bounds } from "./repository/definition/dimensions/bounds";
 export { default as ConnectorStyle } from "./repository/definition/dimensions/connectorstyle";
@@ -72,6 +71,7 @@ export { default as Edge } from "./repository/definition/dimensions/edge";
 export { default as ShapeDefinition } from "./repository/definition/dimensions/shape";
 export { default as Vertex } from "./repository/definition/dimensions/vertex";
 export { default as DocumentableElementDefinition } from "./repository/definition/documentableelementdefinition";
+export { default as DocumentationDefinition } from "./repository/definition/documentationdefinition";
 export { default as ElementDefinition } from "./repository/definition/elementdefinition";
 export { default as CafienneImplementationDefinition } from "./repository/definition/extensions/cafienneimplementationdefinition";
 export { default as CMMNExtensionDefinition } from "./repository/definition/extensions/cmmnextensiondefinition";

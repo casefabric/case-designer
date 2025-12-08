@@ -1,13 +1,18 @@
 import $ from "jquery";
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
-import XMLSerializable from "../../../../../repository/definition/xmlserializable";
-import Util from "../../../../../util/util";
-import MovableEditor from "../../../../editors/movableeditor";
-import HtmlUtil from "../../../../util/htmlutil";
-import Images from "../../../../util/images/images";
-import CMMNElementView from "../cmmnelementview";
+import DocumentableElementDefinition from "../../../repository/definition/documentableelementdefinition";
+import ElementDefinition from "../../../repository/definition/elementdefinition";
+import GraphicalModelDefinition from "../../../repository/definition/graphicalmodeldefinition";
+import XMLSerializable from "../../../repository/definition/xmlserializable";
+import Util from "../../../util/util";
+import HtmlUtil from "../../util/htmlutil";
+import Images from "../../util/images/images";
+import MovableEditor from "../movableeditor";
+import ElementView from "./elementview";
 
-export default class Properties<V extends CMMNElementView = CMMNElementView> extends MovableEditor {
+export default class Properties<
+    GMD extends GraphicalModelDefinition = GraphicalModelDefinition,
+    V extends ElementView<DocumentableElementDefinition<GMD>> = ElementView<DocumentableElementDefinition<GMD>>>
+    extends MovableEditor<GMD, any> {
     id: string;
     pinned: boolean = false; //pinned determines whether a properties menu is pinned, pinned=true means that the menu stays on the same spot all the time
     htmlContainer!: JQuery<HTMLElement>;
@@ -17,7 +22,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
      */
     constructor(public view: V) {
         // console.log("Creating properties for " + view)
-        super(view.case);
+        super(view.canvas as any);
         this.id = 'propertiesmenu-' + view.id;
     }
 
@@ -34,7 +39,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
 
     renderHead() {
         this.html = $(
-`<div element="${this.view.name}" id="${this.id}" class="basicbox basicform properties ${this.view.constructor.name.toLowerCase()}-properties">
+            `<div element="${this.view.name}" id="${this.id}" class="basicbox basicform properties ${this.view.constructor.name.toLowerCase()}-properties">
     <div class="formheader">
         <label>${this.label}</label>
         <div class="propertiespin">
@@ -105,7 +110,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
         // Make us visible.
         this.visible = true;
         // Hide other properties editors (if they are not pinned)
-        this.case.items.filter(item => item != this.view).forEach(item => item.propertiesView.hide());
+        this.canvas.items.filter(item => item != this.view).forEach(item => item.propertiesView.hide());
 
         if (focusNameField) {
             this.htmlContainer.find('.cmmn-element-name').trigger('select');
@@ -124,7 +129,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
             const menuWidth: any = this.html.width();
             const menuHeight: any = this.html.height();
             const bdyHeight = $(document).height() || 0;
-            const canvasOffset = (this.view.case as any).svg.offset() || { left: 0, top: 0 };
+            const canvasOffset = this.view.canvas.svg.offset() || { left: 0, top: 0 };
 
             // compensate for paper offset and scroll
             let leftPosition = (eX ?? 0) - menuWidth + canvasOffset.left - 10;
@@ -204,7 +209,7 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
         this.addSeparator();
         this.addSeparator();
         const html = $(
-`<div class="propertyRule" title="Unique identifier of the element">
+            `<div class="propertyRule" title="Unique identifier of the element">
     <div class="cmmn-element-id">${this.view.definition.id}</div>
 </div>`);
         this.htmlContainer.append(html);
@@ -282,17 +287,17 @@ export default class Properties<V extends CMMNElementView = CMMNElementView> ext
     /**
      * Method invoked after a role or case file item has changed
      */
-    refreshReferencingFields(definitionElement: CMMNElementDefinition) {
+    refreshReferencingFields(definitionElement: ElementDefinition) {
         if (this.visible) {
             this.show();
         }
     }
 
     /**
-     * Complete a change. Refreshes the CMMNElementView and saves the case model.
+     * Complete a change. Refreshes the CaseElementView and saves the case model.
      */
     done() {
         this.view.refreshView();
-        this.case.editor.completeUserAction();
+        this.canvas.editor.completeUserAction();
     }
 }

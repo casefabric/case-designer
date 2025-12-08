@@ -1,11 +1,11 @@
 import { Element } from "../../../../../../util/xml";
 import CaseDefinition from "../../../../cmmn/casedefinition";
 import ParameterMappingDefinition from "../../../../cmmn/contract/parametermappingdefinition";
-import CMMNElementDefinition from "../../../../cmmnelementdefinition";
 import CafienneImplementationDefinition from "../../../../extensions/cafienneimplementationdefinition";
 import HumanTaskModelDefinition from "../../../../humantask/humantaskmodeldefinition";
 import ProcessModelDefinition from "../../../../process/processmodeldefinition";
 import ExternalReference from "../../../../references/externalreference";
+import CMMNElementDefinition from "../../../cmmnelementdefinition";
 import HumanTaskDefinition from "../humantaskdefinition";
 import AssignmentDefinition from "./assignmentdefinition";
 import DueDateDefinition from "./duedatedefinition";

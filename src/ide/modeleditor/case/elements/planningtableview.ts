@@ -2,20 +2,20 @@
 import PlanningTableDefinition from "../../../../repository/definition/cmmn/caseplan/planning/planningtabledefinition";
 import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
 import Images from "../../../util/images/images";
-import CMMNElementView from "./cmmnelementview";
+import CaseElementView from "./caseelementview";
 import PlanningTableHalo from "./halo/cmmn/planningtablehalo";
 import PlanningTableProperties from "./properties/planningtableproperties";
 import StageView from "./stageview";
 import TaskStageView from "./taskstageview";
 
-export default class PlanningTableView extends CMMNElementView<PlanningTableDefinition> {
+export default class PlanningTableView extends CaseElementView<PlanningTableDefinition> {
     stage: TaskStageView;
 
     constructor(public parent: TaskStageView, definition: PlanningTableDefinition, shape: ShapeDefinition) {
-        super(parent.case, parent, definition, shape);
+        super(parent.canvas, parent, definition, shape);
         this.parent = parent;
         this.__resizable = false;
-        parent.__addCMMNChild(this);
+        parent.__addChildElement(this);
 
         this.stage = this.parent.isStage ? this.parent as StageView : this.parent.parent as StageView;
         // Now also render the discretionary items from the definition in our parent
@@ -70,7 +70,7 @@ export default class PlanningTableView extends CMMNElementView<PlanningTableDefi
         this.stage.refreshView();
     }
 
-    moved(x: number, y: number, newParent: CMMNElementView) {
+    moved(x: number, y: number, newParent: CaseElementView) {
     }
 
     /**
