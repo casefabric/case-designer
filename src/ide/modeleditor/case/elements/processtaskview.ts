@@ -5,14 +5,13 @@ import StageView from "./stageview";
 import TaskView from "./taskview";
 
 export default class ProcessTaskView extends TaskView {
-    definition: ProcessTaskDefinition;
 
     /**
      * Create a new ProcessTaskView at the given coordinates.
      */
     static create(stage: StageView, x: number, y: number): ProcessTaskView {
         const definition = stage.definition.createPlanItem(ProcessTaskDefinition);
-        const shape = stage.case.diagram.createShape(x, y, 140, 80, definition.id);
+        const shape = stage.canvas.diagram.createShape(x, y, 140, 80, definition.id);
         return new ProcessTaskView(stage, definition, shape);
     }
 
@@ -21,7 +20,6 @@ export default class ProcessTaskView extends TaskView {
      */
     constructor(parent: StageView, definition: ProcessTaskDefinition, shape: ShapeDefinition) {
         super(parent, definition, shape);
-        this.definition = definition;
     }
 
     getImplementationList() {

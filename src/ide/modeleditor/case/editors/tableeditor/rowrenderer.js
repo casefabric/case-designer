@@ -1,5 +1,5 @@
 import $ from "jquery";
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmn/cmmnelementdefinition";
 import HtmlUtil from "../../../../util/htmlutil";
 import TableRenderer from "./tablerenderer";
 

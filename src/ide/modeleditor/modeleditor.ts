@@ -18,7 +18,7 @@ export default abstract class ModelEditor {
     constructor(public ide: IDE, public file: ServerFile) {
         this.ide.editorRegistry.add(this);
         this._html = $(
-`<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
+            `<div class="model-editor-base" editor="${this.constructor.name}" model="${this.fileName}">
     <div class="model-editor-header">
         <label class="fileNamelabel">${this.label}</label>
         <div class="refreshButton" title="Refresh">
@@ -64,14 +64,14 @@ export default abstract class ModelEditor {
         return this.file.fileName;
     }
 
-    registerMovableEditor(editor: MovableEditor) {
+    registerMovableEditor(editor: MovableEditor<any>) {
         this.movableEditors.push(editor);
     }
 
     /**
      * Make sure the editor is on top of the others
      */
-    selectMovableEditor(editor: MovableEditor) {
+    selectMovableEditor(editor: MovableEditor<any>) {
         Util.removeFromArray(this.movableEditors, editor);
         this.movableEditors.push(editor);
         // Now reset z-index of editors, oldest at bottom, newest (this) at top.
@@ -81,9 +81,9 @@ export default abstract class ModelEditor {
     /**
      * Give the editor an (initial) position
      */
-    positionMovableEditor(editor: MovableEditor) {
+    positionMovableEditor(editor: MovableEditor<any>) {
         const newPosition = editor.html.offset();
-        if (! newPosition) return;
+        if (!newPosition) return;
         if (newPosition.left == 0) {
             newPosition.left = 220;
         }
@@ -98,7 +98,7 @@ export default abstract class ModelEditor {
         this.movableEditors.forEach(sibling => {
             if (sibling != editor && sibling.html.css('display') == 'block') {
                 const editorOffset = sibling.html.offset();
-                if (! editorOffset) return;
+                if (!editorOffset) return;
 
                 const leftMargin = editorOffset.left - MINIMUM_MARGIN_BETWEEN_EDITORS;
                 const rightMargin = editorOffset.left + MINIMUM_MARGIN_BETWEEN_EDITORS;
@@ -125,7 +125,7 @@ export default abstract class ModelEditor {
             }
             if ((newPosition.top + editorHeight) > bodyHeight) {
                 newPosition.top = Math.max(0, bodyHeight - editorHeight - MINIMUM_MARGIN_BETWEEN_EDITORS);
-            }    
+            }
         }
 
         editor.html.css('top', newPosition.top);
@@ -172,6 +172,10 @@ export default abstract class ModelEditor {
         console.warn('This method must be implemented in ' + this.constructor.name);
     }
 
+    saveModel() {
+        throw new Error('This method must be implemented in ' + this.constructor.name);
+    }
+
     loadModel() {
         throw new Error('This method must be implemented in ' + this.constructor.name);
     }
@@ -207,7 +211,7 @@ export default abstract class ModelEditor {
         this.html.css('display', visible ? 'block' : 'none');
         if (visible) {
             $(document.body).off('keydown', this.keyStrokeListener);
-            $(document.body).on('keydown', this.keyStrokeListener);    
+            $(document.body).on('keydown', this.keyStrokeListener);
             this.onShow();
             this.ide.coverPanel.visible = false;
         } else {

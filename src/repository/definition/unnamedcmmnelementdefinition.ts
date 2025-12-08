@@ -1,4 +1,4 @@
-import CMMNElementDefinition from "./cmmnelementdefinition";
+import CMMNElementDefinition from "./cmmn/cmmnelementdefinition";
 
 /**
  * Simple helper class to support specific extension <cafienne:implementation>  

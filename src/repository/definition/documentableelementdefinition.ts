@@ -1,10 +1,10 @@
 import XML, { Element } from "../../util/xml";
-import CMMNDocumentationDefinition from "./cmmndocumentationdefinition";
+import DocumentationDefinition from "./documentationdefinition";
 import ElementDefinition from "./elementdefinition";
 import ModelDefinition from "./modeldefinition";
 
 export default class DocumentableElementDefinition<M extends ModelDefinition> extends ElementDefinition<M> {
-    private __documentation?: CMMNDocumentationDefinition;
+    private __documentation?: DocumentationDefinition;
     /**
      * Creates an XML element that can be referred to by the value of the name or id attribute of the underlying XML element.
      * 
@@ -13,7 +13,7 @@ export default class DocumentableElementDefinition<M extends ModelDefinition> ex
         super(importNode, modelDefinition, parent);
         const documentationElement = XML.getChildByTagName(this.importNode, 'documentation');
         if (documentationElement) {
-            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(documentationElement, this.modelDefinition, this);
+            this.__documentation = DocumentationDefinition.createDocumentationElement(documentationElement, this.modelDefinition, this);
         }
         // Now check whether or not to convert the deprecated 'description' attribute
         const description = this.parseAttribute('description');
@@ -24,11 +24,11 @@ export default class DocumentableElementDefinition<M extends ModelDefinition> ex
     }
 
     /**
-     * @returns {CMMNDocumentationDefinition}
+     * @returns {DocumentationDefinition}
      */
     get documentation() {
         if (!this.__documentation) {
-            this.__documentation = CMMNDocumentationDefinition.createDocumentationElement(undefined, this.modelDefinition, this);
+            this.__documentation = DocumentationDefinition.createDocumentationElement(undefined, this.modelDefinition, this);
         }
         return this.__documentation;
     }

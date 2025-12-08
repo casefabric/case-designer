@@ -1,7 +1,7 @@
 import XML, { Element } from "../../../../util/xml";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 
 export default class ExpressionDefinition extends UnnamedCMMNElementDefinition {
     body: string;
@@ -34,6 +34,5 @@ export default class ExpressionDefinition extends UnnamedCMMNElementDefinition {
         const bodyElement = XML.createChildElement(this.exportNode, 'body');
         const bodyCDataNode = this.exportNode.ownerDocument.createCDATASection(this.body);
         bodyElement.appendChild(bodyCDataNode);
-        
     }
 }

@@ -1,8 +1,8 @@
 'use strict';
 
 import $ from "jquery";
+import CMMNElementDefinition from "../../../../../repository/definition/cmmn/cmmnelementdefinition";
 import CaseParameterDefinition from "../../../../../repository/definition/cmmn/contract/caseparameterdefinition";
-import CMMNElementDefinition from "../../../../../repository/definition/cmmnelementdefinition";
 import TableEditor, { RowEditor, TableEditorColumn } from "../tableeditor/tableeditor";
 
 export default class BindingRefinementEditor extends TableEditor {
@@ -31,7 +31,7 @@ export default class BindingRefinementEditor extends TableEditor {
                 new TableEditorColumn('Case File Item', '100px', 'Case File Item', ''),
                 new TableEditorColumn('Binding Refinement', '460px', 'Binding Refinement', 'taskparameterbindingrefinementcol'),
                 new TableEditorColumn('Task Parameter', '100px', 'Name of the task input parameter', 'taskparameternamecol')
-            ];    
+            ];
         } else {
             return [
                 new TableEditorColumn('Task Parameter', '100px', 'Name of the task output parameter', 'taskparameternamecol'),
@@ -58,7 +58,7 @@ export default class BindingRefinementEditor extends TableEditor {
             return new BindingRefinementRenderer(this, parameter);
         }
     }
-    
+
     refresh() {
         if (this._html) {
             this.renderForm();
@@ -109,6 +109,6 @@ class BindingRefinementRenderer extends RowEditor {
      * @returns {CaseParameterDefinition}
      */
     createElement() {
-        return this.editor.case.caseDefinition.createDefinition(CaseParameterDefinition);
+        return this.editor.canvas.caseDefinition.createDefinition(CaseParameterDefinition);
     }
 }

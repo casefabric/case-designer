@@ -1,11 +1,11 @@
 import { Element } from "../../../../util/xml";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ParameterDefinition from "../../contract/parameterdefinition";
 import ElementDefinition from "../../elementdefinition";
 import ModelDefinition from "../../modeldefinition";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemDef from "../casefile/casefileitemdef";
 import CaseFileItemReference from "../casefile/casefileitemreference";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import ExpressionDefinition from "../expression/expressiondefinition";
 
 export default class CaseParameterDefinition extends ParameterDefinition<CaseDefinition> {
@@ -18,11 +18,11 @@ export default class CaseParameterDefinition extends ParameterDefinition<CaseDef
         this.bindingRefinement = this.parseElement('bindingRefinement', ExpressionDefinition);
     }
 
-    referencesElement<X extends ModelDefinition>(element: ElementDefinition<X>) {
+    referencesElement<MD extends ModelDefinition>(element: ElementDefinition<MD>) {
         return element.id === this.bindingRef.getDefinition()?.id;
     }
 
-    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    updateReferences<MD extends ModelDefinition>(element: ElementDefinition<MD>, oldId: string, newId: string, oldName: string, newName: string) {
         if (this.bindingRef.references(oldId)) {
             this.bindingRef.update(newId);
             // Check if we also need to update the parameter name (assuming that a same name)

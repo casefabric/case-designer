@@ -2,10 +2,10 @@ import Util from "../../../../util/util";
 import XML, { Element } from "../../../../util/xml";
 import Validator from "../../../validate/validator";
 import CaseFileDefinitionDefinition from "../../cfid/casefileitemdefinitiondefinition";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ExternalReference from "../../references/externalreference";
 import Multiplicity from "../../type/multiplicity";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import CaseFileItemTransition from "./casefileitemtransition";
 
 export class CaseFileItemCollection extends CMMNElementDefinition {

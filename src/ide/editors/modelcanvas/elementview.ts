@@ -1,26 +1,29 @@
 import { dia, util } from '@joint/core';
-import CMMNDocumentationDefinition from "../../../../repository/definition/cmmndocumentationdefinition";
-import CMMNElementDefinition from "../../../../repository/definition/cmmnelementdefinition";
-import Edge from "../../../../repository/definition/dimensions/edge";
-import ShapeDefinition from "../../../../repository/definition/dimensions/shape";
-import Remark from "../../../../repository/validate/remark";
-import Util from "../../../../util/util";
-import Grid from "../../../editors/graphical/grid";
-import CaseModelEditor from "../casemodeleditor";
-import Highlighter from "../highlighter";
-import Marker from "../marker";
-import Resizer from "../resizer";
+import Edge from '../../../repository/definition/dimensions/edge';
+import ShapeDefinition from "../../../repository/definition/dimensions/shape";
+import DocumentableElementDefinition from "../../../repository/definition/documentableelementdefinition";
+import DocumentationDefinition from '../../../repository/definition/documentationdefinition';
+import ElementDefinition from '../../../repository/definition/elementdefinition';
+import GraphicalModelDefinition from '../../../repository/definition/graphicalmodeldefinition';
+import Remark from "../../../repository/validate/remark";
+import Util from "../../../util/util";
+import ModelEditor from '../../modeleditor/modeleditor';
 import CanvasElement from "./canvaselement";
-import CaseView from "./caseview";
-import Connector from "./connector/connector";
+import Connector from './connector/connector';
+import Grid from "./grid";
 import Halo from "./halo/halo";
-import Properties from "./properties/properties";
+import Highlighter from "./highlighter";
+import Marker from "./marker";
+import ModelCanvas from './modelcanvas';
+import Properties from "./properties";
+import Resizer from "./resizer";
 
-export default abstract class CMMNElementView<D extends CMMNElementDefinition = CMMNElementDefinition> extends CanvasElement<dia.Element> {
-    readonly case: CaseView;
-    protected editor: CaseModelEditor;
+export default abstract class ElementView<
+    D extends DocumentableElementDefinition<GraphicalModelDefinition> = DocumentableElementDefinition<GraphicalModelDefinition>>
+    extends CanvasElement<dia.Element> {
+    protected editor: ModelEditor;
     protected __connectors: Connector[] = [];
-    protected __childElements: CMMNElementView[] = [];
+    protected __childElements: ElementView[] = [];
     protected __resizable: boolean = true;
     private __properties?: Properties;
     private _resizer?: Resizer;
@@ -31,17 +34,16 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     private elementColor: string = '#423d3d'; // Default color of the element, used to restore color after selection
 
     /**
-     * Creates a new CMMNElementView within the case having the corresponding definition and x, y coordinates
+     * Creates a new CaseElementView within the case having the corresponding definition and x, y coordinates
      */
-    constructor(cs: CaseView, public parent: CMMNElementView | undefined, public definition: D, public shape: ShapeDefinition) {
-        super(cs);
+    constructor(canvas: ModelCanvas, public parent: ElementView | undefined, public definition: D, public shape: ShapeDefinition) {
+        super(canvas);
         if (!shape) {
             console.warn(`${this.constructor.name}[${definition.id}] does not have a shape`);
         }
 
-        this.case = cs;
-        this.case.items.push(this);
-        this.editor = this.case.editor;
+        this.canvas.items.push(this);
+        this.editor = this.canvas.editor;
         if (this.parent) {
             this.parent.__childElements.push(this);
         }
@@ -77,7 +79,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         // Source taken from https://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string
         // Could also use jquery.escapeSelector, but this method is only from jquery 3 onwards, which is not in this jointjs (?)
         const jquerySelector = '#' + this.html_id.replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
-        return this.case.svg!.find(jquerySelector);
+        return this.canvas.svg!.find(jquerySelector);
     }
 
     /**
@@ -104,7 +106,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * to render documentation, but there the "definition" refers may not be present.
      * Through this method CaseFileItemView shape can override the getter.
      */
-    get documentation(): CMMNDocumentationDefinition {
+    get documentation(): DocumentationDefinition {
         return this.definition.documentation;
     }
 
@@ -116,9 +118,9 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     }
 
     /**
-     * Determines whether or not the cmmn element is our parent or another ancestor of us.
+     * Determines whether or not the element is our parent or another ancestor of us.
      */
-    hasAncestor(potentialAncestor: CMMNElementView): boolean {
+    hasAncestor(potentialAncestor: ElementView): boolean {
         if (!potentialAncestor) return false;
         if (!this.parent) return false;
         if (this.parent === potentialAncestor) return true;
@@ -173,7 +175,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Determines whether the cursor is near the element, i.e., within a certain range of 'distance' pixels around this element.
      * Used to show/hide the halo of the element.
      * distance is a parameter to distinguish between moving from within to outside the element, or moving from outside towards the element.
-     * In case.js, moving towards an element is "near" when within 10px, moving out of an element can be done up to 40px. 
+     * In modelcanvas.ts, moving towards an element is "near" when within 10px, moving out of an element can be done up to 40px. 
      * 
      */
     nearElement(e: JQuery.Event, distance: number) {
@@ -205,34 +207,34 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Method invoked when mouse hovers on the element
      */
     setDropHandlers() {
-        this.case.shapeBox.setDropHandler(dragData => this.addElementView(dragData.shapeType, dragData.event!), dragData => this.__canHaveAsChild(dragData.shapeType));
+        this.canvas.shapeBox.setDropHandler(dragData => this.addElementView(dragData.shapeType, dragData.event!), dragData => this.__canHaveAsChild(dragData.shapeType));
     }
 
     /**
      * Method invoked when mouse leaves the element.
      */
     removeDropHandlers() {
-        this.case.shapeBox.removeDropHandler();
+        this.canvas.shapeBox.removeDropHandler();
     }
 
     /**
      * Adds a new shape in this element with the specified shape type.
      */
-    addElementView(viewType: Function, e: JQuery.Event | JQuery<MouseEvent>): CMMNElementView {
-        const coor = this.case.getCursorCoordinates(e);
-        const cmmnElement = this.createCMMNChild(viewType, Grid.snap(coor.x), Grid.snap(coor.y));
+    addElementView(viewType: Function, e: JQuery.Event | JQuery<MouseEvent>): ElementView {
+        const coor = this.canvas.getCursorCoordinates(e);
+        const element = this.createChildView(viewType, Grid.snap(coor.x), Grid.snap(coor.y));
         // Now select the newly added element
-        this.case.selectedElement = cmmnElement;
+        this.canvas.selectedElement = element;
         // Show properties of new element
-        cmmnElement.propertiesView.show(true);
-        return cmmnElement;
+        element.propertiesView.show(true);
+        return element;
     }
 
     /**
-     * Creates a cmmn child under this element with the specified type, and renders it at the given position.
-     * @returns the newly created CMMN child
+     * Creates a child under this element with the specified type, and renders it at the given position.
+     * @returns the newly created child
      */
-    createCMMNChild(viewType: Function, x: number, y: number): CMMNElementView {
+    createChildView(viewType: Function, x: number, y: number): ElementView {
         throw new Error('Cannot create an element of type' + viewType.name);
     }
 
@@ -240,7 +242,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Informs the element to render again after a change to the underlying definition has happened.
      */
     refreshView() {
-        if (this.case.loading) {
+        if (this.canvas.loading) {
             // No refreshing when still loading.
             //  This method is being invoked from Connector's constructor when case is being loaded
             // NOTE: overrides of this method should actually also check the same flag (not all of them do...)
@@ -282,7 +284,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     }
 
     /**
-     * Returns the "nice" type description of this CMMN Element.
+     * Returns the "nice" type description of this Element.
      * Sub classes must implement this, otherwise an error is thrown.
      */
     get typeDescription(): string {
@@ -303,7 +305,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * Method invoked after a role or case file item has changed
      */
-    refreshReferencingFields(definitionElement: CMMNElementDefinition) {
+    refreshReferencingFields(definitionElement: ElementDefinition) {
         this.propertiesView.refreshReferencingFields(definitionElement);
     }
 
@@ -409,8 +411,8 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     handleKeyboardNavigation(xMove: number, yMove: number) {
         this.xyz_joint.translate(xMove, yMove);
 
-        const canvasPosition = this.case.canvas[0].getBoundingClientRect();
-        const underMouse = this.case.getItemUnderMouse(
+        const canvasPosition = this.canvas.canvas[0].getBoundingClientRect();
+        const underMouse = this.canvas.getItemUnderMouse(
             new jQuery.Event('element:moved', {
                 clientX: this.position.x + canvasPosition.left,
                 clientY: this.position.y + canvasPosition.top
@@ -430,8 +432,8 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * Hook indicating that 'moving' completed.
      */
-    moved(x: number, y: number, newParent?: CMMNElementView) {
-        // Check if this element can serve as a new parent for the cmmn element
+    moved(x: number, y: number, newParent?: ElementView) {
+        // Check if this element can serve as a new parent for the element
         if (newParent && newParent.__canHaveAsChild(this.constructor) && newParent != this.parent) {
             // check if new parent is allowed
             this.changeParent(newParent);
@@ -441,14 +443,14 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * Adds an element to another element, implements element.__addElement
      */
-    __addCMMNChild(cmmnChildElement: CMMNElementView): CMMNElementView {
-        return this.case.__addElement(cmmnChildElement);
+    __addChildElement<V extends ElementView>(childElement: V): V {
+        return this.canvas.__addElement(childElement);
     }
 
     /**
      * When a item is moved from one stage to another, this method is invoked
      */
-    changeParent(newParent: CMMNElementView) {
+    changeParent(newParent: ElementView) {
         if (this.parent) this.parent.releaseItem(this);
         newParent.adoptItem(this);
     }
@@ -457,7 +459,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Adds the item to our list of children, and embeds it in the joint structure of this element.
      * It is an existing item in the case.
      */
-    adoptItem(childElement: CMMNElementView) {
+    adoptItem(childElement: ElementView) {
         childElement.parent = this;
         this.__childElements.push(childElement);
         this.xyz_joint.embed(childElement.xyz_joint);
@@ -472,7 +474,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Removes the imte from our list of children, and also unembeds it from the joint structure.
      * Does not delete the item.
      */
-    releaseItem(childElement: CMMNElementView) {
+    releaseItem(childElement: ElementView) {
         this.xyz_joint.unembed(childElement.xyz_joint);
         Util.removeFromArray(this.__childElements, childElement);
     }
@@ -481,10 +483,10 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      * Method invoked on all case elements upon removal of an element.
      * If there are references to the element to be removed, it can be handled here.
      */
-    __removeReferences(cmmnElement: CMMNElementView) {
-        if (cmmnElement.parent == this) {
+    __removeReferences(element: ElementView) {
+        if (element.parent == this) {
             // Perhaps also render the parent again?? Since this element about to be deleted ...
-            Util.removeFromArray(this.__childElements, cmmnElement);
+            Util.removeFromArray(this.__childElements, element);
         }
     }
 
@@ -493,8 +495,8 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
      */
     __delete() {
         // Deselect ourselves if we are selected, to avoid invocation of __select(false) after we have been removed.
-        if (this.case.selectedElement == this) {
-            this.case.selectedElement = undefined;
+        if (this.canvas.selectedElement == this) {
+            this.canvas.selectedElement = undefined;
         }
 
         // First, delete our children.
@@ -508,7 +510,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         this.__connectors.forEach(connector => connector.remove());
 
         // Next, inform other elements we're gonna go
-        this.case.items.forEach(cmmnElement => cmmnElement.__removeReferences(this));
+        this.canvas.items.forEach(element => element.__removeReferences(this));
 
         // Now remove our definition element from the case (overridden in CaseFileItemView, since that only needs to remove the shape)
         // Also let the definition side of the house know we're leaving
@@ -517,7 +519,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         console.groupEnd();
 
         // Delete us from the case
-        Util.removeFromArray(this.case.items, this);
+        Util.removeFromArray(this.canvas.items, this);
 
         // Finally remove the UI element as well. 
         this.xyz_joint.remove();
@@ -541,14 +543,14 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * creates a connector between the element and the target.
      */
-    __connect(target: CMMNElementView, edge?: Edge): Connector {
+    __connect(target: ElementView, edge?: Edge): Connector {
         if (!edge) {
-            edge = this.case.dimensions.createEdge(this.definition, target.definition);
+            edge = this.canvas.dimensions.createEdge(this.definition, target.definition);
         }
-        const connector = new Connector(this, target, edge);
+        const connector = this.canvas.__createConnector(this, target, edge!);
 
         // Render the connector in the case.
-        this.case.__addConnector(connector);
+        this.canvas.__addConnector(connector);
 
         // Inform both source and target about this new connector; just adds it to their connector collections.
         this.__addConnector(connector);
@@ -557,7 +559,7 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         this.adoptOutgoingConnector(connector);
         // And inform target that source has connected to it
         target.adoptIncomingConnector(connector);
-        this.case.editor.completeUserAction();
+        this.canvas.editor.completeUserAction();
         return connector;
     }
 
@@ -583,14 +585,14 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     }
 
     /**
-     * This method is invoked on the element if it created a connection to the target CMMNElementView
+     * This method is invoked on the element if it created a connection to the target CaseElementView
      */
-    __connectTo(target: CMMNElementView) { }
+    __connectTo(target: ElementView) { }
 
     /**
-     * This method is invoked on the element if a connection to it was made from the source CMMNElementView
+     * This method is invoked on the element if a connection to it was made from the source CaseElementView
      */
-    __connectFrom(source: CMMNElementView) { }
+    __connectFrom(source: ElementView) { }
 
     /**
      * Removes a connector from the registration in this element.
@@ -602,14 +604,14 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     /**
      * returns an array of elements that are connected (through a link/connector) with this element
      */
-    __getConnectedElements(): CMMNElementView[] {
-        const connectedCMMNElements: CMMNElementView[] = [];
+    __getConnectedElements(): ElementView[] {
+        const connectedElements: ElementView[] = [];
         this.__connectors.forEach(connector => {
-            if (!connectedCMMNElements.find(cmmnElement => connector.source == cmmnElement || connector.target == cmmnElement)) {
-                connectedCMMNElements.push(connector.source == this ? connector.target : connector.source);
+            if (!connectedElements.find(element => connector.source == element || connector.target == element)) {
+                connectedElements.push(connector.source == this ? connector.target : connector.source);
             }
         });
-        return connectedCMMNElements;
+        return connectedElements;
     }
 
     /**
@@ -629,25 +631,9 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
     }
 
     /**
-     * Determine whether this element can have a criterion added with the specified type.
-     */
-    canHaveCriterion(criterionType: Function) {
-        return false;
-    }
-
-    /**
-     * Add a criterion to this element sourcing the incoming element.
-     * Default implementation is empty, task, stage, caseplan and milestone can override it.
-     */
-    createCriterionAndConnect(criterionType: Function, sourceElement: CMMNElementView, e: JQuery.Event) {
-        // Create a new criterion and add the source as an on part
-        this.addElementView(criterionType, e).adoptOnPart(sourceElement);
-    }
-
-    /**
      * Hook for sentries to override.
      */
-    adoptOnPart(sourceElement: CMMNElementView) { }
+    adoptOnPart(sourceElement: ElementView) { }
 
     /**
      * Hook for sentries to override.
@@ -669,83 +655,5 @@ export default abstract class CMMNElementView<D extends CMMNElementDefinition = 
         return this.__type;
     }
 
-    get isPlanItem() {
-        return false;
-    }
-
-    get isTask() {
-        return false;
-    }
-
-    get isTaskOrStage() {
-        return false;
-    }
-
-    get isMilestone() {
-        return false;
-    }
-
-    get isEventListener() {
-        return false;
-    }
-
-    get isUserEvent() {
-        return false;
-    }
-
-    get isTimerEvent() {
-        return false;
-    }
-
-    get isStage() {
-        return false;
-    }
-
-    get isCasePlan() {
-        return false;
-    }
-
-    get isCaseTask() {
-        return false;
-    }
-
-    get isProcessTask() {
-        return false;
-    }
-
-    get isHumanTask() {
-        return false;
-    }
-
-    get isCriterion() {
-        return false;
-    }
-
-    get isEntryCriterion() {
-        return false;
-    }
-
-    get isExitCriterion() {
-        return false;
-    }
-
-    get isReactivateCriterion() {
-        return false;
-    }
-
-    get isPlanningTable() {
-        return false;
-    }
-
-    get isCaseFileItem() {
-        return false;
-    }
-
-    get isTextAnnotation() {
-        return false;
-    }
-}
-function removeAtSign(text: string): any {
-    return text.replace(/@/g, '');
 }
 

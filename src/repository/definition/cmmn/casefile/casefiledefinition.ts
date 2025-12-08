@@ -1,11 +1,11 @@
 import { Element } from "../../../../util/xml";
 import Validator from "../../../validate/validator";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import SchemaPropertyDefinition from "../../type/schemapropertydefinition";
 import TypeDefinition from "../../type/typedefinition";
 import TypeReference from "../../type/typereference";
 import XMLSerializable from "../../xmlserializable";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import CaseFileItemDef, { CaseFileItemCollection } from "./casefileitemdef";
 import CaseFileItemTypeDefinition from "./casefileitemtypedefinition";
 

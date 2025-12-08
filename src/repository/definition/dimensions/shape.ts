@@ -30,7 +30,7 @@ export default class ShapeDefinition extends DiagramElement {
         return element.id === this.cmmnElementRef;
     }
 
-    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    updateReferences<MD extends ModelDefinition>(element: ElementDefinition<MD>, oldId: string, newId: string, oldName: string, newName: string) {
         if (this.cmmnElementRef === oldId) {
             this.cmmnElementRef = newId;
         }

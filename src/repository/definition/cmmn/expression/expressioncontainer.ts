@@ -1,12 +1,12 @@
 import { Element } from "../../../../util/xml";
 import Validator from "../../../validate/validator";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import ElementDefinition from "../../elementdefinition";
 import ModelDefinition from "../../modeldefinition";
 import UnnamedCMMNElementDefinition from "../../unnamedcmmnelementdefinition";
 import XMLSerializable from "../../xmlserializable";
 import CaseDefinition from "../casedefinition";
 import CaseFileItemReference from "../casefile/casefileitemreference";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import ExpressionDefinition from "./expressiondefinition";
 
 /**
@@ -32,7 +32,7 @@ export default abstract class ExpressionContainer extends UnnamedCMMNElementDefi
         }
 
         if (this.contextRef.isEmpty && this.body !== 'true' && this.body !== 'false') {
-            validator.raiseWarning(this.getContextElement(),  `${this.getContextDescription()} has no case file item context`);                
+            validator.raiseWarning(this.getContextElement(), `${this.getContextDescription()} has no case file item context`);
         }
     }
 
@@ -40,7 +40,7 @@ export default abstract class ExpressionContainer extends UnnamedCMMNElementDefi
         return this.contextRef.references(element);
     }
 
-    updateReferences<X extends ModelDefinition>(element: ElementDefinition<X>, oldId: string, newId: string, oldName: string, newName: string) {
+    updateReferences<MD extends ModelDefinition>(element: ElementDefinition<MD>, oldId: string, newId: string, oldName: string, newName: string) {
         if (this.contextRef.references(oldId)) {
             this.contextRef.update(newId);
         }

@@ -1,6 +1,6 @@
 import { Element } from "../../../../util/xml";
-import CMMNElementDefinition from "../../cmmnelementdefinition";
 import CaseDefinition from "../casedefinition";
+import CMMNElementDefinition from "../cmmnelementdefinition";
 import ExpressionContainer from "../expression/expressioncontainer";
 
 export default abstract class ConstraintDefinition extends ExpressionContainer {

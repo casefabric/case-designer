@@ -1,6 +1,6 @@
 import XML, { Element } from "../../../util/xml";
 import CaseDefinition from "../cmmn/casedefinition";
-import CMMNElementDefinition from "../cmmnelementdefinition";
+import CMMNElementDefinition from "../cmmn/cmmnelementdefinition";
 import ArtifactDefinition from "./artifactdefinition";
 
 export default class TextAnnotationDefinition extends ArtifactDefinition {

@@ -1,6 +1,6 @@
-import { Element } from "../../util/xml";
-import CaseDefinition from "./cmmn/casedefinition";
-import DocumentableElementDefinition from "./documentableelementdefinition";
+import { Element } from "../../../util/xml";
+import DocumentableElementDefinition from "../documentableelementdefinition";
+import CaseDefinition from "./casedefinition";
 
 export default class CMMNElementDefinition extends DocumentableElementDefinition<CaseDefinition> {
     /**
