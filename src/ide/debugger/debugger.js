@@ -8,6 +8,7 @@ import Settings from "../settings/settings";
 import RightSplitter from "../splitter/rightsplitter";
 import { $get } from "../util/ajax";
 import HtmlUtil from "../util/htmlutil";
+import Path from "../../util/path";
 
 /**
  * This class implements the logic to call the repository REST service to debug a case instance.
@@ -285,19 +286,27 @@ export default class Debugger extends StandardForm {
 
     detectParentActor() {
         this.parentActorId = '';
-        const parents = this.events.filter(event => event.content.parentActorId)
-        if (parents.length) {
-            this.parentActorId = parents[parents.length - 1].content.parentActorId;
+        if (this.events.length == 0) return;
+        if (this.events[0].content?.modelEvent?.actor) {
+            const path = Path.parse(this.events[0].content.modelEvent.actor);
+            if (path.hasParent()) {
+                this.parentActorId = path.parent.value;
+            }
         } else {
-            // Check if there is a case with a business identifier named '__ttp__boardId__'
-            //  and if that is not found, check if we're in a consent group created by a board (then the id ends with '-team')
-            const boards = this.events.filter(event => event.type === 'BusinessIdentifierSet' && event.content.name === '__ttp__boardId__')
-            if (boards.length) {
-                this.parentActorId = boards[0].content.value;
+            const parents = this.events.filter(event => event.content.parentActorId)
+            if (parents.length) {
+                this.parentActorId = parents[parents.length - 1].content.parentActorId;
             } else {
-                const currentActorId = this.html.find('.caseInstanceId').val().toString();
-                if (currentActorId.endsWith('-team')) {
-                    this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
+                // Check if there is a case with a business identifier named '__ttp__boardId__'
+                //  and if that is not found, check if we're in a consent group created by a board (then the id ends with '-team')
+                const boards = this.events.filter(event => event.type === 'BusinessIdentifierSet' && event.content.name === '__ttp__boardId__')
+                if (boards.length) {
+                    this.parentActorId = boards[0].content.value;
+                } else {
+                    const currentActorId = this.html.find('.caseInstanceId').val().toString();
+                    if (currentActorId.endsWith('-team')) {
+                        this.parentActorId = currentActorId.substring(0, currentActorId.length - 5);
+                    }
                 }
             }
         }
@@ -356,12 +365,28 @@ export default class Debugger extends StandardForm {
         const path = event.content.path;
         const paths = path ? path.split('/') : [];
 
+        if (event.type === 'ActorRequestDelivered' || event.type === 'ActorRequestStored') {
+            const pathString = event.content.receiver || event.content.sender;
+            if (pathString) {
+                const path = Path.parse(pathString);
+                if (!path.isEmpty()) {
+                    const pic = this.pics.find(p => p.content.planItemId === path.value);
+                    const planItemName = Path.parse(pic?.content.path || '').source;
+                    const planItemType = pic?.content.type.replace('Task', '').toLowerCase();
+
+                    const label = planItemType ? planItemType + ' task "' + planItemName + '"' : 'parent ' + path.name.toLowerCase();
+                    return `<span style="padding-left:2px"><a class="buttonShowCommunicationActorEvents">Load events of ${label}</a></span>`;
+                }
+            }
+        }
+
         if (this.showPathInformation && path) {
             return paths.length > 1 ? path.split('/').slice(1).join('/') : path;
         }
 
         if (event.content.messages && event.content.messages['1']) {
-            return `<b style='text-align:center'>${event.content.messages['1'].type}</b>`;
+            const commandType = event.content.messages['1'].type || event.content.messages['1'].metadata.type;
+            return `<b style='text-align:center'>${commandType}</b>`;
         }
 
         const planItemId = event.content.planItemId || event.content.taskId;
@@ -489,6 +514,10 @@ export default class Debugger extends StandardForm {
         this.eventTable.find('tr').on('click', e => this.selectEvent(this.findEvent(e.currentTarget) || this.selectedEvent)); // Note, if clicking outside an event, do not change selection.
         this.eventTable.find('input[filter]').on('change', e => this.searchWith(e));
         this.eventTable.find('.buttonShowSubEvents').on('click', e => this.showSubEvents(e.currentTarget));
+        this.eventTable.find('.buttonShowCommunicationActorEvents').on('click', e => {
+            e.stopImmediatePropagation();
+            this.showCommunicationActorEvents(e.currentTarget)
+        });
         this.eventTable.find('.buttonCopyEventDefinition').on('click', e => this.copyEventDefinition(e.currentTarget));
 
         if (this.eventTable.width() < this.eventTable.find('table').width()) {
@@ -535,6 +564,16 @@ export default class Debugger extends StandardForm {
         // New task events carry planItemId, but older ones may still have taskId filled instead, so also trying that.
         this.html.find('.caseInstanceId').val(event.content.planItemId || event.content.taskId || event.content.team || event.content.flowId);
         this.showEvents();
+    }
+
+    showCommunicationActorEvents(btn) {
+        const event = this.findEvent(btn);
+        const path = event.content.receiver || event.content.sender;
+        if (path) {
+            const actorId = Path.parse(path).value;
+            this.html.find('.caseInstanceId').val(actorId);
+            this.showEvents();
+        }
     }
 
     showParentEvents() {
