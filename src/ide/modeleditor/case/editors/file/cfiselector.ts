@@ -32,7 +32,7 @@ export default class CFISelector extends Dialog {
     renderCaseFileItem(item: CaseFileItemDef, container: JQuery<HTMLElement>) {
         if (item instanceof CaseFileItemTypeDefinition) {
             // Only render complex properties, not the primitive children.
-            if (item.property && !item.property.isComplexType) {
+            if (item.property && (!item.property.isSelected || !item.property.isComplexType)) {
                 return;
             }
         }

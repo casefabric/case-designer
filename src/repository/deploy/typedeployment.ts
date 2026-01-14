@@ -42,7 +42,7 @@ class Schema {
         this.element = schemaElement;
         this.id = parent.getAttribute('id') || '';
         this.name = parent.getAttribute('name') || '';
-        this.properties = XML.getChildrenByTagName(this.element, 'property').map(property => new Property(this, property));
+        this.properties = XML.getChildrenByTagName(this.element, 'property').map(property => new Property(this, property)).filter(property => property.isSelected !== 'false');
     }
 
     createCFID(id: string = this.id) {
@@ -74,6 +74,7 @@ class Property {
     format: string;
     multiplicity: string;
     isBusinessIdentifier: string;
+    isSelected: string;
     objectSchema?: Schema;
 
     constructor(public schema: Schema, public element: Element) {
@@ -83,6 +84,7 @@ class Property {
         this.format = element.getAttribute('format') || '';
         this.multiplicity = element.getAttribute('multiplicity') || '';
         this.isBusinessIdentifier = element.getAttribute('isBusinessIdentifier') || '';
+        this.isSelected = element.getAttribute('isSelected') || '';
 
         if (this.hasTypeReference) {
             // Also get a pointer to the schema of the child type
@@ -119,7 +121,7 @@ class Property {
     }
 
     get isProperty(): boolean {
-        return !this.objectSchema;
+        return !this.objectSchema && !this.hasTypeReference;
     }
 
     get CMMNType(): string {

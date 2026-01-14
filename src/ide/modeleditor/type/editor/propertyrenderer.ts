@@ -26,8 +26,11 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
     htmlContainer!: JQuery<HTMLElement>;
     typeSelector!: TypeSelector;
     inputPropertyName!: JQuery<HTMLElement>;
+    inputPropertySelector!: JQuery<HTMLElement>;
     propertyContainer!: JQuery<HTMLElement>;
     schemaRenderer?: SchemaRenderer;
+    schemaContainer!: JQuery<HTMLElement>;
+    collapseButton!: JQuery<HTMLElement>;
 
     constructor(public parent: SchemaRenderer, htmlParent: JQuery<HTMLElement>, localType: LocalTypeDefinition, public property: SchemaPropertyDefinition) {
         super(parent.editor, parent, localType, property, htmlParent);
@@ -44,28 +47,20 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
         this.propertyContainer.removeClass('property-selected');
     }
 
-    renderComplexOrPrimitiveTypeStyle() {
-        if (this.property.isComplexType) {
-            this.propertyContainer.addClass('complex-type');
-            this.propertyContainer.removeClass('primitive-type');
-        } else {
-            this.propertyContainer.addClass('primitive-type');
-            this.propertyContainer.removeClass('complex-type');
-        }
-    }
-
     refresh() {
         HtmlUtil.clearHTML(this.htmlContainer);
         this.render();
     }
 
     render() {
+        const optionalSelection = this.definition.isOptional ? `\n<input class="inputSelectProperty" style="display:none;width:12px;position:relative;top:4px" ${this.definition.isSelected ? 'checked' : ''} title="Select property" type="checkbox" />` : '';
+
         this.htmlContainer = $(
             `<div>
                 <div class='property-container' title="${this.path}">
                     <div class="input-name-container">
-                        <label class="btnCollapse" style="display:none;width:12px" expanded="0">${collapseSign}</label>
-                        <img class="cfi-icon" src="${Shapes.CaseFileItem}"></img>
+                        <label class="btnCollapse" style="display:none;width:12px" ExpansionState="expanded">${collapseSign}</label>
+                        <img class="cfi-icon" src="${Shapes.CaseFileItem}"></img>${optionalSelection}
                         <input class="inputPropertyName"  type="text" readonly value="${this.property.name}" />
                         <div class="action-icon-container">
                             <img class="action-icon delete-icon" src="${Images.Delete}" title="Delete ..."/>
@@ -85,15 +80,102 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
                         <input type="checkbox" class="checkboxBusinessIdentifier" ${this.property.isBusinessIdentifier ? ' checked' : ''} />
                     </div>
                 </div>
-                <div class="property-children-container schema-container"></div>
+                <div class="property-children-container schema-container">
+                </div>
             </div>`
         );
         this.html.append(this.htmlContainer);
         this.inputPropertyName = this.htmlContainer.find('.inputPropertyName');
+        this.inputPropertySelector = this.htmlContainer.find('.inputSelectProperty');
         this.propertyContainer = this.htmlContainer.find('.property-container');
-
+        this.schemaContainer = this.htmlContainer.find('.property-children-container');
+        this.collapseButton = this.htmlContainer.find('.btnCollapse');
+        this.addTypeSelector();
+        this.renderContainer();
         this.attachEventHandlers();
-        this.renderComplexTypeProperty();
+    }
+
+    addTypeSelector() {
+        this.typeSelector = new TypeSelector(this.editor.ide.repository, this.htmlContainer.find('.selectType'), this.property.cmmnType, (typeRef: string) => this.changeType(typeRef), true, [TypeOption.NEW]);
+    }
+
+    get isExpanded(): boolean {
+        return this.collapseButton.attr('ExpansionState') === 'expanded';
+    }
+
+    changeExpansionState() {
+        const plus = this.isExpanded ? 'collapsed' : 'expanded';
+        const newSign = plus === 'collapsed' ? expandSign : collapseSign;
+        this.collapseButton.html(newSign);
+        this.collapseButton.attr('ExpansionState', plus);
+        this.renderContainer();
+    }
+
+    changeSelection(selected: boolean) {
+        this.changeProperty('isSelected', selected);
+        this.renderContainer();
+    }
+
+    async renderContainer() {
+        await this.renderPropertyContent();
+    }
+
+    async renderPropertyContent() {
+        // Clear previous content of the schema container (if present)
+        // HtmlUtil.clearHTML(this.schemaContainer);
+        this.schemaContainer.css('display', 'none');
+        this.inputPropertySelector.css('display', 'none'); // No option for primitive types
+
+        this.propertyContainer.removeClass('complex-type primitive-type');
+        if (this.property.isComplexType) {
+            this.collapseButton.css('display', '');
+            if (this.isExpanded && this.definition.isSelected) this.schemaContainer.css('display', 'block');
+            // if (this.definition.isSelected) this.schemaContainer.css('display', 'block');
+            this.propertyContainer.addClass('complex-type');
+            this.inputPropertySelector.css('display', ''); // Complex types can be selected/deselected
+
+            if (this.property.type === 'object' && this.property.schema) {
+                if (!this.schemaRenderer) {
+                    this.schemaRenderer = new SchemaRenderer(this.editor, this, this.schemaContainer, this.localType, this.property.schema);;
+                    this.schemaRenderer.render();
+                }
+            } else {
+                const typeRef = this.property.typeRef;
+                const typeFile = this.ide.repository.getTypes().find(type => type.fileName === typeRef);
+                if (typeFile) {
+                    const cycle = this.cycleDetected;
+                    if (!cycle) {
+                        const file: TypeFile = await this.ide.repository.load(typeRef);
+                        const nestedLocalType = this.localType.root?.registerLocalDefinition(file);
+                        if (nestedLocalType && this.definition.isSelected) {
+                            if (!this.schemaRenderer) {
+                                this.schemaRenderer = new SchemaRenderer(this.editor, this, this.schemaContainer, nestedLocalType);
+                                this.schemaRenderer.render();
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            this.propertyContainer.addClass('primitive-type');
+        }
+    }
+
+    get cycleDetected(): string {
+        return this.parent.hasCycle(this, this.property.typeRef);
+    }
+
+    updateCycleDetection() {
+        // Clear previous cycle detected message (if present)
+        this.htmlContainer.find('.selectType').parent().css('border', '');
+        this.htmlContainer.find('.selectType').attr('title', '');
+        const cycle = this.cycleDetected;
+        if (cycle && this.definition.isSelected) {
+            // const tooltip = `Cycle detected<br/><br/>${cycle}`;
+            // this.ide.danger(tooltip, 4000);
+            this.htmlContainer.find('.selectType').parent().css('border', '2px solid red');
+            this.htmlContainer.find('.selectType').attr('title', 'Cycle detected\n\n' + cycle);
+        }
     }
 
     attachEventHandlers() {
@@ -101,7 +183,6 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
         this.htmlContainer.find('.add-sibling-icon').on('click', e => this.editor.addSibling(e, this));
         this.htmlContainer.find('.delete-icon').on('click', e => this.removeProperty());
 
-        this.typeSelector = new TypeSelector(this.editor.ide.repository, this.htmlContainer.find('.selectType'), this.property.cmmnType, (typeRef: string) => this.changeType(typeRef), true, [TypeOption.NEW]);
         this.htmlContainer.find('.selectMultiplicity').on('change', e => this.changeProperty('multiplicity', Multiplicity.parse((e.currentTarget as any).value)));
         this.htmlContainer.find('.selectMultiplicity').val(this.property.multiplicity.toString());
         this.htmlContainer.find('.checkboxBusinessIdentifier').on('change', e => this.changeProperty('isBusinessIdentifier', (e.currentTarget as any).checked));
@@ -115,6 +196,9 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
                 this.editor.case.cfiEditor.startDragging(cfi);
             }
         });
+
+        this.inputPropertySelector.on('change', e => this.changeSelection((e.currentTarget as any).checked));
+
         // ??? Why is this here? this.htmlContainer.on('keydown', e => e.stopPropagation());
         this.inputPropertyName.on('change', e => this.changeName((e.currentTarget as any).value));
         this.inputPropertyName.on('keyup', e => {
@@ -132,25 +216,7 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
             this.editor.selectPropertyRenderer(this);
         });
 
-        const cb = this.htmlContainer.find('.btnCollapse');
-        const sc = this.htmlContainer.find('>.schema-container');
-        this.htmlContainer.find('.btnCollapse').on('click', e => {
-            const plus = cb.attr('expanded') === 'expanded' ? 'collapsed' : 'expanded';
-            const newSign = plus === 'collapsed' ? expandSign : collapseSign;
-            cb.html(newSign);
-            cb.attr('expanded', plus);
-            this.renderContainer();
-        });
-    }
-
-    renderContainer() {
-        const cb = this.htmlContainer.find('.btnCollapse');
-        const sc = this.htmlContainer.find('>.schema-container');
-        if (cb.attr('expanded') === 'collapsed') {
-            sc.css('display', 'none');
-        } else {
-            sc.css('display', 'block');
-        }
+        this.htmlContainer.find('.btnCollapse').on('click', e => this.changeExpansionState());
     }
 
     inputNameBlurHandler() {
@@ -160,47 +226,8 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
 
     inputNameFocusHandler() {
         if (this.editor.selectedPropertyRenderer === this) {
-            (this.inputPropertyName as any)?.removeAttr('readonly');
-            this.inputPropertyName.trigger('select');
-        }
-    }
-
-    async renderComplexTypeProperty() {
-        // Clear previous content of the schema container (if present)
-        const schemaContainer = this.htmlContainer.find('>.schema-container');
-        HtmlUtil.clearHTML(schemaContainer);
-        schemaContainer.css('display', 'none');
-        // Clear previous cycle detected message (if present)
-        this.htmlContainer.find('.selectType').css('border', '');
-        this.htmlContainer.find('.selectType').attr('title', '');
-        this.renderComplexOrPrimitiveTypeStyle();
-        if (this.property.isComplexType) {
-            this.htmlContainer.find('.btnCollapse').css('display', '');
-            if (this.property.type === 'object' && this.property.schema) {
-                this.schemaRenderer = new SchemaRenderer(this.editor, this, schemaContainer, this.localType, this.property.schema);;
-                this.schemaRenderer.render();
-
-            } else {
-                const typeRef = this.property.typeRef;
-                const typeFile = this.ide.repository.getTypes().find(type => type.fileName === typeRef);
-                if (typeFile) {
-                    const cycleDetected = this.parent.hasCycle(this, typeRef);
-                    if (cycleDetected) {
-                        const tooltip = `Cycle detected<br/><br/>${cycleDetected}`;
-                        this.ide.danger(tooltip, 4000);
-                        this.htmlContainer.find('.selectType').css('border', '2px solid red');
-                        this.htmlContainer.find('.selectType').attr('title', 'Cycle detected\n\n' + cycleDetected);
-                    } else {
-                        const file: TypeFile = await this.ide.repository.load(typeRef);
-                        const nestedLocalType = this.localType.root?.registerLocalDefinition(file);
-                        if (nestedLocalType) {
-                            this.schemaRenderer = new SchemaRenderer(this.editor, this, schemaContainer, nestedLocalType);
-                            this.schemaRenderer.render();
-                        }
-                    }
-                }
-            }
-            this.renderContainer();
+            (this.inputPropertyName as any)?.attr('readonly', false);
+            this.inputPropertyName.select();
         }
     }
 
@@ -236,29 +263,31 @@ export default class PropertyRenderer extends TypeRenderer<SchemaPropertyDefinit
         this.changeProperty('name', newName);
     }
 
+    dropSchemaRenderer() {
+        // console.log('Dropping schema renderer of ' + this.definition.typeRef + ' in ' + this.path);
+        HtmlUtil.clearHTML(this.schemaContainer);
+        this.schemaRenderer?.delete();
+        this.schemaRenderer = undefined;
+    }
+
     async changeType(newType: string) {
         if (newType === '<new>') {
             // If <new> is selected create a new Type in repository
             const newTypeModelName = this.__getUniqueTypeName(this.property.name);
             const typeModelEditorMetadata: TypeModelEditorMetadata = <TypeModelEditorMetadata>ModelEditorMetadata.types.find(type => type.fileType === 'type');
             if (typeModelEditorMetadata) {
-                const newTypeFileName = await typeModelEditorMetadata.createNewModel(this.ide, newTypeModelName, '');
-                this.htmlContainer.find('.selectType').first().val(newTypeFileName);
-                this.typeSelector.typeRef = newTypeFileName;
-                this.changeProperty('cmmnType', newTypeFileName);
-                await this.renderComplexTypeProperty();
-                // Trigger adding a new (empty) child for easy data entry
-                this.editor.addChild(jQuery.Event(''), this);
-            }
-        } else {
-            this.typeSelector.typeRef = newType;
-            this.changeProperty('cmmnType', newType);
-            await this.renderComplexTypeProperty();
-            if (newType === 'object') {
-                // Trigger adding a new (empty) child for easy data entry
-                this.editor.addChild(jQuery.Event(''), this);
+                newType = await typeModelEditorMetadata.createNewModel(this.ide, newTypeModelName, '');
+                this.htmlContainer.find('.selectType').first().val(newType);
+                this.typeSelector.typeRef = newType;
             }
         }
+        this.dropSchemaRenderer(); // Remove previous schema renderer (if present)
+        this.typeSelector.typeRef = newType;
+        this.changeProperty('cmmnType', newType);
+        await this.renderContainer();
+        this.updateCycleDetection();
+        // Trigger adding a new (empty) child for easy data entry
+        if (this.definition.isComplexType) this.editor.addChild(jQuery.Event(''), this);
     }
 
     /**

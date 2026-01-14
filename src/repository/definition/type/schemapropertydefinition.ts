@@ -13,6 +13,7 @@ export default class SchemaPropertyDefinition extends TypeDefinitionElement {
     format: string;
     multiplicity: Multiplicity;
     isBusinessIdentifier: boolean;
+    isSelected: boolean;
     schema?: SchemaDefinition;
 
     static get prefix(): string {
@@ -25,9 +26,14 @@ export default class SchemaPropertyDefinition extends TypeDefinitionElement {
         this.format = this.parseAttribute('format', '');
         this.multiplicity = this.parseTypedAttribute('multiplicity', Multiplicity.parse);
         this.isBusinessIdentifier = this.parseBooleanAttribute('isBusinessIdentifier', false);
+        this.isSelected = this.parseBooleanAttribute('isSelected', true);
         if (this.type === 'object') {
             this.schema = this.parseElement(SchemaDefinition.TAG, SchemaDefinition);
         }
+    }
+
+    get isOptional() {
+        return true;
     }
 
     get isNew() {
@@ -123,6 +129,9 @@ export default class SchemaPropertyDefinition extends TypeDefinitionElement {
         }
         if (this.isBusinessIdentifier) {
             this.exportNode.setAttribute('isBusinessIdentifier', 'true');
+        }
+        if (this.isComplexType && !this.isSelected) {
+            this.exportNode.setAttribute('isSelected', 'false');
         }
     }
 
