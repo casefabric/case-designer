@@ -1,7 +1,6 @@
 ﻿import $ from "jquery";
 import CaseFileItemTypeDefinition from "../../../../repository/definition/cmmn/casefile/casefileitemtypedefinition";
 import TypeDefinition from "../../../../repository/definition/type/typedefinition";
-import TypeDefinitionElement from "../../../../repository/definition/type/typedefinitionelement";
 import TypeFile from "../../../../repository/serverfile/typefile";
 import XML from "../../../../util/xml";
 import CodeMirrorConfig from "../../../editors/external/codemirrorconfig";
@@ -226,7 +225,7 @@ export default class TypeEditor {
     addProperty(e: any, insertAsSibling = false, from?: PropertyRenderer): PropertyRenderer | undefined {
         e.preventDefault();
         e.stopPropagation();
-        if (! this.quickEditMode) {
+        if (!this.quickEditMode) {
             // console.warn("Setting edit mode to true")    
             this.quickEditMode = true;
         }
@@ -238,7 +237,7 @@ export default class TypeEditor {
                 // for primitive types just add as a sibling instead;
                 newProperty = from.parent.addEmptyPropertyRenderer(from);
             } else {
-                if  (from.schemaRenderer) {
+                if (from.schemaRenderer) {
                     newProperty = from.schemaRenderer.addEmptyPropertyRenderer();
                 } else {
                     this.ide.warning('Not possible to add a child to a primitive type property', 3000);
@@ -248,12 +247,12 @@ export default class TypeEditor {
             if (insertAsSibling) {
                 newProperty = this.renderer?.addEmptyPropertyRenderer();
             } else {
-                this.ide.warning('Not possible to add a child here', 3000);               
+                this.ide.warning('Not possible to add a child here', 3000);
             }
         }
         if (newProperty) {
             this.selectPropertyRenderer(newProperty);
-            newProperty.inputNameFocusHandler();    
+            newProperty.inputNameFocusHandler();
         }
         return newProperty;
     }
@@ -267,17 +266,17 @@ export default class TypeEditor {
         }
     }
 
-    removeEmptyPropertyRenderers(renderer: TypeRenderer<TypeDefinitionElement> | undefined = this.renderer) {
+    removeEmptyPropertyRenderers(renderer: TypeRenderer | undefined = this.renderer) {
         renderer?.children.forEach(r => {
             this.removeEmptyPropertyRenderers(r);
             if (r instanceof PropertyRenderer) {
-                if (r.property.isNew && r != this.selectedPropertyRenderer ) {
+                if (r.property.isNew && r != this.selectedPropertyRenderer) {
                     r.removeProperty();
-                }    
-            }           
+                }
+            }
         });
     }
-    
+
     onShow() {
         //always start with editor tab
         this.htmlParent.find('.model-source-tabs').tabs('option', 'active', 0);

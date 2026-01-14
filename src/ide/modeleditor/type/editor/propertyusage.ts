@@ -13,7 +13,7 @@ export default class PropertyUsage {
         const getCaseReferences = (property: SchemaPropertyDefinition) => Util.removeDuplicates(property.getCaseFileItemReferences().map(cftd => cftd.searchInboundReferences()).flat());
 
         const getParentTypes = (typeFile: TypeFile, list: TypeFile[] = [typeFile]): TypeFile[] => {
-            typeFile.usage.filter(fileUsingType => fileUsingType instanceof TypeFile).map(file => <TypeFile> file).forEach(file => {
+            typeFile.usage.filter(fileUsingType => fileUsingType instanceof TypeFile).map(file => <TypeFile>file).forEach(file => {
                 if (list.indexOf(file) < 0) {
                     list.push(file);
                     getParentTypes(file, list);

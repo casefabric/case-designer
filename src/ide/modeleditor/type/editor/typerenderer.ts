@@ -5,20 +5,20 @@ import LocalTypeDefinition from "./localtypedefinition";
 import PropertyRenderer from "./propertyrenderer";
 import TypeEditor from "./typeeditor";
 
-export default abstract class TypeRenderer<D extends TypeDefinitionElement> {
+export default abstract class TypeRenderer<D extends TypeDefinitionElement = TypeDefinitionElement> {
 
     /**
      * All current in-memory renderers, used for refreshing
      */
-    static renderers: TypeRenderer<TypeDefinitionElement>[] = [];
-    children: TypeRenderer<TypeDefinitionElement>[];
+    static renderers: TypeRenderer[] = [];
+    children: TypeRenderer[];
     orphan: boolean = false;
 
     /**
      * Register a new renderer. Includes code smell check when a similar renderer is already registered in the same editor with the same path.
      */
-    static register(renderer: TypeRenderer<TypeDefinitionElement>) {
-        const similar = (other?: TypeRenderer<TypeDefinitionElement>) => {
+    static register(renderer: TypeRenderer) {
+        const similar = (other?: TypeRenderer) => {
             if (!other) return false;
             if (renderer === other) return true;
             if (renderer.constructor.name !== other.constructor.name) return false;
@@ -37,14 +37,14 @@ export default abstract class TypeRenderer<D extends TypeDefinitionElement> {
     /**
      * Remove a renderer from the cache.
      */
-    static remove(renderer: TypeRenderer<TypeDefinitionElement>) {
+    static remove(renderer: TypeRenderer) {
         // console.log('Removing ' + renderer);
         Util.removeFromArray(this.renderers, renderer);
     }
 
-    static refreshOthers(source?: TypeRenderer<TypeDefinitionElement>) {
+    static refreshOthers(source?: TypeRenderer) {
         // Editor filter finds all other editors that render the same type definition as the source does. If source is not present, all editors are refreshed.
-        const editorFilter = (renderer: TypeRenderer<TypeDefinitionElement>) => source === undefined || renderer.editor !== source.editor && renderer.localType.sameFile(source.localType);
+        const editorFilter = (renderer: TypeRenderer) => source === undefined || renderer.editor !== source.editor && renderer.localType.sameFile(source.localType);
 
         const otherEditors = this.renderers.filter(editorFilter).map(r => r.editor).filter((value, index, self) => index === self.findIndex((t) => t === value));
         otherEditors.forEach(editor => editor.refresh());
@@ -57,7 +57,7 @@ export default abstract class TypeRenderer<D extends TypeDefinitionElement> {
         }
     }
 
-    constructor(public editor: TypeEditor, public parent: TypeRenderer<TypeDefinitionElement> | undefined, public localType: LocalTypeDefinition, public definition: D, public htmlParent: JQuery<HTMLElement>) {
+    constructor(public editor: TypeEditor, public parent: TypeRenderer | undefined, public localType: LocalTypeDefinition, public definition: D, public htmlParent: JQuery<HTMLElement>) {
         this.children = [];
         if (this.parent) {
             this.parent.children.push(this);
@@ -73,14 +73,14 @@ export default abstract class TypeRenderer<D extends TypeDefinitionElement> {
         this.parent = undefined;
     }
 
-    getDescendents(): TypeRenderer<TypeDefinitionElement>[] {
+    getDescendents(): TypeRenderer[] {
         return [this, ...this.children.map(child => child.getDescendents()).flat()];
     }
 
     /**
      * Returns true if the potential child has us as an ancestor;
      */
-    hasDescendent(potentialChild?: TypeRenderer<TypeDefinitionElement>): boolean {
+    hasDescendent(potentialChild?: TypeRenderer): boolean {
         if (potentialChild) {
             if (potentialChild.parent === this) return true;
             return this.hasDescendent(potentialChild.parent);
@@ -89,7 +89,7 @@ export default abstract class TypeRenderer<D extends TypeDefinitionElement> {
         }
     }
 
-    hasAncestor(potentialAncestor?: TypeRenderer<TypeDefinitionElement>): boolean {
+    hasAncestor(potentialAncestor?: TypeRenderer): boolean {
         if (potentialAncestor) {
             if (this.parent) {
                 if (this.parent === potentialAncestor) return true;

@@ -9,13 +9,13 @@ export default class LocalTypeDefinition {
     definition: TypeDefinition;
 
     constructor(public editor: TypeEditor, public file: TypeFile, public root?: MainTypeDefinition) {
-        if (! file.definition) {
+        if (!file.definition) {
             throw new Error('We need a definition for file ' + file);
         }
         this.definition = file.definition;
     }
 
-    async save(source?: TypeRenderer<TypeDefinitionElement>): Promise<void> {
+    async save(source?: TypeRenderer): Promise<void> {
         this.file.source = this.definition.toXML();
         TypeRenderer.refreshOthers(source);
         return this.file.save().then();
